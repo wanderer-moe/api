@@ -15,5 +15,4 @@ jobs:
       - name: Publish to Cloudflare Workers
         uses: cloudflare/wrangler-action@2.0.0
         with:
-          apiKey: ${{ secrets.CF_API_KEY }}
-          email: ${{ secrets.CF_EMAIL }}
+          apiToken: ${{ secrets.CF_API_TOKEN }}
