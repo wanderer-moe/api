@@ -8,11 +8,11 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy to Cloudflare Workers
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Install dependencies
+      - name: Install required dependencies
         run: npm install
-      - name: Publish to Cloudflare Workers
+      - name: Publish to Cloudflare Workers using Wrangler
         uses: cloudflare/wrangler-action@2.0.0
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}

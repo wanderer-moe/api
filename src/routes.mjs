@@ -1,6 +1,7 @@
 import { Router } from "itty-router";
 const router = Router();
 
+// index route
 router.get(
   "/",
   () =>
@@ -26,7 +27,7 @@ router.get(
     )
 );
 
-// oc genertor routes
+// oc generator routes
 router.get("/oc-generators", async (request, env) => {
   const files = await env.bucket.list({
     prefix: "oc-generator/",
@@ -44,6 +45,7 @@ router.get("/oc-generators", async (request, env) => {
 
   return new Response(
     JSON.stringify({
+      success: true,
       status: "ok",
       path: "/oc-generators",
       locations: locations,
@@ -57,6 +59,7 @@ router.get("/oc-generators", async (request, env) => {
   );
 });
 
+// oc generator specific game route
 router.get("/oc-generator/:gameId", async (request, env) => {
   const { gameId } = request.params;
 
@@ -154,6 +157,7 @@ router.get("/games", async (request, env) => {
   );
 });
 
+// game specific route
 router.get("/game/:gameId", async (request, env) => {
   const { gameId } = request.params;
 
@@ -205,6 +209,7 @@ router.get("/game/:gameId", async (request, env) => {
   );
 });
 
+// game specific asset route
 router.get("/game/:gameId/:asset", async (request, env) => {
   const { gameId, asset } = request.params;
 
