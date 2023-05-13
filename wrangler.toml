@@ -1,5 +1,5 @@
 name = "api-wanderer-moe"
-main = "src/index.js"
+main = "./src/index.mjs"
 compatibility_date = "2023-04-24"
 
 account_id = "ba4e8f7f9ffbc23dba6acd0d9bd3ef46"
@@ -8,3 +8,4 @@ workers_dev = true
 [[r2_buckets]]
 binding = 'bucket'
 bucket_name = 'wanderer-moe'
+preview_bucket_name = 'wanderer-moe'
