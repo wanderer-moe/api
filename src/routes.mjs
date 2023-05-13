@@ -1,6 +1,13 @@
 import { Router } from "itty-router";
 const router = Router();
 
+const response_headers = {
+  "X-Content-Type-Options": "nosniff",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "content-type": "application/json;charset=UTF-8",
+  "access-control-allow-origin": "*",
+};
+
 // index route
 router.get(
   "/",
@@ -20,10 +27,7 @@ router.get(
       }),
       {
         headers: {
-          "X-Content-Type-Options": "nosniff",
-          "Referrer-Policy": "strict-origin-when-cross-origin",
-          "content-type": "application/json;charset=UTF-8",
-          "access-control-allow-origin": "*",
+          ...response_headers,
         },
       }
     )
@@ -54,10 +58,7 @@ router.get("/oc-generators", async (request, env) => {
     }),
     {
       headers: {
-        "X-Content-Type-Options": "nosniff",
-        "Referrer-Policy": "strict-origin-when-cross-origin",
-        "content-type": "application/json;charset=UTF-8",
-        "access-control-allow-origin": "*",
+        ...response_headers,
       },
     }
   );
@@ -80,10 +81,7 @@ router.get("/oc-generator/:gameId", async (request, env) => {
       }),
       {
         headers: {
-          "X-Content-Type-Options": "nosniff",
-          "Referrer-Policy": "strict-origin-when-cross-origin",
-          "content-type": "application/json;charset=UTF-8",
-          "access-control-allow-origin": "*",
+          ...response_headers,
         },
       }
     );
@@ -99,10 +97,7 @@ router.get("/oc-generator/:gameId", async (request, env) => {
     }),
     {
       headers: {
-        "X-Content-Type-Options": "nosniff",
-        "Referrer-Policy": "strict-origin-when-cross-origin",
-        "content-type": "application/json;charset=UTF-8",
-        "access-control-allow-origin": "*",
+        ...response_headers,
       },
     }
   );
@@ -158,10 +153,7 @@ router.get("/games", async (request, env) => {
     }),
     {
       headers: {
-        "X-Content-Type-Options": "nosniff",
-        "Referrer-Policy": "strict-origin-when-cross-origin",
-        "content-type": "application/json;charset=UTF-8",
-        "access-control-allow-origin": "*",
+        ...response_headers,
       },
     }
   );
@@ -195,10 +187,7 @@ router.get("/game/:gameId", async (request, env) => {
       }),
       {
         headers: {
-          "X-Content-Type-Options": "nosniff",
-          "Referrer-Policy": "strict-origin-when-cross-origin",
-          "content-type": "application/json;charset=UTF-8",
-          "access-control-allow-origin": "*",
+          ...response_headers,
         },
       }
     );
@@ -214,10 +203,7 @@ router.get("/game/:gameId", async (request, env) => {
     }),
     {
       headers: {
-        "X-Content-Type-Options": "nosniff",
-        "Referrer-Policy": "strict-origin-when-cross-origin",
-        "content-type": "application/json;charset=UTF-8",
-        "access-control-allow-origin": "*",
+        ...response_headers,
       },
     }
   );
@@ -241,10 +227,7 @@ router.get("/game/:gameId/:asset", async (request, env) => {
       }),
       {
         headers: {
-          "X-Content-Type-Options": "nosniff",
-          "Referrer-Policy": "strict-origin-when-cross-origin",
-          "content-type": "application/json;charset=UTF-8",
-          "access-control-allow-origin": "*",
+          ...response_headers,
         },
       }
     );
@@ -271,10 +254,7 @@ router.get("/game/:gameId/:asset", async (request, env) => {
     }),
     {
       headers: {
-        "X-Content-Type-Options": "nosniff",
-        "Referrer-Policy": "strict-origin-when-cross-origin",
-        "content-type": "application/json;charset=UTF-8",
-        "access-control-allow-origin": "*",
+        ...response_headers,
       },
     }
   );
@@ -292,10 +272,7 @@ router.all(
       }),
       {
         headers: {
-          "X-Content-Type-Options": "nosniff",
-          "Referrer-Policy": "strict-origin-when-cross-origin",
-          "content-type": "application/json;charset=UTF-8",
-          "access-control-allow-origin": "*",
+          ...response_headers,
         },
       }
     )
