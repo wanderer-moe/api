@@ -20,6 +20,8 @@ router.get(
       }),
       {
         headers: {
+          "X-Content-Type-Options": "nosniff",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
           "content-type": "application/json;charset=UTF-8",
           "access-control-allow-origin": "*",
         },
@@ -52,6 +54,8 @@ router.get("/oc-generators", async (request, env) => {
     }),
     {
       headers: {
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
         "content-type": "application/json;charset=UTF-8",
         "access-control-allow-origin": "*",
       },
@@ -76,6 +80,8 @@ router.get("/oc-generator/:gameId", async (request, env) => {
       }),
       {
         headers: {
+          "X-Content-Type-Options": "nosniff",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
           "content-type": "application/json;charset=UTF-8",
           "access-control-allow-origin": "*",
         },
@@ -93,6 +99,8 @@ router.get("/oc-generator/:gameId", async (request, env) => {
     }),
     {
       headers: {
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
         "content-type": "application/json;charset=UTF-8",
         "access-control-allow-origin": "*",
       },
@@ -150,6 +158,8 @@ router.get("/games", async (request, env) => {
     }),
     {
       headers: {
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
         "content-type": "application/json;charset=UTF-8",
         "access-control-allow-origin": "*",
       },
@@ -185,6 +195,8 @@ router.get("/game/:gameId", async (request, env) => {
       }),
       {
         headers: {
+          "X-Content-Type-Options": "nosniff",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
           "content-type": "application/json;charset=UTF-8",
           "access-control-allow-origin": "*",
         },
@@ -202,6 +214,8 @@ router.get("/game/:gameId", async (request, env) => {
     }),
     {
       headers: {
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
         "content-type": "application/json;charset=UTF-8",
         "access-control-allow-origin": "*",
       },
@@ -227,6 +241,8 @@ router.get("/game/:gameId/:asset", async (request, env) => {
       }),
       {
         headers: {
+          "X-Content-Type-Options": "nosniff",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
           "content-type": "application/json;charset=UTF-8",
           "access-control-allow-origin": "*",
         },
@@ -255,6 +271,8 @@ router.get("/game/:gameId/:asset", async (request, env) => {
     }),
     {
       headers: {
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
         "content-type": "application/json;charset=UTF-8",
         "access-control-allow-origin": "*",
       },
@@ -274,6 +292,8 @@ router.all(
       }),
       {
         headers: {
+          "X-Content-Type-Options": "nosniff",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
           "content-type": "application/json;charset=UTF-8",
           "access-control-allow-origin": "*",
         },
