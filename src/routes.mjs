@@ -1,72 +1,82 @@
-import { Router } from "itty-router";
+import {
+  Router
+} from "itty-router";
+import {
+  responseHeaders
+} from "./lib/responseHeaders.mjs";
+
 const router = Router();
 
-const response_headers = {
-  "X-Content-Type-Options": "nosniff",
-  "Referrer-Policy": "strict-origin-when-cross-origin",
-  "content-type": "application/json;charset=UTF-8",
-  "access-control-allow-origin": "*",
+const errorHandler = (handler) => async (request, env) => {
+  try {
+    // console.log(request);
+    return await handler(request, env);
+  } catch (error) {
+    console.error(error);
+    return new Response(
+      JSON.stringify({
+        success: false,
+        status: "error",
+        error: "500 Internal Server Error",
+      }), {
+        headers: responseHeaders
+      }
+    );
+  }
 };
 
 // index route
-router.get(
-  "/",
-  () =>
-    new Response(
-      JSON.stringify({
-        success: true,
-        status: "ok",
-        path: "/",
-        routes: [
-          "https://api.wanderer.moe/games",
-          "https://api.wanderer.moe/game/{gameId}",
-          "https://api.wanderer.moe/game/{gameId}/{asset}",
-          "https://api.wanderer.moe/oc-generators",
-          "https://api.wanderer.moe/oc-generator/{gameId}",
-        ],
-      }),
-      {
-        headers: {
-          ...response_headers,
-        },
-      }
-    )
-);
+router.get("/", errorHandler(() => {
+  // TODO: get all possible routes instead of hardcoding them, to be implemented at a later date
+  const routes = [
+    "https://api.wanderer.moe/games",
+    "https://api.wanderer.moe/game/{gameId}",
+    "https://api.wanderer.moe/game/{gameId}/{asset}",
+    "https://api.wanderer.moe/oc-generators",
+    "https://api.wanderer.moe/oc-generator/{gameId}",
+  ];
 
-// oc generator routes
-router.get("/oc-generators", async (request, env) => {
+  return new Response(
+    JSON.stringify({
+      success: true,
+      status: "ok",
+      path: "/",
+      routes,
+    }), {
+      headers: responseHeaders
+    }
+  );
+}));
+
+// gets all oc generators
+router.get("/oc-generators", errorHandler(async (request, env) => {
   const files = await env.bucket.list({
     prefix: "oc-generator/",
     delimiter: "/",
   });
 
-  const locations = files.delimitedPrefixes.map((file) => {
-    return {
-      name: file.replace("oc-generator/", "").replace("/", ""),
-      path: `https://api.wanderer.moe/oc-generator/${file
-        .replace("oc-generator/", "")
-        .replace("/", "")}`,
-    };
-  });
+  const locations = files.delimitedPrefixes.map((file) => ({
+    name: file.replace("oc-generator/", "").replace("/", ""),
+    path: `https://api.wanderer.moe/oc-generator/${file.replace("oc-generator/", "").replace("/", "")}`,
+  }));
 
   return new Response(
     JSON.stringify({
       success: true,
       status: "ok",
       path: "/oc-generators",
-      locations: locations,
-    }),
-    {
-      headers: {
-        ...response_headers,
-      },
+      locations,
+    }), {
+      headers: responseHeaders
     }
   );
-});
+}));
 
-// oc generator specific game route
-router.get("/oc-generator/:gameId", async (request, env) => {
-  const { gameId } = request.params;
+// gets oc generator for a game
+router.get("/oc-generator/:gameId", errorHandler(async (request, env) => {
+  const {
+    gameId
+  } = request.params;
 
   const files = await env.bucket.list({
     prefix: `oc-generator/${gameId}/list.json`,
@@ -78,15 +88,13 @@ router.get("/oc-generator/:gameId", async (request, env) => {
         success: false,
         status: "error",
         error: "404 Not Found",
-      }),
-      {
-        headers: {
-          ...response_headers,
-        },
+      }), {
+        headers: responseHeaders
       }
     );
   }
 
+  // TODO: don't seperate the link for the json file, implement it into the response, to be implemented at a later date
   return new Response(
     JSON.stringify({
       success: true,
@@ -94,88 +102,73 @@ router.get("/oc-generator/:gameId", async (request, env) => {
       path: `/oc-generator/${gameId}`,
       game: gameId,
       json: `https://cdn.wanderer.moe/oc-generator/${gameId}/list.json`,
-    }),
-    {
-      headers: {
-        ...response_headers,
-      },
+    }), {
+      headers: responseHeaders
     }
   );
-});
+}));
 
-// games routes
-router.get("/games", async (request, env) => {
+// gets all games
+router.get("/games", errorHandler(async (request, env) => {
   const files = await env.bucket.list({
     prefix: "",
     delimiter: "/",
   });
 
   const unwantedFiles = ["other/", "locales/", "covers/", "oc-generator/"];
-  const rootLocations = [];
 
-  for (const game of files.delimitedPrefixes) {
-    if (unwantedFiles.includes(game)) {
-      continue;
-    }
+  const rootLocations = files.delimitedPrefixes
+    .filter((game) => !unwantedFiles.includes(game))
+    .map(async (game) => {
+      const gameFiles = await env.bucket.list({
+        prefix: `${game}`,
+        delimiter: "/",
+      });
 
-    const gameFiles = await env.bucket.list({
-      prefix: `${game}`,
-      delimiter: "/",
-    });
+      const tags = gameFiles.delimitedPrefixes.some((subfolder) => subfolder.includes("sheets")) ? ["Has Sheets"] : [];
 
-    let tags = [];
-
-    const gameSubfolders = gameFiles.delimitedPrefixes.map((subfolder) => {
-      return {
+      const subfolders = gameFiles.delimitedPrefixes.map((subfolder) => ({
         name: subfolder.replace(game, "").replace("/", ""),
         path: `https://api.wanderer.moe/game/${subfolder}`,
+      }));
+
+      return {
+        name: game.replace("/", ""),
+        path: `https://api.wanderer.moe/game/${game}`,
+        tags,
+        subfolders,
       };
     });
 
-    if (gameSubfolders.some((subfolder) => subfolder.name.includes("sheets"))) {
-      tags.push("Has Sheets");
-    }
-
-    rootLocations.push({
-      name: game.replace("/", ""),
-      path: `https://api.wanderer.moe/game/${game}`,
-      tags: tags,
-      subfolders: gameSubfolders,
-    });
-  }
+  const games = await Promise.all(rootLocations);
 
   return new Response(
     JSON.stringify({
       success: true,
       status: "ok",
       path: "/games",
-      games: rootLocations,
-    }),
-    {
-      headers: {
-        ...response_headers,
-      },
+      games,
+    }), {
+      headers: responseHeaders
     }
   );
-});
+}));
 
-// game specific route
-router.get("/game/:gameId", async (request, env) => {
-  const { gameId } = request.params;
+// gets asset categories for a game
+router.get("/game/:gameId", errorHandler(async (request, env) => {
+  const {
+    gameId
+  } = request.params;
 
   const files = await env.bucket.list({
     prefix: `${gameId}/`,
     delimiter: "/",
   });
 
-  const locations = files.delimitedPrefixes.map((file) => {
-    return {
-      name: file.replace(`${gameId}/`, "").replace("/", ""),
-      path: `https://api.wanderer.moe/game/${gameId}/${file
-        .replace(`${gameId}/`, "")
-        .replace("/", "")}`,
-    };
-  });
+  const locations = files.delimitedPrefixes.map((file) => ({
+    name: file.replace(`${gameId}/`, "").replace("/", ""),
+    path: `https://api.wanderer.moe/game/${gameId}/${file.replace(`${gameId}/`, "").replace("/", "")}`,
+  }));
 
   if (files.objects.length === 0) {
     return new Response(
@@ -184,11 +177,8 @@ router.get("/game/:gameId", async (request, env) => {
         status: "error",
         path: `/game/${gameId}`,
         error: "404 Not Found",
-      }),
-      {
-        headers: {
-          ...response_headers,
-        },
+      }), {
+        headers: responseHeaders
       }
     );
   }
@@ -199,19 +189,19 @@ router.get("/game/:gameId", async (request, env) => {
       status: "ok",
       path: `/game/${gameId}`,
       game: gameId,
-      locations: locations,
-    }),
-    {
-      headers: {
-        ...response_headers,
-      },
+      locations,
+    }), {
+      headers: responseHeaders
     }
   );
-});
+}));
 
-// game specific asset route
-router.get("/game/:gameId/:asset", async (request, env) => {
-  const { gameId, asset } = request.params;
+// gets all assets for a game
+router.get("/game/:gameId/:asset", errorHandler(async (request, env) => {
+  const {
+    gameId,
+    asset
+  } = request.params;
 
   const files = await env.bucket.list({
     prefix: `${gameId}/${asset}/`,
@@ -224,24 +214,19 @@ router.get("/game/:gameId/:asset", async (request, env) => {
         status: "error",
         path: `/game/${gameId}/${asset}`,
         error: "404 Not Found",
-      }),
-      {
-        headers: {
-          ...response_headers,
-        },
+      }), {
+        headers: responseHeaders
       }
     );
   }
 
-  const images = files.objects.map((file) => {
-    return {
-      name: file.key.split("/").pop().replace(".png", ""),
-      nameWithExtension: file.key.split("/").pop(),
-      path: "https://cdn.wanderer.moe/" + file.key,
-      uploaded: file.uploaded,
-      size: file.size,
-    };
-  });
+  const images = files.objects.map((file) => ({
+    name: file.key.split("/").pop().replace(".png", ""),
+    nameWithExtension: file.key.split("/").pop(),
+    path: `https://cdn.wanderer.moe/${file.key}`,
+    uploaded: file.uploaded,
+    size: file.size,
+  }));
 
   return new Response(
     JSON.stringify({
@@ -249,38 +234,31 @@ router.get("/game/:gameId/:asset", async (request, env) => {
       status: "ok",
       path: `/game/${gameId}/${asset}`,
       game: gameId,
-      asset: asset,
-      images: images,
-    }),
-    {
-      headers: {
-        ...response_headers,
-      },
+      asset,
+      images,
+    }), {
+      headers: responseHeaders
     }
   );
+}));
+
+router.all("*", errorHandler(() => {
+  return new Response(
+    JSON.stringify({
+      success: false,
+      status: "error",
+      error: "404 Not Found",
+    }), {
+      headers: responseHeaders
+    }
+  );
+}));
+
+// event listener for fetch events
+addEventListener("fetch", (event) => {
+  event.respondWith(router.handle(event.request));
 });
 
-// other routes
-router.all(
-  "*",
-  () =>
-    new Response(
-      JSON.stringify({
-        success: false,
-        status: "error",
-        error: "404 Not Found",
-      }),
-      {
-        headers: {
-          ...response_headers,
-        },
-      }
-    )
-);
-
-// event listener
-addEventListener("fetch", (event) =>
-  event.respondWith(router.handle(event.request))
-);
-
-export { router };
+export {
+  router
+};
