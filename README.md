@@ -16,11 +16,18 @@ Source code for the API powering [wanderer.moe](https://wanderer.moe) - using Cl
 
 ## Usage
 
-All configuration stuff is inside `wrangler.toml`.
+### Wrangler / Cloudflare Workers
+
+Configuration stuff is inside `wrangler.toml`.
 
 - `wrangler dev` to run locally.
+- `wrangler deploy` to publish to Cloudflare Workers.
 
-- `wrangler publish` to publish to Cloudflare Workers.
+### Actions
+
+- There is a GitHub Action that automatically deploys to Cloudflare Workers on every push to `main`, you can find it in `.github/workflows/deploy.yml`.
+
+- If you're using actions, you will have to setup a secret with a Cloudflare API token, which you can generate the API token [here](https://dash.cloudflare.com/profile/api-tokens), use the `Edit Cloudflare Workers` template.
 
 ## Authors
 
@@ -28,4 +35,4 @@ All configuration stuff is inside `wrangler.toml`.
 
 ## License
 
-- [api.wanderer.moe](https://api.wanderer.moe) is licensed under [GNU Affero General Public License v3.0](LICENSE) - You must state all significant changes made to the original software, make the source code available to the public with credit to the original author, original source, and use the same license.
+- [api.wanderer.moe](https://api.wanderer.moe) is licensed under [GNU Affero General Public License v3.0](LICENSE) - **You must state all significant changes made to the original software, make the source code available to the public with credit to the original author, original source, and use the same license.**
