@@ -1,0 +1,8 @@
+{
+    "bracketSameLine": true,
+    "singleQuote": false,
+    "trailingComma": "es5",
+    "endOfLine": "lf",
+    "tabWidth": 4,
+    "plugins": []
+}

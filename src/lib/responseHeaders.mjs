@@ -3,4 +3,4 @@ export const responseHeaders = {
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "content-type": "application/json;charset=UTF-8",
     "access-control-allow-origin": "*",
-  };
+};
