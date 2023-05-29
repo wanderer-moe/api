@@ -37,12 +37,12 @@ Configuration files are inside `wrangler.toml`.
 [Banner]: https://files.catbox.moe/qa3eus.svg
 [API Status]: https://status.wanderer.moe/history/api
 [CDN Status]: https://status.wanderer.moe/history/cdn
-[API Response]: https://img.shields.io/endpoint?label=API%20Response&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fdromzeh%2Fstatus.wanderer.moe%2FHEAD%2Fapi%2Fapi%2Fresponse-time.json
-[API Response 24h]: https://img.shields.io/endpoint?label=API%20Response%20%2824h%29&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fdromzeh%2Fstatus.wanderer.moe%2FHEAD%2Fapi%2Fapi%2Fresponse-time-day.json
-[API Response 7d]: https://img.shields.io/endpoint?label=API%20Response%20%281wk%29&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fdromzeh%2Fstatus.wanderer.moe%2FHEAD%2Fapi%2Fapi%2Fresponse-time-week.json
-[CDN Response]: https://img.shields.io/endpoint?label=CDN%20Response&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fdromzeh%2Fstatus.wanderer.moe%2FHEAD%2Fapi%2Fcdn%2Fresponse-time.json
-[CDN Response 24h]: https://img.shields.io/endpoint?label=CDN%20Response%20%2824h%29&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fdromzeh%2Fstatus.wanderer.moe%2FHEAD%2Fapi%2Fcdn%2Fresponse-time-day.json
-[CDN Response 7d]: https://img.shields.io/endpoint?label=CDN%20Response%20%281wk%29&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fdromzeh%2Fstatus.wanderer.moe%2FHEAD%2Fapi%2Fcdn%2Fresponse-time-week.json
+[API Response]: https://img.shields.io/endpoint?label=API%20Response&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fwanderer-moe%2Fstatus%2FHEAD%2Fapi%2Fapi%2Fresponse-time.json
+[API Response 24h]: https://img.shields.io/endpoint?label=API%20Response%20%2824h%29&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fwanderer-moe%2Fstatus%2FHEAD%2Fapi%2Fapi%2Fresponse-time-day.json
+[API Response 7d]: https://img.shields.io/endpoint?label=API%20Response%20%281wk%29&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fwanderer-moe%2Fstatus%2FHEAD%2Fapi%2Fapi%2Fresponse-time-week.json
+[CDN Response]: https://img.shields.io/endpoint?label=CDN%20Response&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fwanderer-moe%2Fstatus%2FHEAD%2Fapi%2Fcdn%2Fresponse-time.json
+[CDN Response 24h]: https://img.shields.io/endpoint?label=CDN%20Response%20%2824h%29&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fwanderer-moe%2Fstatus%2FHEAD%2Fapi%2Fcdn%2Fresponse-time-day.json
+[CDN Response 7d]: https://img.shields.io/endpoint?label=CDN%20Response%20%281wk%29&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fwanderer-moe%2Fstatus%2FHEAD%2Fapi%2Fcdn%2Fresponse-time-week.json
 [Cloudflare API Token]: https://dash.cloudflare.com/profile/api-tokens
 [Dromzeh]: https://github.com/dromzeh
 [api.wanderer.moe]: https://api.wanderer.moe
