@@ -135,11 +135,22 @@ router.get(
                     ? ["Has Sheets"]
                     : [];
 
-                const subfolders = gameFiles.delimitedPrefixes.map(
-                    (subfolder) => ({
-                        name: subfolder.replace(game, "").replace("/", ""),
-                        path: `https://api.wanderer.moe/game/${subfolder}`,
+                const subfolders = await Promise.all(
+                    gameFiles.delimitedPrefixes.map(async (subfolder) => {
+                        const subfolderFiles = await listBucket(env, {
+                            prefix: `${subfolder}`,
+                        });
+                        return {
+                            name: subfolder.replace(game, "").replace("/", ""),
+                            path: `https://api.wanderer.moe/game/${subfolder}`,
+                            fileCount: subfolderFiles.objects.length,
+                        };
                     })
+                );
+
+                const totalFiles = subfolders.reduce(
+                    (total, subfolder) => total + subfolder.fileCount,
+                    0
                 );
 
                 return {
@@ -147,6 +158,7 @@ router.get(
                     path: `https://api.wanderer.moe/game/${game}`,
                     tags,
                     subfolders,
+                    totalFiles,
                 };
             });
 
@@ -178,12 +190,26 @@ router.get(
             delimiter: "/",
         });
 
-        const locations = files.delimitedPrefixes.map((file) => ({
-            name: file.replace(`${gameId}/`, "").replace("/", ""),
-            path: `https://api.wanderer.moe/game/${gameId}/${file
-                .replace(`${gameId}/`, "")
-                .replace("/", "")}`,
-        }));
+        const locations = files.delimitedPrefixes.map(async (file) => {
+            const subfolderFiles = await listBucket(env, {
+                prefix: `${file}`,
+            });
+            const fileCount = subfolderFiles.objects.length;
+            return {
+                name: file.replace(`${gameId}/`, "").replace("/", ""),
+                path: `https://api.wanderer.moe/game/${gameId}/${file
+                    .replace(`${gameId}/`, "")
+                    .replace("/", "")}`,
+                fileCount,
+            };
+        });
+
+        const locationsWithFileCount = await Promise.all(locations);
+
+        const totalFiles = locationsWithFileCount.reduce(
+            (total, location) => total + location.fileCount,
+            0
+        );
 
         if (files.objects.length === 0) {
             return new Response(
@@ -205,7 +231,8 @@ router.get(
                 status: "ok",
                 path: `/game/${gameId}`,
                 game: gameId,
-                locations,
+                locations: locationsWithFileCount,
+                totalFiles,
             }),
             {
                 headers: responseHeaders,
