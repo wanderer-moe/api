@@ -2,7 +2,7 @@ import { responseHeaders } from "../lib/responseHeaders.js";
 import { listBucket } from "../lib/listBucket.js";
 
 export const getGenerators = async (request, env) => {
-    const files = await listBucket(env, {
+    const files = await listBucket(env.bucket, {
         prefix: "oc-generator/",
         delimiter: "/",
     });
@@ -30,7 +30,7 @@ export const getGenerators = async (request, env) => {
 export const getGeneratorGameId = async (request, env) => {
     const { gameId } = request.params;
 
-    const files = await listBucket(env, {
+    const files = await listBucket(env.bucket, {
         prefix: `oc-generator/${gameId}/list.json`,
     });
 
