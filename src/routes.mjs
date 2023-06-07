@@ -11,7 +11,7 @@ const listBucket = async (env, options) => {
     return files;
 };
 
-const unwantedPrefixes = ["other/", "locales/", "covers/", "oc-generator/"];
+const unwantedPrefixes = ["other/", "locales/", "oc-generator/"];
 
 // TODO: stop hardcoding routes
 const routes = [
@@ -26,7 +26,7 @@ const routes = [
 // gets all routes and their paths
 router.get(
     "/",
-    errorHandler(() => {
+    errorHandler(async (request, env) => {
         return new Response(
             JSON.stringify({
                 success: true,
@@ -140,10 +140,19 @@ router.get(
                         const subfolderFiles = await listBucket(env, {
                             prefix: `${subfolder}`,
                         });
+                        const lastUploaded = subfolderFiles.objects.reduce(
+                            (prev, current) => {
+                                const prevDate = new Date(prev.uploaded);
+                                const currentDate = new Date(current.uploaded);
+                                return prevDate > currentDate ? prev : current;
+                            },
+                            { uploaded: 0 }
+                        );
                         return {
                             name: subfolder.replace(game, "").replace("/", ""),
                             path: `https://api.wanderer.moe/game/${subfolder}`,
                             fileCount: subfolderFiles.objects.length,
+                            lastUploaded: lastUploaded.uploaded,
                         };
                     })
                 );
@@ -153,12 +162,22 @@ router.get(
                     0
                 );
 
+                const lastUploaded = subfolders.reduce(
+                    (prev, current) => {
+                        const prevDate = new Date(prev.lastUploaded);
+                        const currentDate = new Date(current.lastUploaded);
+                        return prevDate > currentDate ? prev : current;
+                    },
+                    { lastUploaded: 0 }
+                );
+
                 return {
                     name: game.replace("/", ""),
                     path: `https://api.wanderer.moe/game/${game}`,
                     tags,
-                    subfolders,
                     totalFiles,
+                    lastUploaded: lastUploaded.lastUploaded,
+                    subfolders,
                 };
             });
 
@@ -195,12 +214,21 @@ router.get(
                 prefix: `${file}`,
             });
             const fileCount = subfolderFiles.objects.length;
+            const lastUploaded = subfolderFiles.objects.reduce(
+                (prev, current) => {
+                    const prevDate = new Date(prev.uploaded);
+                    const currentDate = new Date(current.uploaded);
+                    return prevDate > currentDate ? prev : current;
+                },
+                { uploaded: 0 }
+            );
             return {
                 name: file.replace(`${gameId}/`, "").replace("/", ""),
                 path: `https://api.wanderer.moe/game/${gameId}/${file
                     .replace(`${gameId}/`, "")
                     .replace("/", "")}`,
                 fileCount,
+                lastUploaded: lastUploaded.uploaded,
             };
         });
 
@@ -225,14 +253,24 @@ router.get(
             );
         }
 
+        const lastUploaded = locationsWithFileCount.reduce(
+            (prev, current) => {
+                const prevDate = new Date(prev.lastUploaded);
+                const currentDate = new Date(current.lastUploaded);
+                return prevDate > currentDate ? prev : current;
+            },
+            { lastUploaded: 0 }
+        );
+
         return new Response(
             JSON.stringify({
                 success: true,
                 status: "ok",
                 path: `/game/${gameId}`,
                 game: gameId,
-                locations: locationsWithFileCount,
                 totalFiles,
+                lastUploaded: lastUploaded.lastUploaded,
+                locations: locationsWithFileCount,
             }),
             {
                 headers: responseHeaders,
@@ -274,6 +312,8 @@ router.get(
             size: file.size,
         }));
 
+        const lastUploaded = images.sort((a, b) => b.uploaded - a.uploaded)[0];
+
         return new Response(
             JSON.stringify({
                 success: true,
@@ -281,6 +321,7 @@ router.get(
                 path: `/game/${gameId}/${asset}`,
                 game: gameId,
                 asset,
+                lastUploaded,
                 images,
             }),
             {

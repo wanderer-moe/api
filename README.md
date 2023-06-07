@@ -17,18 +17,18 @@ Source code for the API/CDN powering [**wanderer.moe**](https://wanderer.moe) �
 
 Configuration files are inside `wrangler.toml`.
 
-- Run `wrangler dev` to preview locally.
-- Run `wrangler deploy` to publish to Cloudflare Workers.
+-   Run `wrangler dev` to preview locally.
+-   Run `wrangler deploy` to publish to Cloudflare Workers.
 
 #### Actions
 
-- There is a GitHub Action that automatically deploys to Cloudflare Workers on every push to `main` — you can find it in `.github/workflows/deploy.yml`.
+-   There is a GitHub Action that automatically deploys to Cloudflare Workers on every push to `main` — you can find it in `.github/workflows/deploy.yml`.
 
-- If you're using Github Actions, you will have to setup a secret with a Cloudflare API token. You can generate the API token [here][Cloudflare API Token] — use the `Edit Cloudflare Workers` template.
+-   If you're using Github Actions, you will have to setup a secret with a Cloudflare API token. You can generate the API token [here][Cloudflare API Token] — use the `Edit Cloudflare Workers` template.
 
 ## Authors
 
-- [@dromzeh][Dromzeh]
+-   [@dromzeh][Dromzeh]
 
 ## License
 
