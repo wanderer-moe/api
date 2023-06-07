@@ -9,3 +9,5 @@ workers_dev = true
 binding = 'bucket'
 bucket_name = 'wanderer-moe'
 preview_bucket_name = 'wanderer-moe'
+
+[vars]
