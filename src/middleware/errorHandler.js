@@ -1,6 +1,3 @@
-// src/middleware/errorHandler.mjs
-
-// error handler
 export const errorHandler = (handler) => async (request, env) => {
     try {
         return await handler(request, env);
