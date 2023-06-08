@@ -30,9 +30,11 @@ export const getContributors = async (request, env) => {
             const rolesArray = member.roles
                 .map((role) => roles[role])
                 .filter((role) => role);
+
             return {
                 id: member.user.id,
                 username: member.user.username,
+                globalname: member.user.globalname || null,
                 avatar: `https://cdn.discordapp.com/avatars/${member.user.id}/${member.user.avatar}.webp`,
                 roles: rolesArray,
             };
