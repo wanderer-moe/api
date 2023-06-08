@@ -34,7 +34,7 @@ export const getContributors = async (request, env) => {
             return {
                 id: member.user.id,
                 username: member.user.username,
-                globalname: member.user.globalname || null,
+                globalname: member.user.global_name || null,
                 avatar: `https://cdn.discordapp.com/avatars/${member.user.id}/${member.user.avatar}.webp`,
                 roles: rolesArray,
             };
