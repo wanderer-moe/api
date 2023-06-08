@@ -1,8 +1,9 @@
 {
-    "name": "cdn-worker",
-    "version": "0.0.0",
+    "name": "wanderer-moe-api",
+    "version": "1.0.1b",
     "scripts": {
-        "prettier": "prettier --write ."
+        "prettier": "prettier --write .",
+        "dev": "wrangler dev --remote"
     },
     "devDependencies": {
         "@cloudflare/workers-types": "^4.20230518.0",
@@ -14,6 +15,7 @@
     "private": true,
     "dependencies": {
         "itty-router": "^4.0.9",
-        "prettier": "^2.8.8"
+        "prettier": "^2.8.8",
+        "render2": "^1.2.1"
     }
 }
