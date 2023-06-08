@@ -5,6 +5,10 @@ compatibility_date = "2023-04-24"
 account_id = "ba4e8f7f9ffbc23dba6acd0d9bd3ef46"
 workers_dev = true
 
+kv_namespaces = [
+  { binding = "KV_PAGEDATA", id = "5a8a8144b8974c63bd7ad8e280d537c9", preview_id = "5a8a8144b8974c63bd7ad8e280d537c9"}
+]
+
 [[r2_buckets]]
 binding = 'bucket'
 bucket_name = 'wanderer-moe'

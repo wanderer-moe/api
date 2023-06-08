@@ -1,6 +1,11 @@
 import { responseHeaders } from "../lib/responseHeaders.js";
 import { listBucket } from "../lib/listBucket.js";
 
+// TODO: When enough KV data is gathered, append "popularity" to each game & asset.
+// Done by getting values for game/game_asset in KV, sorting by value, and assigning a number to each game/asset.
+// e.g "popularity": 1 = highest, 2 = second highest, etc. (0 = no data if request fails)
+// in the rare case of a tie, maybe allow for multiple game/game_asset values to have the same "popularity" value.
+
 const unwantedPrefixes = ["other/", "locales/", "oc-generator/"];
 
 export const getGames = async (request, env) => {
@@ -145,6 +150,13 @@ export const getGameId = async (request, env) => {
         { lastUploaded: 0 }
     );
 
+    try {
+        const gameCount = (await env.KV_PAGEDATA.get(gameId)) || 0;
+        await env.KV_PAGEDATA.put(gameId, parseInt(gameCount) + 1);
+    } catch (e) {
+        console.error(e);
+    }
+
     return new Response(
         JSON.stringify({
             success: true,
@@ -191,6 +203,19 @@ export const getAsset = async (request, env) => {
     }));
 
     const lastUploaded = images.sort((a, b) => b.uploaded - a.uploaded)[0];
+
+    try {
+        const gameAssetCount =
+            (await env.KV_PAGEDATA.get(`${gameId}_${asset}`)) || 0;
+        await env.KV_PAGEDATA.put(
+            `${gameId}_${asset}`,
+            parseInt(gameAssetCount) + 1
+        );
+        const gameCount = (await env.KV_PAGEDATA.get(gameId)) || 0;
+        await env.KV_PAGEDATA.put(gameId, parseInt(gameCount) + 1);
+    } catch (e) {
+        console.error(e);
+    }
 
     return new Response(
         JSON.stringify({
