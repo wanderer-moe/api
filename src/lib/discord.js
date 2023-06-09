@@ -6,6 +6,7 @@ export const roles = {
     "983817984923562034": "Moderator",
     "1088105796908355584": "Translator",
     "1005805438031364129": "Contributor",
+    "983883539772751912": "Server Booster",
 };
 
 export const guildId = "982385887000272956";
