@@ -26,6 +26,37 @@ Configuration is in `wrangler.toml` - this includes the R2 Bucket and D1 Databas
 
 -   If you're using Github Actions, you will have to setup a secret with a Cloudflare API token. You can generate the API token [here][Cloudflare API Token] — use the `Edit Cloudflare Workers` template.
 
+## API Reference
+
+### Games
+
+#### Get all games
+
+```http
+  GET api.wanderer.moe/games
+```
+
+#### Get game data
+
+```http
+  GET api.wanderer.moe/game/${gameId}
+```
+
+| Parameter | Type     | Description                         |
+| :-------- | :------- | :---------------------------------- |
+| `gameId`  | `string` | **Required** — game to get data for |
+
+#### Get a game's asset data
+
+```http
+  GET api.wanderer.moe/game/${gameId}/${asset}
+```
+
+| Parameter | Type     | Description                          |
+| :-------- | :------- | :----------------------------------- |
+| `gameId`  | `string` | **Required** — game to get data for  |
+| `asset`   | `string` | **Required** — asset to get data for |
+
 ## Authors
 
 -   [@dromzeh][Dromzeh]
