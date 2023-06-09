@@ -165,12 +165,12 @@ export const getGameId = async (request, env) => {
                 { lastUploaded: 0 }
             );
 
-            try {
-                const gameCount = (await env.KV_PAGEDATA.get(gameId)) || 0;
-                await env.KV_PAGEDATA.put(gameId, parseInt(gameCount) + 1);
-            } catch (e) {
-                console.error(e);
-            }
+            // try {
+            //     const gameCount = (await env.KV_PAGEDATA.get(gameId)) || 0;
+            //     await env.KV_PAGEDATA.put(gameId, parseInt(gameCount) + 1);
+            // } catch (e) {
+            //     console.error(e);
+            // }
 
             response = new Response(
                 JSON.stringify({
@@ -231,18 +231,18 @@ export const getAsset = async (request, env) => {
                 (a, b) => b.uploaded - a.uploaded
             )[0];
 
-            try {
-                const gameAssetCount =
-                    (await env.KV_PAGEDATA.get(`${gameId}_${asset}`)) || 0;
-                await env.KV_PAGEDATA.put(
-                    `${gameId}_${asset}`,
-                    parseInt(gameAssetCount) + 1
-                );
-                const gameCount = (await env.KV_PAGEDATA.get(gameId)) || 0;
-                await env.KV_PAGEDATA.put(gameId, parseInt(gameCount) + 1);
-            } catch (e) {
-                console.error(e);
-            }
+            // try {
+            //     const gameAssetCount =
+            //         (await env.KV_PAGEDATA.get(`${gameId}_${asset}`)) || 0;
+            //     await env.KV_PAGEDATA.put(
+            //         `${gameId}_${asset}`,
+            //         parseInt(gameAssetCount) + 1
+            //     );
+            //     const gameCount = (await env.KV_PAGEDATA.get(gameId)) || 0;
+            //     await env.KV_PAGEDATA.put(gameId, parseInt(gameCount) + 1);
+            // } catch (e) {
+            //     console.error(e);
+            // }
 
             response = new Response(
                 JSON.stringify({

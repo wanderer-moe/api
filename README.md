@@ -5,7 +5,7 @@
 ![API Response] ![API Response 24h] ![API Response 7d]  
 ![CDN Response] ![CDN Response 24h] ![CDN Response 7d]
 
-Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — using **Cloudflare Workers** for the API, **R2 Storage** for the CDN and **KV Namespaces** for collecting stats.
+Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — using **Cloudflare Workers** for the API with **R2 Storage** for the CDN.
 
 </div>
 
