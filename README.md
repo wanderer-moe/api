@@ -5,7 +5,7 @@
 ![API Response] ![API Response 24h] ![API Response 7d]  
 ![CDN Response] ![CDN Response 24h] ![CDN Response 7d]
 
-Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — using **Cloudflare Workers** for the API with **R2 Storage** for the CDN.
+Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — using **Cloudflare Workers** for the API with **R2 Storage** for the CDN, and **D1** for the Database.
 
 </div>
 
@@ -15,7 +15,7 @@ Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — us
 
 #### Wrangler
 
-Configuration is in `wrangler.toml` - this includes bucket binds & KV namespaces.
+Configuration is in `wrangler.toml` - this includes the R2 Bucket and D1 Database.
 
 -   Run `wrangler dev` to preview locally.
 -   Run `wrangler deploy` to publish to Cloudflare Workers.

@@ -10,4 +10,9 @@ binding = 'bucket'
 bucket_name = 'wanderer-moe'
 preview_bucket_name = 'wanderer-moe'
 
+[[d1_databases]]
+binding = 'database'
+database_name = 'wanderer-moe'
+database_id = 'f4807270-c513-494f-b458-3e9d6c853d13'
+
 [vars]

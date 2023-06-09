@@ -165,12 +165,18 @@ export const getGameId = async (request, env) => {
                 { lastUploaded: 0 }
             );
 
-            // try {
-            //     const gameCount = (await env.KV_PAGEDATA.get(gameId)) || 0;
-            //     await env.KV_PAGEDATA.put(gameId, parseInt(gameCount) + 1);
-            // } catch (e) {
-            //     console.error(e);
-            // }
+            const tableName = gameId.replace(/-/g, "_");
+            await env.database
+                .prepare(
+                    `CREATE TABLE IF NOT EXISTS ${tableName} (location TEXT, viewcount INTEGER)`
+                )
+                .run();
+
+            // TODO: check if row with location exists, if not, create it with viewcount 1, if it does, increment viewcount by 1
+            // await Promise.all(locationsWithFileCount.map(async (location) => {
+            //     location = location.name.replace(/-/g, "_");
+            //     console.log(location);
+            // }));
 
             response = new Response(
                 JSON.stringify({
@@ -231,18 +237,14 @@ export const getAsset = async (request, env) => {
                 (a, b) => b.uploaded - a.uploaded
             )[0];
 
-            // try {
-            //     const gameAssetCount =
-            //         (await env.KV_PAGEDATA.get(`${gameId}_${asset}`)) || 0;
-            //     await env.KV_PAGEDATA.put(
-            //         `${gameId}_${asset}`,
-            //         parseInt(gameAssetCount) + 1
-            //     );
-            //     const gameCount = (await env.KV_PAGEDATA.get(gameId)) || 0;
-            //     await env.KV_PAGEDATA.put(gameId, parseInt(gameCount) + 1);
-            // } catch (e) {
-            //     console.error(e);
-            // }
+            const tableName = gameId.replace(/-/g, "_");
+            await env.database
+                .prepare(
+                    `CREATE TABLE IF NOT EXISTS ${tableName} (location TEXT, viewcount INTEGER)`
+                )
+                .run();
+
+            // TODO: check if row inside table with location exists, if not, create it with viewcount 1, if it does, increment viewcount by 1
 
             response = new Response(
                 JSON.stringify({
