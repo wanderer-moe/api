@@ -1,11 +1,13 @@
 import { responseHeaders } from "../lib/responseHeaders.js";
 import { listBucket } from "../lib/listBucket.js";
+import { checkTable } from "../lib/d1/checkTable.js";
+import { checkRow } from "../lib/d1/checkRow.js";
 // import render2 from "render2";
 
-// TODO: When enough KV data is gathered, append "popularity" to each game & asset.
-// Done by getting values for game/game_asset in KV, sorting by value, and assigning a number to each game/asset.
-// e.g "popularity": 1 = highest, 2 = second highest, etc. (0 = no data if request fails)
-// in the rare case of a tie, maybe allow for multiple game/game_asset values to have the same "popularity" value.
+// TODO: Add a "popularity" value to each game_name / game_asset.
+// Calculated by getting the total number of requests for each game & asset, taking in the `requests` value.
+// Then, most popular games are shown first, and most popular assets are shown first. (1 = most popular, 2 = second most popular, etc.)
+// If the case of a tie, assets and games can share the same popularity value.
 
 const unwantedPrefixes = ["other/", "locales/", "oc-generator/"];
 
@@ -103,11 +105,10 @@ export const getGames = async (request, env) => {
 export const getGameId = async (request, env) => {
     const cacheKey = new Request(request.url, request);
     const cache = caches.default;
+    const { gameId } = request.params;
     let response = await cache.match(cacheKey);
 
     if (!response) {
-        const { gameId } = request.params;
-
         const files = await listBucket(env.bucket, {
             prefix: `${gameId}/`,
             delimiter: "/",
@@ -165,18 +166,7 @@ export const getGameId = async (request, env) => {
                 { lastUploaded: 0 }
             );
 
-            const tableName = gameId.replace(/-/g, "_");
-            await env.database
-                .prepare(
-                    `CREATE TABLE IF NOT EXISTS ${tableName} (location TEXT, viewcount INTEGER)`
-                )
-                .run();
-
-            // TODO: check if row with location exists, if not, create it with viewcount 1, if it does, increment viewcount by 1
-            // await Promise.all(locationsWithFileCount.map(async (location) => {
-            //     location = location.name.replace(/-/g, "_");
-            //     console.log(location);
-            // }));
+            await checkTable(env.database, gameId);
 
             response = new Response(
                 JSON.stringify({
@@ -202,9 +192,9 @@ export const getGameId = async (request, env) => {
 
 export const getAsset = async (request, env) => {
     const { gameId, asset } = request.params;
-
     const cacheKey = new Request(request.url, request);
     const cache = caches.default;
+
     let response = await cache.match(cacheKey);
 
     if (!response) {
@@ -237,14 +227,8 @@ export const getAsset = async (request, env) => {
                 (a, b) => b.uploaded - a.uploaded
             )[0];
 
-            const tableName = gameId.replace(/-/g, "_");
-            await env.database
-                .prepare(
-                    `CREATE TABLE IF NOT EXISTS ${tableName} (location TEXT, viewcount INTEGER)`
-                )
-                .run();
-
-            // TODO: check if row inside table with location exists, if not, create it with viewcount 1, if it does, increment viewcount by 1
+            await checkTable(env.database, gameId);
+            await checkRow(env.database, gameId, asset);
 
             response = new Response(
                 JSON.stringify({

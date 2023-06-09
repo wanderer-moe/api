@@ -12,7 +12,7 @@ preview_bucket_name = 'wanderer-moe'
 
 [[d1_databases]]
 binding = 'database'
-database_name = 'wanderer-moe'
-database_id = 'f4807270-c513-494f-b458-3e9d6c853d13'
+database_name = 'wanderer-moe-requests'
+database_id = '9c180d14-7f79-45c6-b2f5-809b4e75941b'
 
 [vars]
