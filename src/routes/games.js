@@ -166,7 +166,12 @@ export const getGameId = async (request, env) => {
                 { lastUploaded: 0 }
             );
 
-            await checkTable(env.database, gameId);
+            try {
+                await checkTable(env.database, gameId);
+            }
+            catch (e) {
+                console.error(e);
+            }
 
             response = new Response(
                 JSON.stringify({
@@ -227,8 +232,12 @@ export const getAsset = async (request, env) => {
                 (a, b) => b.uploaded - a.uploaded
             )[0];
 
-            await checkTable(env.database, gameId);
-            await checkRow(env.database, gameId, asset);
+            try {
+                await checkTable(env.database, gameId);
+                await checkRow(env.database, gameId, asset);
+            } catch (e) {
+                console.error(e);
+            }
 
             response = new Response(
                 JSON.stringify({
