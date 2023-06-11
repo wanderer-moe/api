@@ -1,13 +1,12 @@
-// todo: rewrite
 import { rename } from "../helpers/rename";
 
-export const checkRow = async (db, gameId, asset) => {
-    const row = await db
+export const getAssetRequests = async (db, gameId, asset) => {
+    const requests = await db
         .prepare(`SELECT requests FROM ${rename(gameId)} WHERE location = ?`)
         .bind(rename(asset))
         .all();
 
-    if (row.results?.length === 0) {
+    if (requests.results?.length === 0) {
         await db
             .prepare(
                 `INSERT INTO ${rename(
@@ -18,12 +17,5 @@ export const checkRow = async (db, gameId, asset) => {
             .run();
     }
 
-    await db
-        .prepare(
-            `UPDATE ${rename(
-                gameId
-            )} SET requests = requests + 1 WHERE location = ?`
-        )
-        .bind(rename(asset))
-        .run();
+    return requests?.results[0].requests;
 };

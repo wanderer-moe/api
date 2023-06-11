@@ -2,6 +2,7 @@ import { responseHeaders } from "../lib/responseHeaders.js";
 import { listBucket } from "../lib/listBucket.js";
 import { checkTable } from "../lib/d1/checkTable.js";
 import { checkRow } from "../lib/d1/checkRow.js";
+import { getAssetRequests } from "../lib/d1/getAssetRequests.js";
 // import render2 from "render2";
 
 // TODO: Add a "popularity" value to each game_name / game_asset.
@@ -118,6 +119,7 @@ export const getGameId = async (request, env) => {
             const subfolderFiles = await listBucket(env.bucket, {
                 prefix: `${file}`,
             });
+
             const fileCount = subfolderFiles.objects.length;
             const lastUploaded = subfolderFiles.objects.reduce(
                 (prev, current) => {
@@ -127,17 +129,44 @@ export const getGameId = async (request, env) => {
                 },
                 { uploaded: 0 }
             );
+
+            const name = file.replace(`${gameId}/`, "").replace("/", "");
+
+            try {
+                await checkTable(env.database, gameId);
+            } catch (e) {
+                console.error(e);
+            }
+
+            let popularity = 0;
+            try {
+                const requestsCount = await getAssetRequests(
+                    env.database,
+                    gameId,
+                    name
+                );
+                popularity = requestsCount;
+            } catch (e) {
+                console.error(e);
+            }
+
             return {
-                name: file.replace(`${gameId}/`, "").replace("/", ""),
+                name,
                 path: `https://api.wanderer.moe/game/${gameId}/${file
                     .replace(`${gameId}/`, "")
                     .replace("/", "")}`,
                 fileCount,
+                popularity,
                 lastUploaded: lastUploaded.uploaded,
             };
         });
 
         const locationsWithFileCount = await Promise.all(locations);
+        locationsWithFileCount.sort((a, b) => b.popularity - a.popularity);
+
+        locationsWithFileCount.forEach((location, index) => {
+            location.popularity = index + 1;
+        });
 
         const totalFiles = locationsWithFileCount.reduce(
             (total, location) => total + location.fileCount,
@@ -165,13 +194,6 @@ export const getGameId = async (request, env) => {
                 },
                 { lastUploaded: 0 }
             );
-
-            try {
-                await checkTable(env.database, gameId);
-            }
-            catch (e) {
-                console.error(e);
-            }
 
             response = new Response(
                 JSON.stringify({
