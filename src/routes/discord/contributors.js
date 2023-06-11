@@ -1,5 +1,5 @@
-import { responseHeaders } from "../lib/responseHeaders.js";
-import { roles, guildId } from "../lib/discord.js";
+import { responseHeaders } from "../../lib/responseHeaders.js";
+import { roles, guildId } from "../../lib/discord.js";
 
 export const getContributors = async (request, env) => {
     const members = [];

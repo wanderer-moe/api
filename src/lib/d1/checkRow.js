@@ -1,4 +1,3 @@
-// todo: rewrite
 import { rename } from "../helpers/rename";
 
 export const checkRow = async (db, gameId, asset) => {
