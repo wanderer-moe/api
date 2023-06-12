@@ -4,9 +4,11 @@ import { checkTable } from "../../lib/d1/checkTable.js";
 import { getAssetRequests } from "../../lib/d1/getAssetRequests.js";
 
 export const getGameId = async (request, env) => {
-    const cacheKey = new Request(request.url, request);
-    const cache = caches.default;
     const { gameId } = request.params;
+
+    const url = new URL(request.url);
+    const cacheKey = new Request(url.toString(), request);
+    const cache = caches.default;
     let response = await cache.match(cacheKey);
 
     if (!response) {

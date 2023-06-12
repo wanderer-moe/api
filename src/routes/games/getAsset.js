@@ -5,7 +5,9 @@ import { checkRow } from "../../lib/d1/checkRow.js";
 
 export const getAsset = async (request, env) => {
     const { gameId, asset } = request.params;
-    const cacheKey = new Request(request.url, request);
+
+    const url = new URL(request.url);
+    const cacheKey = new Request(url.toString(), request);
     const cache = caches.default;
 
     let response = await cache.match(cacheKey);

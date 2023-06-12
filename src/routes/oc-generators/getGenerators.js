@@ -2,7 +2,8 @@ import { responseHeaders } from "../../lib/responseHeaders.js";
 import { listBucket } from "../../lib/listBucket.js";
 
 export const getGenerators = async (request, env) => {
-    const cacheKey = new Request(request.url, request);
+    const url = new URL(request.url);
+    const cacheKey = new Request(url.toString(), request);
     const cache = caches.default;
     let response = await cache.match(cacheKey);
 
