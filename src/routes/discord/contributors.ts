@@ -26,7 +26,7 @@ export const getContributors = async (
     const members: Contributor[] = [];
 
     let after: string | null = null;
-    let fetchUsers: boolean = true;
+    let fetchUsers = true;
 
     while (fetchUsers) {
         const response = await fetch(

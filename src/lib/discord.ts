@@ -9,4 +9,4 @@ export const roles: { [key: string]: string } = {
     "983883539772751912": "Server Booster",
 };
 
-export const guildId: string = "982385887000272956";
+export const guildId = "982385887000272956";

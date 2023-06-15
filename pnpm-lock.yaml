@@ -28,6 +28,9 @@ devDependencies:
     eslint-config-google:
         specifier: ^0.14.0
         version: 0.14.0(eslint@8.42.0)
+    eslint-plugin-json:
+        specifier: ^3.1.0
+        version: 3.1.0
     typescript:
         specifier: ^5.1.3
         version: 5.1.3
@@ -1084,6 +1087,17 @@ packages:
             eslint: 8.42.0
         dev: true
 
+    /eslint-plugin-json@3.1.0:
+        resolution:
+            {
+                integrity: sha512-MrlG2ynFEHe7wDGwbUuFPsaT2b1uhuEFhJ+W1f1u+1C2EkXmTYJp4B1aAdQQ8M+CC3t//N/oRKiIVw14L2HR1g==,
+            }
+        engines: { node: ">=12.0" }
+        dependencies:
+            lodash: 4.17.21
+            vscode-json-languageservice: 4.2.1
+        dev: true
+
     /eslint-scope@5.1.1:
         resolution:
             {
@@ -1584,6 +1598,13 @@ packages:
                 integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==,
             }
 
+    /jsonc-parser@3.2.0:
+        resolution:
+            {
+                integrity: sha512-gfFQZrcTc8CnKXp6Y4/CBT3fTc0OVuDofpre4aEeEpSBPV5X5v4+Vmx+8snU7RLPrNHPKSgLxGo9YuQzz20o+w==,
+            }
+        dev: true
+
     /kleur@4.1.5:
         resolution:
             {
@@ -1616,6 +1637,13 @@ packages:
             {
                 integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==,
             }
+
+    /lodash@4.17.21:
+        resolution:
+            {
+                integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==,
+            }
+        dev: true
 
     /lru-cache@6.0.0:
         resolution:
@@ -2357,6 +2385,47 @@ packages:
         resolution:
             {
                 integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==,
+            }
+        dev: true
+
+    /vscode-json-languageservice@4.2.1:
+        resolution:
+            {
+                integrity: sha512-xGmv9QIWs2H8obGbWg+sIPI/3/pFgj/5OWBhNzs00BkYQ9UaB2F6JJaGB/2/YOZJ3BvLXQTC4Q7muqU25QgAhA==,
+            }
+        dependencies:
+            jsonc-parser: 3.2.0
+            vscode-languageserver-textdocument: 1.0.8
+            vscode-languageserver-types: 3.17.3
+            vscode-nls: 5.2.0
+            vscode-uri: 3.0.7
+        dev: true
+
+    /vscode-languageserver-textdocument@1.0.8:
+        resolution:
+            {
+                integrity: sha512-1bonkGqQs5/fxGT5UchTgjGVnfysL0O8v1AYMBjqTbWQTFn721zaPGDYFkOKtfDgFiSgXM3KwaG3FMGfW4Ed9Q==,
+            }
+        dev: true
+
+    /vscode-languageserver-types@3.17.3:
+        resolution:
+            {
+                integrity: sha512-SYU4z1dL0PyIMd4Vj8YOqFvHu7Hz/enbWtpfnVbJHU4Nd1YNYx8u0ennumc6h48GQNeOLxmwySmnADouT/AuZA==,
+            }
+        dev: true
+
+    /vscode-nls@5.2.0:
+        resolution:
+            {
+                integrity: sha512-RAaHx7B14ZU04EU31pT+rKz2/zSl7xMsfIZuo8pd+KZO6PXtQmpevpq3vxvWNcrGbdmhM/rr5Uw5Mz+NBfhVng==,
+            }
+        dev: true
+
+    /vscode-uri@3.0.7:
+        resolution:
+            {
+                integrity: sha512-eOpPHogvorZRobNqJGhapa0JdwaxpjVvyBp0QIUMRMSf8ZAlqOdEquKuRmw9Qwu0qXtJIWqFtMkmvJjUZmMjVA==,
             }
         dev: true
 
