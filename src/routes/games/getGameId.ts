@@ -39,7 +39,7 @@ export const getGameId = async (
         );
     }
 
-    const [_, gameId] = pathSegments;
+    const [, gameId] = pathSegments;
 
     const cacheKey = new Request(url.toString(), request);
     const cache = caches.default;
