@@ -1,10 +1,14 @@
 import { rename } from "../helpers/rename";
 
-export const getAssetRequests = async (db, gameId, asset) => {
-    const tableName = rename(gameId);
-    const location = rename(asset);
+export const getAssetRequests = async (
+    db: D1Database,
+    gameId: string,
+    asset: string
+): Promise<number> => {
+    const tableName: string = rename(gameId);
+    const location: string = rename(asset);
 
-    const requests = await db
+    const requests: { results?: { requests: number }[] } = await db
         .prepare(`SELECT requests FROM ${tableName} WHERE location = ?`)
         .bind(location)
         .all();
@@ -18,5 +22,5 @@ export const getAssetRequests = async (db, gameId, asset) => {
             .run();
     }
 
-    return requests?.results[0].requests;
+    return requests?.results[0]?.requests ?? 0;
 };

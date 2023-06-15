@@ -1,7 +1,6 @@
-import { responseHeaders } from "../lib/responseHeaders.js";
+import { responseHeaders } from "../lib/responseHeaders";
 
-// TODO: stop hardcoding routes
-const routes = [
+const routes: string[] = [
     "https://api.wanderer.moe/games",
     "https://api.wanderer.moe/game/{gameId}",
     "https://api.wanderer.moe/game/{gameId}/{asset}",
@@ -9,7 +8,7 @@ const routes = [
     "https://api.wanderer.moe/oc-generator/{gameId}",
 ];
 
-export const index = async (request, env) => {
+export const index = async (request: Request, env: Env): Promise<Response> => {
     return new Response(
         JSON.stringify({
             success: true,

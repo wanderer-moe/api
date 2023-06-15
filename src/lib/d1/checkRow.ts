@@ -1,15 +1,19 @@
 import { rename } from "../helpers/rename";
 
-export const checkRow = async (db, gameId, asset) => {
-    const tableName = rename(gameId);
-    const location = rename(asset);
+export const checkRow = async (
+    db: D1Database,
+    gameId: string,
+    asset: string
+): Promise<void> => {
+    const tableName: string = rename(gameId);
+    const location: string = rename(asset);
 
-    const row = await db
+    const row: D1Result<{ requests: number }> = await db
         .prepare(`SELECT requests FROM ${tableName} WHERE location = ?`)
         .bind(location)
         .all();
 
-    if (!row) {
+    if (Array.isArray(row) && row.length === 0) {
         await db
             .prepare(
                 `INSERT INTO ${tableName} (location, requests) VALUES (?, 0)`

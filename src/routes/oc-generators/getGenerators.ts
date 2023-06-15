@@ -1,7 +1,19 @@
-import { responseHeaders } from "../../lib/responseHeaders.js";
-import { listBucket } from "../../lib/listBucket.js";
+import { responseHeaders } from "../../lib/responseHeaders";
+import { listBucket } from "../../lib/listBucket";
 
-export const getGenerators = async (request, env) => {
+interface Env {
+    bucket: R2Bucket;
+}
+
+interface Location {
+    name: string;
+    path: string;
+}
+
+export const getGenerators = async (
+    request: Request,
+    env: Env
+): Promise<Response> => {
     const url = new URL(request.url);
     const cacheKey = new Request(url.toString(), request);
     const cache = caches.default;
@@ -16,7 +28,7 @@ export const getGenerators = async (request, env) => {
         delimiter: "/",
     });
 
-    const locations = files.delimitedPrefixes.map((file) => ({
+    const locations: Location[] = files.delimitedPrefixes.map((file) => ({
         name: file.replace("oc-generator/", "").replace("/", ""),
         path: `https://api.wanderer.moe/oc-generator/${file
             .replace("oc-generator/", "")

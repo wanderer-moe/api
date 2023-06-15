@@ -1,10 +1,31 @@
-import { responseHeaders } from "../../lib/responseHeaders.js";
-import { roles, guildId } from "../../lib/discord.js";
+import { responseHeaders } from "../../lib/responseHeaders";
+import { roles, guildId } from "../../lib/discord";
 
-export const getContributors = async (request, env) => {
-    const members = [];
+interface Contributor {
+    id: string;
+    username: string;
+    globalname: string | null;
+    avatar: string;
+    roles: string[];
+}
 
-    let after = null;
+interface GuildMember {
+    roles: string[];
+    user: {
+        id: string;
+        username: string;
+        global_name: string | null;
+        avatar: string;
+    };
+}
+
+export const getContributors = async (
+    request: Request,
+    env: Env
+): Promise<Response> => {
+    const members: Contributor[] = [];
+
+    let after: string | null = null;
 
     while (true) {
         const response = await fetch(
@@ -18,15 +39,15 @@ export const getContributors = async (request, env) => {
             }
         );
 
-        const guildMembers = await response.json();
+        const guildMembers: GuildMember[] = await response.json();
 
-        const filteredMembers = guildMembers.filter((member) => {
+        const filteredMembers: GuildMember[] = guildMembers.filter((member) => {
             return member.roles.some((role) =>
                 Object.keys(roles).includes(role)
             );
         });
 
-        const contributors = filteredMembers.map((member) => {
+        const contributors: Contributor[] = filteredMembers.map((member) => {
             const rolesArray = member.roles
                 .map((role) => roles[role])
                 .filter((role) => role);

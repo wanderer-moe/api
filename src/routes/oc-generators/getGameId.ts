@@ -1,10 +1,39 @@
-import { responseHeaders } from "../../lib/responseHeaders.js";
-import { listBucket } from "../../lib/listBucket.js";
+import { responseHeaders } from "../../lib/responseHeaders";
+import { listBucket } from "../../lib/listBucket";
 
-export const getGeneratorGameId = async (request, env) => {
-    const { gameId } = request.params;
+interface Env {
+    bucket: R2Bucket;
+}
 
+interface Params {
+    gameId: string;
+}
+
+export const getGeneratorGameId = async (
+    request: Request,
+    env: Env
+): Promise<Response> => {
     const url = new URL(request.url);
+    const pathSegments = url.pathname
+        .split("/")
+        .filter((segment) => segment !== "");
+
+    if (pathSegments.length !== 2 || pathSegments[0] !== "oc-generator") {
+        return new Response(
+            JSON.stringify({
+                success: false,
+                status: "error",
+                path: url.pathname,
+                error: "Invalid URL path",
+            }),
+            {
+                headers: responseHeaders,
+            }
+        );
+    }
+
+    const [_, gameId] = pathSegments;
+
     const cacheKey = new Request(url.toString(), request);
     const cache = caches.default;
     let response = await cache.match(cacheKey);
