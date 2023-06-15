@@ -26,8 +26,9 @@ export const getContributors = async (
     const members: Contributor[] = [];
 
     let after: string | null = null;
+    let fetchUsers: boolean = true;
 
-    while (true) {
+    while (fetchUsers) {
         const response = await fetch(
             `https://discord.com/api/guilds/${guildId}/members?limit=1000${
                 after ? `&after=${after}` : ""
@@ -67,7 +68,7 @@ export const getContributors = async (
             !guildMembers.length ||
             !guildMembers[guildMembers.length - 1].user
         ) {
-            break;
+            fetchUsers = false;
         }
 
         after = guildMembers[guildMembers.length - 1].user.id;
