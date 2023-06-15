@@ -1,10 +1,6 @@
 import { responseHeaders } from "../../lib/responseHeaders";
 import { listBucket } from "../../lib/listBucket";
 
-interface Env {
-    bucket: R2Bucket;
-}
-
 export const getGeneratorGameId = async (
     request: Request,
     env: Env

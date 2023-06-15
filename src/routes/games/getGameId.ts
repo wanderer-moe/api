@@ -3,11 +3,6 @@ import { listBucket } from "../../lib/listBucket";
 import { checkTable } from "../../lib/d1/checkTable";
 import { getAssetRequests } from "../../lib/d1/getAssetRequests";
 
-interface Env {
-    bucket: R2Bucket;
-    database: D1Database;
-}
-
 interface Location {
     name: string;
     path: string;

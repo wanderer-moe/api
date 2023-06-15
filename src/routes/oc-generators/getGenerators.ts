@@ -1,10 +1,6 @@
 import { responseHeaders } from "../../lib/responseHeaders";
 import { listBucket } from "../../lib/listBucket";
 
-interface Env {
-    bucket: R2Bucket;
-}
-
 interface Location {
     name: string;
     path: string;
