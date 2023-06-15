@@ -8,7 +8,7 @@ const routes: string[] = [
     "https://api.wanderer.moe/oc-generator/{gameId}",
 ];
 
-export const index = async (request: Request, env: Env): Promise<Response> => {
+export const index = async (): Promise<Response> => {
     return new Response(
         JSON.stringify({
             success: true,

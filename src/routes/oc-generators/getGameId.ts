@@ -5,10 +5,6 @@ interface Env {
     bucket: R2Bucket;
 }
 
-interface Params {
-    gameId: string;
-}
-
 export const getGeneratorGameId = async (
     request: Request,
     env: Env

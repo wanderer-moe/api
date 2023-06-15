@@ -11,11 +11,6 @@ interface Image {
     size: number;
 }
 
-interface Params {
-    gameId: string;
-    asset: string;
-}
-
 export const getAsset = async (
     request: Request,
     env: Env
