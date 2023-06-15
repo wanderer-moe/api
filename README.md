@@ -2,10 +2,9 @@
 
 ![Banner]
 
-![API Response] ![API Response 24h] ![API Response 7d]  
-![CDN Response] ![CDN Response 24h] ![CDN Response 7d]
+![Quality] ![API Response] ![CDN Response]
 
-Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — using **Cloudflare Workers** for the API with **R2 Storage** for the CDN, and **D1** for the Database.
+Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — using **Cloudflare Workers** with **R2 Storage** for the CDN, and **D1** for the Database.
 
 </div>
 
@@ -69,11 +68,8 @@ Configuration is in `wrangler.toml` - this includes the R2 Bucket and D1 Databas
 [API Status]: https://status.wanderer.moe/history/api
 [CDN Status]: https://status.wanderer.moe/history/cdn
 [API Response]: https://img.shields.io/endpoint?label=API%20Response&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fwanderer-moe%2Fstatus%2FHEAD%2Fapi%2Fapi%2Fresponse-time.json
-[API Response 24h]: https://img.shields.io/endpoint?label=API%20Response%20%2824h%29&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fwanderer-moe%2Fstatus%2FHEAD%2Fapi%2Fapi%2Fresponse-time-day.json
-[API Response 7d]: https://img.shields.io/endpoint?label=API%20Response%20%281wk%29&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fwanderer-moe%2Fstatus%2FHEAD%2Fapi%2Fapi%2Fresponse-time-week.json
 [CDN Response]: https://img.shields.io/endpoint?label=CDN%20Response&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fwanderer-moe%2Fstatus%2FHEAD%2Fapi%2Fcdn%2Fresponse-time.json
-[CDN Response 24h]: https://img.shields.io/endpoint?label=CDN%20Response%20%2824h%29&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fwanderer-moe%2Fstatus%2FHEAD%2Fapi%2Fcdn%2Fresponse-time-day.json
-[CDN Response 7d]: https://img.shields.io/endpoint?label=CDN%20Response%20%281wk%29&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fwanderer-moe%2Fstatus%2FHEAD%2Fapi%2Fcdn%2Fresponse-time-week.json
+[Quality]: https://img.shields.io/codefactor/grade/github/wanderer-moe/api?label=quality&style=for-the-badge
 [Cloudflare API Token]: https://dash.cloudflare.com/profile/api-tokens
 [Dromzeh]: https://github.com/dromzeh
 [api.wanderer.moe]: https://api.wanderer.moe
