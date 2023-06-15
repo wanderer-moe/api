@@ -71,7 +71,7 @@ export const getContributors = async (
             fetchUsers = false;
         }
 
-        after = guildMembers[guildMembers.length - 1].user.id;
+        after = guildMembers[guildMembers.length - 1]?.user?.id;
     }
 
     return new Response(
