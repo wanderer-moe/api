@@ -1,8 +1,8 @@
-import { responseHeaders } from "../../lib/responseHeaders";
-import { listBucket } from "../../lib/listBucket";
-import { checkTable } from "../../lib/d1/checkTable";
-import { getAssetRequests } from "../../lib/d1/getAssetRequests";
-import type { Location } from "../../lib/types/game";
+import { responseHeaders } from "@/lib/responseHeaders";
+import { listBucket } from "@/lib/listBucket";
+import { checkTable } from "@/lib/d1/checkTable";
+import { getAssetRequests } from "@/lib/d1/getAssetRequests";
+import type { Location } from "@/lib/types/game";
 
 export const getGameId = async (
     request: Request,

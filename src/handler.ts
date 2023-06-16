@@ -1,13 +1,13 @@
 import { Router } from "itty-router";
-import { errorHandler } from "./middleware/errorHandler";
-import { responseHeaders } from "./lib/responseHeaders";
-import { getContributors } from "./routes/discord/contributors";
-import { index } from "./routes/index";
-import { getGameId } from "./routes/games/getGameId";
-import { getAsset } from "./routes/games/getAsset";
-import { getGames } from "./routes/games/getGames";
-import { getGeneratorGameId } from "./routes/oc-generators/getGameId";
-import { getGenerators } from "./routes/oc-generators/getGenerators";
+import { errorHandler } from "@/middleware/errorHandler";
+import { responseHeaders } from "@/lib/responseHeaders";
+import { getContributors } from "@/routes/discord/contributors";
+import { index } from "@/routes/index";
+import { getGameId } from "@/routes/games/getGameId";
+import { getAsset } from "@/routes/games/getAsset";
+import { getGames } from "@/routes/games/getGames";
+import { getGeneratorGameId } from "@/routes/oc-generators/getGameId";
+import { getGenerators } from "@/routes/oc-generators/getGenerators";
 
 const router = Router();
 

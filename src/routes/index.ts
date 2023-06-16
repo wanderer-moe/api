@@ -1,4 +1,4 @@
-import { responseHeaders } from "../lib/responseHeaders";
+import { responseHeaders } from "@/lib/responseHeaders";
 
 const routes: string[] = [
     "https://api.wanderer.moe/games",

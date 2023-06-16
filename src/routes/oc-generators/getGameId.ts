@@ -1,5 +1,5 @@
-import { responseHeaders } from "../../lib/responseHeaders";
-import { listBucket } from "../../lib/listBucket";
+import { responseHeaders } from "@/lib/responseHeaders";
+import { listBucket } from "@/lib/listBucket";
 
 export const getGeneratorGameId = async (
     request: Request,

@@ -1,4 +1,4 @@
-import { responseHeaders } from "../lib/responseHeaders";
+import { responseHeaders } from "@/lib/responseHeaders";
 
 export const errorHandler =
     (handler: (request: Request, env: Env) => Promise<Response>) =>

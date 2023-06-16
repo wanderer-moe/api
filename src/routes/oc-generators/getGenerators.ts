@@ -1,6 +1,6 @@
-import { responseHeaders } from "../../lib/responseHeaders";
-import { listBucket } from "../../lib/listBucket";
-import type { Location } from "../../lib/types/game";
+import { responseHeaders } from "@/lib/responseHeaders";
+import { listBucket } from "@/lib/listBucket";
+import type { Location } from "@/lib/types/game";
 
 export const getGenerators = async (
     request: Request,

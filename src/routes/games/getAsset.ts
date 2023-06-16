@@ -1,8 +1,8 @@
-import { responseHeaders } from "../../lib/responseHeaders";
-import { listBucket } from "../../lib/listBucket";
-import { checkTable } from "../../lib/d1/checkTable";
-import { checkRow } from "../../lib/d1/checkRow";
-import type { Image } from "../../lib/types/asset";
+import { responseHeaders } from "@/lib/responseHeaders";
+import { listBucket } from "@/lib/listBucket";
+import { checkTable } from "@/lib/d1/checkTable";
+import { checkRow } from "@/lib/d1/checkRow";
+import type { Image } from "@/lib/types/asset";
 
 export const getAsset = async (
     request: Request,

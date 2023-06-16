@@ -1,4 +1,4 @@
-import { rename } from "../helpers/rename";
+import { rename } from "@/lib/helpers/rename";
 
 export const checkRow = async (
     db: D1Database,

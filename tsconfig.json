@@ -1,9 +1,13 @@
 {
     "compilerOptions": {
-        "target": "ES2020",
-        "module": "ES2020",
+        "target": "es2021",
+        "module": "es2022",
         "moduleResolution": "node",
-        "lib": ["ES2020"],
+        "lib": ["es2021"],
+        "baseUrl": "./",
+        "paths": {
+            "@/*": ["src/*"]
+        },
         "types": ["@cloudflare/workers-types"]
     },
     "include": ["src/**/*.ts"]

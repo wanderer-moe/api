@@ -1,7 +1,7 @@
-import { responseHeaders } from "../../lib/responseHeaders";
-import { listBucket } from "../../lib/listBucket";
-import { unwantedPrefixes } from "../../middleware/unwantedPrefixes";
-import type { Subfolder, Game } from "../../lib/types/game";
+import { responseHeaders } from "@/lib/responseHeaders";
+import { listBucket } from "@/lib/listBucket";
+import { unwantedPrefixes } from "@/middleware/unwantedPrefixes";
+import type { Subfolder, Game } from "@/lib/types/game";
 
 export const getGames = async (
     request: Request,
