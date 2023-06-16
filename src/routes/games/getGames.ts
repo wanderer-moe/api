@@ -1,22 +1,7 @@
 import { responseHeaders } from "../../lib/responseHeaders";
 import { listBucket } from "../../lib/listBucket";
 import { unwantedPrefixes } from "../../middleware/unwantedPrefixes";
-
-interface Subfolder {
-    name: string;
-    path: string;
-    fileCount: number;
-    lastUploaded: number;
-}
-
-interface Game {
-    name: string;
-    path: string;
-    tags: string[];
-    totalFiles: number;
-    lastUploaded: number;
-    subfolders: Subfolder[];
-}
+import type { Subfolder, Game } from "../../lib/types/game";
 
 export const getGames = async (
     request: Request,

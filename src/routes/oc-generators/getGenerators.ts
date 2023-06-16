@@ -1,10 +1,6 @@
 import { responseHeaders } from "../../lib/responseHeaders";
 import { listBucket } from "../../lib/listBucket";
-
-interface Location {
-    name: string;
-    path: string;
-}
+import type { Location } from "../../lib/types/game";
 
 export const getGenerators = async (
     request: Request,

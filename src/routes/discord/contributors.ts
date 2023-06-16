@@ -1,23 +1,6 @@
 import { responseHeaders } from "../../lib/responseHeaders";
 import { roles, guildId } from "../../lib/discord";
-
-interface Contributor {
-    id: string;
-    username: string;
-    globalname: string | null;
-    avatar: string;
-    roles: string[];
-}
-
-interface GuildMember {
-    roles: string[];
-    user: {
-        id: string;
-        username: string;
-        global_name: string | null;
-        avatar: string;
-    };
-}
+import type { Contributor, GuildMember } from "../../lib/types/discord";
 
 export const getContributors = async (
     request: Request,

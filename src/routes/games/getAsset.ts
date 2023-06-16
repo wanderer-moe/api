@@ -2,14 +2,7 @@ import { responseHeaders } from "../../lib/responseHeaders";
 import { listBucket } from "../../lib/listBucket";
 import { checkTable } from "../../lib/d1/checkTable";
 import { checkRow } from "../../lib/d1/checkRow";
-
-interface Image {
-    name: string;
-    nameWithExtension: string;
-    path: string;
-    uploaded: number;
-    size: number;
-}
+import type { Image } from "../../lib/types/asset";
 
 export const getAsset = async (
     request: Request,

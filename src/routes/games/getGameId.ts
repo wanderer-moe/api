@@ -2,14 +2,7 @@ import { responseHeaders } from "../../lib/responseHeaders";
 import { listBucket } from "../../lib/listBucket";
 import { checkTable } from "../../lib/d1/checkTable";
 import { getAssetRequests } from "../../lib/d1/getAssetRequests";
-
-interface Location {
-    name: string;
-    path: string;
-    fileCount: number;
-    popularity: number;
-    lastUploaded: number;
-}
+import type { Location } from "../../lib/types/game";
 
 export const getGameId = async (
     request: Request,
