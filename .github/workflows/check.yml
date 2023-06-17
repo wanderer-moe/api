@@ -1,0 +1,83 @@
+name: Check Code
+
+on:
+    push:
+        branches:
+            - main
+
+concurrency:
+    group: ${{ github.job }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    prettier:
+        name: Prettier formatting
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v2
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+
+            - name: Install pnpm
+              uses: pnpm/action-setup@v2
+              with:
+                  version: latest
+                  run_install: false
+
+            - name: Install dependencies
+              run: pnpm install
+
+            - name: Prettier check
+              run: pnpm run prettier:check
+
+    lint:
+        name: ESLint
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v2
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+
+            - name: Install pnpm
+              uses: pnpm/action-setup@v2
+              with:
+                  version: latest
+                  run_install: false
+
+            - name: Install dependencies
+              run: pnpm install
+
+            - name: Lint
+              run: pnpm run lint
+
+    typecheck:
+        name: TypeScript types
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v2
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+
+            - name: Install pnpm
+              uses: pnpm/action-setup@v2
+              with:
+                  version: latest
+                  run_install: false
+
+            - name: Install dependencies
+              run: pnpm install
+
+            - name: Lint
+              run: pnpm run typecheck

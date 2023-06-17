@@ -4,7 +4,9 @@
     "scripts": {
         "prettier": "prettier --write .",
         "dev": "wrangler dev --remote",
-        "lint": "eslint . --ext .ts"
+        "lint": "eslint . --ext .ts",
+        "prettier:check": "prettier --check .",
+        "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
         "@cloudflare/workers-types": "^4.20230518.0",
