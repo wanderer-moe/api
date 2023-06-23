@@ -1,7 +1,9 @@
-export interface Image {
+export interface Asset {
+    uid: number;
     name: string;
-    nameWithExtension: string;
-    path: string;
-    uploaded: number;
-    size: number;
+    url: string;
+    tags: string;
+    verified: string;
+    uploaded_by: number;
+    uploaded_date: string;
 }
