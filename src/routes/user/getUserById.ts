@@ -1,5 +1,6 @@
 import { responseHeaders } from "@/lib/responseHeaders";
 import type { User } from "@/lib/types/user";
+import type { Asset } from "@/lib/types/asset";
 
 export const getUserById = async (
     request: Request,
@@ -40,6 +41,21 @@ export const getUserById = async (
         );
     }
 
+    const assets: D1Result<Asset> = await env.database
+        .prepare(
+            `SELECT * FROM assets WHERE uploadedBy = ? ORDER BY uid DESC LIMIT 20`
+        )
+        .bind(id)
+        .run();
+
+    const assetsUploaded = assets.results.map((asset) => ({
+        uid: asset.uid,
+        name: asset.name,
+        tags: asset.tags,
+        verified: asset.verified,
+        uploadedDate: asset.uploadedDate,
+    }));
+
     const results = row.results.map((result) => ({
         id: result.id,
         displayName: result.displayName,
@@ -49,6 +65,7 @@ export const getUserById = async (
         bio: result.bio,
         assetsUploaded: result.assetsUploaded,
         roles: result.roles,
+        recentAssets: assetsUploaded || [],
     }));
 
     return new Response(

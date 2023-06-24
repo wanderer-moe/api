@@ -32,6 +32,7 @@ export const getUserBySearch = async (
         id: result.id,
         displayName: result.displayName,
         name: result.name,
+        url: `/user/${result.id}`,
         avatarUrl: result.avatarUrl,
         discordId: result.discordId,
         bio: result.bio,
