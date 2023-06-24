@@ -3,7 +3,7 @@ import { errorHandler } from "@/middleware/errorHandler";
 import { responseHeaders } from "@/lib/responseHeaders";
 import { getContributors } from "@/routes/discord/contributors";
 import { index } from "@/routes/index";
-import { getGeneratorGameId } from "@/routes/oc-generators/getGameId";
+import { getGenerator } from "@/routes/oc-generators/getGenerator";
 import { getGenerators } from "@/routes/oc-generators/getGenerators";
 import { getSearch } from "@/routes/search/search";
 import { downloadFile } from "./routes/download/downloadFile";
@@ -13,7 +13,7 @@ const router = Router();
 router
     .get("/", errorHandler(index))
     .get("/oc-generators", errorHandler(getGenerators))
-    .get("/oc-generator/:gameId", errorHandler(getGeneratorGameId))
+    .get("/oc-generator/:gameId", errorHandler(getGenerator))
     .get("/discord/contributors", errorHandler(getContributors))
     .get("/search", errorHandler(getSearch))
     .get("/download", errorHandler(downloadFile))

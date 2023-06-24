@@ -1,5 +1,5 @@
 import { responseHeaders } from "@/lib/responseHeaders";
-import { Asset } from "@/lib/types/asset";
+import type { Asset } from "@/lib/types/asset";
 
 export const getSearch = async (
     request: Request,
@@ -37,7 +37,7 @@ export const getSearch = async (
         parameters.push(after);
     }
 
-    sqlQuery += ` ORDER BY uid ASC LIMIT 200`;
+    sqlQuery += ` ORDER BY uid ASC LIMIT 100`;
 
     const row: D1Result<Asset> = await env.database
         .prepare(sqlQuery)
