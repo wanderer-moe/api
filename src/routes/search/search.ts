@@ -19,37 +19,40 @@ export const getSearch = async (
         return response;
     }
 
+    const parameters = [];
     let sqlQuery = `SELECT * FROM assets WHERE 1=1`;
 
     if (query) {
-        sqlQuery += ` AND name LIKE '%${query}%'`;
+        sqlQuery += ` AND name LIKE '%' || ? || '%'`;
+        parameters.push(query);
     }
 
     if (tags) {
-        sqlQuery += ` AND tags LIKE '%${tags}%'`;
+        sqlQuery += ` AND tags LIKE '%' || ? || '%'`;
+        parameters.push(tags);
     }
 
     if (after) {
-        sqlQuery += ` AND uid > ${after}`;
+        sqlQuery += ` AND uid > ?`;
+        parameters.push(after);
     }
 
-    sqlQuery += ` ORDER BY uid ASC LIMIT 200`; // Fetching 200 results to ensure enough results are available after filtering
+    sqlQuery += ` ORDER BY uid ASC LIMIT 200`;
 
     const row: D1Result<Asset> = await env.database
-        .prepare(`${sqlQuery}`)
+        .prepare(sqlQuery)
+        .bind(...parameters)
         .run();
 
-    results = row.results
-        .slice(parseInt(after, 10)) // Converting `after` to an integer and slicing the array
-        .map((result) => ({
-            uid: result.uid,
-            name: result.name,
-            url: result.url,
-            tags: result.tags,
-            verified: result.verified,
-            uploadedBy: result.uploadedBy,
-            uploadedDate: result.uploadedDate,
-        }));
+    results = row.results.slice(parseInt(after, 10)).map((result) => ({
+        uid: result.uid,
+        name: result.name,
+        url: result.url,
+        tags: result.tags,
+        verified: result.verified,
+        uploadedBy: result.uploadedBy,
+        uploadedDate: result.uploadedDate,
+    }));
 
     response = new Response(
         JSON.stringify({
