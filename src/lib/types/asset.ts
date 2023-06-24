@@ -1,10 +1,14 @@
 export interface Asset {
-    uid: number;
+    id: number;
     name: string;
     game: string;
-    url: string;
+    asset: string;
     tags: string;
+    url: string;
     verified: string;
-    uploadedBy: number;
+    uploadedBy: string;
     uploadedDate: string;
+    viewCount?: number;
+    downloadCount?: number;
+    fileSize: number;
 }

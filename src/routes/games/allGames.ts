@@ -11,7 +11,7 @@ export const allGames = async (
         delimiter: "/",
     });
 
-    console.log(games.objects)
+    // console.log(games.objects);
 
     const gameList = games.delimitedPrefixes
         .filter((game) => !unwantedPrefixes.includes(game))
@@ -26,8 +26,8 @@ export const allGames = async (
             status: "ok",
             results: gameList,
         }),
-    {
-        headers: responseHeaders,
-    });
-}
-    
+        {
+            headers: responseHeaders,
+        }
+    );
+};

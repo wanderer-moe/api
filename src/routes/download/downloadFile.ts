@@ -9,7 +9,7 @@ export const downloadFile = async (
     const id = url.searchParams.get("id") || "";
 
     const row: D1Result<Asset> = await env.database
-        .prepare(`SELECT * FROM assets WHERE uid = ?`)
+        .prepare(`SELECT * FROM assets WHERE id = ?`)
         .bind(id)
         .run();
 
@@ -29,7 +29,7 @@ export const downloadFile = async (
 
     await env.database
         .prepare(
-            `UPDATE assets SET downloadCount = downloadCount + 1 WHERE uid = ?`
+            `UPDATE assets SET downloadCount = downloadCount + 1 WHERE id = ?`
         )
         .bind(id)
         .run();

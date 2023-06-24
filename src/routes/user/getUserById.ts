@@ -49,7 +49,7 @@ export const getUserById = async (
         .run();
 
     const assetsUploaded = assets.results.map((asset) => ({
-        uid: asset.uid,
+        id: asset.id,
         name: asset.name,
         tags: asset.tags,
         verified: asset.verified,
