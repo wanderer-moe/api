@@ -6,6 +6,7 @@ import { index } from "@/routes/index";
 import { getGeneratorGameId } from "@/routes/oc-generators/getGameId";
 import { getGenerators } from "@/routes/oc-generators/getGenerators";
 import { getSearch } from "@/routes/search/search";
+import { downloadFile } from "./routes/download/downloadFile";
 
 const router = Router();
 
@@ -15,6 +16,7 @@ router
     .get("/oc-generator/:gameId", errorHandler(getGeneratorGameId))
     .get("/discord/contributors", errorHandler(getContributors))
     .get("/search", errorHandler(getSearch))
+    .get("/download", errorHandler(downloadFile))
     .all("*", (): Response => {
         return new Response(
             JSON.stringify({
