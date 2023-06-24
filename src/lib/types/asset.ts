@@ -4,6 +4,6 @@ export interface Asset {
     url: string;
     tags: string;
     verified: string;
-    uploaded_by: number;
-    uploaded_date: string;
+    uploadedBy: number;
+    uploadedDate: string;
 }

@@ -7,7 +7,8 @@ export const getSearch = async (
 ): Promise<Response> => {
     const url = new URL(request.url);
     const query = url.searchParams.get("query") || "";
-    let tags = url.searchParams.get("tags") || "";
+    const tags = url.searchParams.get("tags") || "";
+    const after = url.searchParams.get("after") || "";
     let results: Asset[] = [];
 
     const cacheKey = new Request(url.toString(), request);
@@ -28,27 +29,33 @@ export const getSearch = async (
         sqlQuery += ` AND tags LIKE '%${tags}%'`;
     }
 
-    sqlQuery += ` ORDER BY uid DESC LIMIT 50`;
+    if (after) {
+        sqlQuery += ` AND uid > ${after}`;
+    }
+
+    sqlQuery += ` ORDER BY uid ASC LIMIT 200`; // Fetching 200 results to ensure enough results are available after filtering
 
     const row: D1Result<Asset> = await env.database
         .prepare(`${sqlQuery}`)
         .run();
 
-    results = row.results.map((result) => ({
-        uid: result.uid,
-        name: result.name,
-        url: result.url,
-        tags: result.tags,
-        verified: result.verified,
-        uploaded_by: result.uploaded_by,
-        uploaded_date: result.uploaded_date,
-    }));
+    results = row.results
+        .slice(parseInt(after, 10)) // Converting `after` to an integer and slicing the array
+        .map((result) => ({
+            uid: result.uid,
+            name: result.name,
+            url: result.url,
+            tags: result.tags,
+            verified: result.verified,
+            uploadedBy: result.uploadedBy,
+            uploadedDate: result.uploadedDate,
+        }));
 
     response = new Response(
         JSON.stringify({
             success: true,
             status: "ok",
-            sqlQuery,
+            // sqlQuery,
             path: "/search",
             query,
             tags,
