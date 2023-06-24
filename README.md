@@ -27,34 +27,61 @@ Configuration is in `wrangler.toml` - this includes the R2 Bucket and D1 Databas
 
 ## API Reference
 
-### Games
+### Search (Assets)
 
-#### Get all games
+#### Search Assets
 
 ```http
-  GET api.wanderer.moe/games
+GET /search/assets?query=query&tags=tag1,tag2&after=after
 ```
 
-#### Get game data
+| Parameter | Type     | Description                                                                                    |
+| :-------- | :------- | :--------------------------------------------------------------------------------------------- |
+| `query`   | `string` | **Optional**. Search query for assets                                                          |
+| `tags`    | `string` | **Optional**. Comma-separated list of tags to filter by (in order of `game`, `asset-category`) |
+| `after`   | `string` | **Optional**. Cursor to paginate through results                                               |
+
+If no query is provided, the API will return a list of 100 most recently uploaded assets.
+
+### Search Users
+
+#### Search Users (Name)
 
 ```http
-  GET api.wanderer.moe/game/${gameId}
-```
-
-| Parameter | Type     | Description                         |
-| :-------- | :------- | :---------------------------------- |
-| `gameId`  | `string` | **Required** — game to get data for |
-
-#### Get a game's asset data
-
-```http
-  GET api.wanderer.moe/game/${gameId}/${asset}
+GET /user/search/:query
 ```
 
 | Parameter | Type     | Description                          |
 | :-------- | :------- | :----------------------------------- |
-| `gameId`  | `string` | **Required** — game to get data for  |
-| `asset`   | `string` | **Required** — asset to get data for |
+| `query`   | `string` | **Required**. Search query for users |
+
+#### Get User Data (ID)
+
+```http
+GET /user/:id
+```
+
+| Parameter | Type     | Description                          |
+| :-------- | :------- | :----------------------------------- |
+| `id`      | `string` | **Required**. Search query for users |
+
+### OC Generator
+
+#### Get All OC Generators
+
+```http
+GET /oc-generators/
+```
+
+#### Get OC Generator
+
+```http
+GET /oc-generators/:id
+```
+
+| Parameter | Type     | Description                                      |
+| :-------- | :------- | :----------------------------------------------- |
+| `id`      | `string` | **Required**. Game Name of OC Generator to fetch |
 
 ## Authors
 
