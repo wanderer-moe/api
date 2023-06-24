@@ -27,15 +27,11 @@ export const getSearch = async (
         parameters.push(query);
     }
 
-    if (tags) {
-        sqlQuery += ` AND tags LIKE '%' || ? || '%'`;
-        parameters.push(tags);
-    }
+    sqlQuery += tags ? ` AND tags LIKE '%' || ? || '%'` : "";
+    tags && parameters.push(tags);
 
-    if (after) {
-        sqlQuery += ` AND uid > ?`;
-        parameters.push(after);
-    }
+    sqlQuery += after ? ` AND uid > ?` : "";
+    after && parameters.push(after);
 
     sqlQuery += ` ORDER BY uid ASC LIMIT 100`;
 
@@ -47,6 +43,7 @@ export const getSearch = async (
     results = row.results.slice(parseInt(after, 10)).map((result) => ({
         uid: result.uid,
         name: result.name,
+        game: result.game,
         url: result.url,
         tags: result.tags,
         verified: result.verified,
