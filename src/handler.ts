@@ -9,11 +9,13 @@ import { getSearch } from "@/routes/search/search";
 import { downloadFile } from "./routes/download/downloadFile";
 import { getUserById } from "./routes/user/getUserById";
 import { getUserBySearch } from "./routes/user/getUsersBySearch";
+import { allGames } from "./routes/games/allGames";
 
 const router = Router();
 
 router
     .get("/", errorHandler(index))
+    .get("/games", errorHandler(allGames))
     .get("/user/:id", errorHandler(getUserById))
     .get("/user/search/:name", errorHandler(getUserBySearch))
     .get("/search", errorHandler(getSearch))
