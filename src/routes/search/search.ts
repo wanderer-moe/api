@@ -106,7 +106,7 @@ export const getRecentAssets = async (
     sqlQuery += after ? ` AND id > ?` : "";
     after && parameters.push(after);
 
-    sqlQuery += ` ORDER BY id DESC LIMIT 100`;
+    sqlQuery += ` ORDER BY id DESC LIMIT 30`;
 
     const row: D1Result<Asset> = await env.database
         .prepare(sqlQuery)
