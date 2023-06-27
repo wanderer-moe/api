@@ -10,7 +10,6 @@ export const getSearch = async (
     const game = url.searchParams.get("game") || "";
     const asset = url.searchParams.get("asset") || "";
     const tags = url.searchParams.get("tags") || "";
-    const after = url.searchParams.get("after") || "";
     let results: Asset[] = [];
 
     const cacheKey = new Request(url.toString(), request);
@@ -42,17 +41,14 @@ export const getSearch = async (
     sqlQuery += tags ? ` AND tags LIKE '%' || ? || '%'` : "";
     tags && parameters.push(tags);
 
-    sqlQuery += after ? ` AND id > ?` : "";
-    after && parameters.push(after);
-
-    sqlQuery += ` ORDER BY id ASC LIMIT 100`;
+    sqlQuery += ` ORDER BY uploadedDate DESC LIMIT 100`;
 
     const row: D1Result<Asset> = await env.database
         .prepare(sqlQuery)
         .bind(...parameters)
         .run();
 
-    results = row.results.slice(parseInt(after, 10)).map((result) => ({
+    results = row.results.map((result) => ({
         id: result.id,
         name: result.name,
         game: result.game,
@@ -89,7 +85,6 @@ export const getRecentAssets = async (
     env: Env
 ): Promise<Response> => {
     const url = new URL(request.url);
-    const after = url.searchParams.get("after") || "";
     let results: Asset[] = [];
 
     const cacheKey = new Request(url.toString(), request);
@@ -103,17 +98,14 @@ export const getRecentAssets = async (
     const parameters = [];
     let sqlQuery = `SELECT * FROM assets WHERE 1=1`;
 
-    sqlQuery += after ? ` AND id > ?` : "";
-    after && parameters.push(after);
-
-    sqlQuery += ` ORDER BY id DESC LIMIT 30`;
+    sqlQuery += ` ORDER BY uploadedDate DESC LIMIT 30`;
 
     const row: D1Result<Asset> = await env.database
         .prepare(sqlQuery)
         .bind(...parameters)
         .run();
 
-    results = row.results.slice(parseInt(after, 10)).map((result) => ({
+    results = row.results.map((result) => ({
         id: result.id,
         name: result.name,
         game: result.game,
@@ -131,7 +123,6 @@ export const getRecentAssets = async (
             success: true,
             status: "ok",
             path: "/search",
-            after,
             results,
         }),
         {

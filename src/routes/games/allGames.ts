@@ -1,25 +1,30 @@
-import { listBucket } from "@/lib/listBucket";
 import { responseHeaders } from "@/lib/responseHeaders";
-import { unwantedPrefixes } from "@/middleware/unwantedPrefixes";
+import { Game } from "@/lib/types/game";
+import { listBucket } from "@/lib/listBucket";
 
 export const allGames = async (
     request: Request,
     env: Env
 ): Promise<Response> => {
-    const games = await listBucket(env.bucket, {
-        prefix: "",
-        delimiter: "/",
-    });
+    const row: D1Result<Game> = await env.database
+        .prepare(`SELECT * FROM games`)
+        .run();
 
-    // console.log(games.objects);
+    const gameList = await Promise.all(
+        row.results.map(async (result) => ({
+            name: result.name,
+            id: result.id,
+            assetCategories: await listBucket(env.bucket, {
+                prefix: `${result.name}/`,
+                delimiter: "/",
+            }).then((data) =>
+                data.delimitedPrefixes.map((prefix) =>
+                    prefix.replace(`${result.name}/`, "").replace("/", "")
+                )
+            ),
+        }))
+    );
 
-    const gameList = games.delimitedPrefixes
-        .filter((game) => !unwantedPrefixes.includes(game))
-        .map((game) => {
-            return {
-                name: game.replace("/", ""),
-            };
-        });
     return new Response(
         JSON.stringify({
             success: true,
