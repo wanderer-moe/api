@@ -8,6 +8,14 @@ export const getUserBySearch = async (
     const url = new URL(request.url);
     const name = url.pathname.split("/")[3];
 
+    const cacheKey = new Request(url.toString(), request);
+    const cache = caches.default;
+
+    let response = await cache.match(cacheKey);
+
+    if (response) {
+        return response;
+    }
     const row: D1Result<User> = await env.database
         .prepare(
             `SELECT * FROM users WHERE displayName = ? OR name = ? OR name LIKE ?`
@@ -42,7 +50,7 @@ export const getUserBySearch = async (
 
     results.sort((a, b) => (a.name === name ? -1 : b.name === name ? 1 : 0));
 
-    return new Response(
+    response = new Response(
         JSON.stringify({
             success: true,
             status: "ok",
@@ -52,4 +60,9 @@ export const getUserBySearch = async (
             headers: responseHeaders,
         }
     );
+
+    response.headers.set("Cache-Control", "s-maxage=60");
+    await cache.put(cacheKey, response.clone());
+
+    return response;
 };

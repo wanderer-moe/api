@@ -8,7 +8,6 @@ export const getUserById = async (
 ): Promise<Response> => {
     const url = new URL(request.url);
     const id = url.pathname.split("/")[2];
-    console.log(id);
 
     if (!id) {
         return new Response(
@@ -23,6 +22,14 @@ export const getUserById = async (
         );
     }
 
+    const cacheKey = new Request(url.toString(), request);
+    const cache = caches.default;
+
+    let response = await cache.match(cacheKey);
+
+    if (response) {
+        return response;
+    }
     const row: D1Result<User> = await env.database
         .prepare(`SELECT * FROM users WHERE id = ?`)
         .bind(id)
@@ -68,7 +75,7 @@ export const getUserById = async (
         recentAssets: assetsUploaded || [],
     }));
 
-    return new Response(
+    response = new Response(
         JSON.stringify({
             success: true,
             status: "ok",
@@ -78,4 +85,9 @@ export const getUserById = async (
             headers: responseHeaders,
         }
     );
+
+    response.headers.set("Cache-Control", "s-maxage=60");
+    await cache.put(cacheKey, response.clone());
+
+    return response;
 };

@@ -7,9 +7,9 @@ export const getSearch = async (
 ): Promise<Response> => {
     const url = new URL(request.url);
     const query = url.searchParams.get("query") || "";
-    const game = url.searchParams.get("game") || "";
-    const asset = url.searchParams.get("asset") || "";
-    const tags = url.searchParams.get("tags") || "";
+    const game = url.searchParams.get("game")?.split(",") || [];
+    const asset = url.searchParams.get("asset")?.split(",") || [];
+    const tags = url.searchParams.get("tags")?.split(",") || [];
     let results: Asset[] = [];
 
     const cacheKey = new Request(url.toString(), request);
@@ -24,24 +24,26 @@ export const getSearch = async (
     let sqlQuery = `SELECT * FROM assets WHERE 1=1`;
 
     if (query) {
-        sqlQuery += ` AND name LIKE '%' || ? || '%'`;
-        parameters.push(query);
+        sqlQuery += ` AND name LIKE ?`;
+        parameters.push(`%${query}%`);
     }
 
-    if (game) {
-        sqlQuery += ` AND game LIKE '%' || ? || '%'`;
-        parameters.push(game);
+    if (game.length) {
+        sqlQuery += ` AND game IN (${game.map(() => "?").join(",")})`;
+        parameters.push(...game);
     }
 
-    if (asset) {
-        sqlQuery += ` AND asset LIKE '%' || ? || '%'`;
-        parameters.push(asset);
+    if (asset.length) {
+        sqlQuery += ` AND asset IN (${asset.map(() => "?").join(",")})`;
+        parameters.push(...asset);
     }
 
-    sqlQuery += tags ? ` AND tags LIKE '%' || ? || '%'` : "";
-    tags && parameters.push(tags);
+    sqlQuery += tags.length
+        ? ` AND tags IN (${tags.map(() => "?").join(",")})`
+        : "";
+    tags.length && parameters.push(...tags);
 
-    sqlQuery += ` ORDER BY uploadedDate DESC LIMIT 100`;
+    sqlQuery += ` ORDER BY uploadedDate DESC`;
 
     const row: D1Result<Asset> = await env.database
         .prepare(sqlQuery)
@@ -130,5 +132,7 @@ export const getRecentAssets = async (
         }
     );
 
+    response.headers.set("Cache-Control", "s-maxage=3600");
+    await cache.put(cacheKey, response.clone());
     return response;
 };

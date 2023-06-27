@@ -6,6 +6,16 @@ export const allGames = async (
     request: Request,
     env: Env
 ): Promise<Response> => {
+    const url = new URL(request.url);
+    const cacheKey = new Request(url.toString(), request);
+    const cache = caches.default;
+
+    let response = await cache.match(cacheKey);
+
+    if (response) {
+        return response;
+    }
+
     const row: D1Result<Game> = await env.database
         .prepare(`SELECT * FROM games`)
         .run();
@@ -25,7 +35,7 @@ export const allGames = async (
         }))
     );
 
-    return new Response(
+    response = new Response(
         JSON.stringify({
             success: true,
             status: "ok",
@@ -35,4 +45,9 @@ export const allGames = async (
             headers: responseHeaders,
         }
     );
+
+    response.headers.set("Cache-Control", "s-maxage=600");
+    await cache.put(cacheKey, response.clone());
+
+    return response;
 };

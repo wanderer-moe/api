@@ -7,13 +7,20 @@ export const getGenerator = async (
 ): Promise<Response> => {
     const url = new URL(request.url);
     const gameId = url.pathname.split("/")[2];
+    const cacheKey = new Request(url.toString(), request);
+    const cache = caches.default;
 
+    let response = await cache.match(cacheKey);
+
+    if (response) {
+        return response;
+    }
     const row: D1Result<Generator> = await env.database
         .prepare(`SELECT * FROM ocGenerators WHERE name = ?`)
         .bind(gameId)
         .run();
 
-    if (!row) {
+    if (!row.results.length) {
         return new Response(
             JSON.stringify({
                 success: false,
@@ -34,7 +41,7 @@ export const getGenerator = async (
         verified: result.verified,
     }));
 
-    return new Response(
+    response = new Response(
         JSON.stringify({
             success: true,
             status: "ok",
@@ -44,4 +51,9 @@ export const getGenerator = async (
             headers: responseHeaders,
         }
     );
+
+    response.headers.set("Cache-Control", "s-maxage=3600");
+    await cache.put(cacheKey, response.clone());
+
+    return response;
 };
