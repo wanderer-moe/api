@@ -46,6 +46,7 @@ export const getAssetFromId = async (
         .bind(id)
         .run();
 
+    // doing this as we don't want to append viewCount & downloadCount
     const asset: Asset = {
         id: row.results[0].id,
         name: row.results[0].name,
@@ -59,11 +60,38 @@ export const getAssetFromId = async (
         fileSize: row.results[0].fileSize,
     };
 
+    // similarAssets: random 4 random assets from the same game & asset type
+    const similarAssets: D1Result<Asset> = await env.database
+        .prepare(
+            `SELECT * FROM assets WHERE game = ? AND asset = ? ORDER BY RANDOM() LIMIT 4`
+        )
+        .bind(asset.game, asset.asset)
+        .all();
+
+    const similarAssetsArray: Asset[] = [];
+
+    // as above, don't want to append viewCount & downloadCount
+    similarAssets.results.forEach((asset) => {
+        similarAssetsArray.push({
+            id: asset.id,
+            name: asset.name,
+            game: asset.game,
+            asset: asset.asset,
+            tags: asset.tags,
+            url: asset.url,
+            verified: asset.verified,
+            uploadedBy: asset.uploadedBy,
+            uploadedDate: asset.uploadedDate,
+            fileSize: asset.fileSize,
+        });
+    });
+
     response = new Response(
         JSON.stringify({
             success: true,
             status: "ok",
             asset,
+            similarAssets: similarAssetsArray,
         }),
         {
             headers: responseHeaders,
