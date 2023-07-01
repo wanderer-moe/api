@@ -10,6 +10,7 @@ import { downloadFile } from "@/routes/download/downloadFile";
 import { getUserById } from "@/routes/user/getUserById";
 import { getUserBySearch } from "@/routes/user/getUsersBySearch";
 import { allGames } from "@/routes/games/allGames";
+import { getAssetFromId } from "@/routes/asset/getAssetFromId";
 
 const router = Router();
 
@@ -18,9 +19,10 @@ router
     .get("/games", errorHandler(allGames))
     .get("/user/:id", errorHandler(getUserById))
     .get("/recent", errorHandler(getRecentAssets))
+    .get("/asset/:id", errorHandler(getAssetFromId))
     .get("/user/search/:name", errorHandler(getUserBySearch))
     .get("/search", errorHandler(getSearch))
-    .get("/download", errorHandler(downloadFile))
+    .get("/download/:id", errorHandler(downloadFile))
     .get("/oc-generators", errorHandler(getGenerators))
     .get("/oc-generator/:gameId", errorHandler(getGenerator))
     .get("/discord/contributors", errorHandler(getContributors))

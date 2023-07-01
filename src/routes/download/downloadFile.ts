@@ -5,13 +5,19 @@ export const downloadFile = async (
     request: Request,
     env: Env
 ): Promise<Response> => {
+    let row: D1Result<Asset>;
     const url = new URL(request.url);
-    const id = url.searchParams.get("id") || "";
+    const id = url.pathname.split("/")[2];
+    // console.log(id);
 
-    const row: D1Result<Asset> = await env.database
-        .prepare(`SELECT * FROM assets WHERE id = ?`)
-        .bind(id)
-        .run();
+    try {
+        row = await env.database
+            .prepare(`SELECT * FROM assets WHERE id = ?`)
+            .bind(id)
+            .run();
+    } catch (e) {
+        throw new Error(`Error getting asset from id`);
+    }
 
     if (!row.results[0]) {
         return new Response(
@@ -36,7 +42,10 @@ export const downloadFile = async (
 
     const response = await fetch(row.results[0].url);
     const headers = new Headers(response.headers);
-    headers.set("Content-Disposition", "attachment");
+    headers.set(
+        "Content-Disposition",
+        `attachment; filename="${row.results[0].name}"`
+    );
     const blob = await response.blob();
 
     return new Response(blob, {

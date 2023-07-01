@@ -52,7 +52,7 @@ export const getGenerator = async (
         }
     );
 
-    response.headers.set("Cache-Control", "s-maxage=3600");
+    response.headers.set("Cache-Control", "s-maxage=28800");
     await cache.put(cacheKey, response.clone());
 
     return response;
