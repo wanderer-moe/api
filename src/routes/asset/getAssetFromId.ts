@@ -60,12 +60,12 @@ export const getAssetFromId = async (
         fileSize: row.results[0].fileSize,
     };
 
-    // similarAssets: random 4 random assets from the same game & asset type
+    // similarAssets: random 6 random assets from the same game & asset type
     const similarAssets: D1Result<Asset> = await env.database
         .prepare(
-            `SELECT * FROM assets WHERE game = ? AND asset = ? ORDER BY RANDOM() LIMIT 6`
+            `SELECT * FROM assets WHERE game = ? AND asset = ? AND id != ? ORDER BY RANDOM() LIMIT 6`
         )
-        .bind(asset.game, asset.asset)
+        .bind(asset.game, asset.asset, asset.id)
         .all();
 
     const similarAssetsArray: Asset[] = [];
