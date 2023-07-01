@@ -63,7 +63,7 @@ export const getAssetFromId = async (
     // similarAssets: random 4 random assets from the same game & asset type
     const similarAssets: D1Result<Asset> = await env.database
         .prepare(
-            `SELECT * FROM assets WHERE game = ? AND asset = ? ORDER BY RANDOM() LIMIT 4`
+            `SELECT * FROM assets WHERE game = ? AND asset = ? ORDER BY RANDOM() LIMIT 6`
         )
         .bind(asset.game, asset.asset)
         .all();
