@@ -3,7 +3,7 @@ name: Check Code
 on:
     push:
         branches:
-            - main
+            - "*"
 
 concurrency:
     group: ${{ github.job }}-${{ github.ref }}
