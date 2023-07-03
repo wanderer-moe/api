@@ -1,7 +1,14 @@
-export interface Image {
+export interface Asset {
+    id: number;
     name: string;
-    nameWithExtension: string;
-    path: string;
-    uploaded: number;
-    size: number;
+    game: string;
+    asset: string;
+    tags: string;
+    url: string;
+    verified: string;
+    uploadedBy: string;
+    uploadedDate: string;
+    viewCount?: number;
+    downloadCount?: number;
+    fileSize: number;
 }

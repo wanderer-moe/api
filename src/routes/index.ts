@@ -1,9 +1,7 @@
 import { responseHeaders } from "@/lib/responseHeaders";
 
 const routes: string[] = [
-    "https://api.wanderer.moe/games",
-    "https://api.wanderer.moe/game/{gameId}",
-    "https://api.wanderer.moe/game/{gameId}/{asset}",
+    "https://api.wanderer.moe/search<?query=''&tags=''&after=''>",
     "https://api.wanderer.moe/oc-generators",
     "https://api.wanderer.moe/oc-generator/{gameId}",
 ];

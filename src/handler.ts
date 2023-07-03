@@ -3,21 +3,28 @@ import { errorHandler } from "@/middleware/errorHandler";
 import { responseHeaders } from "@/lib/responseHeaders";
 import { getContributors } from "@/routes/discord/contributors";
 import { index } from "@/routes/index";
-import { getGameId } from "@/routes/games/getGameId";
-import { getAsset } from "@/routes/games/getAsset";
-import { getGames } from "@/routes/games/getGames";
-import { getGeneratorGameId } from "@/routes/oc-generators/getGameId";
+import { getGenerator } from "@/routes/oc-generators/getGenerator";
 import { getGenerators } from "@/routes/oc-generators/getGenerators";
+import { getSearch, getRecentAssets } from "@/routes/search/search";
+import { downloadFile } from "@/routes/download/downloadFile";
+// import { getUserById } from "@/routes/user/getUserById";
+// import { getUserBySearch } from "@/routes/user/getUsersBySearch";
+import { allGames } from "@/routes/games/allGames";
+import { getAssetFromId } from "@/routes/asset/getAssetFromId";
 
 const router = Router();
 
 router
     .get("/", errorHandler(index))
-    .get("/games", errorHandler(getGames))
-    .get("/game/:gameId", errorHandler(getGameId))
-    .get("/game/:gameId/:asset", errorHandler(getAsset))
+    .get("/games", errorHandler(allGames))
+    // .get("/user/:id", errorHandler(getUserById))
+    .get("/recent", errorHandler(getRecentAssets))
+    .get("/asset/:id", errorHandler(getAssetFromId))
+    // .get("/user/search/:name", errorHandler(getUserBySearch))
+    .get("/search", errorHandler(getSearch))
+    .get("/download/:id", errorHandler(downloadFile))
     .get("/oc-generators", errorHandler(getGenerators))
-    .get("/oc-generator/:gameId", errorHandler(getGeneratorGameId))
+    .get("/oc-generator/:gameId", errorHandler(getGenerator))
     .get("/discord/contributors", errorHandler(getContributors))
     .all("*", (): Response => {
         return new Response(

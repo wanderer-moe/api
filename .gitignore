@@ -3,6 +3,9 @@
 .wrangler
 .dev.vars
 
+# temp 
+src/routes/check.ts
+
 # Logs
 
 logs
