@@ -50,6 +50,11 @@ export const getSearch = async (
         sqlQuery += ` LIMIT 2500`;
     }
 
+    // if no parameters are entered, return 30 most recent results instead of all results
+    if (!query && !game.length && !asset.length && !tags.length) {
+        sqlQuery = `SELECT * FROM assets ORDER BY uploadedDate DESC LIMIT 30`;
+    }
+
     const row: D1Result<Asset> = await env.database
         .prepare(sqlQuery)
         .bind(...parameters)
