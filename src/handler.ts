@@ -17,10 +17,10 @@ const router = Router();
 router
     .get("/", errorHandler(index))
     .get("/games", errorHandler(allGames))
-    .get("/user/:id", errorHandler(getUserById))
+    // .get("/user/:id", errorHandler(getUserById))
     .get("/recent", errorHandler(getRecentAssets))
     .get("/asset/:id", errorHandler(getAssetFromId))
-    .get("/user/search/:name", errorHandler(getUserBySearch))
+    // .get("/user/search/:name", errorHandler(getUserBySearch))
     .get("/search", errorHandler(getSearch))
     .get("/download/:id", errorHandler(downloadFile))
     .get("/oc-generators", errorHandler(getGenerators))
