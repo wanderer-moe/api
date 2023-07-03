@@ -7,8 +7,8 @@ import { getGenerator } from "@/routes/oc-generators/getGenerator";
 import { getGenerators } from "@/routes/oc-generators/getGenerators";
 import { getSearch, getRecentAssets } from "@/routes/search/search";
 import { downloadFile } from "@/routes/download/downloadFile";
-import { getUserById } from "@/routes/user/getUserById";
-import { getUserBySearch } from "@/routes/user/getUsersBySearch";
+// import { getUserById } from "@/routes/user/getUserById";
+// import { getUserBySearch } from "@/routes/user/getUsersBySearch";
 import { allGames } from "@/routes/games/allGames";
 import { getAssetFromId } from "@/routes/asset/getAssetFromId";
 
