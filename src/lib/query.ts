@@ -1,5 +1,7 @@
 import type { Asset } from "@/lib/types/asset";
 
+type queryParameter = string | number;
+
 export const getSearchResults = async (
     query: string,
     game: string[],
@@ -17,7 +19,7 @@ export const getSearchResults = async (
 
     sqlQuery += ` ORDER BY uploadedDate DESC`;
 
-    sqlQuery = limitResults(sqlQuery, game, asset, tags);
+    sqlQuery = limitResults(sqlQuery);
 
     if (!query && !game.length && !asset.length && !tags.length) {
         sqlQuery = `SELECT * FROM assets ORDER BY uploadedDate DESC LIMIT 30`;
@@ -45,7 +47,7 @@ export const getSearchResults = async (
 const addQueryToSqlQuery = (
     query: string,
     sqlQuery: string,
-    parameters: any[]
+    parameters: queryParameter[]
 ): string => {
     if (query) {
         sqlQuery += ` AND name LIKE ?`;
@@ -57,7 +59,7 @@ const addQueryToSqlQuery = (
 const addGameToSqlQuery = (
     game: string[],
     sqlQuery: string,
-    parameters: any[]
+    parameters: queryParameter[]
 ): string => {
     if (game.length) {
         sqlQuery += ` AND game IN (${game.map(() => "?").join(",")})`;
@@ -69,7 +71,7 @@ const addGameToSqlQuery = (
 const addAssetToSqlQuery = (
     asset: string[],
     sqlQuery: string,
-    parameters: any[]
+    parameters: queryParameter[]
 ): string => {
     if (asset.length) {
         sqlQuery += ` AND asset IN (${asset.map(() => "?").join(",")})`;
@@ -81,7 +83,7 @@ const addAssetToSqlQuery = (
 const addTagsToSqlQuery = (
     tags: string[],
     sqlQuery: string,
-    parameters: any[]
+    parameters: queryParameter[]
 ): string => {
     if (tags.length) {
         sqlQuery += ` AND tags IN (${tags.map(() => "?").join(",")})`;
@@ -90,12 +92,7 @@ const addTagsToSqlQuery = (
     return sqlQuery;
 };
 
-const limitResults = (
-    sqlQuery: string,
-    game: string[],
-    asset: string[],
-    tags: string[]
-): string => {
+const limitResults = (sqlQuery: string): string => {
     // if (game.length > 1 || asset.length > 1 || tags.length > 1) {
     //     sqlQuery += ` LIMIT 2500`;
     // }
