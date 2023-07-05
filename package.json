@@ -20,7 +20,7 @@
     "dependencies": {
         "@typescript-eslint/eslint-plugin": "^5.59.11",
         "itty-router": "^4.0.9",
-        "prettier": "^2.8.8",
+        "prettier": "^3.0.0",
         "render2": "^1.2.1"
     }
 }
