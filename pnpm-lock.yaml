@@ -5,6 +5,9 @@ settings:
     excludeLinksFromLockfile: false
 
 dependencies:
+    "@planetscale/database":
+        specifier: ^1.8.0
+        version: 1.8.0
     "@typescript-eslint/eslint-plugin":
         specifier: ^5.61.0
         version: 5.61.0(@typescript-eslint/parser@5.61.0)(eslint@8.44.0)(typescript@5.1.6)
@@ -507,6 +510,14 @@ packages:
         dependencies:
             "@nodelib/fs.scandir": 2.1.5
             fastq: 1.15.0
+
+    /@planetscale/database@1.8.0:
+        resolution:
+            {
+                integrity: sha512-+zk04eXRiaJGaRnJZkCxXbBtBvQDQJXCoxqlXhLY3HzAovXfsBnh6DjXRujPRQQ7GKtT8/tOlyvZ9h6ReM+GLQ==,
+            }
+        engines: { node: ">=16" }
+        dev: false
 
     /@types/json-schema@7.0.12:
         resolution:

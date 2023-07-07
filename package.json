@@ -18,6 +18,7 @@
     },
     "private": true,
     "dependencies": {
+        "@planetscale/database": "^1.8.0",
         "@typescript-eslint/eslint-plugin": "^5.61.0",
         "itty-router": "^4.0.13",
         "prettier": "^2.8.8",
