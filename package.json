@@ -10,8 +10,8 @@
         "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
-        "@cloudflare/workers-types": "^4.20230518.0",
-        "eslint": "^8.44.0",
+        "@cloudflare/workers-types": "^4.20230710.1",
+        "eslint": "^8.45.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-json": "^3.1.0",
         "typescript": "^5.1.6",
@@ -20,10 +20,10 @@
     "private": true,
     "dependencies": {
         "@planetscale/database": "^1.8.0",
-        "@prisma/client": "^4.16.2",
-        "@typescript-eslint/eslint-plugin": "^5.61.0",
-        "itty-router": "^4.0.13",
-        "prettier": "^2.8.8",
+        "@prisma/client": "^5.0.0",
+        "@typescript-eslint/eslint-plugin": "^6.0.0",
+        "itty-router": "^4.0.14",
+        "prettier": "^3.0.0",
         "render2": "^1.2.1"
     }
 }
