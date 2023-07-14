@@ -26,6 +26,7 @@ export const getSearch = async (
             status: results.status,
             uploaded_by: results.uploaded_by,
             uploaded_date: results.uploaded_date,
+            file_size: results.file_size,
         };
     });
 
@@ -85,6 +86,7 @@ export const getRecentAssets = async (
             status: asset.status,
             uploaded_by: asset.uploaded_by,
             uploaded_date: asset.uploaded_date,
+            file_size: asset.file_size,
         };
     });
 
