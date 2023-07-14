@@ -48,21 +48,22 @@ export const getUserByUsername = async (
             [user.id]
         )
         .then((row) => row.rows as Asset[] | undefined)
-        .then((row) =>
-            row?.map((asset) => {
-                return {
-                    id: asset.id,
-                    name: asset.name,
-                    game: asset.game,
-                    assetCategory: asset.asset_category,
-                    url: asset.url,
-                    tags: asset.tags,
-                    status: asset.status,
-                    uploadedBy: asset.uploaded_by,
-                    uploadedDate: asset.uploaded_date,
-                    fileSize: asset.file_size,
-                };
-            })
+        .then(
+            (row) =>
+                row?.map((asset) => {
+                    return {
+                        id: asset.id,
+                        name: asset.name,
+                        game: asset.game,
+                        assetCategory: asset.asset_category,
+                        url: asset.url,
+                        tags: asset.tags,
+                        status: asset.status,
+                        uploadedBy: asset.uploaded_by,
+                        uploadedDate: asset.uploaded_date,
+                        fileSize: asset.file_size,
+                    };
+                })
         );
 
     if (!row) {
