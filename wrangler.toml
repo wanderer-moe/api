@@ -1,4 +1,4 @@
-name = "api-wanderer-moe"
+name = "api"
 main = "./src/index.ts"
 compatibility_date = "2023-04-24"
 
@@ -12,7 +12,7 @@ preview_bucket_name = 'wanderer-moe'
 
 [[d1_databases]]
 binding = 'database'
-database_name = 'wanderer-moe-requests'
-database_id = '9c180d14-7f79-45c6-b2f5-809b4e75941b'
+database_name = 'wanderer-moe'
+database_id = 'df7af4d9-3546-42d2-bf0d-8376091a7875'
 
 [vars]
