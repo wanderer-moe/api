@@ -2,13 +2,13 @@ export interface Asset {
     id: number;
     name: string;
     game: string;
-    asset: string;
+    asset_category: string;
     tags: string;
     url: string;
-    verified: string;
-    uploadedBy: string;
-    uploadedDate: string;
-    viewCount?: number;
-    downloadCount?: number;
-    fileSize: number;
+    status: string;
+    uploaded_by: string;
+    uploaded_date: string;
+    view_count: number;
+    download_count: number;
+    file_size: number;
 }

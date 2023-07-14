@@ -1,14 +1,26 @@
 import { responseHeaders } from "@/lib/responseHeaders";
 import type { Asset } from "@/lib/types/asset";
+import { getConnection } from "@/lib/planetscale";
 
 export const getAssetFromId = async (
     request: Request,
     env: Env
 ): Promise<Response> => {
-    let row: D1Result<Asset>;
     const url = new URL(request.url);
     const id = url.pathname.split("/")[2];
-    console.log(id);
+
+    if (isNaN(parseInt(id))) {
+        return new Response(
+            JSON.stringify({
+                success: false,
+                status: "error",
+                error: "404 Not Found",
+            }),
+            {
+                headers: responseHeaders,
+            }
+        );
+    }
 
     const cacheKey = new Request(url.toString(), request);
     const cache = caches.default;
@@ -19,21 +31,18 @@ export const getAssetFromId = async (
         return response;
     }
 
-    try {
-        row = await env.database
-            .prepare(`SELECT * FROM assets WHERE id = ?`)
-            .bind(id)
-            .run();
-    } catch (e) {
-        throw new Error(`Error getting asset from id`);
-    }
+    const db = await getConnection(env);
 
-    if (!row.results[0]) {
+    const row = await db
+        .execute("SELECT * FROM assets WHERE id = ?", [id])
+        .then((row) => row.rows[0] as Asset | undefined);
+
+    if (!row) {
         return new Response(
             JSON.stringify({
                 success: false,
-                status: "not found",
-                message: "Asset not found",
+                status: "error",
+                error: "404 Not Found",
             }),
             {
                 headers: responseHeaders,
@@ -41,49 +50,39 @@ export const getAssetFromId = async (
         );
     }
 
-    await env.database
-        .prepare(`UPDATE assets SET viewCount = viewCount + 1 WHERE id = ?`)
-        .bind(id)
-        .run();
-
-    // doing this as we don't want to append viewCount & downloadCount
-    const asset: Asset = {
-        id: row.results[0].id,
-        name: row.results[0].name,
-        game: row.results[0].game,
-        asset: row.results[0].asset,
-        tags: row.results[0].tags,
-        url: row.results[0].url,
-        verified: row.results[0].verified,
-        uploadedBy: row.results[0].uploadedBy,
-        uploadedDate: row.results[0].uploadedDate,
-        fileSize: row.results[0].fileSize,
+    const asset = {
+        id: row.id,
+        name: row.name,
+        game: row.game,
+        assetCategory: row.asset_category,
+        url: row.url,
+        tags: row.tags,
+        status: row.status,
+        uploadedBy: row.uploaded_by,
+        uploadedDate: row.uploaded_date,
+        fileSize: row.file_size,
     };
 
-    // similarAssets: random 6 random assets from the same game & asset type
-    const similarAssets: D1Result<Asset> = await env.database
-        .prepare(
-            `SELECT * FROM assets WHERE game = ? AND asset = ? AND id != ? ORDER BY RANDOM() LIMIT 6`
-        )
-        .bind(asset.game, asset.asset, asset.id)
-        .all();
-
-    const similarAssetsArray: Asset[] = [];
-
-    // as above, don't want to append viewCount & downloadCount
-    similarAssets.results.forEach((asset) => {
-        similarAssetsArray.push({
+    const similarAssets = await (
+        await db
+            .execute(
+                "SELECT * FROM assets WHERE game = ? AND asset_category = ? AND id != ? ORDER BY RAND() LIMIT 3",
+                [row.game, row.asset_category, row.id]
+            )
+            .then((row) => row.rows as Asset[])
+    ).map((asset) => {
+        return {
             id: asset.id,
             name: asset.name,
             game: asset.game,
-            asset: asset.asset,
-            tags: asset.tags,
+            assetCategory: asset.asset_category,
             url: asset.url,
-            verified: asset.verified,
-            uploadedBy: asset.uploadedBy,
-            uploadedDate: asset.uploadedDate,
-            fileSize: asset.fileSize,
-        });
+            tags: asset.tags,
+            status: asset.status,
+            uploadedBy: asset.uploaded_by,
+            uploadedDate: asset.uploaded_date,
+            fileSize: asset.file_size,
+        };
     });
 
     response = new Response(
@@ -91,7 +90,7 @@ export const getAssetFromId = async (
             success: true,
             status: "ok",
             asset,
-            similarAssets: similarAssetsArray,
+            similarAssets,
         }),
         {
             headers: responseHeaders,
