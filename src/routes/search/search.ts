@@ -1,6 +1,7 @@
 import { responseHeaders } from "@/lib/responseHeaders";
 import type { Asset } from "@/lib/types/asset";
 import * as queryLib from "@/lib/query";
+import { getConnection } from "@/lib/planetscale";
 
 export const getSearch = async (
     request: Request,
@@ -12,13 +13,21 @@ export const getSearch = async (
     const asset = url.searchParams.get("asset")?.split(",") || [];
     const tags = url.searchParams.get("tags")?.split(",") || [];
 
-    const results = await queryLib.getSearchResults(
-        query,
-        game,
-        asset,
-        tags,
-        env
-    );
+    const results = await (
+        await queryLib.getSearchResults(query, game, asset, tags, env)
+    ).map((results) => {
+        return {
+            id: results.id,
+            name: results.name,
+            game: results.game,
+            asset_category: results.asset_category,
+            url: results.url,
+            tags: results.tags,
+            status: results.status,
+            uploaded_by: results.uploaded_by,
+            uploaded_date: results.uploaded_date,
+        };
+    });
 
     const response = new Response(
         JSON.stringify({
@@ -44,7 +53,6 @@ export const getRecentAssets = async (
     env: Env
 ): Promise<Response> => {
     const url = new URL(request.url);
-    let results: Asset[] = [];
 
     const cacheKey = new Request(url.toString(), request);
     const cache = caches.default;
@@ -54,28 +62,31 @@ export const getRecentAssets = async (
         return response;
     }
 
-    const parameters = [];
-    let sqlQuery = `SELECT * FROM assets WHERE 1=1`;
+    const db = await getConnection(env);
 
-    sqlQuery += ` ORDER BY uploadedDate DESC LIMIT 30`;
+    const row = await db
+        .execute(
+            "SELECT * FROM assets WHERE 1=1 ORDER BY uploaded_date DESC LIMIT 30"
+        )
+        .then((row) => row.rows as Asset[] | undefined);
 
-    const row: D1Result<Asset> = await env.database
-        .prepare(sqlQuery)
-        .bind(...parameters)
-        .run();
+    if (!row) {
+        throw new Error("No results found");
+    }
 
-    results = row.results.map((result) => ({
-        id: result.id,
-        name: result.name,
-        game: result.game,
-        asset: result.asset,
-        tags: result.tags,
-        url: result.url,
-        verified: result.verified,
-        uploadedBy: result.uploadedBy,
-        uploadedDate: result.uploadedDate,
-        fileSize: result.fileSize,
-    }));
+    const results = row.map((asset) => {
+        return {
+            id: asset.id,
+            name: asset.name,
+            game: asset.game,
+            asset_category: asset.asset_category,
+            url: asset.url,
+            tags: asset.tags,
+            status: asset.status,
+            uploaded_by: asset.uploaded_by,
+            uploaded_date: asset.uploaded_date,
+        };
+    });
 
     response = new Response(
         JSON.stringify({

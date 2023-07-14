@@ -8,7 +8,7 @@ export interface Asset {
     status: string;
     uploaded_by: string;
     uploaded_date: string;
-    view_count: number;
-    download_count: number;
+    view_count?: number;
+    download_count?: number;
     file_size: number;
 }

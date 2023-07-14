@@ -1,4 +1,5 @@
 import type { Asset } from "@/lib/types/asset";
+import { getConnection } from "@/lib/planetscale";
 
 type queryParameter = string | number;
 
@@ -17,31 +18,22 @@ export const getSearchResults = async (
     sqlQuery = addAssetToSqlQuery(asset, sqlQuery, parameters);
     sqlQuery = addTagsToSqlQuery(tags, sqlQuery, parameters);
 
-    sqlQuery += ` ORDER BY uploadedDate DESC`;
+    sqlQuery += ` ORDER BY uploaded_date DESC`;
 
     sqlQuery = limitResults(sqlQuery);
 
     if (!query && !game.length && !asset.length && !tags.length) {
-        sqlQuery = `SELECT * FROM assets ORDER BY uploadedDate DESC LIMIT 30`;
+        sqlQuery = `SELECT * FROM assets ORDER BY uploaded_date DESC LIMIT 30`;
     }
 
-    const row: D1Result<Asset> = await env.database
-        .prepare(sqlQuery)
-        .bind(...parameters)
-        .run();
+    const db = await getConnection(env);
 
-    return row.results.map((result) => ({
-        id: result.id,
-        name: result.name,
-        game: result.game,
-        asset: result.asset,
-        tags: result.tags,
-        url: result.url,
-        verified: result.verified,
-        uploadedBy: result.uploadedBy,
-        uploadedDate: result.uploadedDate,
-        fileSize: result.fileSize,
-    }));
+    console.log(sqlQuery, parameters);
+    const row = await db
+        .execute(sqlQuery, parameters)
+        .then((row) => row.rows as Asset[]);
+
+    return row;
 };
 
 const addQueryToSqlQuery = (
@@ -74,7 +66,9 @@ const addAssetToSqlQuery = (
     parameters: queryParameter[]
 ): string => {
     if (asset.length) {
-        sqlQuery += ` AND asset IN (${asset.map(() => "?").join(",")})`;
+        sqlQuery += ` AND asset_category IN (${asset
+            .map(() => "?")
+            .join(",")})`;
         parameters.push(...asset);
     }
     return sqlQuery;
@@ -86,15 +80,15 @@ const addTagsToSqlQuery = (
     parameters: queryParameter[]
 ): string => {
     if (tags.length) {
-        sqlQuery += ` AND tags IN (${tags.map(() => "?").join(",")})`;
+        sqlQuery += ` AND tags IN (${tags
+            .map(() => "?")
+            .join(",")
+            .toUpperCase()})`;
         parameters.push(...tags);
     }
     return sqlQuery;
 };
 
 const limitResults = (sqlQuery: string): string => {
-    // if (game.length > 1 || asset.length > 1 || tags.length > 1) {
-    //     sqlQuery += ` LIMIT 2500`;
-    // }
-    return (sqlQuery += ` LIMIT 2500`);
+    return (sqlQuery += ` LIMIT 1500`);
 };
