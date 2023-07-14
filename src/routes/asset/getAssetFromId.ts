@@ -45,19 +45,19 @@ export const getAssetFromId = async (
         id: row.id,
         name: row.name,
         game: row.game,
-        assetCategory: row.asset_category,
+        asset_category: row.asset_category,
         url: row.url,
         tags: row.tags,
         status: row.status,
-        uploadedBy: row.uploaded_by,
-        uploadedDate: row.uploaded_date,
-        fileSize: row.file_size,
+        uploaded_by: row.uploaded_by,
+        uploaded_date: row.uploaded_date,
+        file_size: row.file_size,
     };
 
     const similarAssets = await (
         await db
             .execute(
-                "SELECT * FROM assets WHERE game = ? AND asset_category = ? AND id != ? ORDER BY RAND() LIMIT 3",
+                "SELECT * FROM assets WHERE game = ? AND asset_category = ? AND id != ? ORDER BY RAND() LIMIT 4",
                 [row.game, row.asset_category, row.id]
             )
             .then((row) => row.rows as Asset[])
@@ -66,13 +66,13 @@ export const getAssetFromId = async (
             id: asset.id,
             name: asset.name,
             game: asset.game,
-            assetCategory: asset.asset_category,
+            asset_category: asset.asset_category,
             url: asset.url,
             tags: asset.tags,
             status: asset.status,
-            uploadedBy: asset.uploaded_by,
-            uploadedDate: asset.uploaded_date,
-            fileSize: asset.file_size,
+            uploaded_by: asset.uploaded_by,
+            uploaded_date: asset.uploaded_date,
+            file_size: asset.file_size,
         };
     });
 
