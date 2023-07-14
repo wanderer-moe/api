@@ -9,17 +9,8 @@ export const getAssetFromId = async (
     const url = new URL(request.url);
     const id = url.pathname.split("/")[2];
 
-    if (isNaN(parseInt(id))) {
-        return new Response(
-            JSON.stringify({
-                success: false,
-                status: "error",
-                error: "404 Not Found",
-            }),
-            {
-                headers: responseHeaders,
-            }
-        );
+    if (!id || isNaN(parseInt(id))) {
+        throw new Error("No ID provided");
     }
 
     const cacheKey = new Request(url.toString(), request);

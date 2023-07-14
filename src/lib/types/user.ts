@@ -1,10 +1,12 @@
 export interface User {
-    id: number;
-    displayName: string;
-    name: string;
-    avatarUrl: string;
-    discordId: number;
-    bio: string;
-    assetsUploaded: number;
-    roles: string;
+    id: string;
+    avatar_url: string | null;
+    banner_url: string | null;
+    username: string;
+    username_colour: string;
+    bio: string | null;
+    pronouns: string | null;
+    verified: number;
+    date_joined: string;
+    role: string;
 }

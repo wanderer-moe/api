@@ -7,8 +7,8 @@ import { getGenerator } from "@/routes/oc-generators/getGenerator";
 import { getGenerators } from "@/routes/oc-generators/getGenerators";
 import { getSearch, getRecentAssets } from "@/routes/search/search";
 import { downloadFile } from "@/routes/download/downloadFile";
-// import { getUserById } from "@/routes/user/getUserById";
-// import { getUserBySearch } from "@/routes/user/getUsersBySearch";
+import { getUserByUsername } from "@/routes/user/getUserByUsername";
+import { getUserBySearch } from "@/routes/user/getUsersBySearch";
 import { allGames } from "@/routes/games/allGames";
 import { getAssetFromId } from "@/routes/asset/getAssetFromId";
 
@@ -17,10 +17,10 @@ const router = Router();
 router
     .get("/", errorHandler(index))
     .get("/games", errorHandler(allGames))
-    // .get("/user/:id", errorHandler(getUserById))
+    .get("/user/:name", errorHandler(getUserByUsername))
     .get("/recent", errorHandler(getRecentAssets))
     .get("/asset/:id", errorHandler(getAssetFromId))
-    // .get("/user/search/:name", errorHandler(getUserBySearch))
+    .get("/user/s/:name", errorHandler(getUserBySearch))
     .get("/search", errorHandler(getSearch))
     .get("/download/:id", errorHandler(downloadFile))
     .get("/oc-generators", errorHandler(getGenerators))

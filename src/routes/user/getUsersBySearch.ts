@@ -1,5 +1,6 @@
 import { responseHeaders } from "@/lib/responseHeaders";
 import type { User } from "@/lib/types/user";
+import { getConnection } from "@/lib/planetscale";
 
 export const getUserBySearch = async (
     request: Request,
@@ -16,39 +17,34 @@ export const getUserBySearch = async (
     if (response) {
         return response;
     }
-    const row: D1Result<User> = await env.database
-        .prepare(
-            `SELECT * FROM users WHERE displayName = ? OR name = ? OR name LIKE ?`
-        )
-        .bind(name, name, `%${name}%`)
-        .run();
 
-    if (!row.results.length) {
-        return new Response(
-            JSON.stringify({
-                success: false,
-                status: "error",
-                error: "404 Not Found",
-            }),
-            {
-                headers: responseHeaders,
-            }
-        );
+    const db = await getConnection(env);
+
+    const row = await db
+        .execute("SELECT * FROM auth_user WHERE username LIKE ?", [name])
+        .then((row) => row.rows as User[] | undefined);
+
+    if (!row) {
+        throw new Error("No User found");
     }
 
-    const results = row.results.map((result) => ({
-        id: result.id,
-        displayName: result.displayName,
-        name: result.name,
-        url: `/user/${result.id}`,
-        avatarUrl: result.avatarUrl,
-        discordId: result.discordId,
-        bio: result.bio,
-        assetsUploaded: result.assetsUploaded,
-        roles: result.roles,
-    }));
+    const results = row?.map((user) => {
+        return {
+            id: user.id,
+            username: user.username,
+            avatar_url: user.avatar_url || null,
+            banner_url: user.banner_url || null,
+            bio: user.bio || null,
+            pronouns: user.pronouns || null,
+            verified: user.verified,
+            date_joined: user.date_joined,
+            roles: user.role,
+        };
+    });
 
-    results.sort((a, b) => (a.name === name ? -1 : b.name === name ? 1 : 0));
+    results.sort((a, b) =>
+        a.username === name ? -1 : b.username === name ? 1 : 0
+    );
 
     response = new Response(
         JSON.stringify({
