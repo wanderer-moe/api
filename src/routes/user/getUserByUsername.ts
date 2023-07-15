@@ -2,6 +2,7 @@ import { responseHeaders } from "@/lib/responseHeaders";
 import type { User } from "@/lib/types/user";
 import type { Asset } from "@/lib/types/asset";
 import { getConnection } from "@/lib/planetscale";
+import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse";
 
 export const getUserByUsername = async (
     request: Request,
@@ -10,19 +11,13 @@ export const getUserByUsername = async (
     const url = new URL(request.url);
     const name = url.pathname.split("/")[2];
 
-    if (!name) {
-        throw new Error("No Name provided");
-    }
+    if (!name) throw new Error("No username provided");
 
     const cacheKey = new Request(url.toString(), request);
-
     const cache = caches.default;
-
     let response = await cache.match(cacheKey);
 
-    if (response) {
-        return response;
-    }
+    if (response) return response;
 
     const db = await getConnection(env);
 
@@ -66,18 +61,7 @@ export const getUserByUsername = async (
                 })
         );
 
-    if (!row) {
-        return new Response(
-            JSON.stringify({
-                success: false,
-                status: "error",
-                error: "404 Not Found",
-            }),
-            {
-                headers: responseHeaders,
-            }
-        );
-    }
+    if (!row) return createNotFoundResponse("User not found", responseHeaders);
 
     response = new Response(
         JSON.stringify({
@@ -91,7 +75,7 @@ export const getUserByUsername = async (
         }
     );
 
-    response.headers.set("Cache-Control", "s-maxage=60");
+    response.headers.set("Cache-Control", "s-maxage=300");
     await cache.put(cacheKey, response.clone());
 
     return response;

@@ -1,5 +1,6 @@
 import { responseHeaders } from "@/lib/responseHeaders";
 import type { User } from "@/lib/types/user";
+import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse";
 import { getConnection } from "@/lib/planetscale";
 
 export const getUserBySearch = async (
@@ -9,14 +10,13 @@ export const getUserBySearch = async (
     const url = new URL(request.url);
     const name = url.pathname.split("/")[3];
 
+    if (!name) throw new Error("No username provided");
+
     const cacheKey = new Request(url.toString(), request);
     const cache = caches.default;
-
     let response = await cache.match(cacheKey);
 
-    if (response) {
-        return response;
-    }
+    if (response) return response;
 
     const db = await getConnection(env);
 
@@ -24,9 +24,7 @@ export const getUserBySearch = async (
         .execute("SELECT * FROM auth_user WHERE username LIKE ?", [name])
         .then((row) => row.rows as User[] | undefined);
 
-    if (!row) {
-        throw new Error("No User found");
-    }
+    if (!row) return createNotFoundResponse("User not found", responseHeaders);
 
     const results = row?.map((user) => {
         return {

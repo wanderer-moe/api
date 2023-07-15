@@ -7,14 +7,12 @@ export const allGames = async (
     env: Env
 ): Promise<Response> => {
     const url = new URL(request.url);
+
     const cacheKey = new Request(url.toString(), request);
     const cache = caches.default;
-
     let response = await cache.match(cacheKey);
 
-    if (response) {
-        return response;
-    }
+    if (response) return response;
 
     const row: D1Result<Game> = await env.database
         .prepare(`SELECT * FROM games`)
@@ -46,7 +44,7 @@ export const allGames = async (
         }
     );
 
-    response.headers.set("Cache-Control", "s-maxage=600");
+    response.headers.set("Cache-Control", "s-maxage=1200");
     await cache.put(cacheKey, response.clone());
 
     return response;

@@ -7,14 +7,13 @@ export const getGenerator = async (
 ): Promise<Response> => {
     const url = new URL(request.url);
     const gameId = url.pathname.split("/")[2];
+
     const cacheKey = new Request(url.toString(), request);
     const cache = caches.default;
-
     let response = await cache.match(cacheKey);
 
-    if (response) {
-        return response;
-    }
+    if (response) return response;
+
     const row: D1Result<Generator> = await env.database
         .prepare(`SELECT * FROM ocGenerators WHERE name = ?`)
         .bind(gameId)
@@ -36,8 +35,8 @@ export const getGenerator = async (
     const results = row.results.map((result) => ({
         name: result.name,
         data: JSON.parse(result.data),
-        uploadedBy: result.uploadedBy,
-        uploadedDate: result.uploadedDate,
+        uploaded_by: result.uploaded_by,
+        uploaded_date: result.uploaded_date,
         verified: result.verified,
     }));
 
@@ -52,7 +51,7 @@ export const getGenerator = async (
         }
     );
 
-    response.headers.set("Cache-Control", "s-maxage=28800");
+    response.headers.set("Cache-Control", "s-maxage=604800");
     await cache.put(cacheKey, response.clone());
 
     return response;

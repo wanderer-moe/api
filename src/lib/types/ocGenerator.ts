@@ -1,7 +1,7 @@
 export interface Generator {
     name: string;
     data: string;
-    uploadedBy: number;
-    uploadedDate: string;
+    uploaded_by: number;
+    uploaded_date: string;
     verified: string;
 }

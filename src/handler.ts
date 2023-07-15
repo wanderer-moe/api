@@ -2,7 +2,7 @@ import { Router } from "itty-router";
 import { errorHandler } from "@/middleware/errorHandler";
 import { responseHeaders } from "@/lib/responseHeaders";
 import { getContributors } from "@/routes/discord/contributors";
-import { index } from "@/routes/index";
+import { index } from "@/routes";
 import { getGenerator } from "@/routes/oc-generators/getGenerator";
 import { getGenerators } from "@/routes/oc-generators/getGenerators";
 import { getSearch, getRecentAssets } from "@/routes/search/search";
@@ -11,6 +11,7 @@ import { getUserByUsername } from "@/routes/user/getUserByUsername";
 import { getUserBySearch } from "@/routes/user/getUsersBySearch";
 import { allGames } from "@/routes/games/allGames";
 import { getAssetFromId } from "@/routes/asset/getAssetFromId";
+import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse";
 
 const router = Router();
 
@@ -27,16 +28,7 @@ router
     .get("/oc-generator/:gameId", errorHandler(getGenerator))
     .get("/discord/contributors", errorHandler(getContributors))
     .all("*", (): Response => {
-        return new Response(
-            JSON.stringify({
-                success: false,
-                status: "error",
-                error: "404 Not Found",
-            }),
-            {
-                headers: responseHeaders,
-            }
-        );
+        return createNotFoundResponse("Route doesn't exist", responseHeaders);
     });
 
 addEventListener("fetch", (event: FetchEvent) => {

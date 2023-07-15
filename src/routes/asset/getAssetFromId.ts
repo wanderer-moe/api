@@ -1,6 +1,7 @@
 import { responseHeaders } from "@/lib/responseHeaders";
 import type { Asset } from "@/lib/types/asset";
 import { getConnection } from "@/lib/planetscale";
+import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse";
 
 export const getAssetFromId = async (
     request: Request,
@@ -9,18 +10,13 @@ export const getAssetFromId = async (
     const url = new URL(request.url);
     const id = url.pathname.split("/")[2];
 
-    if (!id || isNaN(parseInt(id))) {
-        throw new Error("No ID provided");
-    }
+    if (!id || isNaN(parseInt(id))) throw new Error("No ID provided");
 
     const cacheKey = new Request(url.toString(), request);
     const cache = caches.default;
-
     let response = await cache.match(cacheKey);
 
-    if (response) {
-        return response;
-    }
+    if (response) return response;
 
     const db = await getConnection(env);
 
@@ -28,18 +24,8 @@ export const getAssetFromId = async (
         .execute("SELECT * FROM assets WHERE id = ?", [id])
         .then((row) => row.rows[0] as Asset | undefined);
 
-    if (!row) {
-        return new Response(
-            JSON.stringify({
-                success: false,
-                status: "error",
-                error: "404 Not Found",
-            }),
-            {
-                headers: responseHeaders,
-            }
-        );
-    }
+    if (!row)
+        return createNotFoundResponse("Asset ID not found", responseHeaders);
 
     const asset = {
         id: row.id,
@@ -54,7 +40,7 @@ export const getAssetFromId = async (
         file_size: row.file_size,
     };
 
-    const similarAssets = await (
+    const similarAssets = (
         await db
             .execute(
                 "SELECT * FROM assets WHERE game = ? AND asset_category = ? AND id != ? ORDER BY RAND() LIMIT 4",
@@ -88,7 +74,7 @@ export const getAssetFromId = async (
         }
     );
 
-    response.headers.set("Cache-Control", "s-maxage=28800");
+    response.headers.set("Cache-Control", "s-maxage=604800");
     await cache.put(cacheKey, response.clone());
 
     return response;
