@@ -22,7 +22,7 @@ export const getUserByUsername = async (
     const db = await getConnection(env);
 
     const row = await db
-        .execute("SELECT * FROM auth_user WHERE username = ?", [name])
+        .execute("SELECT * FROM user WHERE username = ?", [name])
         .then((row) => row.rows[0] as User | undefined);
 
     const user = {

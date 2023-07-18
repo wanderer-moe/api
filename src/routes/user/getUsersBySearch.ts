@@ -21,7 +21,7 @@ export const getUserBySearch = async (
     const db = await getConnection(env);
 
     const row = await db
-        .execute("SELECT * FROM auth_user WHERE username LIKE ?", [name])
+        .execute("SELECT * FROM user WHERE username LIKE ?", [name])
         .then((row) => row.rows as User[] | undefined);
 
     if (!row) return createNotFoundResponse("User not found", responseHeaders);

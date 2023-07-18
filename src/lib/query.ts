@@ -28,12 +28,9 @@ export const getSearchResults = async (
 
     const db = await getConnection(env);
 
-    console.log(sqlQuery, parameters);
-    const row = await db
+    return await db
         .execute(sqlQuery, parameters)
         .then((row) => row.rows as Asset[]);
-
-    return row;
 };
 
 const addQueryToSqlQuery = (
