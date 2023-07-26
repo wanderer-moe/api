@@ -1,5 +1,5 @@
 import { responseHeaders } from "@/lib/responseHeaders";
-import type { Generator } from "@/lib/types/ocGenerator";
+import { listBucket } from "@/lib/listBucket";
 
 export const getGenerators = async (
     request: Request,
@@ -13,17 +13,21 @@ export const getGenerators = async (
 
     if (response) return response;
 
-    const row: D1Result<Generator> = await env.database
-        .prepare(`SELECT * FROM ocGenerators`)
-        .run();
+    const files = await listBucket(env.bucket, {
+        prefix: "oc-generators/",
+        delimiter: "/",
+    });
 
-    const results = row.results.map((result) => ({
-        name: result.name,
-        path: `/oc-generator/${result.name}`,
-        uploaded_by: result.uploaded_by,
-        uploaded_date: result.uploaded_date,
-        verified: result.verified,
-    }));
+    // console.log(files);
+
+    const results = files.delimitedPrefixes.map((file) => {
+        return {
+            name: file.replace("oc-generators/", "").replace("/", ""),
+            path: `/oc-generators/${file
+                .replace("oc-generators/", "")
+                .replace("/", "")}`,
+        };
+    });
 
     response = new Response(
         JSON.stringify({

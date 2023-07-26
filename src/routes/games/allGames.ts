@@ -23,11 +23,13 @@ export const allGames = async (
             name: result.name,
             id: result.id,
             assetCategories: await listBucket(env.bucket, {
-                prefix: `${result.name}/`,
+                prefix: `assets/${result.name}/`,
                 delimiter: "/",
             }).then((data) =>
                 data.delimitedPrefixes.map((prefix) =>
-                    prefix.replace(`${result.name}/`, "").replace("/", "")
+                    prefix
+                        .replace(`assets/${result.name}/`, "")
+                        .replace("/", "")
                 )
             ),
         }))

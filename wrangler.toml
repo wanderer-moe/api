@@ -7,8 +7,8 @@ workers_dev = true
 
 [[r2_buckets]]
 binding = 'bucket'
-bucket_name = 'wanderer-moe'
-preview_bucket_name = 'wanderer-moe'
+bucket_name = 'files'
+preview_bucket_name = 'files'
 
 [[d1_databases]]
 binding = 'database'

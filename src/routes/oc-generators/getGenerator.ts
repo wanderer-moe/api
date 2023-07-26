@@ -1,5 +1,6 @@
 import { responseHeaders } from "@/lib/responseHeaders";
-import type { Generator } from "@/lib/types/ocGenerator";
+import { listBucket } from "@/lib/listBucket";
+import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse";
 
 export const getGenerator = async (
     request: Request,
@@ -14,44 +15,33 @@ export const getGenerator = async (
 
     if (response) return response;
 
-    const row: D1Result<Generator> = await env.database
-        .prepare(`SELECT * FROM ocGenerators WHERE name = ?`)
-        .bind(gameId)
-        .run();
+    const files = await listBucket(env.bucket, {
+        prefix: `oc-generators/${gameId}/list.json`,
+    });
 
-    if (!row.results.length) {
-        return new Response(
-            JSON.stringify({
-                success: false,
-                status: "error",
-                error: "404 Not Found",
-            }),
-            {
-                headers: responseHeaders,
-            }
-        );
-    }
+    if (files.objects.length === 0)
+        return createNotFoundResponse("Generator not found", responseHeaders);
 
-    const results = row.results.map((result) => ({
-        name: result.name,
-        data: JSON.parse(result.data),
-        uploaded_by: result.uploaded_by,
-        uploaded_date: result.uploaded_date,
-        verified: result.verified,
-    }));
+    const data = await fetch(
+        `https://files.wanderer.moe/${files.objects[0].key}`
+    );
+
+    const generatorData = await data.json();
 
     response = new Response(
         JSON.stringify({
             success: true,
             status: "ok",
-            results: results,
+            uploaded: files.objects[0].uploaded,
+            key: files.objects[0].key,
+            data: generatorData,
         }),
         {
             headers: responseHeaders,
         }
     );
 
-    response.headers.set("Cache-Control", "s-maxage=604800");
+    response.headers.set("Cache-Control", "s-maxage=604800"); // the content of this file is unlikely to change, so caching is fine
     await cache.put(cacheKey, response.clone());
 
     return response;
