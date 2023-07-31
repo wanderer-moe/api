@@ -21,7 +21,9 @@ export const downloadFile = async (
     if (!row)
         return createNotFoundResponse("Asset ID not found", responseHeaders);
 
-    const response = await fetch(`https://cdn.wanderer.moe/${row.url}`);
+    const response = await fetch(
+        `https://files.wanderer.moe/assets/${row.url}`
+    );
     const headers = new Headers(response.headers);
     headers.set("Content-Disposition", `attachment; filename="${row.name}"`);
     const blob = await response.blob();

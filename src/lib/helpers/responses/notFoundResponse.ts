@@ -1,3 +1,4 @@
+// helper function to create a 404 Not Found response
 export function createNotFoundResponse(errorMessage, responseHeaders) {
     const responseBody = {
         success: false,

@@ -13,6 +13,8 @@ export const getGenerators = async (
 
     if (response) return response;
 
+    // listing all files inside of oc-generators subfolder, as they can't be manually inputted
+    // by users but instead stored on the oc-generators repo
     const files = await listBucket(env.bucket, {
         prefix: "oc-generators/",
         delimiter: "/",

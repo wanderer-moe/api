@@ -14,6 +14,7 @@ export const allGames = async (
 
     if (response) return response;
 
+    // TODO: fix getting data from old D1 database but using Planetscale DB
     const row: D1Result<Game> = await env.database
         .prepare(`SELECT * FROM games`)
         .run();

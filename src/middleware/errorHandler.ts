@@ -1,5 +1,6 @@
 import { responseHeaders } from "@/lib/responseHeaders";
 
+// generic error handler wrapper
 export const errorHandler =
     (handler: (request: Request, env: Env) => Promise<Response>) =>
     async (request: Request, env: Env): Promise<Response> => {

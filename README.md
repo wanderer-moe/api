@@ -4,7 +4,7 @@
 
 ![Quality] ![API Response] ![CDN Response]
 
-Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — using **Cloudflare Workers** with **R2 Storage** for the CDN, and **D1** for the Database.
+Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — using **Cloudflare Workers** with **R2 Storage** for the CDN, and **Planetscale** for the Database.
 
 </div>
 
@@ -15,6 +15,8 @@ Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — us
 #### Wrangler
 
 Configuration is in `wrangler.toml` - this includes the R2 Bucket and D1 Database.
+
+You will need to setup environment variables for the Discord Bot Token for `/contributors` route: `DISCORD_TOKEN` using `wrangler secret put`.
 
 -   Run `wrangler dev` to preview locally.
 -   Run `wrangler deploy` to publish to Cloudflare Workers.
@@ -27,43 +29,59 @@ Configuration is in `wrangler.toml` - this includes the R2 Bucket and D1 Databas
 
 ## API Reference
 
-### Search (Assets)
+### Assets
 
 #### Search Assets
 
 ```http
-GET /search/assets?query=query&tags=tag1,tag2&after=after
+GET /search?query=query&game=game1,game2&asset=asset
 ```
 
-| Parameter | Type     | Description                                                                                    |
-| :-------- | :------- | :--------------------------------------------------------------------------------------------- |
-| `query`   | `string` | **Optional**. Search query for assets                                                          |
-| `tags`    | `string` | **Optional**. Comma-separated list of tags to filter by (in order of `game`, `asset-category`) |
-| `after`   | `string` | **Optional**. Cursor to paginate through results                                               |
+| Parameter | Type     | Description                                                              |
+| :-------- | :------- | :----------------------------------------------------------------------- |
+| `query`   | `string` | **Optional**. Search query for assets                                    |
+| `game`    | `string` | **Optional**. Can be a comma seperated list of game names to search for  |
+| `asset`   | `string` | **Optional**. Can be a comma seperated list of asset types to search for |
 
-If no query is provided, the API will return a list of 100 most recently uploaded assets.
+The max response the API will give is always 1500 assets.
+
+### Recent Assets
+
+```
+GET /recent
+```
+
+Returns the 30 most recent assets based off of the `uploaded_date` field.
+
+### Download Asset
+
+```http
+GET /download/:assetId
+```
+
+Downloads the asset with the given `assetId`.
 
 ### Search Users
 
 #### Search Users (Name)
 
 ```http
-GET /user/search/:query
+GET /user/s/:query
 ```
 
 | Parameter | Type     | Description                          |
 | :-------- | :------- | :----------------------------------- |
 | `query`   | `string` | **Required**. Search query for users |
 
-#### Get User Data (ID)
+#### Get Username
 
 ```http
-GET /user/:id
+GET /user/:username
 ```
 
-| Parameter | Type     | Description                          |
-| :-------- | :------- | :----------------------------------- |
-| `id`      | `string` | **Required**. Search query for users |
+| Parameter  | Type     | Description            |
+| :--------- | :------- | :--------------------- |
+| `username` | `string` | **Required**. Username |
 
 ### OC Generator
 

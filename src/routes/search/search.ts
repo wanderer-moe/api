@@ -1,6 +1,6 @@
 import { responseHeaders } from "@/lib/responseHeaders";
 import type { Asset } from "@/lib/types/asset";
-import * as queryLib from "@/lib/query";
+import { getSearchResults } from "@/lib/query";
 import { getConnection } from "@/lib/planetscale";
 import { getQueryParam } from "@/lib/helpers/getQueryParams";
 
@@ -16,6 +16,7 @@ export const getSearch = async (
         params[paramName] = getQueryParam(url, paramName);
     }
 
+    // TODO: fix this cuz idk what's going on here
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const { query, game, asset, tags } = params;
@@ -27,22 +28,22 @@ export const getSearch = async (
 
     if (response) return response;
 
-    const results = (
-        await queryLib.getSearchResults(query, game, asset, tags, env)
-    ).map((results) => {
-        return {
-            id: results.id,
-            name: results.name,
-            game: results.game,
-            asset_category: results.asset_category,
-            url: results.url,
-            tags: results.tags,
-            status: results.status,
-            uploaded_by: results.uploaded_by,
-            uploaded_date: results.uploaded_date,
-            file_size: results.file_size,
-        };
-    });
+    const results = (await getSearchResults(query, game, asset, tags, env)).map(
+        (results) => {
+            return {
+                id: results.id,
+                name: results.name,
+                game: results.game,
+                asset_category: results.asset_category,
+                url: results.url,
+                tags: results.tags,
+                status: results.status,
+                uploaded_by: results.uploaded_by,
+                uploaded_date: results.uploaded_date,
+                file_size: results.file_size,
+            };
+        }
+    );
 
     response = new Response(
         JSON.stringify({
