@@ -114,6 +114,7 @@ export const getRecentAssets = async (
             results,
         }),
         {
+            status: 200,
             headers: responseHeaders,
         }
     );

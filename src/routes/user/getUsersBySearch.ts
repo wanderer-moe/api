@@ -51,6 +51,7 @@ export const getUserBySearch = async (
             results: results,
         }),
         {
+            status: 200,
             headers: responseHeaders,
         }
     );

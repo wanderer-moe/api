@@ -8,6 +8,7 @@ export function createNotFoundResponse(errorMessage, responseHeaders) {
     };
 
     return new Response(JSON.stringify(responseBody), {
+        status: 404,
         headers: responseHeaders,
     });
 }

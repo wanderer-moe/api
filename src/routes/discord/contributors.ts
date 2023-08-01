@@ -65,6 +65,7 @@ export const getContributors = async (
             contributors: members,
         }),
         {
+            status: 200,
             headers: responseHeaders,
         }
     );

@@ -71,6 +71,7 @@ export const getUserByUsername = async (
             uploadedAssets,
         }),
         {
+            status: 200,
             headers: responseHeaders,
         }
     );

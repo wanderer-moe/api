@@ -37,6 +37,7 @@ export const getGenerator = async (
             data: generatorData,
         }),
         {
+            status: 200,
             headers: responseHeaders,
         }
     );

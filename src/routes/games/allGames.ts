@@ -43,6 +43,7 @@ export const allGames = async (
             results: gameList,
         }),
         {
+            status: 200,
             headers: responseHeaders,
         }
     );

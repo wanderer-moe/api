@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth/lucia";
 import type { RegisterBody } from "@/lib/types/auth";
 import { responseHeaders } from "@/lib/responseHeaders";
 
-export const login = async (request: Request): Promise<Response> => {
+export const signup = async (request: Request): Promise<Response> => {
     const body = (await request.json()) as RegisterBody;
     const { username, password, email, passwordConfirm } = body;
 
@@ -14,6 +14,7 @@ export const login = async (request: Request): Promise<Response> => {
                 error: "400 Bad Request",
             }),
             {
+                status: 400,
                 headers: responseHeaders,
             }
         );
