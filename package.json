@@ -2,12 +2,14 @@
     "name": "wanderer-moe-api",
     "version": "1.0.1b",
     "scripts": {
-        "prettier": "prettier --write .",
+        "prettier:fmt": "prettier --write .",
         "dev": "wrangler dev --remote",
         "publish": "wrangler publish --minify",
         "lint": "eslint . --ext .ts",
         "prettier:check": "prettier --check .",
-        "typecheck": "tsc --noEmit"
+        "typecheck": "tsc --noEmit",
+        "prisma:generate": "prisma generate",
+        "prisma:push": "prisma db push"
     },
     "devDependencies": {
         "@cloudflare/workers-types": "^4.20230710.1",
@@ -19,11 +21,14 @@
     },
     "private": true,
     "dependencies": {
+        "@lucia-auth/adapter-prisma": "^3.0.0",
         "@planetscale/database": "^1.8.0",
         "@prisma/client": "^5.0.0",
         "@typescript-eslint/eslint-plugin": "^6.0.0",
         "itty-router": "^4.0.14",
+        "lucia": "^2.0.0",
         "prettier": "^3.0.0",
+        "prisma": "^5.1.0",
         "render2": "^1.2.1"
     }
 }

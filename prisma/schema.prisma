@@ -1,0 +1,189 @@
+datasource db {
+    provider     = "mysql"
+    url          = env("DATABASE_URL")
+    relationMode = "prisma"
+}
+
+generator client {
+    provider        = "prisma-client-js"
+    previewFeatures = ["fullTextSearch", "fullTextIndex"]
+}
+
+model User {
+    id                   String              @id @unique
+    avatar_url           String?
+    banner_url           String?
+    username             String              @unique
+    username_colour      String?
+    email                String              @unique
+    email_verified       Int                 @default(0)
+    pronouns             String?
+    verified             Int                 @default(0)
+    bio                  String?             @default("")
+    assets               Assets[]
+    date_joined          DateTime
+    role                 RoleNames           @default(USER)
+    self_assignable_tags SelfAssignableTag[]
+    socials_connections  SocialsConnection[]
+    saved_oc_generators  SavedOCGenerators[]
+    auth_session         Session[]
+    auth_key             Key[]
+
+    // relations
+    followers Follower[]  @relation("FollowerToUser")
+    following Following[] @relation("FollowingToUser")
+}
+
+model Session {
+    id             String @id @unique
+    user_id        String
+    active_expires BigInt
+    idle_expires   BigInt
+    user           User   @relation(references: [id], fields: [user_id], onDelete: Cascade)
+
+    @@index([user_id])
+}
+
+model Key {
+    id              String  @id @unique
+    hashed_password String?
+    user_id         String
+    user            User    @relation(references: [id], fields: [user_id], onDelete: Cascade)
+
+    @@index([user_id])
+}
+
+model EmailVerificationToken {
+    id      String @id @unique
+    user_id String
+    expires BigInt
+
+    @@index([user_id])
+}
+
+model PasswordResetToken {
+    id      String @id @unique
+    user_id String
+    expires BigInt
+
+    @@index([user_id])
+}
+
+model Follower {
+    id       String @id @unique
+    user_id  String
+    follower User   @relation("FollowerToUser", fields: [user_id], references: [id], onDelete: Cascade)
+
+    @@index([user_id])
+    @@map("follower")
+}
+
+model Following {
+    id        String @id @unique
+    user_id   String
+    following User   @relation("FollowingToUser", fields: [user_id], references: [id], onDelete: Cascade)
+
+    @@index([user_id])
+    @@map("following")
+}
+
+model SelfAssignableTag {
+    id      Int    @id @default(autoincrement())
+    name    String
+    user_id String
+    user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+    @@index([user_id])
+    @@map("self_assignable_tag")
+}
+
+model SocialsConnection {
+    id      String  @id @unique
+    user_id String
+    tiktok  String?
+    discord String?
+    user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+    @@index([user_id])
+    @@map("socials_connection")
+}
+
+model Games {
+    id               Int    @id @default(autoincrement())
+    name             String
+    description      String
+    asset_count      Int    @default(0)
+    asset_categories String @default("") // e.g characters,items,splash-art etc..
+
+    @@index([id])
+    @@index([name])
+    @@map("games")
+}
+
+model Assets {
+    id             Int           @id @default(autoincrement())
+    name           String
+    game           String
+    asset_category String
+    tags           AssetTagsName @default(OFFICIAL)
+    url            String
+    status         Status        @default(PENDING)
+    user           User          @relation(fields: [uploaded_by], references: [id], onDelete: Cascade)
+    uploaded_by    String
+    uploaded_date  String
+    view_count     Int           @default(0)
+    download_count Int           @default(0)
+    file_size      Int
+
+    @@index([id])
+    @@index([name])
+    @@index([game])
+    @@index([status])
+    @@index([tags])
+    @@index([uploaded_by])
+    @@map("assets")
+}
+
+model SavedOCGenerators {
+    id         Int    @id @default(autoincrement())
+    game       String
+    data       String
+    user       User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    user_id    String
+    saved_date String
+
+    @@index([id])
+    @@index([game])
+    @@index([user_id])
+    @@map("saved_oc_generators")
+}
+
+// role & tag enums
+enum RoleNames {
+    USER
+    CONTRIBUTOR
+    TRANSLATOR
+    STAFF
+    DEVELOPER
+    CREATOR
+}
+
+enum SelfAssignTagsNames {
+    DESIGNER
+    DEVELOPER
+    ARTIST
+    WRITER
+    CONTENT_CREATOR
+}
+
+enum AssetTagsName {
+    OFFICIAL
+    FANMADE
+}
+
+// status enums
+enum Status {
+    PENDING
+    APPROVED
+    REJECTED
+}
