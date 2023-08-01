@@ -5,6 +5,8 @@ export const validate = async (request: Request): Promise<Response> => {
     const authRequest = auth.handleRequest(request);
     const session = await authRequest.validate();
 
+    // TODO: in-depth error handling
+
     if (!session) {
         return new Response(
             JSON.stringify({

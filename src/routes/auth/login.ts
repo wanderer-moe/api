@@ -1,11 +1,13 @@
 import { auth } from "@/lib/auth/lucia";
 import type { LoginBody } from "@/lib/types/auth";
 import { responseHeaders } from "@/lib/responseHeaders";
-import "lucia/polyfill/node" // required for old node versions
+import "lucia/polyfill/node"; // required for old nodejs versions
 
 export const login = async (request: Request): Promise<Response> => {
     const body = (await request.json()) as LoginBody;
     const { username, password } = body;
+
+    // TODO: in-depth error handling
 
     if (!username || !password) {
         return new Response(

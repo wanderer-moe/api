@@ -6,6 +6,8 @@ export const signup = async (request: Request): Promise<Response> => {
     const body = (await request.json()) as RegisterBody;
     const { username, password, email, passwordConfirm } = body;
 
+    // TODO: in-depth error handling
+
     if (!username || !password || !email || !passwordConfirm) {
         return new Response(
             JSON.stringify({
