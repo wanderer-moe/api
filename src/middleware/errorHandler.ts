@@ -15,6 +15,7 @@ export const errorHandler =
                     error: "500 Internal Server Error",
                 }),
                 {
+                    status: 500,
                     headers: responseHeaders,
                 }
             );

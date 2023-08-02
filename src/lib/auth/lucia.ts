@@ -14,6 +14,10 @@ export const auth = lucia({
     sessionCookie: {
         expires: false,
     },
+    // csrfProtection: {
+    //     baseDomain:
+    //     allowedSubDomains:
+    // },
     experimental: {
         debugMode: true,
     },
