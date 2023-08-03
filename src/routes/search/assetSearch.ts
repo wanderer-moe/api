@@ -4,7 +4,7 @@ import { getSearchResults } from "@/lib/query";
 import { getConnection } from "@/lib/planetscale";
 import { getQueryParam } from "@/lib/helpers/getQueryParams";
 
-export const getSearch = async (
+export const getAssetSearch = async (
     request: Request,
     env: Env
 ): Promise<Response> => {
@@ -49,7 +49,7 @@ export const getSearch = async (
         JSON.stringify({
             success: true,
             status: "ok",
-            path: "/search",
+            path: "/search/assets",
             query,
             game,
             asset,
