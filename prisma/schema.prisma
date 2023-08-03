@@ -135,12 +135,12 @@ model Assets {
 }
 
 model SavedOCGenerators {
-    id         Int    @id @default(autoincrement())
+    id         Int      @id @default(autoincrement())
     game       String
     data       String
-    user       User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
     user_id    String
-    saved_date String
+    saved_date DateTime
 
     @@index([id])
     @@index([game])
@@ -148,6 +148,7 @@ model SavedOCGenerators {
     @@map("saved_oc_generators")
 }
 
+// tags enums
 enum AssetTagsName {
     OFFICIAL
     FANMADE

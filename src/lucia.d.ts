@@ -12,7 +12,7 @@ declare namespace Lucia {
         verified: number;
         bio: string | null;
         role_flags: number;
-        self_assignable_role_flags: number;
+        self_assignable_role_flags: number | null;
         date_joined: Date;
     };
     // type DatabaseSessionAttributes = {}

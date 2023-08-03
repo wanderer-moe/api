@@ -34,7 +34,8 @@ export const getUserByUsername = async (
         pronouns: row.pronouns || null,
         verified: row.verified,
         date_joined: row.date_joined,
-        roles: row.role,
+        role_flags: row.role_flags,
+        self_assignable_role_flags: row.self_assignable_role_flags || null,
     };
 
     const uploadedAssets = await db

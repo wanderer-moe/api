@@ -36,7 +36,7 @@ export const getUserBySearch = async (
             pronouns: user.pronouns || null,
             verified: user.verified,
             date_joined: user.date_joined,
-            roles: user.role,
+            role_flags: user.role_flags,
         };
     });
 
