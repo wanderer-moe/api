@@ -14,9 +14,9 @@ Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — us
 
 #### Wrangler
 
-Configuration is in `wrangler.toml` - this includes the R2 Bucket and D1 Database.
+Configuration is in `wrangler.toml`.
 
-You will need to setup environment variables for the Discord Bot Token for `/contributors` route: `DISCORD_TOKEN` using `wrangler secret put`.
+You will need to setup environment variables for the Discord Bot Token for `/contributors` route: `DISCORD_TOKEN` and for Planetscale, using `wrangler secret put`.
 
 -   Run `wrangler dev` to preview locally.
 -   Run `wrangler deploy` to publish to Cloudflare Workers.

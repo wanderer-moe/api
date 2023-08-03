@@ -32,7 +32,8 @@ export const auth = lucia({
             pronouns: dbUser.pronouns,
             verified: dbUser.verified,
             bio: dbUser.bio,
-            role: dbUser.role,
+            roleFlags: dbUser.role_flags,
+            selfAssignableRoleFlags: dbUser.self_assignable_role_flags,
             dateJoined: dbUser.date_joined,
         };
     },

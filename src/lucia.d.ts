@@ -11,7 +11,8 @@ declare namespace Lucia {
         pronouns: string | null;
         verified: number;
         bio: string | null;
-        role: string;
+        role_flags: number;
+        self_assignable_role_flags: number;
         date_joined: Date;
     };
     // type DatabaseSessionAttributes = {}

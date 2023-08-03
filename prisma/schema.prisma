@@ -10,24 +10,24 @@ generator client {
 }
 
 model User {
-    id                   String              @id @unique
-    avatar_url           String?
-    banner_url           String?
-    username             String              @unique
-    username_colour      String?
-    email                String              @unique
-    email_verified       Int                 @default(0)
-    pronouns             String?
-    verified             Int                 @default(0)
-    bio                  String?             @default("")
-    assets               Assets[]
-    date_joined          DateTime
-    role                 RoleNames           @default(USER)
-    self_assignable_tags SelfAssignableTag[]
-    socials_connections  SocialsConnection[]
-    saved_oc_generators  SavedOCGenerators[]
-    auth_session         Session[]
-    auth_key             Key[]
+    id                         String              @id @unique
+    avatar_url                 String?
+    banner_url                 String?
+    username                   String              @unique
+    username_colour            String?
+    email                      String              @unique
+    email_verified             Int                 @default(0)
+    pronouns                   String?
+    verified                   Int                 @default(0)
+    bio                        String?             @default("")
+    assets                     Assets[]
+    date_joined                DateTime
+    role_flags                 Int                 @default(1)
+    self_assignable_role_flags Int?
+    socials_connections        SocialsConnection[]
+    saved_oc_generators        SavedOCGenerators[]
+    auth_session               Session[]
+    auth_key                   Key[]
 
     // relations
     followers Follower[]  @relation("FollowerToUser")
@@ -87,16 +87,6 @@ model Following {
     @@map("following")
 }
 
-model SelfAssignableTag {
-    id      Int    @id @default(autoincrement())
-    name    String
-    user_id String
-    user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-    @@index([user_id])
-    @@map("self_assignable_tag")
-}
-
 model SocialsConnection {
     id      String  @id @unique
     user_id String
@@ -113,7 +103,7 @@ model Games {
     name             String
     description      String
     asset_count      Int    @default(0)
-    asset_categories String @default("") // e.g characters,items,splash-art etc..
+    asset_categories String @default("") // comma seperated: "category1,category2.."
 
     @@index([id])
     @@index([name])
@@ -156,24 +146,6 @@ model SavedOCGenerators {
     @@index([game])
     @@index([user_id])
     @@map("saved_oc_generators")
-}
-
-// role & tag enums
-enum RoleNames {
-    USER
-    CONTRIBUTOR
-    TRANSLATOR
-    STAFF
-    DEVELOPER
-    CREATOR
-}
-
-enum SelfAssignTagsNames {
-    DESIGNER
-    DEVELOPER
-    ARTIST
-    WRITER
-    CONTENT_CREATOR
 }
 
 enum AssetTagsName {
