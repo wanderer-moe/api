@@ -34,6 +34,7 @@ export const contributors = async (c: Context) => {
                 .map((role) => roles[role])
                 .filter((role) => role);
 
+            // TODO: support animated avatars
             return {
                 id: member.user.id,
                 username: member.user.username,
