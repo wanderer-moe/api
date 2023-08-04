@@ -1,4 +1,4 @@
-export interface Games {
+export interface Game {
     id: number;
     name: string;
     asset_count: number;

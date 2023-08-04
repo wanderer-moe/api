@@ -2,7 +2,7 @@ import { responseHeaders } from "@/lib/responseHeaders";
 import { getConnection } from "@/lib/planetscale";
 import { Context } from "hono";
 import { listBucket } from "@/lib/listBucket";
-import { Games } from "@/lib/types/game";
+import { Game } from "@/lib/types/game";
 
 export const getAllGames = async (c: Context) => {
     const cacheKey = new Request(c.req.url.toString(), c.req);
@@ -27,7 +27,7 @@ export const getAllGames = async (c: Context) => {
     const gameList = await db
         .execute("SELECT * FROM games ORDER BY last_updated ASC")
         .then((row) =>
-            row.rows.map((game: Games) => ({
+            row.rows.map((game: Game) => ({
                 ...game,
                 // asset categories are stored as a comma separated string in the database, so we need to split them into an array
                 asset_categories: game.asset_categories.split(","),
