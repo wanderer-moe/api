@@ -2,51 +2,44 @@ import { responseHeaders } from "@/lib/responseHeaders";
 import type { Asset } from "@/lib/types/asset";
 import { getSearchResults } from "@/lib/query";
 import { getConnection } from "@/lib/planetscale";
-import { getQueryParam } from "@/lib/helpers/getQueryParams";
 
-export const getAssetSearch = async (
-    request: Request,
-    env: Env
-): Promise<Response> => {
-    const url = new URL(request.url);
-    const paramNames = ["query", "game", "asset", "tags"];
+export const getAssetSearch = async (c) => {
+    const queryParams = c.req.query();
+    // console.log(queryParams);
+    const { query, game, asset, tags } = queryParams;
 
-    const params = {};
-    for (const paramName of paramNames) {
-        params[paramName] = getQueryParam(url, paramName);
-    }
+    // Convert game and asset parameters to arrays
+    const gameArray = game ? game.split(",") : [];
+    const assetArray = asset ? asset.split(",") : [];
+    const tagsArray = tags ? tags.split(",") : [];
 
-    // TODO: fix this cuz idk what's going on here
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const { query, game, asset, tags } = params;
-
-    const cacheKey = new Request(url.toString(), request);
+    const cacheKey = new Request(c.req.url.toString(), c.req);
     const cache = caches.default;
-
     let response = await cache.match(cacheKey);
 
     if (response) return response;
 
-    const results = (await getSearchResults(query, game, asset, tags, env)).map(
-        (results) => {
-            return {
-                id: results.id,
-                name: results.name,
-                game: results.game,
-                asset_category: results.asset_category,
-                url: results.url,
-                tags: results.tags,
-                status: results.status,
-                uploaded_by: results.uploaded_by,
-                uploaded_date: results.uploaded_date,
-                file_size: results.file_size,
-            };
-        }
-    );
+    // console.log(query, gameArray, assetArray, tags);
 
-    response = new Response(
-        JSON.stringify({
+    const results = (
+        await getSearchResults(query, gameArray, assetArray, tagsArray, c)
+    ).map((results) => {
+        return {
+            id: results.id,
+            name: results.name,
+            game: results.game,
+            asset_category: results.asset_category,
+            url: results.url,
+            tags: results.tags,
+            status: results.status,
+            uploaded_by: results.uploaded_by,
+            uploaded_date: results.uploaded_date,
+            file_size: results.file_size,
+        };
+    });
+
+    response = c.json(
+        {
             success: true,
             status: "ok",
             path: "/search/assets",
@@ -55,10 +48,9 @@ export const getAssetSearch = async (
             asset,
             tags,
             results,
-        }),
-        {
-            headers: responseHeaders,
-        }
+        },
+        200,
+        responseHeaders
     );
 
     response.headers.set("Cache-Control", "s-maxage=3600");
@@ -67,19 +59,13 @@ export const getAssetSearch = async (
     return response;
 };
 
-export const getRecentAssets = async (
-    request: Request,
-    env: Env
-): Promise<Response> => {
-    const url = new URL(request.url);
-
-    const cacheKey = new Request(url.toString(), request);
+export const recentAssets = async (c) => {
+    const cacheKey = new Request(c.req.url.toString(), c.req);
     const cache = caches.default;
     let response = await cache.match(cacheKey);
-
     if (response) return response;
 
-    const db = await getConnection(env);
+    const db = await getConnection(c.env);
 
     const row = await db
         .execute(
@@ -87,9 +73,7 @@ export const getRecentAssets = async (
         )
         .then((row) => row.rows as Asset[] | undefined);
 
-    if (!row) {
-        throw new Error("No results found");
-    }
+    if (!row) throw new Error("No results found");
 
     const results = row.map((asset) => {
         return {
@@ -106,17 +90,15 @@ export const getRecentAssets = async (
         };
     });
 
-    response = new Response(
-        JSON.stringify({
+    response = c.json(
+        {
             success: true,
             status: "ok",
-            path: "/search",
+            path: "/assets/recent",
             results,
-        }),
-        {
-            status: 200,
-            headers: responseHeaders,
-        }
+        },
+        200,
+        responseHeaders
     );
 
     response.headers.set("Cache-Control", "s-maxage=3600");

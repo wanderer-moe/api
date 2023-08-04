@@ -5,28 +5,33 @@ type queryParameter = string | number;
 
 export const getSearchResults = async (
     query: string,
-    game: string[],
-    asset: string[],
-    tags: string[],
-    env: Env
+    gameArray: string[],
+    assetArray: string[],
+    tagsArray: string[],
+    c
 ): Promise<Asset[]> => {
     let sqlQuery = `SELECT * FROM assets WHERE 1=1`;
     const parameters = [];
 
     sqlQuery = addQueryToSqlQuery(query, sqlQuery, parameters);
-    sqlQuery = addGameToSqlQuery(game, sqlQuery, parameters);
-    sqlQuery = addAssetToSqlQuery(asset, sqlQuery, parameters);
-    sqlQuery = addTagsToSqlQuery(tags, sqlQuery, parameters);
+    sqlQuery = addGameToSqlQuery(gameArray, sqlQuery, parameters);
+    sqlQuery = addAssetToSqlQuery(assetArray, sqlQuery, parameters);
+    sqlQuery = addTagsToSqlQuery(tagsArray, sqlQuery, parameters);
 
     sqlQuery += ` ORDER BY uploaded_date DESC`;
 
     sqlQuery = limitResults(sqlQuery);
 
-    if (!query && !game.length && !asset.length && !tags.length) {
+    if (
+        !query &&
+        !gameArray.length &&
+        !assetArray.length &&
+        !tagsArray.length
+    ) {
         sqlQuery = `SELECT * FROM assets ORDER BY uploaded_date DESC LIMIT 30`;
     }
 
-    const db = await getConnection(env);
+    const db = await getConnection(c.env);
 
     return await db
         .execute(sqlQuery, parameters)
@@ -46,42 +51,42 @@ const addQueryToSqlQuery = (
 };
 
 const addGameToSqlQuery = (
-    game: string[],
+    gameArray: string[],
     sqlQuery: string,
     parameters: queryParameter[]
 ): string => {
-    if (game.length) {
-        sqlQuery += ` AND game IN (${game.map(() => "?").join(",")})`;
-        parameters.push(...game);
+    if (gameArray.length) {
+        sqlQuery += ` AND game IN (${gameArray.map(() => "?").join(",")})`;
+        parameters.push(...gameArray);
     }
     return sqlQuery;
 };
 
 const addAssetToSqlQuery = (
-    asset: string[],
+    assetArray: string[],
     sqlQuery: string,
     parameters: queryParameter[]
 ): string => {
-    if (asset.length) {
-        sqlQuery += ` AND asset_category IN (${asset
+    if (assetArray.length) {
+        sqlQuery += ` AND asset_category IN (${assetArray
             .map(() => "?")
             .join(",")})`;
-        parameters.push(...asset);
+        parameters.push(...assetArray);
     }
     return sqlQuery;
 };
 
 const addTagsToSqlQuery = (
-    tags: string[],
+    tagsArray: string[],
     sqlQuery: string,
     parameters: queryParameter[]
 ): string => {
-    if (tags.length) {
-        sqlQuery += ` AND tags IN (${tags
+    if (tagsArray.length) {
+        sqlQuery += ` AND tags IN (${tagsArray
             .map(() => "?")
             .join(",")
             .toUpperCase()})`;
-        parameters.push(...tags);
+        parameters.push(...tagsArray);
     }
     return sqlQuery;
 };

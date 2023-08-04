@@ -1,5 +1,7 @@
 import { auth } from "@/lib/auth/lucia";
 import { responseHeaders } from "@/lib/responseHeaders";
+// import { Hono } from "hono";
+// import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 
 export const validate = async (request: Request): Promise<Response> => {
     const authRequest = auth.handleRequest(request);
@@ -20,6 +22,8 @@ export const validate = async (request: Request): Promise<Response> => {
             }
         );
     }
+
+    if (session.state === "idle") auth.invalidateSession(session.sessionId);
 
     return new Response(
         JSON.stringify({

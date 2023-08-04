@@ -2,10 +2,7 @@ export interface LoginBody {
     username: string;
     password: string;
 }
-
-export interface RegisterBody {
-    username: string;
+export interface RegisterBody extends LoginBody {
     email: string;
-    password: string;
     passwordConfirm: string;
 }

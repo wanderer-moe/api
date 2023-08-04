@@ -26,6 +26,7 @@
         "@planetscale/database": "^1.8.0",
         "@prisma/client": "^5.0.0",
         "@typescript-eslint/eslint-plugin": "^6.0.0",
+        "hono": "^3.3.4",
         "itty-router": "^4.0.14",
         "lucia": "^2.0.0",
         "prettier": "^3.0.0",

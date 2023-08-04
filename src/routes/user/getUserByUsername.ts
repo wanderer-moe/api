@@ -4,22 +4,15 @@ import type { Asset } from "@/lib/types/asset";
 import { getConnection } from "@/lib/planetscale";
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse";
 
-export const getUserByUsername = async (
-    request: Request,
-    env: Env
-): Promise<Response> => {
-    const url = new URL(request.url);
-    const name = url.pathname.split("/")[2];
-
-    if (!name) throw new Error("No username provided");
-
-    const cacheKey = new Request(url.toString(), request);
+export const getUserByUsername = async (c) => {
+    const { name } = c.req.param();
+    const cacheKey = new Request(c.req.url.toString(), c.req);
     const cache = caches.default;
     let response = await cache.match(cacheKey);
 
     if (response) return response;
 
-    const db = await getConnection(env);
+    const db = await getConnection(c.env);
 
     const row = await db
         .execute("SELECT * FROM User WHERE username = ?", [name])
@@ -64,17 +57,15 @@ export const getUserByUsername = async (
 
     if (!row) return createNotFoundResponse("User not found", responseHeaders);
 
-    response = new Response(
-        JSON.stringify({
+    response = c.json(
+        {
             success: true,
             status: "ok",
             user,
             uploadedAssets,
-        }),
-        {
-            status: 200,
-            headers: responseHeaders,
-        }
+        },
+        200,
+        responseHeaders
     );
 
     response.headers.set("Cache-Control", "s-maxage=300");

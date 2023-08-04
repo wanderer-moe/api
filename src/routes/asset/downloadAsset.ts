@@ -3,19 +3,13 @@ import type { Asset } from "@/lib/types/asset";
 import { getConnection } from "@/lib/planetscale";
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse";
 
-export const downloadFile = async (
-    request: Request,
-    env: Env
-): Promise<Response> => {
-    const url = new URL(request.url);
-    const id = url.pathname.split("/")[2];
+export const downloadAsset = async (c) => {
+    const { assetId } = c.req.param();
 
-    if (!id || isNaN(parseInt(id))) throw new Error("No ID provided");
-
-    const db = await getConnection(env);
+    const db = await getConnection(c.env);
 
     const row = await db
-        .execute("SELECT * FROM assets WHERE id = ?", [id])
+        .execute("SELECT * FROM assets WHERE id = ?", [assetId])
         .then((row) => row.rows[0] as Asset | undefined);
 
     if (!row)
@@ -30,7 +24,7 @@ export const downloadFile = async (
 
     await db.execute(
         "UPDATE assets SET download_count = download_count + 1 WHERE id = ?",
-        [id]
+        [assetId]
     );
 
     return new Response(blob, {

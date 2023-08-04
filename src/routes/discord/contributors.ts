@@ -2,10 +2,7 @@ import { responseHeaders } from "@/lib/responseHeaders";
 import { roles, guildId } from "@/lib/discord";
 import type { Contributor, GuildMember } from "@/lib/types/discord";
 
-export const getContributors = async (
-    request: Request,
-    env: Env
-): Promise<Response> => {
+export const contributors = async (c) => {
     const members: Contributor[] = [];
 
     let after: string | null = null;
@@ -18,7 +15,7 @@ export const getContributors = async (
             }`,
             {
                 headers: {
-                    Authorization: `Bot ${env.DISCORD_TOKEN}`,
+                    Authorization: `Bot ${c.env.DISCORD_TOKEN}`,
                 },
             }
         );
@@ -57,16 +54,13 @@ export const getContributors = async (
         after = guildMembers[guildMembers.length - 1]?.user?.id;
     }
 
-    return new Response(
-        JSON.stringify({
+    return c.json(
+        {
             success: true,
             status: "ok",
-            path: `/discord/contributors`,
             contributors: members,
-        }),
-        {
-            status: 200,
-            headers: responseHeaders,
-        }
+        },
+        200,
+        responseHeaders
     );
 };

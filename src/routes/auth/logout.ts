@@ -1,4 +1,6 @@
 import { auth } from "@/lib/auth/lucia";
+// import { Hono } from "hono";
+// import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 
 export async function logout(request: Request): Promise<Response> {
     const authRequest = auth.handleRequest(request);

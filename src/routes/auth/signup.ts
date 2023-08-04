@@ -1,5 +1,7 @@
 import { auth } from "@/lib/auth/lucia";
 import type { RegisterBody } from "@/lib/types/auth";
+// import { Hono } from "hono";
+// import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { responseHeaders } from "@/lib/responseHeaders";
 
 export const signup = async (request: Request): Promise<Response> => {
