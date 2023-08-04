@@ -1,26 +1,30 @@
-import { auth } from "@/lib/auth/lucia";
+import { auth, authorizationTokenNames } from "@/lib/auth/lucia";
 import type { RegisterBody } from "@/lib/types/auth";
-// import { Hono } from "hono";
-// import { deleteCookie, getCookie, setCookie } from "hono/cookie";
-import { responseHeaders } from "@/lib/responseHeaders";
+import { Context } from "hono";
+import { setCookie } from "hono/cookie";
+import * as validate from "@/lib/regex/accountValidation";
 
-export const signup = async (request: Request): Promise<Response> => {
-    const body = (await request.json()) as RegisterBody;
+export const signup = async (c: Context) => {
+    const body = (await c.req.json()) as RegisterBody;
+
     const { username, password, email, passwordConfirm } = body;
+    const validSession = await auth.handleRequest(c.req.raw).validate();
 
-    // TODO: in-depth error handling
+    if (validSession) return c.redirect("/");
 
-    if (!username || !password || !email || !passwordConfirm) {
-        return new Response(
-            JSON.stringify({
+    if (
+        !validate.username(username) ||
+        !validate.password(password) ||
+        !validate.email(email) ||
+        password !== passwordConfirm
+    ) {
+        return c.json(
+            {
                 success: false,
                 status: "error",
                 error: "400 Bad Request",
-            }),
-            {
-                status: 400,
-                headers: responseHeaders,
-            }
+            },
+            400
         );
     }
 
@@ -51,13 +55,12 @@ export const signup = async (request: Request): Promise<Response> => {
         attributes: {},
     });
 
-    const sessionCookie = auth.createSessionCookie(newSession);
-
-    return new Response(null, {
-        headers: {
-            Location: "/",
-            "Set-Cookie": sessionCookie.serialize(),
-        },
-        status: 302,
+    setCookie(c, authorizationTokenNames.csrf, newSession.sessionId, {
+        expires: newSession.activePeriodExpiresAt,
+        httpOnly: true,
+        secure: true,
+        sameSite: "Lax",
     });
+
+    return c.redirect("/");
 };

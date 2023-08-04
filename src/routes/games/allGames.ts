@@ -1,8 +1,9 @@
 import { responseHeaders } from "@/lib/responseHeaders";
 import { Game } from "@/lib/types/game";
 import { listBucket } from "@/lib/listBucket";
+import { Context } from "hono";
 
-export const getAllGames = async (c) => {
+export const getAllGames = async (c: Context) => {
     const cacheKey = new Request(c.req.url.toString(), c.req);
     const cache = caches.default;
     let response = await cache.match(cacheKey);

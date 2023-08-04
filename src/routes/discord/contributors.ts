@@ -1,8 +1,9 @@
 import { responseHeaders } from "@/lib/responseHeaders";
 import { roles, guildId } from "@/lib/discord";
 import type { Contributor, GuildMember } from "@/lib/types/discord";
+import { Context } from "hono";
 
-export const contributors = async (c) => {
+export const contributors = async (c: Context) => {
     const members: Contributor[] = [];
 
     let after: string | null = null;

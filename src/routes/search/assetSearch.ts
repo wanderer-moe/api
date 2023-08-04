@@ -2,8 +2,9 @@ import { responseHeaders } from "@/lib/responseHeaders";
 import type { Asset } from "@/lib/types/asset";
 import { getSearchResults } from "@/lib/query";
 import { getConnection } from "@/lib/planetscale";
+import { Context } from "hono";
 
-export const getAssetSearch = async (c) => {
+export const getAssetSearch = async (c: Context) => {
     const queryParams = c.req.query();
     // console.log(queryParams);
     const { query, game, asset, tags } = queryParams;
@@ -35,6 +36,8 @@ export const getAssetSearch = async (c) => {
             uploaded_by: results.uploaded_by,
             uploaded_date: results.uploaded_date,
             file_size: results.file_size,
+            width: results.width,
+            height: results.height,
         };
     });
 
@@ -42,7 +45,6 @@ export const getAssetSearch = async (c) => {
         {
             success: true,
             status: "ok",
-            path: "/search/assets",
             query,
             game,
             asset,
@@ -87,6 +89,8 @@ export const recentAssets = async (c) => {
             uploaded_by: asset.uploaded_by,
             uploaded_date: asset.uploaded_date,
             file_size: asset.file_size,
+            width: asset.width,
+            height: asset.height,
         };
     });
 
@@ -94,7 +98,6 @@ export const recentAssets = async (c) => {
         {
             success: true,
             status: "ok",
-            path: "/assets/recent",
             results,
         },
         200,

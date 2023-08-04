@@ -19,7 +19,7 @@ app.get("/status", (c) => {
 });
 app.get("/", (c) => {
     c.status(200);
-    return c.json({ status: "ok", routes: app.routes });
+    return c.json({ success: "true", status: "ok", routes: app.routes });
 });
 app.route("/asset", assetRoute);
 app.route("/discord", discordRoute);

@@ -101,7 +101,7 @@ model SocialsConnection {
 model Games {
     id               Int    @id @default(autoincrement())
     name             String
-    description      String
+    description      String @default("")
     asset_count      Int    @default(0)
     asset_categories String @default("") // comma seperated: "category1,category2.."
 
@@ -124,6 +124,8 @@ model Assets {
     view_count     Int           @default(0)
     download_count Int           @default(0)
     file_size      Int
+    width          Int           @default(0)
+    height         Int           @default(0)
 
     @@index([id])
     @@index([name])

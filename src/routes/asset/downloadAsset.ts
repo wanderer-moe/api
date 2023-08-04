@@ -2,8 +2,9 @@ import { responseHeaders } from "@/lib/responseHeaders";
 import type { Asset } from "@/lib/types/asset";
 import { getConnection } from "@/lib/planetscale";
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse";
+import { Context } from "hono";
 
-export const downloadAsset = async (c) => {
+export const downloadAsset = async (c: Context) => {
     const { assetId } = c.req.param();
 
     const db = await getConnection(c.env);

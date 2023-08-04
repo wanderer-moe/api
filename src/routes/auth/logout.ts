@@ -1,32 +1,17 @@
 import { auth } from "@/lib/auth/lucia";
-// import { Hono } from "hono";
-// import { deleteCookie, getCookie, setCookie } from "hono/cookie";
+import { Context } from "hono";
+import { deleteCookie } from "hono/cookie";
+import { authorizationTokenNames } from "@/lib/auth/lucia";
 
-export async function logout(request: Request): Promise<Response> {
-    const authRequest = auth.handleRequest(request);
+export const logout = async (c: Context): Promise<Response> => {
+    const authRequest = auth.handleRequest(c.req.raw);
     const session = await authRequest.validate();
 
     if (!session) {
-        return new Response(
-            JSON.stringify({
-                success: false,
-                status: "error",
-                error: "401 Unauthorized",
-            })
-        );
+        return c.redirect("/login");
     }
 
+    deleteCookie(c, authorizationTokenNames.session);
     await auth.invalidateSession(session.sessionId);
-    authRequest.setSession(null);
-
-    return new Promise((resolve) => {
-        resolve(
-            new Response(
-                JSON.stringify({
-                    success: true,
-                    status: "ok",
-                })
-            )
-        );
-    });
-}
+    return c.redirect("/login");
+};

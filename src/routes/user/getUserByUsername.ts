@@ -1,10 +1,11 @@
 import { responseHeaders } from "@/lib/responseHeaders";
 import type { User } from "@/lib/types/user";
 import type { Asset } from "@/lib/types/asset";
+import { Context } from "hono";
 import { getConnection } from "@/lib/planetscale";
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse";
 
-export const getUserByUsername = async (c) => {
+export const getUserByUsername = async (c: Context) => {
     const { name } = c.req.param();
     const cacheKey = new Request(c.req.url.toString(), c.req);
     const cache = caches.default;

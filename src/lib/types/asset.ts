@@ -11,4 +11,6 @@ export interface Asset {
     view_count?: number;
     download_count?: number;
     file_size: number;
+    width: number;
+    height: number;
 }

@@ -1,27 +1,28 @@
-import { auth } from "@/lib/auth/lucia";
+import { auth, authorizationTokenNames } from "@/lib/auth/lucia";
 import type { LoginBody } from "@/lib/types/auth";
-import { responseHeaders } from "@/lib/responseHeaders";
-// import { Hono } from "hono";
-// import { deleteCookie, getCookie, setCookie } from "hono/cookie";
+import { Context } from "hono";
+import { setCookie } from "hono/cookie";
+import * as validate from "@/lib/regex/accountValidation";
 import "lucia/polyfill/node"; // required for old nodejs versions
 
-export const login = async (request: Request): Promise<Response> => {
-    const body = (await request.json()) as LoginBody;
+export const login = async (c: Context): Promise<Response> => {
+    const body = (await c.req.json()) as LoginBody;
     const { username, password } = body;
 
-    // TODO: in-depth error handling
+    const validSession = await auth.handleRequest(c.req.raw).validate();
 
-    if (!username || !password) {
-        return new Response(
-            JSON.stringify({
+    if (validSession) {
+        return c.redirect("/");
+    }
+
+    if (!validate.username(username) || !validate.password(password)) {
+        return c.json(
+            {
                 success: false,
                 status: "error",
                 error: "400 Bad Request",
-            }),
-            {
-                status: 400,
-                headers: responseHeaders,
-            }
+            },
+            400
         );
     }
 
@@ -36,13 +37,12 @@ export const login = async (request: Request): Promise<Response> => {
         attributes: {},
     });
 
-    const sessionCookie = auth.createSessionCookie(newSession);
-
-    return new Response(null, {
-        headers: {
-            Location: "/",
-            "Set-Cookie": sessionCookie.serialize(),
-        },
-        status: 302,
+    setCookie(c, authorizationTokenNames.csrf, newSession.sessionId, {
+        expires: newSession.activePeriodExpiresAt,
+        httpOnly: true,
+        secure: true,
+        sameSite: "Lax",
     });
+
+    return c.redirect("/");
 };

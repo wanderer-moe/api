@@ -31,6 +31,8 @@ export const getAssetFromId = async (c) => {
         uploaded_by: row.uploaded_by,
         uploaded_date: row.uploaded_date,
         file_size: row.file_size,
+        width: row.width,
+        height: row.height,
     };
 
     const similarAssets = (
@@ -52,6 +54,8 @@ export const getAssetFromId = async (c) => {
             uploaded_by: asset.uploaded_by,
             uploaded_date: asset.uploaded_date,
             file_size: asset.file_size,
+            width: asset.width,
+            height: asset.height,
         };
     });
 

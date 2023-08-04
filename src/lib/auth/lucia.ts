@@ -3,6 +3,11 @@ import { web } from "lucia/middleware";
 import { prisma as prismaAdapter } from "@lucia-auth/adapter-prisma";
 import __prisma from "./prisma";
 
+export const authorizationTokenNames = {
+    csrf: "__csrf_token",
+    session: "__session_token",
+};
+
 export const auth = lucia({
     adapter: prismaAdapter(__prisma),
     env: "DEV",
@@ -12,11 +17,12 @@ export const auth = lucia({
         activePeriod: 30 * 24 * 60 * 60 * 1000, // 30 days
     },
     sessionCookie: {
+        name: authorizationTokenNames.session,
         expires: false,
     },
     // csrfProtection: {
-    //     baseDomain:
-    //     allowedSubDomains:
+    //     baseDomain: "localhost",
+    //     allowedSubDomains: "*"
     // },
     experimental: {
         debugMode: true,

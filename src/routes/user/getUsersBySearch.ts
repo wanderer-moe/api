@@ -2,8 +2,9 @@ import { responseHeaders } from "@/lib/responseHeaders";
 import type { User } from "@/lib/types/user";
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse";
 import { getConnection } from "@/lib/planetscale";
+import { Context } from "hono";
 
-export const getUsersBySearch = async (c) => {
+export const getUsersBySearch = async (c: Context) => {
     const cacheKey = new Request(c.req.url.toString(), c.req);
     const cache = caches.default;
     let response = await cache.match(cacheKey);
@@ -40,7 +41,6 @@ export const getUsersBySearch = async (c) => {
         {
             success: true,
             status: "ok",
-            path: "/users/s/:query",
             query,
             results,
         },
