@@ -1,6 +1,5 @@
 import { responseHeaders } from "@/lib/responseHeaders";
-import { Game } from "@/lib/types/game";
-import { listBucket } from "@/lib/listBucket";
+import { getConnection } from "@/lib/planetscale";
 import { Context } from "hono";
 
 export const getAllGames = async (c: Context) => {
@@ -10,27 +9,18 @@ export const getAllGames = async (c: Context) => {
 
     if (response) return response;
 
-    // TODO: fix getting data from old D1 database but using Planetscale DB
-    const row: D1Result<Game> = await c.env.database
-        .prepare(`SELECT * FROM games`)
-        .run();
+    const db = await getConnection(c.env);
 
-    const gameList = await Promise.all(
-        row.results.map(async (result) => ({
-            name: result.name,
-            id: result.id,
-            assetCategories: await listBucket(c.env.bucket, {
-                prefix: `assets/${result.name}/`,
-                delimiter: "/",
-            }).then((data) =>
-                data.delimitedPrefixes.map((prefix) =>
-                    prefix
-                        .replace(`assets/${result.name}/`, "")
-                        .replace("/", "")
-                )
-            ),
-        }))
-    );
+    const gameList = await db
+        .execute("SELECT * FROM games ORDER BY last_updated ASC")
+        .then((row) =>
+            row.rows.map((game) => ({
+                ...game,
+                // asset categories are stored as a comma separated string in the database, so we need to split them into an array
+                // @ts-expect-error - this is fine
+                asset_categories: game.asset_categories.split(","),
+            }))
+        );
 
     response = c.json(
         {

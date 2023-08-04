@@ -10,28 +10,29 @@ generator client {
 }
 
 model User {
-    id                         String              @id @unique
+    id                         String   @id @unique
     avatar_url                 String?
     banner_url                 String?
-    username                   String              @unique
+    username                   String   @unique
     username_colour            String?
-    email                      String              @unique
-    email_verified             Int                 @default(0)
+    email                      String   @unique
+    email_verified             Int      @default(0)
     pronouns                   String?
-    verified                   Int                 @default(0)
-    bio                        String?             @default("")
-    assets                     Assets[]
+    verified                   Int      @default(0)
+    bio                        String?  @default("")
     date_joined                DateTime
-    role_flags                 Int                 @default(1)
+    role_flags                 Int      @default(1)
     self_assignable_role_flags Int?
-    socials_connections        SocialsConnection[]
-    saved_oc_generators        SavedOCGenerators[]
-    auth_session               Session[]
-    auth_key                   Key[]
 
     // relations
-    followers Follower[]  @relation("FollowerToUser")
-    following Following[] @relation("FollowingToUser")
+    followers           Follower[]          @relation("FollowerToUser")
+    following           Following[]         @relation("FollowingToUser")
+    PendingAssets       PendingAssets[]
+    socials_connections SocialsConnection[]
+    saved_oc_generators SavedOCGenerators[]
+    auth_session        Session[]
+    auth_key            Key[]
+    assets              Assets[]
 }
 
 model Session {
@@ -99,11 +100,12 @@ model SocialsConnection {
 }
 
 model Games {
-    id               Int    @id @default(autoincrement())
+    id               Int      @id @default(autoincrement())
     name             String
-    description      String @default("")
-    asset_count      Int    @default(0)
-    asset_categories String @default("") // comma seperated: "category1,category2.."
+    asset_count      Int      @default(0)
+    asset_categories String   @default("") // comma seperated: "category1,category2.."
+    category_count   Int      @default(0)
+    last_updated     DateTime
 
     @@index([id])
     @@index([name])
@@ -134,6 +136,32 @@ model Assets {
     @@index([tags])
     @@index([uploaded_by])
     @@map("assets")
+}
+
+model PendingAssets {
+    id             Int           @id @default(autoincrement())
+    name           String
+    game           String
+    asset_category String
+    tags           AssetTagsName @default(OFFICIAL)
+    url            String
+    status         Status        @default(PENDING)
+    user           User          @relation(fields: [uploaded_by], references: [id], onDelete: Cascade)
+    uploaded_by    String
+    uploaded_date  String
+    view_count     Int           @default(0)
+    download_count Int           @default(0)
+    file_size      Int
+    width          Int           @default(0)
+    height         Int           @default(0)
+
+    @@index([id])
+    @@index([name])
+    @@index([game])
+    @@index([status])
+    @@index([tags])
+    @@index([uploaded_by])
+    @@map("pending_assets")
 }
 
 model SavedOCGenerators {
