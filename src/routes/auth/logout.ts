@@ -4,7 +4,7 @@ import { deleteCookie } from "hono/cookie";
 import { authorizationTokenNames } from "@/lib/auth/lucia";
 
 export const logout = async (c: Context): Promise<Response> => {
-    const authRequest = auth.handleRequest(c.req.raw);
+    const authRequest = auth(c.env).handleRequest(c.req.raw);
     const session = await authRequest.validate();
 
     if (!session) {
@@ -12,6 +12,6 @@ export const logout = async (c: Context): Promise<Response> => {
     }
 
     deleteCookie(c, authorizationTokenNames.session);
-    await auth.invalidateSession(session.sessionId);
+    await auth(c.env).invalidateSession(session.sessionId);
     return c.redirect("/login");
 };

@@ -11,7 +11,8 @@ export const getUsersBySearch = async (c: Context) => {
     if (response) return response;
 
     const { query } = c.req.param();
-    const db = await getConnection(c.env);
+    const conn = await getConnection(c.env);
+    const db = conn.planetscale;
 
     const row = await db
         .execute("SELECT * FROM User WHERE username LIKE ?", [query])

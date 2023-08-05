@@ -5,4 +5,5 @@ export interface Env {
     DATABASE_PASSWORD: string;
     DATABASE_USERNAME: string;
     DATABASE_HOST: string;
+    ENVIRONMENT: string;
 }

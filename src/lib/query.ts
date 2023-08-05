@@ -31,7 +31,8 @@ export const getSearchResults = async (
         sqlQuery = `SELECT * FROM assets ORDER BY uploaded_date DESC LIMIT 30`;
     }
 
-    const db = await getConnection(c.env);
+    const conn = await getConnection(c.env);
+    const db = conn.planetscale;
 
     return await db
         .execute(sqlQuery, parameters)

@@ -7,7 +7,8 @@ import { Context } from "hono";
 export const downloadAsset = async (c: Context) => {
     const { assetId } = c.req.param();
 
-    const db = await getConnection(c.env);
+    const conn = await getConnection(c.env);
+    const db = conn.planetscale;
 
     const row = await db
         .execute("SELECT * FROM assets WHERE id = ?", [assetId])
@@ -19,12 +20,13 @@ export const downloadAsset = async (c: Context) => {
     const response = await fetch(
         `https://files.wanderer.moe/assets/${row.url}`
     );
+
     const headers = new Headers(response.headers);
     headers.set("Content-Disposition", `attachment; filename="${row.name}"`);
     const blob = await response.blob();
 
     await db.execute(
-        "UPDATE assets SET download_count = download_count + 1 WHERE id = ?",
+        "UPDATE assets SET downloads = downloads + 1 WHERE id = ?",
         [assetId]
     );
 

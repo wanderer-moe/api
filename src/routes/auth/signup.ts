@@ -8,7 +8,7 @@ export const signup = async (c: Context) => {
     const body = (await c.req.json()) as RegisterBody;
 
     const { username, password, email, passwordConfirm } = body;
-    const validSession = await auth.handleRequest(c.req.raw).validate();
+    const validSession = await auth(c.env).handleRequest(c.req.raw).validate();
 
     if (validSession) return c.redirect("/");
 
@@ -28,7 +28,7 @@ export const signup = async (c: Context) => {
         );
     }
 
-    const user = await auth.createUser({
+    const user = await auth(c.env).createUser({
         key: {
             providerId: "username",
             providerUserId: username.toLowerCase(),
@@ -50,7 +50,7 @@ export const signup = async (c: Context) => {
         },
     });
 
-    const newSession = await auth.createSession({
+    const newSession = await auth(c.env).createSession({
         userId: user.userId,
         attributes: {},
     });

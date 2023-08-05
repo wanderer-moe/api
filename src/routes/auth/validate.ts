@@ -3,7 +3,7 @@ import { Context } from "hono";
 import { deleteCookie } from "hono/cookie";
 
 export const validate = async (c: Context): Promise<Response> => {
-    const authRequest = auth.handleRequest(c.req.raw);
+    const authRequest = auth(c.env).handleRequest(c.req.raw);
 
     const session = await authRequest.validate();
 
@@ -12,7 +12,7 @@ export const validate = async (c: Context): Promise<Response> => {
     }
 
     if (session.state === "idle") {
-        await auth.invalidateSession(session.sessionId);
+        await auth(c.env).invalidateSession(session.sessionId);
 
         deleteCookie(c, authorizationTokenNames.session);
         return c.redirect("/login");

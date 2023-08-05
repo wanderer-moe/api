@@ -1,6 +1,9 @@
+// this prisma config is here for the sole purpose of writing schemas so i can convert it to drizzle using introspection
+// if it works, it works 
+
 datasource db {
     provider     = "mysql"
-    url          = env("DATABASE_URL")
+    url          = env("DB_URL_SEC")
     relationMode = "prisma"
 }
 
@@ -9,7 +12,7 @@ generator client {
     previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
-model User {
+model authUser {
     id                         String   @id @unique
     avatar_url                 String?
     banner_url                 String?
@@ -25,36 +28,36 @@ model User {
     self_assignable_role_flags Int?
 
     // relations
-    followers           Follower[]          @relation("FollowerToUser")
-    following           Following[]         @relation("FollowingToUser")
-    PendingAssets       PendingAssets[]
-    socials_connections SocialsConnection[]
-    saved_oc_generators SavedOCGenerators[]
-    auth_session        Session[]
-    auth_key            Key[]
-    assets              Assets[]
+    followers           follower[]          @relation("followerToUser")
+    following           following[]         @relation("followingToUser")
+    PendingAssets       pendingAssets[]
+    socials_connections socialsConnection[]
+    saved_oc_generators savedOCGenerators[]
+    auth_session        authSession[]
+    auth_key            authKey[]
+    assets              assets[]
 }
 
-model Session {
-    id             String @id @unique
+model authSession {
+    id             String   @id @unique
     user_id        String
     active_expires BigInt
     idle_expires   BigInt
-    user           User   @relation(references: [id], fields: [user_id], onDelete: Cascade)
+    user           authUser @relation(references: [id], fields: [user_id], onDelete: Cascade)
 
     @@index([user_id])
 }
 
-model Key {
-    id              String  @id @unique
+model authKey {
+    id              String   @id @unique
     hashed_password String?
     user_id         String
-    user            User    @relation(references: [id], fields: [user_id], onDelete: Cascade)
+    user            authUser @relation(references: [id], fields: [user_id], onDelete: Cascade)
 
     @@index([user_id])
 }
 
-model EmailVerificationToken {
+model emailVerificationToken {
     id      String @id @unique
     user_id String
     expires BigInt
@@ -62,7 +65,7 @@ model EmailVerificationToken {
     @@index([user_id])
 }
 
-model PasswordResetToken {
+model passwordResetToken {
     id      String @id @unique
     user_id String
     expires BigInt
@@ -70,36 +73,33 @@ model PasswordResetToken {
     @@index([user_id])
 }
 
-model Follower {
-    id       String @id @unique
+model follower {
+    id       String   @id @unique
     user_id  String
-    follower User   @relation("FollowerToUser", fields: [user_id], references: [id], onDelete: Cascade)
+    follower authUser @relation("followerToUser", fields: [user_id], references: [id], onDelete: Cascade)
 
     @@index([user_id])
-    @@map("follower")
 }
 
-model Following {
-    id        String @id @unique
+model following {
+    id        String   @id @unique
     user_id   String
-    following User   @relation("FollowingToUser", fields: [user_id], references: [id], onDelete: Cascade)
+    following authUser @relation("followingToUser", fields: [user_id], references: [id], onDelete: Cascade)
 
     @@index([user_id])
-    @@map("following")
 }
 
-model SocialsConnection {
-    id      String  @id @unique
+model socialsConnection {
+    id      String   @id @unique
     user_id String
     tiktok  String?
     discord String?
-    user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    user    authUser @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
     @@index([user_id])
-    @@map("socials_connection")
 }
 
-model Games {
+model games {
     id               Int      @id @default(autoincrement())
     name             String
     asset_count      Int      @default(0)
@@ -109,18 +109,17 @@ model Games {
 
     @@index([id])
     @@index([name])
-    @@map("games")
 }
 
-model Assets {
+model assets {
     id             Int           @id @default(autoincrement())
     name           String
     game           String
     asset_category String
-    tags           AssetTagsName @default(OFFICIAL)
+    tags           assetTagsName @default(OFFICIAL)
     url            String
-    status         Status        @default(PENDING)
-    user           User          @relation(fields: [uploaded_by], references: [id], onDelete: Cascade)
+    status         statusEnums   @default(PENDING)
+    user           authUser      @relation(fields: [uploaded_by], references: [id], onDelete: Cascade)
     uploaded_by    String
     uploaded_date  String
     view_count     Int           @default(0)
@@ -135,18 +134,17 @@ model Assets {
     @@index([status])
     @@index([tags])
     @@index([uploaded_by])
-    @@map("assets")
 }
 
-model PendingAssets {
+model pendingAssets {
     id             Int           @id @default(autoincrement())
     name           String
     game           String
     asset_category String
-    tags           AssetTagsName @default(OFFICIAL)
+    tags           assetTagsName @default(OFFICIAL)
     url            String
-    status         Status        @default(PENDING)
-    user           User          @relation(fields: [uploaded_by], references: [id], onDelete: Cascade)
+    status         statusEnums   @default(PENDING)
+    user           authUser      @relation(fields: [uploaded_by], references: [id], onDelete: Cascade)
     uploaded_by    String
     uploaded_date  String
     view_count     Int           @default(0)
@@ -161,31 +159,29 @@ model PendingAssets {
     @@index([status])
     @@index([tags])
     @@index([uploaded_by])
-    @@map("pending_assets")
 }
 
-model SavedOCGenerators {
+model savedOCGenerators {
     id         Int      @id @default(autoincrement())
     game       String
     data       String
-    user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    user       authUser @relation(fields: [user_id], references: [id], onDelete: Cascade)
     user_id    String
     saved_date DateTime
 
     @@index([id])
     @@index([game])
     @@index([user_id])
-    @@map("saved_oc_generators")
 }
 
 // tags enums
-enum AssetTagsName {
+enum assetTagsName {
     OFFICIAL
     FANMADE
 }
 
 // status enums
-enum Status {
+enum statusEnums {
     PENDING
     APPROVED
     REJECTED

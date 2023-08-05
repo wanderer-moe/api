@@ -3,13 +3,12 @@ import type { LoginBody } from "@/lib/types/auth";
 import { Context } from "hono";
 import { setCookie } from "hono/cookie";
 import * as validate from "@/lib/regex/accountValidation";
-import "lucia/polyfill/node"; // required for old nodejs versions
 
 export const login = async (c: Context): Promise<Response> => {
     const body = (await c.req.json()) as LoginBody;
     const { username, password } = body;
 
-    const validSession = await auth.handleRequest(c.req.raw).validate();
+    const validSession = await auth(c.env).handleRequest(c.req.raw).validate();
 
     if (validSession) {
         return c.redirect("/");
@@ -26,13 +25,13 @@ export const login = async (c: Context): Promise<Response> => {
         );
     }
 
-    const user = await auth.useKey(
+    const user = await auth(c.env).useKey(
         "username",
         username.toLowerCase(),
         password
     );
 
-    const newSession = await auth.createSession({
+    const newSession = await auth(c.env).createSession({
         userId: user.userId,
         attributes: {},
     });

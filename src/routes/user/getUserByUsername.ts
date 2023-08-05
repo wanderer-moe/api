@@ -13,7 +13,8 @@ export const getUserByUsername = async (c: Context) => {
 
     if (response) return response;
 
-    const db = await getConnection(c.env);
+    const conn = await getConnection(c.env);
+    const db = conn.planetscale;
 
     const row = await db
         .execute("SELECT * FROM User WHERE username = ?", [name])

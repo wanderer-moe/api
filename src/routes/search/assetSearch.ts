@@ -67,7 +67,8 @@ export const recentAssets = async (c) => {
     let response = await cache.match(cacheKey);
     if (response) return response;
 
-    const db = await getConnection(c.env);
+    const conn = await getConnection(c.env);
+    const db = conn.planetscale;
 
     const row = await db
         .execute(

@@ -22,7 +22,8 @@ export const getAllGames = async (c: Context) => {
         };
     });
 
-    const db = await getConnection(c.env);
+    const conn = await getConnection(c.env);
+    const db = conn.planetscale;
 
     const gameList = await db
         .execute("SELECT * FROM games ORDER BY last_updated ASC")

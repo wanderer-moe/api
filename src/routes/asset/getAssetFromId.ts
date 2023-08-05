@@ -11,7 +11,8 @@ export const getAssetFromId = async (c) => {
 
     if (response) return response;
 
-    const db = await getConnection(c.env);
+    const conn = await getConnection(c.env);
+    const db = conn.planetscale;
 
     const row = await db
         .execute("SELECT * FROM assets WHERE id = ?", [id])
