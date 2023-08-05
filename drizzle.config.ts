@@ -8,6 +8,9 @@ export default {
     breakpoints: true,
     driver: "mysql2",
     dbCredentials: {
-        connectionString: process.env.DATABASE_URL!,
+        host: process.env.DATABASE_HOST!,
+        user: process.env.DATABASE_USERNAME!,
+        password: process.env.DATABASE_PASSWORD!,
+        database: "planetscale",
     },
 } satisfies Config;
