@@ -1,12 +1,15 @@
 export interface User {
     id: string;
+    username: string;
+    username_colour: string | null;
     avatar_url: string | null;
     banner_url: string | null;
-    username: string;
-    username_colour: string;
-    bio: string | null;
+    email: string;
+    email_verified: number;
     pronouns: string | null;
     verified: number;
-    date_joined: string;
-    role: string;
+    bio: string | null;
+    role_flags: number;
+    self_assignable_role_flags: number;
+    date_joined: Date;
 }

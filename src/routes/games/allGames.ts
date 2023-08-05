@@ -1,50 +1,51 @@
 import { responseHeaders } from "@/lib/responseHeaders";
-import { Game } from "@/lib/types/game";
+import { getConnection } from "@/lib/planetscale";
+import { Context } from "hono";
 import { listBucket } from "@/lib/listBucket";
+import { Game } from "@/lib/types/game";
 
-export const allGames = async (
-    request: Request,
-    env: Env
-): Promise<Response> => {
-    const url = new URL(request.url);
-
-    const cacheKey = new Request(url.toString(), request);
+export const getAllGames = async (c: Context) => {
+    const cacheKey = new Request(c.req.url.toString(), c.req);
     const cache = caches.default;
     let response = await cache.match(cacheKey);
 
     if (response) return response;
 
-    // TODO: fix getting data from old D1 database but using Planetscale DB
-    const row: D1Result<Game> = await env.database
-        .prepare(`SELECT * FROM games`)
-        .run();
+    const files = await listBucket(c.env.bucket, {
+        prefix: "oc-generators/",
+        delimiter: "/",
+    });
 
-    const gameList = await Promise.all(
-        row.results.map(async (result) => ({
-            name: result.name,
-            id: result.id,
-            assetCategories: await listBucket(env.bucket, {
-                prefix: `assets/${result.name}/`,
-                delimiter: "/",
-            }).then((data) =>
-                data.delimitedPrefixes.map((prefix) =>
-                    prefix
-                        .replace(`assets/${result.name}/`, "")
-                        .replace("/", "")
-                )
-            ),
-        }))
-    );
+    const results = files.delimitedPrefixes.map((file) => {
+        return {
+            name: file.replace("oc-generators/", "").replace("/", ""),
+        };
+    });
 
-    response = new Response(
-        JSON.stringify({
+    const conn = await getConnection(c.env);
+    const db = conn.planetscale;
+
+    const gameList = await db
+        .execute("SELECT * FROM games ORDER BY last_updated ASC")
+        .then((row) =>
+            row.rows.map((game: Game) => ({
+                ...game,
+                // asset categories are stored as a comma separated string in the database, so we need to split them into an array
+                asset_categories: game.asset_categories.split(","),
+                has_generator: results.some(
+                    (generator) => generator.name === game.name
+                ),
+            }))
+        );
+
+    response = c.json(
+        {
             success: true,
             status: "ok",
             results: gameList,
-        }),
-        {
-            headers: responseHeaders,
-        }
+        },
+        200,
+        responseHeaders
     );
 
     response.headers.set("Cache-Control", "s-maxage=1200");

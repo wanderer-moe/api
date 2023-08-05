@@ -2,20 +2,16 @@ import { responseHeaders } from "@/lib/responseHeaders";
 import type { Asset } from "@/lib/types/asset";
 import { getConnection } from "@/lib/planetscale";
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse";
+import { Context } from "hono";
 
-export const downloadFile = async (
-    request: Request,
-    env: Env
-): Promise<Response> => {
-    const url = new URL(request.url);
-    const id = url.pathname.split("/")[2];
+export const downloadAsset = async (c: Context) => {
+    const { assetId } = c.req.param();
 
-    if (!id || isNaN(parseInt(id))) throw new Error("No ID provided");
-
-    const db = await getConnection(env);
+    const conn = await getConnection(c.env);
+    const db = conn.planetscale;
 
     const row = await db
-        .execute("SELECT * FROM assets WHERE id = ?", [id])
+        .execute("SELECT * FROM assets WHERE id = ?", [assetId])
         .then((row) => row.rows[0] as Asset | undefined);
 
     if (!row)
@@ -24,13 +20,14 @@ export const downloadFile = async (
     const response = await fetch(
         `https://files.wanderer.moe/assets/${row.url}`
     );
+
     const headers = new Headers(response.headers);
     headers.set("Content-Disposition", `attachment; filename="${row.name}"`);
     const blob = await response.blob();
 
     await db.execute(
-        "UPDATE assets SET download_count = download_count + 1 WHERE id = ?",
-        [id]
+        "UPDATE assets SET downloads = downloads + 1 WHERE id = ?",
+        [assetId]
     );
 
     return new Response(blob, {

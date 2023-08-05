@@ -10,9 +10,4 @@ binding = 'bucket'
 bucket_name = 'files'
 preview_bucket_name = 'files'
 
-[[d1_databases]]
-binding = 'database'
-database_name = 'wanderer-moe'
-database_id = 'df7af4d9-3546-42d2-bf0d-8376091a7875'
-
 [vars]

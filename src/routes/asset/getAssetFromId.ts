@@ -3,22 +3,16 @@ import type { Asset } from "@/lib/types/asset";
 import { getConnection } from "@/lib/planetscale";
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse";
 
-export const getAssetFromId = async (
-    request: Request,
-    env: Env
-): Promise<Response> => {
-    const url = new URL(request.url);
-    const id = url.pathname.split("/")[2];
-
-    if (!id || isNaN(parseInt(id))) throw new Error("No ID provided");
-
-    const cacheKey = new Request(url.toString(), request);
+export const getAssetFromId = async (c) => {
+    const { id } = c.req.param();
+    const cacheKey = new Request(c.req.url.toString(), c.req);
     const cache = caches.default;
     let response = await cache.match(cacheKey);
 
     if (response) return response;
 
-    const db = await getConnection(env);
+    const conn = await getConnection(c.env);
+    const db = conn.planetscale;
 
     const row = await db
         .execute("SELECT * FROM assets WHERE id = ?", [id])
@@ -38,6 +32,8 @@ export const getAssetFromId = async (
         uploaded_by: row.uploaded_by,
         uploaded_date: row.uploaded_date,
         file_size: row.file_size,
+        width: row.width,
+        height: row.height,
     };
 
     const similarAssets = (
@@ -59,19 +55,20 @@ export const getAssetFromId = async (
             uploaded_by: asset.uploaded_by,
             uploaded_date: asset.uploaded_date,
             file_size: asset.file_size,
+            width: asset.width,
+            height: asset.height,
         };
     });
 
-    response = new Response(
-        JSON.stringify({
+    response = c.json(
+        {
             success: true,
             status: "ok",
             asset,
             similarAssets,
-        }),
-        {
-            headers: responseHeaders,
-        }
+        },
+        200,
+        responseHeaders
     );
 
     response.headers.set("Cache-Control", "s-maxage=604800");

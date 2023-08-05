@@ -1,28 +1,23 @@
 import { responseHeaders } from "@/lib/responseHeaders";
 import type { User } from "@/lib/types/user";
 import type { Asset } from "@/lib/types/asset";
+import { Context } from "hono";
 import { getConnection } from "@/lib/planetscale";
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse";
 
-export const getUserByUsername = async (
-    request: Request,
-    env: Env
-): Promise<Response> => {
-    const url = new URL(request.url);
-    const name = url.pathname.split("/")[2];
-
-    if (!name) throw new Error("No username provided");
-
-    const cacheKey = new Request(url.toString(), request);
+export const getUserByUsername = async (c: Context) => {
+    const { name } = c.req.param();
+    const cacheKey = new Request(c.req.url.toString(), c.req);
     const cache = caches.default;
     let response = await cache.match(cacheKey);
 
     if (response) return response;
 
-    const db = await getConnection(env);
+    const conn = await getConnection(c.env);
+    const db = conn.planetscale;
 
     const row = await db
-        .execute("SELECT * FROM User WHERE username = ?", [name])
+        .execute("SELECT * FROM authUser WHERE username = ?", [name])
         .then((row) => row.rows[0] as User | undefined);
 
     const user = {
@@ -34,7 +29,8 @@ export const getUserByUsername = async (
         pronouns: row.pronouns || null,
         verified: row.verified,
         date_joined: row.date_joined,
-        roles: row.role,
+        role_flags: row.role_flags,
+        self_assignable_role_flags: row.self_assignable_role_flags || null,
     };
 
     const uploadedAssets = await db
@@ -63,16 +59,15 @@ export const getUserByUsername = async (
 
     if (!row) return createNotFoundResponse("User not found", responseHeaders);
 
-    response = new Response(
-        JSON.stringify({
+    response = c.json(
+        {
             success: true,
             status: "ok",
             user,
             uploadedAssets,
-        }),
-        {
-            headers: responseHeaders,
-        }
+        },
+        200,
+        responseHeaders
     );
 
     response.headers.set("Cache-Control", "s-maxage=300");

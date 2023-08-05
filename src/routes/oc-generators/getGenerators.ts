@@ -1,13 +1,9 @@
 import { responseHeaders } from "@/lib/responseHeaders";
 import { listBucket } from "@/lib/listBucket";
+import { Context } from "hono";
 
-export const getGenerators = async (
-    request: Request,
-    env: Env
-): Promise<Response> => {
-    const url = new URL(request.url);
-
-    const cacheKey = new Request(url.toString(), request);
+export const getGenerators = async (c: Context) => {
+    const cacheKey = new Request(c.req.url.toString(), c.req);
     const cache = caches.default;
     let response = await cache.match(cacheKey);
 
@@ -15,7 +11,7 @@ export const getGenerators = async (
 
     // listing all files inside of oc-generators subfolder, as they can't be manually inputted
     // by users but instead stored on the oc-generators repo
-    const files = await listBucket(env.bucket, {
+    const files = await listBucket(c.env.bucket, {
         prefix: "oc-generators/",
         delimiter: "/",
     });
@@ -31,15 +27,13 @@ export const getGenerators = async (
         };
     });
 
-    response = new Response(
-        JSON.stringify({
-            success: true,
-            status: "ok",
-            results: results,
-        }),
+    response = c.json(
         {
-            headers: responseHeaders,
-        }
+            status: "ok",
+            data: results,
+        },
+        200,
+        responseHeaders
     );
 
     response.headers.set("Cache-Control", "s-maxage=28800");
