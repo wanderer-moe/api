@@ -19,7 +19,7 @@ dependencies:
         version: 1.8.0
     "@prisma/client":
         specifier: ^5.0.0
-        version: 5.0.0(prisma@5.1.0)
+        version: 5.0.0
     "@typescript-eslint/eslint-plugin":
         specifier: ^6.0.0
         version: 6.0.0(@typescript-eslint/parser@6.0.0)(eslint@8.45.0)(typescript@5.1.6)
@@ -35,9 +35,6 @@ dependencies:
     hono:
         specifier: ^3.3.4
         version: 3.3.4
-    itty-router:
-        specifier: ^4.0.14
-        version: 4.0.14
     lucia:
         specifier: ^2.0.0
         version: 2.0.0
@@ -47,9 +44,6 @@ dependencies:
     prettier:
         specifier: ^3.0.0
         version: 3.0.0
-    prisma:
-        specifier: ^5.1.0
-        version: 5.1.0
     render2:
         specifier: ^1.2.1
         version: 1.2.1
@@ -1793,7 +1787,7 @@ packages:
             "@prisma/client": ^4.2.0 || ^5.0.0
             lucia: ^2.0.0
         dependencies:
-            "@prisma/client": 5.0.0(prisma@5.1.0)
+            "@prisma/client": 5.0.0
             lucia: 2.0.0
         dev: false
 
@@ -1839,7 +1833,7 @@ packages:
         engines: { node: ">=16" }
         dev: false
 
-    /@prisma/client@5.0.0(prisma@5.1.0):
+    /@prisma/client@5.0.0:
         resolution:
             {
                 integrity: sha512-XlO5ELNAQ7rV4cXIDJUNBEgdLwX3pjtt9Q/RHqDpGf43szpNJx2hJnggfFs7TKNx0cOFsl6KJCSfqr5duEU/bQ==,
@@ -1853,7 +1847,6 @@ packages:
                 optional: true
         dependencies:
             "@prisma/engines-version": 4.17.0-26.6b0aef69b7cdfc787f822ecd7cdc76d5f1991584
-            prisma: 5.1.0
         dev: false
 
     /@prisma/engines-version@4.17.0-26.6b0aef69b7cdfc787f822ecd7cdc76d5f1991584:
@@ -1861,14 +1854,6 @@ packages:
             {
                 integrity: sha512-HHiUF6NixsldsP3JROq07TYBLEjXFKr6PdH8H4gK/XAoTmIplOJBCgrIUMrsRAnEuGyRoRLXKXWUb943+PFoKQ==,
             }
-        dev: false
-
-    /@prisma/engines@5.1.0:
-        resolution:
-            {
-                integrity: sha512-HqaFsnPmZOdMWkPq6tT2eTVTQyaAXEDdKszcZ4yc7DGMBIYRP6j/zAJTtZUG9SsMV8FaucdL5vRyxY/p5Ni28g==,
-            }
-        requiresBuild: true
         dev: false
 
     /@react-email/render@0.0.7:
@@ -4188,13 +4173,6 @@ packages:
                 integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==,
             }
 
-    /itty-router@4.0.14:
-        resolution:
-            {
-                integrity: sha512-s8DfaLkQp+E3kBhjwto3Z91ozulotCLAmlS8AIr230NqwFJssiGIoewo1P+CEkZ3YrzghS9k/RVvmMlvKQxueQ==,
-            }
-        dev: false
-
     /js-beautify@1.14.9:
         resolution:
             {
@@ -4817,18 +4795,6 @@ packages:
                 integrity: sha512-dKp+C4iXWK4vVYZmYSd0KBH5F/h1HoZRsbJ82AVKRO3PEo8L4lBS/vLwhVtpwwuYcoIsVY+1JYKR268yn480uQ==,
             }
         dev: true
-
-    /prisma@5.1.0:
-        resolution:
-            {
-                integrity: sha512-wkXvh+6wxk03G8qwpZMOed4Y3j+EQ+bMTlvbDZHeal6k1E8QuGKzRO7DRXlE1NV0WNgOAas8kwZqcLETQ2+BiQ==,
-            }
-        engines: { node: ">=16.13" }
-        hasBin: true
-        requiresBuild: true
-        dependencies:
-            "@prisma/engines": 5.1.0
-        dev: false
 
     /proto-list@1.2.4:
         resolution:

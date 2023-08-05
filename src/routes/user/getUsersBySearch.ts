@@ -15,7 +15,7 @@ export const getUsersBySearch = async (c: Context) => {
     const db = conn.planetscale;
 
     const row = await db
-        .execute("SELECT * FROM User WHERE username LIKE ?", [query])
+        .execute("SELECT * FROM authUser WHERE username LIKE ?", [query])
         .then((row) => row.rows as User[] | undefined);
 
     if (!row) return createNotFoundResponse("User not found", responseHeaders);

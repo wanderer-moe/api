@@ -1,13 +1,1 @@
-{
-    "version": "5",
-    "dialect": "mysql",
-    "entries": [
-        {
-            "idx": 0,
-            "version": "5",
-            "when": 1691248738058,
-            "tag": "0000_loud_mysterio",
-            "breakpoints": true
-        }
-    ]
-}
+{ "version": "5", "dialect": "mysql", "entries": [] }

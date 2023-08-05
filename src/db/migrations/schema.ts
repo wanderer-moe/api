@@ -11,8 +11,22 @@ import {
 } from "drizzle-orm/mysql-core";
 // import { sql } from "drizzle-orm";
 
+export const tableNames = {
+    assets: "assets",
+    authKey: "authKey",
+    authSession: "authSession",
+    authUser: "authUser",
+    emailVerificationToken: "emailVerificationToken",
+    follower: "follower",
+    following: "following",
+    games: "games",
+    passwordResetToken: "passwordResetToken",
+    savedOcGenerators: "savedOcGenerators",
+    socialsConnection: "socialsConnection",
+};
+
 export const assets = mysqlTable(
-    "assets",
+    tableNames.assets,
     {
         id: int("id").autoincrement().notNull(),
         name: varchar("name", { length: 191 }).notNull(),
@@ -25,7 +39,9 @@ export const assets = mysqlTable(
         status: mysqlEnum("status", ["PENDING", "APPROVED", "REJECTED"])
             .default("PENDING")
             .notNull(),
-        uploadedBy: varchar("uploaded_by", { length: 191 }).notNull(),
+        uploadedBy: varchar("uploaded_by", { length: 191 })
+            .notNull()
+            .references(() => authUser.id),
         uploadedDate: varchar("uploaded_date", { length: 191 }).notNull(),
         viewCount: int("view_count").default(0).notNull(),
         downloadCount: int("download_count").default(0).notNull(),
@@ -47,11 +63,13 @@ export const assets = mysqlTable(
 );
 
 export const authKey = mysqlTable(
-    "authKey",
+    tableNames.authKey,
     {
         id: varchar("id", { length: 191 }).notNull(),
         hashedPassword: varchar("hashed_password", { length: 191 }),
-        userId: varchar("user_id", { length: 191 }).notNull(),
+        userId: varchar("user_id", { length: 191 })
+            .notNull()
+            .references(() => authUser.id),
     },
     (table) => {
         return {
@@ -63,10 +81,12 @@ export const authKey = mysqlTable(
 );
 
 export const authSession = mysqlTable(
-    "authSession",
+    tableNames.authSession,
     {
         id: varchar("id", { length: 191 }).notNull(),
-        userId: varchar("user_id", { length: 191 }).notNull(),
+        userId: varchar("user_id", { length: 191 })
+            .notNull()
+            .references(() => authUser.id),
         activeExpires: bigint("active_expires", { mode: "number" }).notNull(),
         idleExpires: bigint("idle_expires", { mode: "number" }).notNull(),
     },
@@ -80,7 +100,7 @@ export const authSession = mysqlTable(
 );
 
 export const authUser = mysqlTable(
-    "authUser",
+    tableNames.authUser,
     {
         id: varchar("id", { length: 191 }).notNull(),
         avatarUrl: varchar("avatar_url", { length: 191 }),
@@ -112,10 +132,12 @@ export const authUser = mysqlTable(
 );
 
 export const emailVerificationToken = mysqlTable(
-    "emailVerificationToken",
+    tableNames.emailVerificationToken,
     {
         id: varchar("id", { length: 191 }).notNull(),
-        userId: varchar("user_id", { length: 191 }).notNull(),
+        userId: varchar("user_id", { length: 191 })
+            .notNull()
+            .references(() => authUser.id),
         expires: bigint("expires", { mode: "number" }).notNull(),
     },
     (table) => {
@@ -132,10 +154,12 @@ export const emailVerificationToken = mysqlTable(
 );
 
 export const follower = mysqlTable(
-    "follower",
+    tableNames.follower,
     {
         id: varchar("id", { length: 191 }).notNull(),
-        userId: varchar("user_id", { length: 191 }).notNull(),
+        userId: varchar("user_id", { length: 191 })
+            .notNull()
+            .references(() => authUser.id),
     },
     (table) => {
         return {
@@ -147,7 +171,7 @@ export const follower = mysqlTable(
 );
 
 export const following = mysqlTable(
-    "following",
+    tableNames.following,
     {
         id: varchar("id", { length: 191 }).notNull(),
         userId: varchar("user_id", { length: 191 }).notNull(),
@@ -162,12 +186,12 @@ export const following = mysqlTable(
 );
 
 export const games = mysqlTable(
-    "games",
+    tableNames.games,
     {
         id: int("id").autoincrement().notNull(),
         name: varchar("name", { length: 191 }).notNull(),
         assetCount: int("asset_count").default(0).notNull(),
-        assetCategories: varchar("asset_categories", { length: 191 })
+        assetCategories: varchar("asset_categories", { length: 191 }) // minor inconvenience
             .default("")
             .notNull(),
         lastUpdated: datetime("last_updated", {
@@ -186,10 +210,12 @@ export const games = mysqlTable(
 );
 
 export const passwordResetToken = mysqlTable(
-    "passwordResetToken",
+    tableNames.passwordResetToken,
     {
         id: varchar("id", { length: 191 }).notNull(),
-        userId: varchar("user_id", { length: 191 }).notNull(),
+        userId: varchar("user_id", { length: 191 })
+            .notNull()
+            .references(() => authUser.id),
         expires: bigint("expires", { mode: "number" }).notNull(),
     },
     (table) => {
@@ -203,50 +229,15 @@ export const passwordResetToken = mysqlTable(
     }
 );
 
-export const pendingAssets = mysqlTable(
-    "pendingAssets",
-    {
-        id: int("id").autoincrement().notNull(),
-        name: varchar("name", { length: 191 }).notNull(),
-        game: varchar("game", { length: 191 }).notNull(),
-        assetCategory: varchar("asset_category", { length: 191 }).notNull(),
-        tags: mysqlEnum("tags", ["OFFICIAL", "FANMADE"])
-            .default("OFFICIAL")
-            .notNull(),
-        url: varchar("url", { length: 191 }).notNull(),
-        status: mysqlEnum("status", ["PENDING", "APPROVED", "REJECTED"])
-            .default("PENDING")
-            .notNull(),
-        uploadedBy: varchar("uploaded_by", { length: 191 }).notNull(),
-        uploadedDate: varchar("uploaded_date", { length: 191 }).notNull(),
-        viewCount: int("view_count").default(0).notNull(),
-        downloadCount: int("download_count").default(0).notNull(),
-        fileSize: int("file_size").notNull(),
-        width: int("width").default(0).notNull(),
-        height: int("height").default(0).notNull(),
-    },
-    (table) => {
-        return {
-            idIdx: index("pendingAssets_id_idx").on(table.id),
-            nameIdx: index("pendingAssets_name_idx").on(table.name),
-            gameIdx: index("pendingAssets_game_idx").on(table.game),
-            statusIdx: index("pendingAssets_status_idx").on(table.status),
-            tagsIdx: index("pendingAssets_tags_idx").on(table.tags),
-            uploadedByIdx: index("pendingAssets_uploaded_by_idx").on(
-                table.uploadedBy
-            ),
-            pendingAssetsId: primaryKey(table.id),
-        };
-    }
-);
-
 export const savedOcGenerators = mysqlTable(
-    "savedOCGenerators",
+    tableNames.savedOcGenerators,
     {
         id: int("id").autoincrement().notNull(),
         game: varchar("game", { length: 191 }).notNull(),
-        data: varchar("data", { length: 191 }).notNull(),
-        userId: varchar("user_id", { length: 191 }).notNull(),
+        data: varchar("data", { length: 191 }).notNull(), // data will be stored in opt index -> response index e.g 1:1,2:4,3:1,4:2
+        userId: varchar("user_id", { length: 191 })
+            .notNull()
+            .references(() => authUser.id),
         savedDate: datetime("saved_date", { mode: "string", fsp: 3 }).notNull(),
     },
     (table) => {
@@ -260,10 +251,12 @@ export const savedOcGenerators = mysqlTable(
 );
 
 export const socialsConnection = mysqlTable(
-    "socialsConnection",
+    tableNames.socialsConnection,
     {
         id: varchar("id", { length: 191 }).notNull(),
-        userId: varchar("user_id", { length: 191 }).notNull(),
+        userId: varchar("user_id", { length: 191 })
+            .notNull()
+            .references(() => authUser.id),
         tiktok: varchar("tiktok", { length: 191 }),
         discord: varchar("discord", { length: 191 }),
     },

@@ -32,11 +32,9 @@
         "drizzle-kit": "^0.19.12",
         "drizzle-orm": "^0.27.2",
         "hono": "^3.3.4",
-        "itty-router": "^4.0.14",
         "lucia": "^2.0.0",
         "mysql2": "^3.6.0",
         "prettier": "^3.0.0",
-        "prisma": "^5.1.0",
         "render2": "^1.2.1",
         "resend": "^0.17.2"
     }

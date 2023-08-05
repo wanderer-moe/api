@@ -17,7 +17,7 @@ export const getUserByUsername = async (c: Context) => {
     const db = conn.planetscale;
 
     const row = await db
-        .execute("SELECT * FROM User WHERE username = ?", [name])
+        .execute("SELECT * FROM authUser WHERE username = ?", [name])
         .then((row) => row.rows[0] as User | undefined);
 
     const user = {
