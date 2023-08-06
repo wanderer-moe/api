@@ -13,15 +13,15 @@ export const validate = async (c: Context): Promise<Response> => {
         if (cookie) {
             deleteCookie(c, authorizationTokenNames.session);
         }
-        return c.json({ success: true, state: "invalid session" }, 200);
+        return c.json({ success: false, state: "invalid session" }, 200);
     }
 
     if (session.state === "idle") {
         await auth(c.env).invalidateSession(session.sessionId);
 
         deleteCookie(c, authorizationTokenNames.session);
-        return c.json({ success: true, state: "invalid session" }, 200);
+        return c.json({ success: false, state: "invalid session" }, 200);
     }
 
-    return c.json(session, 200);
+    return c.json({ success: true, state: "valid session", session }, 200);
 };

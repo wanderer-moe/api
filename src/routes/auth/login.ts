@@ -1,14 +1,17 @@
 import { auth, authorizationTokenNames } from "@/lib/auth/lucia";
-import type { LoginBody } from "@/lib/types/auth";
 import { Context } from "hono";
 import { setCookie } from "hono/cookie";
 import * as validate from "@/lib/regex/accountValidation";
 
 export const login = async (c: Context): Promise<Response> => {
-    const body = (await c.req.json()) as LoginBody;
-    const { username, password } = body;
+    const formData = await c.req.formData();
+
+    const username = formData.get("username") as string;
+    const password = formData.get("password") as string;
 
     const validSession = await auth(c.env).handleRequest(c.req.raw).validate();
+
+    console.log(validSession);
 
     if (validSession) {
         return c.json({ success: false, state: "already logged in" }, 200);
@@ -40,7 +43,7 @@ export const login = async (c: Context): Promise<Response> => {
         expires: newSession.activePeriodExpiresAt,
         httpOnly: true,
         secure: true,
-        sameSite: "Lax",
+        // sameSite: "Lax",
     });
 
     return c.json({ success: true, state: "logged in" }, 200);

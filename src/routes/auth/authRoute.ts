@@ -2,9 +2,18 @@ import { Hono } from "hono";
 import { login } from "./login";
 import { logout } from "./logout";
 import { signup } from "./signup";
+import { cors } from "hono/cors";
 import { validate } from "./validate";
 
 const authRoute = new Hono();
+
+authRoute.use(
+    "*",
+    cors({
+        // "http://localhost:3000",
+        origin: ["https://next.wanderer.moe"],
+    })
+);
 
 authRoute.post("/login", async (c) => {
     return login(c);
