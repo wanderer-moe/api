@@ -8,10 +8,10 @@ export const logout = async (c: Context): Promise<Response> => {
     const session = await authRequest.validate();
 
     if (!session) {
-        return c.redirect("/login");
+        return c.json({ success: false, state: "invalid session" }, 200);
     }
 
     deleteCookie(c, authorizationTokenNames.session);
     await auth(c.env).invalidateSession(session.sessionId);
-    return c.redirect("/login");
+    return c.json({ success: true, state: "logged out" }, 200);
 };

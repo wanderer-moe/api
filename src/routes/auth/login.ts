@@ -11,7 +11,7 @@ export const login = async (c: Context): Promise<Response> => {
     const validSession = await auth(c.env).handleRequest(c.req.raw).validate();
 
     if (validSession) {
-        return c.redirect("/");
+        return c.json({ success: false, state: "already logged in" }, 200);
     }
 
     if (!validate.username(username) || !validate.password(password)) {
@@ -43,5 +43,5 @@ export const login = async (c: Context): Promise<Response> => {
         sameSite: "Lax",
     });
 
-    return c.redirect("/");
+    return c.json({ success: true, state: "logged in" }, 200);
 };

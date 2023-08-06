@@ -3,6 +3,7 @@ import { web } from "lucia/middleware";
 import { planetscale } from "@lucia-auth/adapter-mysql";
 import { getConnection } from "../planetscale";
 import { Env } from "@/worker-configuration";
+import { tableNames } from "../drizzle";
 
 export const authorizationTokenNames = {
     csrf: "__csrf_token",
@@ -17,9 +18,9 @@ export const auth = (env: Env) => {
 
     return lucia({
         adapter: planetscale(connection, {
-            key: "authKey",
-            user: "authUser",
-            session: "authSession",
+            key: tableNames.authKey,
+            user: tableNames.authUser,
+            session: tableNames.authSession,
         }),
         middleware: web(),
         sessionExpiresIn: {

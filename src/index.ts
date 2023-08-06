@@ -6,7 +6,7 @@ import ocGeneratorRoute from "./routes/oc-generators/ocGeneratorRoutes";
 import assetSearchRoute from "./routes/search/asset/searchRoute";
 import gamesRoute from "./routes/games/gamesRoute";
 import userRoute from "./routes/user/userRoute";
-// import authRoute from "./routes/auth/authRoute";
+import authRoute from "./routes/auth/authRoute";
 interface Bindings extends Env {
     [key: string]: unknown;
 }
@@ -27,7 +27,7 @@ app.route("/oc-generators", ocGeneratorRoute);
 app.route("/search/assets", assetSearchRoute);
 app.route("/games", gamesRoute);
 app.route("/user", userRoute);
-// app.route("/auth", authRoute);
+app.route("/auth", authRoute);
 app.all("*", (c) => {
     c.status(404);
     return c.json({ status: "not found" });

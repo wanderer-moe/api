@@ -10,7 +10,8 @@ export const signup = async (c: Context) => {
     const { username, password, email, passwordConfirm } = body;
     const validSession = await auth(c.env).handleRequest(c.req.raw).validate();
 
-    if (validSession) return c.redirect("/");
+    if (validSession)
+        return c.json({ success: false, state: "already logged in" }, 200);
 
     if (
         !validate.username(username) ||
@@ -62,5 +63,5 @@ export const signup = async (c: Context) => {
         sameSite: "Lax",
     });
 
-    return c.redirect("/");
+    return c.json({ success: true, tate: "logged in" }, 200);
 };
