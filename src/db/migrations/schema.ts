@@ -9,21 +9,8 @@ import {
     bigint,
     datetime,
 } from "drizzle-orm/mysql-core";
+import { tableNames } from "@/lib/drizzle";
 // import { sql } from "drizzle-orm";
-
-export const tableNames = {
-    assets: "assets",
-    authKey: "authKey",
-    authSession: "authSession",
-    authUser: "authUser",
-    emailVerificationToken: "emailVerificationToken",
-    follower: "follower",
-    following: "following",
-    games: "games",
-    passwordResetToken: "passwordResetToken",
-    savedOcGenerators: "savedOcGenerators",
-    socialsConnection: "socialsConnection",
-};
 
 export const assets = mysqlTable(
     tableNames.assets,

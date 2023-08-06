@@ -26,7 +26,7 @@ export const getAllGames = async (c: Context) => {
     const db = conn.planetscale;
 
     const gameList = await db
-        .execute("SELECT * FROM games ORDER BY last_updated ASC")
+        .execute("SELECT * FROM games ORDER BY asset_count DESC")
         .then((row) =>
             row.rows.map((game: Game) => ({
                 ...game,

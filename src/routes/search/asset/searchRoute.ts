@@ -2,14 +2,14 @@ import { Hono } from "hono";
 import { getAssetSearch } from "./assetSearch";
 import { recentAssets } from "./assetSearch";
 
-const searchRoute = new Hono();
+const assetSearchRoute = new Hono();
 
-searchRoute.get("/assets", async (c) => {
+assetSearchRoute.get("/", async (c) => {
     return getAssetSearch(c);
 });
 
-searchRoute.get("/recent", async (c) => {
+assetSearchRoute.get("/recent", async (c) => {
     return recentAssets(c);
 });
 
-export default searchRoute;
+export default assetSearchRoute;

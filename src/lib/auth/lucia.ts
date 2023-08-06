@@ -9,6 +9,8 @@ export const authorizationTokenNames = {
     session: "__session_token",
 };
 
+// this is so we can pass in env during requests,
+// so: it would be called: auth(c.env)... instead of auth
 export const auth = (env: Env) => {
     const db = getConnection(env);
     const connection = db.planetscale;

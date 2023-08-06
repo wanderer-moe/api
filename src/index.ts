@@ -3,7 +3,7 @@ import { Env } from "./worker-configuration";
 import assetRoute from "./routes/asset/assetRoute";
 import discordRoute from "./routes/discord/discordRoute";
 import ocGeneratorRoute from "./routes/oc-generators/ocGeneratorRoutes";
-import searchRoute from "./routes/search/searchRoute";
+import assetSearchRoute from "./routes/search/asset/searchRoute";
 import gamesRoute from "./routes/games/gamesRoute";
 import userRoute from "./routes/user/userRoute";
 // import authRoute from "./routes/auth/authRoute";
@@ -24,7 +24,7 @@ app.get("/", (c) => {
 app.route("/asset", assetRoute);
 app.route("/discord", discordRoute);
 app.route("/oc-generators", ocGeneratorRoute);
-app.route("/search", searchRoute);
+app.route("/search/assets", assetSearchRoute);
 app.route("/games", gamesRoute);
 app.route("/user", userRoute);
 // app.route("/auth", authRoute);
