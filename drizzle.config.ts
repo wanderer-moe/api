@@ -8,7 +8,7 @@ export default {
     breakpoints: true,
     driver: "mysql2",
     dbCredentials: {
-        host: process.env.DATABASE_HOST! || "",
+        host: process.env.DATABASE_HOST || "",
         user: process.env.DATABASE_USERNAME || "",
         password: process.env.DATABASE_PASSWORD || "",
         database: "planetscale",

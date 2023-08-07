@@ -26,7 +26,7 @@ export const downloadAsset = async (c: Context) => {
     const blob = await response.blob();
 
     await db.execute(
-        "UPDATE assets SET downloads = downloads + 1 WHERE id = ?",
+        "UPDATE assets SET download_count = download_count + 1 WHERE id = ?",
         [assetId]
     );
 

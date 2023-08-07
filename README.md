@@ -16,6 +16,8 @@ Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — us
 
 Configuration is in `wrangler.toml`.
 
+You will require either a workers paid plan **or to set your worker to unbound** for authentication and password hashing to work.
+
 You will need to setup environment variables for the Discord Bot Token for `/contributors` route: `DISCORD_TOKEN` and for Planetscale, using `wrangler secret put`.
 
 -   Run `wrangler dev` to preview locally.

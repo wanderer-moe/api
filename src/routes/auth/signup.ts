@@ -64,10 +64,10 @@ export const signup = async (c: Context) => {
             expires: newSession.activePeriodExpiresAt,
             httpOnly: true,
             secure: true,
-            // sameSite: "Lax",
+            sameSite: "Lax",
         });
 
-        return c.json({ success: true, tate: "logged in" }, 200);
+        return c.json({ success: true, state: "logged in" }, 200);
     } catch (e) {
         if (e instanceof LuciaError) {
             return c.json(
