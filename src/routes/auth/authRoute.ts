@@ -10,7 +10,7 @@ const authRoute = new Hono();
 authRoute.use(
     "*",
     cors({
-        // "http://localhost:3000",
+        credentials: true,
         origin: ["https://next.wanderer.moe"],
     })
 );

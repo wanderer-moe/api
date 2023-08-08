@@ -2,7 +2,11 @@ import { auth } from "@/lib/auth/lucia";
 import { Context } from "hono";
 
 export const validate = async (c: Context): Promise<Response> => {
+    console.log(c);
     const authRequest = auth(c.env).handleRequest(c);
+
+    // console.log("validate")
+    // console.log(authRequest);
 
     const session = await authRequest.validate();
 

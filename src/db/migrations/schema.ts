@@ -41,6 +41,9 @@ export const assets = mysqlTable(
             idIdx: index("assets_id_idx").on(table.id),
             nameIdx: index("assets_name_idx").on(table.name),
             gameIdx: index("assets_game_idx").on(table.game),
+            assetCategoryIdx: index("assets_asset_category_idx").on(
+                table.assetCategory
+            ),
             statusIdx: index("assets_status_idx").on(table.status),
             tagsIdx: index("assets_tags_idx").on(table.tags),
             uploadedByIdx: index("assets_uploaded_by_idx").on(table.uploadedBy),

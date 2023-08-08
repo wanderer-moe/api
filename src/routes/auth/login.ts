@@ -7,21 +7,19 @@ export const login = async (c: Context): Promise<Response> => {
 
     const username = formData.get("username") as string;
     const password = formData.get("password") as string;
+    // console.log(username, password);
 
     const validSession = await auth(c.env).handleRequest(c).validate();
 
-    console.log(validSession);
-
-    if (validSession) {
+    if (validSession)
         return c.json({ success: false, state: "already logged in" }, 200);
-    }
 
     if (!validate.username(username) || !validate.password(password)) {
         return c.json(
             {
                 success: false,
                 status: "error",
-                error: "400 Bad Request",
+                error: "Invalid credentials",
             },
             400
         );
@@ -32,6 +30,17 @@ export const login = async (c: Context): Promise<Response> => {
         username.toLowerCase(),
         password
     );
+
+    if (!user) {
+        return c.json(
+            {
+                success: false,
+                status: "error",
+                error: "Invalid credentials",
+            },
+            400
+        );
+    }
 
     const newSession = await auth(c.env).createSession({
         userId: user.userId,

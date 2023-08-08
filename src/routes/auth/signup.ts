@@ -1,18 +1,17 @@
 import { auth } from "@/lib/auth/lucia";
 import { Context } from "hono";
 import * as validate from "@/lib/regex/accountValidation";
-import { LuciaError } from "lucia";
 
 export const signup = async (c: Context) => {
-    const body = await c.req.formData();
+    const formData = await c.req.formData();
 
-    const username = body.get("username") as string;
-    const password = body.get("password") as string;
-    const passwordConfirm = body.get("passwordConfirm") as string;
-    const email = body.get("email") as string;
+    const username = formData.get("username") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const passwordConfirm = formData.get("passwordConfirm") as string;
+    // console.log(username, email, password, passwordConfirm);
 
     const validSession = await auth(c.env).handleRequest(c).validate();
-
     if (validSession)
         return c.json({ success: false, state: "already logged in" }, 200);
 
@@ -26,7 +25,7 @@ export const signup = async (c: Context) => {
             {
                 success: false,
                 status: "error",
-                error: "400 Bad Request",
+                error: "Invalid credentials",
             },
             400
         );
@@ -54,6 +53,7 @@ export const signup = async (c: Context) => {
                 bio: null,
             },
         });
+
         const newSession = await auth(c.env).createSession({
             userId: user.userId,
             attributes: {},
@@ -63,21 +63,12 @@ export const signup = async (c: Context) => {
         authRequest.setSession(newSession);
         return c.json({ success: true, state: "logged in" }, 200);
     } catch (e) {
-        if (e instanceof LuciaError) {
-            return c.json(
-                {
-                    success: false,
-                    status: "error",
-                    error: "Account creation error, most likely already exists",
-                },
-                500
-            );
-        }
+        console.log(e);
         return c.json(
             {
                 success: false,
                 status: "error",
-                error: "500 Internal Server Error",
+                error: "Error creating user",
             },
             500
         );

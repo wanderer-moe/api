@@ -26,6 +26,10 @@ export const auth = (env: Env) => {
         experimental: {
             debugMode: env.ENVIRONMENT === "DEV" ? true : false,
         },
+        // csrfProtection: {
+        //     baseDomain: env.ENVIRONMENT === "DEV" ? "localhost" : "wanderer.moe",
+        //     allowedSubDomains: ["*"],
+        // },
         getUserAttributes: (dbUser) => {
             return {
                 username: dbUser.username,
