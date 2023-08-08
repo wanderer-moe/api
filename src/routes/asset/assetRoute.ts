@@ -8,6 +8,7 @@ assetRoute.get("/:id", async (c) => {
     return getAssetFromId(c);
 });
 
+// setting both of these to id returns "duplicate param name" error, will fix later
 assetRoute.get("/download/:assetId", async (c) => {
     return downloadAsset(c);
 });

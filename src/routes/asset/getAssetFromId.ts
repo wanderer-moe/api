@@ -60,6 +60,11 @@ export const getAssetFromId = async (c) => {
         };
     });
 
+    await db.execute(
+        "UPDATE assets SET view_count = view_count + 1 WHERE id = ?",
+        [id]
+    );
+
     response = c.json(
         {
             success: true,
