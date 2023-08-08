@@ -1,6 +1,5 @@
-import { auth, authorizationTokenNames } from "@/lib/auth/lucia";
+import { auth } from "@/lib/auth/lucia";
 import { Context } from "hono";
-import { setCookie } from "hono/cookie";
 import * as validate from "@/lib/regex/accountValidation";
 import { LuciaError } from "lucia";
 
@@ -12,7 +11,7 @@ export const signup = async (c: Context) => {
     const passwordConfirm = body.get("passwordConfirm") as string;
     const email = body.get("email") as string;
 
-    const validSession = await auth(c.env).handleRequest(c.req.raw).validate();
+    const validSession = await auth(c.env).handleRequest(c).validate();
 
     if (validSession)
         return c.json({ success: false, state: "already logged in" }, 200);
@@ -60,13 +59,8 @@ export const signup = async (c: Context) => {
             attributes: {},
         });
 
-        setCookie(c, authorizationTokenNames.csrf, newSession.sessionId, {
-            expires: newSession.activePeriodExpiresAt,
-            httpOnly: true,
-            secure: true,
-            sameSite: "Lax",
-        });
-
+        const authRequest = auth(c.env).handleRequest(c);
+        authRequest.setSession(newSession);
         return c.json({ success: true, state: "logged in" }, 200);
     } catch (e) {
         if (e instanceof LuciaError) {

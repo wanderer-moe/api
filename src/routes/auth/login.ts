@@ -1,6 +1,5 @@
-import { auth, authorizationTokenNames } from "@/lib/auth/lucia";
+import { auth } from "@/lib/auth/lucia";
 import { Context } from "hono";
-import { setCookie } from "hono/cookie";
 import * as validate from "@/lib/regex/accountValidation";
 
 export const login = async (c: Context): Promise<Response> => {
@@ -9,7 +8,7 @@ export const login = async (c: Context): Promise<Response> => {
     const username = formData.get("username") as string;
     const password = formData.get("password") as string;
 
-    const validSession = await auth(c.env).handleRequest(c.req.raw).validate();
+    const validSession = await auth(c.env).handleRequest(c).validate();
 
     console.log(validSession);
 
@@ -39,13 +38,8 @@ export const login = async (c: Context): Promise<Response> => {
         attributes: {},
     });
 
-    setCookie(c, authorizationTokenNames.csrf, newSession.sessionId, {
-        expires: newSession.activePeriodExpiresAt,
-        sameSite: "Lax",
-        httpOnly: true,
-        path: "/",
-        secure: true,
-    });
+    const authRequest = await auth(c.env).handleRequest(c);
+    authRequest.setSession(newSession);
 
     return c.json({ success: true, state: "logged in" }, 200);
 };

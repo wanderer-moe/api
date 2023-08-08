@@ -1,14 +1,9 @@
 import { lucia } from "lucia";
-import { web } from "lucia/middleware";
+import { hono } from "lucia/middleware";
 import { planetscale } from "@lucia-auth/adapter-mysql";
 import { getConnection } from "../planetscale";
 import { Env } from "@/worker-configuration";
 import { tableNames } from "../drizzle";
-
-export const authorizationTokenNames = {
-    csrf: "__csrf_token",
-    session: "__session_token",
-};
 
 // this is so we can pass in env during requests,
 // so: it would be called: auth(c.env)... instead of auth
@@ -22,14 +17,10 @@ export const auth = (env: Env) => {
             user: tableNames.authUser,
             session: tableNames.authSession,
         }),
-        middleware: web(),
+        middleware: hono(),
         sessionExpiresIn: {
             idlePeriod: 0,
             activePeriod: 30 * 24 * 60 * 60 * 1000, // 30 days
-        },
-        sessionCookie: {
-            name: authorizationTokenNames.session,
-            expires: false,
         },
         env: env.ENVIRONMENT === "DEV" ? "DEV" : "PROD",
         experimental: {
