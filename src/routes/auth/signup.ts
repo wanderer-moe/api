@@ -5,7 +5,7 @@ import * as validate from "@/lib/regex/accountValidation";
 export const signup = async (c: Context) => {
     const formData = await c.req.formData();
 
-    const secretKeyRequiredForSignup = c.env.get("VERY_SECRET_SIGNUP_KEY");
+    const secretKeyRequiredForSignup = c.env.VERY_SECRET_SIGNUP_KEY;
 
     const username = formData.get("username") as string;
     const email = formData.get("email") as string;

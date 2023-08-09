@@ -6,4 +6,5 @@ export interface Env {
     DATABASE_USERNAME: string;
     DATABASE_HOST: string;
     ENVIRONMENT: string;
+    VERY_SECRET_SIGNUP_KEY: string;
 }
