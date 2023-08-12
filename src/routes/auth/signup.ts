@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth/lucia";
 import { Context } from "hono";
-import * as validate from "@/lib/regex/accountValidation";
+// import * as validate from "@/lib/regex/accountValidation";
 
 export const signup = async (c: Context) => {
     const formData = await c.req.formData();
@@ -18,22 +18,9 @@ export const signup = async (c: Context) => {
     if (validSession)
         return c.json({ success: false, state: "already logged in" }, 200);
 
-    if (secretKeyRequiredForSignup !== secretKey) {
-        return c.json(
-            {
-                success: false,
-                status: "error",
-                error: "Invalid secret key",
-            },
-            400
-        );
-    }
-
     if (
-        !validate.username(username) ||
-        !validate.password(password) ||
-        !validate.email(email) ||
-        password !== passwordConfirm
+        secretKeyRequiredForSignup !== secretKey ||
+        passwordConfirm !== password
     ) {
         return c.json(
             {
@@ -44,6 +31,8 @@ export const signup = async (c: Context) => {
             400
         );
     }
+
+    console.log("creating user");
 
     try {
         const user = await auth(c.env).createUser({
@@ -68,9 +57,18 @@ export const signup = async (c: Context) => {
             },
         });
 
+        const userAgentHash = await crypto.subtle.digest(
+            { name: "MD5" },
+            new TextEncoder().encode(c.req.headers.get("user-agent") ?? "")
+        );
+        const countryCode = c.req.headers.get("cf-ipcountry") ?? "";
+
         const newSession = await auth(c.env).createSession({
             userId: user.userId,
-            attributes: {},
+            attributes: {
+                country_code: countryCode,
+                user_agent_hash: userAgentHash,
+            },
         });
 
         const authRequest = auth(c.env).handleRequest(c);

@@ -11,11 +11,7 @@ authRoute.use(
     "*",
     cors({
         credentials: true,
-        origin: [
-            "https://next.wanderer.moe",
-            "https://wanderer.moe",
-            "http://localhost:3000",
-        ],
+        origin: ["https://next.wanderer.moe"],
     })
 );
 
@@ -31,7 +27,7 @@ authRoute.get("/validate", async (c) => {
     return validate(c);
 });
 
-authRoute.get("/logout", async (c) => {
+authRoute.post("/logout", async (c) => {
     return logout(c);
 });
 

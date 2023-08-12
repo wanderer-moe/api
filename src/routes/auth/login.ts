@@ -1,6 +1,14 @@
 import { auth } from "@/lib/auth/lucia";
 import { Context } from "hono";
-import * as validate from "@/lib/regex/accountValidation";
+// import * as validate from "@/lib/regex/accountValidation";
+
+const usernameThrottling = new Map<
+    string,
+    {
+        timeoutUntil: number;
+        timeoutSeconds: number;
+    }
+>();
 
 export const login = async (c: Context): Promise<Response> => {
     const formData = await c.req.formData();
@@ -14,12 +22,17 @@ export const login = async (c: Context): Promise<Response> => {
     if (validSession)
         return c.json({ success: false, state: "already logged in" }, 200);
 
-    if (!validate.username(username) || !validate.password(password)) {
+    const storedThrottling = usernameThrottling.get(username);
+    const timeoutUntil = storedThrottling?.timeoutUntil ?? 0;
+
+    if (timeoutUntil > Date.now()) {
         return c.json(
             {
                 success: false,
                 status: "error",
-                error: "Invalid credentials",
+                error: `Too many login attempts -  wait ${
+                    (timeoutUntil - Date.now()) / 1000
+                } seconds`,
             },
             400
         );
@@ -32,19 +45,35 @@ export const login = async (c: Context): Promise<Response> => {
     );
 
     if (!user) {
+        const timeoutSeconds = storedThrottling
+            ? storedThrottling.timeoutSeconds * 2
+            : 1;
+        usernameThrottling.set(username, {
+            timeoutUntil: Date.now() + timeoutSeconds * 1000,
+            timeoutSeconds,
+        });
         return c.json(
             {
                 success: false,
                 status: "error",
-                error: "Invalid credentials",
+                error: `Invalid credentials -  wait ${timeoutSeconds} seconds`,
             },
             400
         );
     }
 
+    const userAgentHash = await crypto.subtle.digest(
+        { name: "MD5" },
+        new TextEncoder().encode(c.req.headers.get("user-agent") ?? "")
+    );
+    const countryCode = c.req.headers.get("cf-ipcountry") ?? "";
+
     const newSession = await auth(c.env).createSession({
         userId: user.userId,
-        attributes: {},
+        attributes: {
+            country_code: countryCode,
+            user_agent_hash: userAgentHash,
+        },
     });
 
     const authRequest = await auth(c.env).handleRequest(c);

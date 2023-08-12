@@ -46,6 +46,12 @@ export const auth = (env: Env) => {
                 dateJoined: dbUser.date_joined,
             };
         },
+        getSessionAttributes: (dbSession) => {
+            return {
+                userAgentHash: dbSession.user_agent_hash as unknown as string, // md5
+                countryCode: dbSession.country_code as string,
+            };
+        },
     });
 };
 

@@ -15,5 +15,8 @@ declare namespace Lucia {
         self_assignable_role_flags: number | null;
         date_joined: Date;
     };
-    // type DatabaseSessionAttributes = {}
+    type DatabaseSessionAttributes = {
+        country_code: string;
+        user_agent_hash: ArrayBuffer;
+    };
 }

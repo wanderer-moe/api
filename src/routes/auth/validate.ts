@@ -10,12 +10,29 @@ export const validate = async (c: Context): Promise<Response> => {
 
     const session = await authRequest.validate();
 
+    const userAgentHash = await crypto.subtle.digest(
+        { name: "MD5" },
+        new TextEncoder().encode(c.req.headers.get("user-agent") ?? "")
+    );
+    const countryCode = c.req.headers.get("cf-ipcountry") ?? "";
+
     if (!session) {
+        authRequest.setSession(null);
+        return c.json({ success: false, state: "invalid session" }, 200);
+    }
+
+    if (
+        session.userAgentHash !== userAgentHash ||
+        session.countryCode !== countryCode
+    ) {
+        await auth(c.env).invalidateSession(session.sessionId);
+        authRequest.setSession(null);
         return c.json({ success: false, state: "invalid session" }, 200);
     }
 
     if (session.state === "idle") {
         await auth(c.env).invalidateSession(session.sessionId);
+        authRequest.setSession(null);
         return c.json({ success: false, state: "invalid session" }, 200);
     }
 

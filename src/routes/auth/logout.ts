@@ -10,5 +10,7 @@ export const logout = async (c: Context): Promise<Response> => {
     }
 
     await auth(c.env).invalidateSession(session.sessionId);
+    authRequest.setSession(null);
+
     return c.json({ success: true, state: "logged out" }, 200);
 };
