@@ -1,9 +1,8 @@
 import { responseHeaders } from "@/lib/responseHeaders";
 import { listBucket } from "@/lib/listBucket";
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse";
-import { Context } from "hono";
 
-export const getGeneratorFromName = async (c: Context) => {
+export const getGeneratorFromName = async (c) => {
     const { gameName } = c.req.param();
     const cacheKey = new Request(c.req.url.toString(), c.req);
     const cache = caches.default;
@@ -16,7 +15,11 @@ export const getGeneratorFromName = async (c: Context) => {
     });
 
     if (files.objects.length === 0)
-        return createNotFoundResponse("Generator not found", responseHeaders);
+        return createNotFoundResponse(
+            c,
+            "Generator not found",
+            responseHeaders
+        );
 
     const data = await fetch(
         `https://files.wanderer.moe/${files.objects[0].key}`

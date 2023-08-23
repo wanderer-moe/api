@@ -1,10 +1,9 @@
 import { responseHeaders } from "@/lib/responseHeaders";
-import { getConnection } from "@/lib/planetscale";
-import { Context } from "hono";
+import { getConnection } from "@/db/turso";
 import { listBucket } from "@/lib/listBucket";
-import { Game } from "@/lib/types/game";
+import { games } from "@/db/schema";
 
-export const getAllGames = async (c: Context) => {
+export const getAllGames = async (c) => {
     const cacheKey = new Request(c.req.url.toString(), c.req);
     const cache = caches.default;
     let response = await cache.match(cacheKey);
@@ -23,15 +22,15 @@ export const getAllGames = async (c: Context) => {
     });
 
     const conn = await getConnection(c.env);
-    const db = conn.planetscale;
+    const { drizzle } = conn;
 
-    const gameList = await db
-        .execute("SELECT * FROM games ORDER BY asset_count DESC")
+    const gamesList = await drizzle
+        .select()
+        .from(games)
+        .execute()
         .then((row) =>
-            row.rows.map((game: Game) => ({
+            row.map((game) => ({
                 ...game,
-                // asset categories are stored as a comma separated string in the database, so we need to split them into an array
-                asset_categories: game.asset_categories.split(","),
                 has_generator: results.some(
                     (generator) => generator.name === game.name
                 ),
@@ -42,7 +41,7 @@ export const getAllGames = async (c: Context) => {
         {
             success: true,
             status: "ok",
-            results: gameList,
+            results: gamesList,
         },
         200,
         responseHeaders

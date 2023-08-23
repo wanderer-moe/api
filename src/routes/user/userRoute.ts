@@ -4,7 +4,7 @@ import { getUserByUsername } from "./getUserByUsername";
 
 const userRoute = new Hono();
 
-userRoute.get("/u/:name", async (c) => {
+userRoute.get("/u/:username", async (c) => {
     return getUserByUsername(c);
 });
 

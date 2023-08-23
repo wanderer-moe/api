@@ -1,34 +1,31 @@
 import { responseHeaders } from "@/lib/responseHeaders";
-import type { Asset } from "@/lib/types/asset";
-import { getConnection } from "@/lib/planetscale";
+import { getConnection } from "@/db/turso";
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse";
-import { Context } from "hono";
+import { eq } from "drizzle-orm";
+import { assets } from "@/db/schema";
 
-export const downloadAsset = async (c: Context) => {
+export const downloadAsset = async (c) => {
     const { assetId } = c.req.param();
 
     const conn = await getConnection(c.env);
-    const db = conn.planetscale;
+    const { drizzle } = conn;
 
-    const row = await db
-        .execute("SELECT * FROM assets WHERE id = ?", [assetId])
-        .then((row) => row.rows[0] as Asset | undefined);
+    const asset = await drizzle
+        .select()
+        .from(assets)
+        .where(eq(assets.id, assetId))
+        .execute();
 
-    if (!row)
-        return createNotFoundResponse("Asset ID not found", responseHeaders);
+    if (!asset) {
+        return createNotFoundResponse(c, "Asset not found", responseHeaders);
+    }
 
-    const response = await fetch(
-        `https://files.wanderer.moe/assets/${row.url}`
-    );
+    const response = await fetch(asset[0].url);
 
-    const headers = new Headers(response.headers);
-    headers.set("Content-Disposition", `attachment; filename="${row.name}"`);
     const blob = await response.blob();
 
-    await db.execute(
-        "UPDATE assets SET download_count = download_count + 1 WHERE id = ?",
-        [assetId]
-    );
+    const headers = new Headers();
+    headers.set("Content-Disposition", `attachment; filename=${asset[0].name}`);
 
     return new Response(blob, {
         headers: headers,

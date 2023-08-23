@@ -8,34 +8,30 @@
         "lint": "eslint . --ext .ts",
         "prettier:check": "prettier --check .",
         "typecheck": "tsc --noEmit",
-        "prisma:generate": "npx prisma generate --accelerate",
-        "prisma:push": "npx prisma db push"
+        "drizzle:generate": "drizzle-kit generate:sqlite"
     },
     "devDependencies": {
-        "@cloudflare/workers-types": "^4.20230807.0",
-        "@types/node": "^20.4.8",
-        "eslint": "^8.46.0",
+        "@cloudflare/workers-types": "^4.20230821.0",
+        "@types/node": "^20.5.3",
+        "dotenv": "^16.3.1",
+        "drizzle-kit": "^0.19.13",
+        "eslint": "^8.47.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-json": "^3.1.0",
+        "tsx": "^3.12.7",
         "typescript": "^5.1.6",
-        "wrangler": "3.4.0"
+        "wrangler": "3.5.1"
     },
     "private": true,
     "dependencies": {
-        "@aws-sdk/client-s3": "^3.386.0",
-        "@lucia-auth/adapter-mysql": "^2.0.0",
-        "@lucia-auth/adapter-prisma": "^3.0.1",
-        "@planetscale/database": "^1.10.0",
-        "@prisma/client": "^5.1.1",
-        "@typescript-eslint/eslint-plugin": "^6.3.0",
-        "dotenv": "^16.3.1",
-        "drizzle-kit": "^0.19.12",
-        "drizzle-orm": "^0.28.1",
-        "hono": "^3.4.1",
-        "lucia": "^2.2.0",
+        "@libsql/client": "^0.3.1",
+        "@lucia-auth/adapter-sqlite": "^2.0.0",
+        "@typescript-eslint/eslint-plugin": "^6.4.1",
+        "drizzle-orm": "^0.28.3",
+        "hono": "^3.5.1",
+        "lucia": "^2.4.0",
         "mysql2": "^3.6.0",
-        "prettier": "^3.0.1",
-        "render2": "^1.2.1",
-        "resend": "^0.17.2"
+        "prettier": "^3.0.2",
+        "resend": "^1.0.0"
     }
 }

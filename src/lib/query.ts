@@ -1,5 +1,5 @@
 import type { Asset } from "@/lib/types/asset";
-import { getConnection } from "@/lib/planetscale";
+import { getConnection } from "@/db/turso";
 
 type queryParameter = string | number;
 

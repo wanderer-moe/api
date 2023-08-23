@@ -2,9 +2,9 @@
 
 ![Banner]
 
-![Quality] ![API Response] ![CDN Response]
+![Quality]
 
-Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — using **Cloudflare Workers** and **Hono** with **R2 Storage** for the CDN, and **Planetscale** for the Database.
+Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — using **Cloudflare Workers** and **Hono** with **R2 Storage** for the CDN, **Turso** and **Drizzle** for the Database.
 
 </div>
 
@@ -40,8 +40,6 @@ You will need to setup environment variables for the Discord Bot Token for `/con
 [Banner]: https://files.catbox.moe/qa3eus.svg
 [API Status]: https://status.wanderer.moe/history/api
 [CDN Status]: https://status.wanderer.moe/history/cdn
-[API Response]: https://img.shields.io/endpoint?label=API%20Response&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fwanderer-moe%2Fstatus%2FHEAD%2Fapi%2Fapi%2Fresponse-time.json
-[CDN Response]: https://img.shields.io/endpoint?label=CDN%20Response&style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fwanderer-moe%2Fstatus%2FHEAD%2Fapi%2Fcdn%2Fresponse-time.json
 [Quality]: https://img.shields.io/codefactor/grade/github/wanderer-moe/api?label=quality&style=for-the-badge
 [Cloudflare API Token]: https://dash.cloudflare.com/profile/api-tokens
 [Dromzeh]: https://github.com/dromzeh

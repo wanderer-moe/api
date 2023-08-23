@@ -1,28 +1,23 @@
 import { auth } from "@/lib/auth/lucia";
-import { Context } from "hono";
 
-export const validate = async (c: Context): Promise<Response> => {
+export const validate = async (c): Promise<Response> => {
     console.log(c);
     const authRequest = auth(c.env).handleRequest(c);
 
-    // console.log("validate")
-    // console.log(authRequest);
-
     const session = await authRequest.validate();
 
-    const userAgentHash = await crypto.subtle.digest(
-        { name: "MD5" },
-        new TextEncoder().encode(c.req.headers.get("user-agent") ?? "")
-    );
     const countryCode = c.req.headers.get("cf-ipcountry") ?? "";
+    const userAgent = c.req.headers.get("user-agent") ?? "";
 
     if (!session) {
         authRequest.setSession(null);
         return c.json({ success: false, state: "invalid session" }, 200);
     }
 
+    // console.log(session);
+
     if (
-        session.userAgentHash !== userAgentHash ||
+        session.userAgent !== userAgent ||
         session.countryCode !== countryCode
     ) {
         await auth(c.env).invalidateSession(session.sessionId);

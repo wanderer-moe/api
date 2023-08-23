@@ -1,7 +1,8 @@
 import { responseHeaders } from "@/lib/responseHeaders";
-import type { Asset } from "@/lib/types/asset";
-import { getConnection } from "@/lib/planetscale";
+import { getConnection } from "@/db/turso";
+import { assets } from "@/db/schema";
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse";
+import { eq, desc } from "drizzle-orm";
 
 export const getAssetFromId = async (c) => {
     const { id } = c.req.param();
@@ -12,58 +13,31 @@ export const getAssetFromId = async (c) => {
     if (response) return response;
 
     const conn = await getConnection(c.env);
-    const db = conn.planetscale;
+    const { drizzle } = conn;
 
-    const row = await db
-        .execute("SELECT * FROM assets WHERE id = ?", [id])
-        .then((row) => row.rows[0] as Asset | undefined);
+    const asset = await drizzle
+        .select()
+        .from(assets)
+        .where(eq(assets.id, id))
+        .execute();
 
-    if (!row)
-        return createNotFoundResponse("Asset ID not found", responseHeaders);
+    if (!asset) {
+        response = createNotFoundResponse(
+            c,
+            "Asset not found",
+            responseHeaders
+        );
+        await cache.put(cacheKey, response.clone());
+        return response;
+    }
 
-    const asset = {
-        id: row.id,
-        name: row.name,
-        game: row.game,
-        asset_category: row.asset_category,
-        url: row.url,
-        tags: row.tags,
-        status: row.status,
-        uploaded_by: row.uploaded_by,
-        uploaded_date: row.uploaded_date,
-        file_size: row.file_size,
-        width: row.width,
-        height: row.height,
-    };
-
-    const similarAssets = (
-        await db
-            .execute(
-                "SELECT * FROM assets WHERE game = ? AND asset_category = ? AND id != ? ORDER BY RAND() LIMIT 4",
-                [row.game, row.asset_category, row.id]
-            )
-            .then((row) => row.rows as Asset[])
-    ).map((asset) => {
-        return {
-            id: asset.id,
-            name: asset.name,
-            game: asset.game,
-            asset_category: asset.asset_category,
-            url: asset.url,
-            tags: asset.tags,
-            status: asset.status,
-            uploaded_by: asset.uploaded_by,
-            uploaded_date: asset.uploaded_date,
-            file_size: asset.file_size,
-            width: asset.width,
-            height: asset.height,
-        };
-    });
-
-    await db.execute(
-        "UPDATE assets SET view_count = view_count + 1 WHERE id = ?",
-        [id]
-    );
+    const similarAssets = await drizzle
+        .select()
+        .from(assets)
+        .where(eq(assets.assetCategory, asset[0].assetCategory))
+        .limit(6)
+        .orderBy(desc(assets.id))
+        .execute();
 
     response = c.json(
         {

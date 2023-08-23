@@ -1,21 +1,21 @@
 import { lucia } from "lucia";
 import { hono } from "lucia/middleware";
-import { planetscale } from "@lucia-auth/adapter-mysql";
-import { getConnection } from "../planetscale";
+import { getConnection } from "@/db/turso";
 import { Env } from "@/worker-configuration";
-import { tableNames } from "../drizzle";
+import { tableNames } from "@/db/drizzle";
+import { libsql } from "@lucia-auth/adapter-sqlite";
 
 // this is so we can pass in env during requests,
-// so: it would be called: auth(c.env)... instead of auth
+// so, it would be called: auth(c.env)... instead of auth
 export const auth = (env: Env) => {
     const db = getConnection(env);
-    const connection = db.planetscale;
+    const connection = db.turso;
 
     return lucia({
-        adapter: planetscale(connection, {
+        adapter: libsql(connection, {
             key: tableNames.authKey,
-            user: tableNames.authUser,
             session: tableNames.authSession,
+            user: tableNames.authUser,
         }),
         middleware: hono(),
         sessionExpiresIn: {
@@ -26,10 +26,6 @@ export const auth = (env: Env) => {
         experimental: {
             debugMode: env.ENVIRONMENT === "DEV" ? true : false,
         },
-        // csrfProtection: {
-        //     baseDomain: env.ENVIRONMENT === "DEV" ? "localhost" : "wanderer.moe",
-        //     allowedSubDomains: ["*"],
-        // },
         getUserAttributes: (dbUser) => {
             return {
                 username: dbUser.username,
@@ -48,7 +44,7 @@ export const auth = (env: Env) => {
         },
         getSessionAttributes: (dbSession) => {
             return {
-                userAgentHash: dbSession.user_agent_hash as unknown as string, // md5
+                userAgent: dbSession.user_agent as unknown as string, // md5
                 countryCode: dbSession.country_code as string,
             };
         },

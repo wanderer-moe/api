@@ -1,10 +1,9 @@
 import { responseHeaders } from "@/lib/responseHeaders";
 import type { Asset } from "@/lib/types/asset";
 import { getSearchResults } from "@/lib/query";
-import { getConnection } from "@/lib/planetscale";
-import { Context } from "hono";
+import { getConnection } from "@/db/turso";
 
-export const getAssetSearch = async (c: Context) => {
+export const getAssetSearch = async (c) => {
     const queryParams = c.req.query();
     // console.log(queryParams);
     const { query, game, asset, tags } = queryParams;

@@ -1,5 +1,4 @@
 import { auth } from "@/lib/auth/lucia";
-import { Context } from "hono";
 // import * as validate from "@/lib/regex/accountValidation";
 
 const usernameThrottling = new Map<
@@ -10,7 +9,7 @@ const usernameThrottling = new Map<
     }
 >();
 
-export const login = async (c: Context): Promise<Response> => {
+export const login = async (c): Promise<Response> => {
     const formData = await c.req.formData();
 
     const username = formData.get("username") as string;
@@ -62,19 +61,18 @@ export const login = async (c: Context): Promise<Response> => {
         );
     }
 
-    const userAgentHash = await crypto.subtle.digest(
-        { name: "MD5" },
-        new TextEncoder().encode(c.req.headers.get("user-agent") ?? "")
-    );
+    const userAgent = c.req.headers.get("user-agent") ?? "";
     const countryCode = c.req.headers.get("cf-ipcountry") ?? "";
 
     const newSession = await auth(c.env).createSession({
         userId: user.userId,
         attributes: {
             country_code: countryCode,
-            user_agent_hash: userAgentHash,
+            user_agent: userAgent,
         },
     });
+
+    console.log("valid session created", countryCode, userAgent);
 
     const authRequest = await auth(c.env).handleRequest(c);
     authRequest.setSession(newSession);

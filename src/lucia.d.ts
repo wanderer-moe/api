@@ -9,14 +9,15 @@ declare namespace Lucia {
         email: string;
         email_verified: number;
         pronouns: string | null;
+        is_contributor: number;
         verified: number;
         bio: string | null;
         role_flags: number;
         self_assignable_role_flags: number | null;
-        date_joined: Date;
+        date_joined: number;
     };
     type DatabaseSessionAttributes = {
         country_code: string;
-        user_agent_hash: ArrayBuffer;
+        user_agent: string;
     };
 }
