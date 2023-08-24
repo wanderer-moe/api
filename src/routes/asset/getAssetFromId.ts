@@ -4,7 +4,7 @@ import { assets } from "@/db/schema"
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse"
 import { eq, desc } from "drizzle-orm"
 
-export const getAssetFromId = async (c) => {
+export const getAssetFromId = async (c): Promise<Response> => {
     const { id } = c.req.param()
     const cacheKey = new Request(c.req.url.toString(), c.req)
     const cache = caches.default

@@ -4,7 +4,7 @@ import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse
 import { eq } from "drizzle-orm"
 import { assets } from "@/db/schema"
 
-export const downloadAsset = async (c) => {
+export const downloadAsset = async (c): Promise<Response> => {
     const { assetId } = c.req.param()
 
     const drizzle = await getConnection(c.env).drizzle

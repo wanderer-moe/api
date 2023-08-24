@@ -3,7 +3,7 @@ import { getConnection } from "@/db/turso"
 import { eq, and } from "drizzle-orm"
 import { assets } from "@/db/schema"
 
-export const uploadAsset = async (c) => {
+export const uploadAsset = async (c): Promise<Response> => {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
@@ -24,7 +24,11 @@ export const uploadAsset = async (c) => {
     const drizzle = await getConnection(c.env).drizzle
 
     const formData = await c.req.formData()
-    const asset = formData.get("asset") as File
+    const asset = formData.get("asset") as File | null
+
+    if (!asset || asset.type !== "image/png") {
+        return c.json({ success: false, state: "invalid asset" }, 200)
+    }
 
     // clear out metadata
     const metadata = {

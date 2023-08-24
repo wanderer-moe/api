@@ -3,7 +3,7 @@ import { getConnection } from "@/db/turso"
 import { listBucket } from "@/lib/listBucket"
 import { games } from "@/db/schema"
 
-export const getAllGames = async (c) => {
+export const getAllGames = async (c): Promise<Response> => {
     const cacheKey = new Request(c.req.url.toString(), c.req)
     const cache = caches.default
     let response = await cache.match(cacheKey)

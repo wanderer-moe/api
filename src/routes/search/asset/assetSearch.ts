@@ -3,7 +3,7 @@ import type { Asset } from "@/lib/types/asset"
 import { getSearchResults } from "@/lib/query"
 import { getConnection } from "@/db/turso"
 
-export const getAssetSearch = async (c) => {
+export const getAssetSearch = async (c): Promise<Response> => {
     const queryParams = c.req.query()
     // console.log(queryParams);
     const { query, game, asset, tags } = queryParams
@@ -60,7 +60,7 @@ export const getAssetSearch = async (c) => {
     return response
 }
 
-export const recentAssets = async (c) => {
+export const recentAssets = async (c): Promise<Response> => {
     const cacheKey = new Request(c.req.url.toString(), c.req)
     const cache = caches.default
     let response = await cache.match(cacheKey)

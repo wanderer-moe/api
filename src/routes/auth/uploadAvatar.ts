@@ -16,6 +16,10 @@ export const uploadProfileImage = async (c): Promise<Response> => {
 
     const avatar = formData.get("avatar") as File | null
 
+    if (!avatar || avatar.type !== "image/png") {
+        return c.json({ success: false, state: "invalid avatar" }, 200)
+    }
+
     const newAvatar = new File([avatar], `${session.userId}.png`)
     const newAvatarURL = `/avatars/${session.userId}.png`
 

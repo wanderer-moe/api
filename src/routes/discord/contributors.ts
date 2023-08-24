@@ -2,7 +2,7 @@ import { responseHeaders } from "@/lib/responseHeaders"
 import { roles, guildId } from "@/lib/discord"
 import type { Contributor, GuildMember } from "@/lib/types/discord"
 
-export const contributors = async (c) => {
+export const contributors = async (c): Promise<Response> => {
     const members: Contributor[] = []
 
     let after: string | null = null
