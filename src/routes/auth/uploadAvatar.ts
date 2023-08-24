@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth/lucia"
 
+// TODO: add support for animated avatars
 export const uploadProfileImage = async (c): Promise<Response> => {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
