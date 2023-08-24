@@ -13,8 +13,10 @@ export const updateUserAttributes = async (c) => {
 
     const attributes = {
         username: formData.get("username") as string | null,
-        username_colour: formData.get("username_colour") as string | null,
         pronouns: formData.get("pronouns") as string | null,
+        self_assignable_role_flags: formData.get("self_assignable_roles") as
+            | number
+            | null,
         bio: formData.get("bio") as string | null,
     }
 
