@@ -4,7 +4,7 @@ import { like } from "drizzle-orm"
 import { getConnection } from "@/db/turso"
 import { users } from "@/db/schema"
 
-export const getUsersBySearch = async (c): Promise<Response> => {
+export async function getUsersBySearch(c): Promise<Response> {
     const cacheKey = new Request(c.req.url.toString(), c.req)
     const cache = caches.default
     let response = await cache.match(cacheKey)

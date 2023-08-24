@@ -9,7 +9,7 @@ const usernameThrottling = new Map<
     }
 >()
 
-export const login = async (c): Promise<Response> => {
+export async function login(c): Promise<Response> {
     const formData = await c.req.formData()
 
     const username = formData.get("username") as string

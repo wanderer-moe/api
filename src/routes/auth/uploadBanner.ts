@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth/lucia"
 
 // TODO: add support for animated banners
-export const uploadBannerImage = async (c): Promise<Response> => {
+export async function uploadBannerImage(c): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 

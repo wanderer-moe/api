@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth/lucia"
 
-export const logout = async (c): Promise<Response> => {
+export async function logout(c): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 

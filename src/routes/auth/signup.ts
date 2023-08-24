@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth/lucia"
 // import * as validate from "@/lib/regex/accountValidation";
 
-export const signup = async (c): Promise<Response> => {
+export async function signup(c): Promise<Response> {
     const formData = await c.req.formData()
 
     const secretKeyRequiredForSignup = c.env.VERY_SECRET_SIGNUP_KEY

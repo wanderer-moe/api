@@ -4,7 +4,7 @@ import { users } from "@/db/schema"
 import { eq } from "drizzle-orm"
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse"
 
-export const getUserByUsername = async (c): Promise<Response> => {
+export async function getUserByUsername(c): Promise<Response> {
     const { username } = c.req.param()
     const cacheKey = new Request(c.req.url.toString(), c.req)
     const cache = caches.default

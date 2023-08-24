@@ -3,7 +3,7 @@ import { getConnection } from "@/db/turso"
 import { eq, and } from "drizzle-orm"
 import { assets } from "@/db/schema"
 
-export const uploadAsset = async (c): Promise<Response> => {
+export async function uploadAsset(c): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 

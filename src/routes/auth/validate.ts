@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth/lucia"
 
-export const validate = async (c): Promise<Response> => {
+export async function validate(c): Promise<Response> {
     console.log(c)
     const authRequest = auth(c.env).handleRequest(c)
 
