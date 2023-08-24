@@ -1,4 +1,4 @@
-import type { Config } from "drizzle-kit";
+import type { Config } from "drizzle-kit"
 
 export default {
     out: "./src/db/migrations",
@@ -7,4 +7,4 @@ export default {
     breakpoints: true,
     strict: true,
     verbose: true,
-} satisfies Config;
+} satisfies Config

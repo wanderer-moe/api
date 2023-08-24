@@ -1,10 +1,10 @@
-import { Hono } from "hono";
-import { contributors } from "./contributors";
+import { Hono } from "hono"
+import { contributors } from "./contributors"
 
-const discordRoute = new Hono();
+const discordRoute = new Hono()
 
 discordRoute.get("/contributors", async (c) => {
-    return contributors(c);
-});
+    return contributors(c)
+})
 
-export default discordRoute;
+export default discordRoute

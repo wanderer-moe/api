@@ -1,28 +1,28 @@
-import { auth } from "@/lib/auth/lucia";
+import { auth } from "@/lib/auth/lucia"
 // import * as validate from "@/lib/regex/accountValidation";
 
 const usernameThrottling = new Map<
     string,
     {
-        timeoutUntil: number;
-        timeoutSeconds: number;
+        timeoutUntil: number
+        timeoutSeconds: number
     }
->();
+>()
 
 export const login = async (c): Promise<Response> => {
-    const formData = await c.req.formData();
+    const formData = await c.req.formData()
 
-    const username = formData.get("username") as string;
-    const password = formData.get("password") as string;
+    const username = formData.get("username") as string
+    const password = formData.get("password") as string
     // console.log(username, password);
 
-    const validSession = await auth(c.env).handleRequest(c).validate();
+    const validSession = await auth(c.env).handleRequest(c).validate()
 
     if (validSession)
-        return c.json({ success: false, state: "already logged in" }, 200);
+        return c.json({ success: false, state: "already logged in" }, 200)
 
-    const storedThrottling = usernameThrottling.get(username);
-    const timeoutUntil = storedThrottling?.timeoutUntil ?? 0;
+    const storedThrottling = usernameThrottling.get(username)
+    const timeoutUntil = storedThrottling?.timeoutUntil ?? 0
 
     if (timeoutUntil > Date.now()) {
         return c.json(
@@ -34,23 +34,23 @@ export const login = async (c): Promise<Response> => {
                 } seconds`,
             },
             400
-        );
+        )
     }
 
     const user = await auth(c.env).useKey(
         "username",
         username.toLowerCase(),
         password
-    );
+    )
 
     if (!user) {
         const timeoutSeconds = storedThrottling
             ? storedThrottling.timeoutSeconds * 2
-            : 1;
+            : 1
         usernameThrottling.set(username, {
             timeoutUntil: Date.now() + timeoutSeconds * 1000,
             timeoutSeconds,
-        });
+        })
         return c.json(
             {
                 success: false,
@@ -58,11 +58,11 @@ export const login = async (c): Promise<Response> => {
                 error: `Invalid credentials -  wait ${timeoutSeconds} seconds`,
             },
             400
-        );
+        )
     }
 
-    const userAgent = c.req.headers.get("user-agent") ?? "";
-    const countryCode = c.req.headers.get("cf-ipcountry") ?? "";
+    const userAgent = c.req.headers.get("user-agent") ?? ""
+    const countryCode = c.req.headers.get("cf-ipcountry") ?? ""
 
     const newSession = await auth(c.env).createSession({
         userId: user.userId,
@@ -70,12 +70,12 @@ export const login = async (c): Promise<Response> => {
             country_code: countryCode,
             user_agent: userAgent,
         },
-    });
+    })
 
-    console.log("valid session created", countryCode, userAgent);
+    console.log("valid session created", countryCode, userAgent)
 
-    const authRequest = await auth(c.env).handleRequest(c);
-    authRequest.setSession(newSession);
+    const authRequest = await auth(c.env).handleRequest(c)
+    authRequest.setSession(newSession)
 
-    return c.json({ success: true, state: "logged in" }, 200);
-};
+    return c.json({ success: true, state: "logged in" }, 200)
+}

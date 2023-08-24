@@ -1,7 +1,7 @@
-import type { Asset } from "@/lib/types/asset";
-import { getConnection } from "@/db/turso";
+import type { Asset } from "@/lib/types/asset"
+import { getConnection } from "@/db/turso"
 
-type queryParameter = string | number;
+type queryParameter = string | number
 
 export const getSearchResults = async (
     query: string,
@@ -10,17 +10,17 @@ export const getSearchResults = async (
     tagsArray: string[],
     c
 ): Promise<Asset[]> => {
-    let sqlQuery = `SELECT * FROM assets WHERE 1=1`;
-    const parameters = [];
+    let sqlQuery = `SELECT * FROM assets WHERE 1=1`
+    const parameters = []
 
-    sqlQuery = addQueryToSqlQuery(query, sqlQuery, parameters);
-    sqlQuery = addGameToSqlQuery(gameArray, sqlQuery, parameters);
-    sqlQuery = addAssetToSqlQuery(assetArray, sqlQuery, parameters);
-    sqlQuery = addTagsToSqlQuery(tagsArray, sqlQuery, parameters);
+    sqlQuery = addQueryToSqlQuery(query, sqlQuery, parameters)
+    sqlQuery = addGameToSqlQuery(gameArray, sqlQuery, parameters)
+    sqlQuery = addAssetToSqlQuery(assetArray, sqlQuery, parameters)
+    sqlQuery = addTagsToSqlQuery(tagsArray, sqlQuery, parameters)
 
-    sqlQuery += ` ORDER BY uploaded_date DESC`;
+    sqlQuery += ` ORDER BY uploaded_date DESC`
 
-    sqlQuery = limitResults(sqlQuery);
+    sqlQuery = limitResults(sqlQuery)
 
     if (
         !query &&
@@ -28,16 +28,16 @@ export const getSearchResults = async (
         !assetArray.length &&
         !tagsArray.length
     ) {
-        sqlQuery = `SELECT * FROM assets ORDER BY uploaded_date DESC LIMIT 30`;
+        sqlQuery = `SELECT * FROM assets ORDER BY uploaded_date DESC LIMIT 30`
     }
 
-    const conn = await getConnection(c.env);
-    const db = conn.planetscale;
+    const conn = await getConnection(c.env)
+    const db = conn.planetscale
 
     return await db
         .execute(sqlQuery, parameters)
-        .then((row) => row.rows as Asset[]);
-};
+        .then((row) => row.rows as Asset[])
+}
 
 const addQueryToSqlQuery = (
     query: string,
@@ -45,11 +45,11 @@ const addQueryToSqlQuery = (
     parameters: queryParameter[]
 ): string => {
     if (query) {
-        sqlQuery += ` AND name LIKE ?`;
-        parameters.push(`%${query}%`);
+        sqlQuery += ` AND name LIKE ?`
+        parameters.push(`%${query}%`)
     }
-    return sqlQuery;
-};
+    return sqlQuery
+}
 
 const addGameToSqlQuery = (
     gameArray: string[],
@@ -57,11 +57,11 @@ const addGameToSqlQuery = (
     parameters: queryParameter[]
 ): string => {
     if (gameArray.length) {
-        sqlQuery += ` AND game IN (${gameArray.map(() => "?").join(",")})`;
-        parameters.push(...gameArray);
+        sqlQuery += ` AND game IN (${gameArray.map(() => "?").join(",")})`
+        parameters.push(...gameArray)
     }
-    return sqlQuery;
-};
+    return sqlQuery
+}
 
 const addAssetToSqlQuery = (
     assetArray: string[],
@@ -71,11 +71,11 @@ const addAssetToSqlQuery = (
     if (assetArray.length) {
         sqlQuery += ` AND asset_category IN (${assetArray
             .map(() => "?")
-            .join(",")})`;
-        parameters.push(...assetArray);
+            .join(",")})`
+        parameters.push(...assetArray)
     }
-    return sqlQuery;
-};
+    return sqlQuery
+}
 
 const addTagsToSqlQuery = (
     tagsArray: string[],
@@ -86,12 +86,12 @@ const addTagsToSqlQuery = (
         sqlQuery += ` AND tags IN (${tagsArray
             .map(() => "?")
             .join(",")
-            .toUpperCase()})`;
-        parameters.push(...tagsArray);
+            .toUpperCase()})`
+        parameters.push(...tagsArray)
     }
-    return sqlQuery;
-};
+    return sqlQuery
+}
 
 const limitResults = (sqlQuery: string): string => {
-    return (sqlQuery += ` LIMIT 1500`);
-};
+    return (sqlQuery += ` LIMIT 1500`)
+}

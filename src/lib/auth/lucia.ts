@@ -1,15 +1,15 @@
-import { lucia } from "lucia";
-import { hono } from "lucia/middleware";
-import { getConnection } from "@/db/turso";
-import { Env } from "@/worker-configuration";
-import { tableNames } from "@/db/drizzle";
-import { libsql } from "@lucia-auth/adapter-sqlite";
+import { lucia } from "lucia"
+import { hono } from "lucia/middleware"
+import { getConnection } from "@/db/turso"
+import { Env } from "@/worker-configuration"
+import { tableNames } from "@/db/drizzle"
+import { libsql } from "@lucia-auth/adapter-sqlite"
 
 // this is so we can pass in env during requests,
 // so, it would be called: auth(c.env)... instead of auth
 export const auth = (env: Env) => {
-    const db = getConnection(env);
-    const connection = db.turso;
+    const db = getConnection(env)
+    const connection = db.turso
 
     return lucia({
         adapter: libsql(connection, {
@@ -40,15 +40,15 @@ export const auth = (env: Env) => {
                 roleFlags: dbUser.role_flags,
                 selfAssignableRoleFlags: dbUser.self_assignable_role_flags,
                 dateJoined: dbUser.date_joined,
-            };
+            }
         },
         getSessionAttributes: (dbSession) => {
             return {
                 userAgent: dbSession.user_agent as unknown as string, // md5
                 countryCode: dbSession.country_code as string,
-            };
+            }
         },
-    });
-};
+    })
+}
 
-export type Auth = typeof auth;
+export type Auth = typeof auth

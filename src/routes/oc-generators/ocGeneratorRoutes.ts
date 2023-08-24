@@ -1,15 +1,15 @@
-import { Hono } from "hono";
-import { getGeneratorFromName } from "./getGenerator";
-import { getGenerators } from "./getGenerators";
+import { Hono } from "hono"
+import { getGeneratorFromName } from "./getGenerator"
+import { getGenerators } from "./getGenerators"
 
-const ocGeneratorRoute = new Hono();
+const ocGeneratorRoute = new Hono()
 
 ocGeneratorRoute.get("/", async (c) => {
-    return getGenerators(c);
-});
+    return getGenerators(c)
+})
 
 ocGeneratorRoute.get("/:gameName", async (c) => {
-    return getGeneratorFromName(c);
-});
+    return getGeneratorFromName(c)
+})
 
-export default ocGeneratorRoute;
+export default ocGeneratorRoute

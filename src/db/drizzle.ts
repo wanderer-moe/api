@@ -17,6 +17,6 @@ export const tableNames = {
     assetCollection: "assetCollection",
     assetCollectionAsset: "assetCollectionAsset",
     socialsConnection: "socialsConnection",
-};
+}
 
-export * as schema from "@/db/schema";
+export * as schema from "@/db/schema"

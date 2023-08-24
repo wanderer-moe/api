@@ -1,7 +1,7 @@
-import { Resend } from "resend";
+import { Resend } from "resend"
 
 // TODO: use react email w/ tailwind
-export const resend = new Resend("");
+export const resend = new Resend("")
 
 export const sendPasswordResetEmail = async (
     email: string,
@@ -14,11 +14,11 @@ export const sendPasswordResetEmail = async (
             to: email,
             subject: "Password Reset Request",
             html: `<strong>Password reset for ${username}</strong><br /><a href = "${link}">Click here to reset your password</a>`,
-        });
+        })
     } catch (error) {
-        throw new Error("Error sending password reset email.");
+        throw new Error("Error sending password reset email.")
     }
-};
+}
 
 export const sendPasswordChangeEmail = async (
     email: string,
@@ -30,11 +30,11 @@ export const sendPasswordChangeEmail = async (
             to: email,
             subject: "Password Updated Confirmation",
             html: `<strong>Your password for ${username} has been updated.</strong><br /> Wasn't you? Contact us at <a href = "mailto:support@wanderer.moe">support@wanderer.moe</a>`,
-        });
+        })
     } catch (error) {
-        throw new Error("Error sending password change email.");
+        throw new Error("Error sending password change email.")
     }
-};
+}
 
 export const sendEmailChangeEmail = async (email: string, username: string) => {
     try {
@@ -43,11 +43,11 @@ export const sendEmailChangeEmail = async (email: string, username: string) => {
             to: email,
             subject: "Email Change Request",
             html: `<strong>Your email address for ${username} has been changed.</strong><br /> Wasn't you? Contact us at <a href = "mailto:support@wanderermoe">support@wanderer.moe</a>`,
-        });
+        })
     } catch (error) {
-        throw new Error("Error sending email change email.");
+        throw new Error("Error sending email change email.")
     }
-};
+}
 
 export const sendEmailConfirmationEmail = async (
     email: string,
@@ -60,8 +60,8 @@ export const sendEmailConfirmationEmail = async (
             to: email,
             subject: "Email Confirmation",
             html: `<strong>Email confirmation for ${username}</strong><br /><a href = "${link}">Click here to confirm your email</a>`,
-        });
+        })
     } catch (error) {
-        throw new Error("Error sending email confirmation email.");
+        throw new Error("Error sending email confirmation email.")
     }
-};
+}

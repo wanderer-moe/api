@@ -1,11 +1,11 @@
-import { tableNames } from "@/db/drizzle";
-import { relations } from "drizzle-orm";
+import { tableNames } from "@/db/drizzle"
+import { relations } from "drizzle-orm"
 import {
     sqliteTable,
     text,
     integer,
     uniqueIndex,
-} from "drizzle-orm/sqlite-core";
+} from "drizzle-orm/sqlite-core"
 
 // users, games, categories, assets etc, i will clean this up later, sorry for anyone looking at this
 export const users = sqliteTable(
@@ -31,9 +31,9 @@ export const users = sqliteTable(
             userIdx: uniqueIndex("user_idx").on(user.id),
             usernameIdx: uniqueIndex("username_idx").on(user.username),
             emailIdx: uniqueIndex("email_idx").on(user.email),
-        };
+        }
     }
-);
+)
 
 export const sessions = sqliteTable(
     tableNames.authSession,
@@ -47,13 +47,15 @@ export const sessions = sqliteTable(
             }),
         activeExpires: integer("active_expires").notNull(),
         idleExpires: integer("idle_expires").notNull(),
+        userAgent: text("user_agent").notNull(),
+        countryCode: text("country_code").notNull(),
     },
     (session) => {
         return {
             userIdx: uniqueIndex("session_user_idx").on(session.userId),
-        };
+        }
     }
-);
+)
 
 export const keys = sqliteTable(
     tableNames.authKey,
@@ -70,9 +72,9 @@ export const keys = sqliteTable(
     (key) => {
         return {
             userIdx: uniqueIndex("keys_user_idx").on(key.userId),
-        };
+        }
     }
-);
+)
 
 export const socialsConnection = sqliteTable(tableNames.socialsConnection, {
     id: text("id").primaryKey(),
@@ -83,7 +85,7 @@ export const socialsConnection = sqliteTable(tableNames.socialsConnection, {
             onDelete: "cascade",
         }),
     discordId: text("discord_id"),
-});
+})
 
 export const games = sqliteTable(
     tableNames.games,
@@ -97,9 +99,9 @@ export const games = sqliteTable(
         return {
             gameIdx: uniqueIndex("game_idx").on(game.id),
             nameIdx: uniqueIndex("name_idx").on(game.name),
-        };
+        }
     }
-);
+)
 
 export const assetCategories = sqliteTable(
     tableNames.assetCategories,
@@ -116,9 +118,9 @@ export const assetCategories = sqliteTable(
                 assetCategory.id
             ),
             nameIdx: uniqueIndex("name_idx").on(assetCategory.name),
-        };
+        }
     }
-);
+)
 
 export const gameAssetCategories = sqliteTable(
     tableNames.gameAssetCategories,
@@ -146,14 +148,14 @@ export const gameAssetCategories = sqliteTable(
             assetCategoryIdx: uniqueIndex("asset_category_idx").on(
                 gameAssetCategory.assetCategoryId
             ),
-        };
+        }
     }
-);
+)
 
 export const assets = sqliteTable(
     tableNames.assets,
     {
-        id: integer("id").notNull(),
+        id: integer("id").primaryKey().notNull(), // primary key auto increments on sqlite
         name: text("name").notNull(),
         game: text("game")
             .notNull()
@@ -174,7 +176,7 @@ export const assets = sqliteTable(
             onUpdate: "cascade",
             onDelete: "cascade",
         }),
-        uploadedDate: text("uploaded_date").notNull(),
+        uploadedDate: integer("uploaded_date").notNull(),
         viewCount: integer("view_count").default(0).notNull(),
         downloadCount: integer("download_count").default(0).notNull(),
         fileSize: integer("file_size").default(0).notNull(),
@@ -197,9 +199,9 @@ export const assets = sqliteTable(
             uploadedByIdx: uniqueIndex("assets_uploaded_by_idx").on(
                 table.uploadedById
             ),
-        };
+        }
     }
-);
+)
 
 export const following = sqliteTable(
     tableNames.following,
@@ -224,9 +226,9 @@ export const following = sqliteTable(
             followingIdx: uniqueIndex("following_idx").on(
                 following.followingId
             ),
-        };
+        }
     }
-);
+)
 
 export const follower = sqliteTable(
     tableNames.follower,
@@ -244,9 +246,9 @@ export const follower = sqliteTable(
         return {
             followerIdx: uniqueIndex("follower_idx").on(follower.followerId),
             followingIdx: uniqueIndex("following_idx").on(follower.followingId),
-        };
+        }
     }
-);
+)
 
 export const collections = sqliteTable(
     tableNames.assetCollection,
@@ -266,9 +268,9 @@ export const collections = sqliteTable(
             userCollectionIdx: uniqueIndex("user_collection_idx").on(
                 collection.userId
             ),
-        };
+        }
     }
-);
+)
 
 export const collectionAssets = sqliteTable(
     tableNames.assetCollectionAsset,
@@ -292,9 +294,9 @@ export const collectionAssets = sqliteTable(
                 collectionAsset.collectionId,
                 collectionAsset.assetId
             ),
-        };
+        }
     }
-);
+)
 
 export const savedOcGenerators = sqliteTable(
     tableNames.savedOcGenerators,
@@ -317,43 +319,43 @@ export const savedOcGenerators = sqliteTable(
             savedOcGeneratorsUserIdx: uniqueIndex(
                 "saved_oc_generators_user_idx"
             ).on(savedOcGenerators.userId),
-        };
+        }
     }
-);
+)
 
 // relations
 
 export const gameRelations = relations(games, ({ many }) => ({
     assetCategories: many(gameAssetCategories),
-}));
+}))
 
 export const assetCategoryRelations = relations(
     assetCategories,
     ({ many }) => ({
         games: many(gameAssetCategories),
     })
-);
+)
 
 export const assetRelations = relations(assets, ({ one }) => ({
     uploadedBy: one(users, {
         fields: [assets.uploadedById],
         references: [users.id],
     }),
-}));
+}))
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
     user: one(users, {
         fields: [sessions.userId],
         references: [users.id],
     }),
-}));
+}))
 
 export const keysRelations = relations(keys, ({ one }) => ({
     user: one(users, {
         fields: [keys.userId],
         references: [users.id],
     }),
-}));
+}))
 
 export const usersRelations = relations(users, ({ many }) => ({
     session: many(sessions),
@@ -363,4 +365,4 @@ export const usersRelations = relations(users, ({ many }) => ({
     following: many(following),
     collections: many(collections),
     savedOcGenerators: many(savedOcGenerators),
-}));
+}))

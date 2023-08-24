@@ -1,15 +1,15 @@
-import { Hono } from "hono";
-import { getUsersBySearch } from "./getUsersBySearch";
-import { getUserByUsername } from "./getUserByUsername";
+import { Hono } from "hono"
+import { getUsersBySearch } from "./getUsersBySearch"
+import { getUserByUsername } from "./getUserByUsername"
 
-const userRoute = new Hono();
+const userRoute = new Hono()
 
 userRoute.get("/u/:username", async (c) => {
-    return getUserByUsername(c);
-});
+    return getUserByUsername(c)
+})
 
 userRoute.get("/s/:query", async (c) => {
-    return getUsersBySearch(c);
-});
+    return getUsersBySearch(c)
+})
 
-export default userRoute;
+export default userRoute

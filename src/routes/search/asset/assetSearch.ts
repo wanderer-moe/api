@@ -1,23 +1,23 @@
-import { responseHeaders } from "@/lib/responseHeaders";
-import type { Asset } from "@/lib/types/asset";
-import { getSearchResults } from "@/lib/query";
-import { getConnection } from "@/db/turso";
+import { responseHeaders } from "@/lib/responseHeaders"
+import type { Asset } from "@/lib/types/asset"
+import { getSearchResults } from "@/lib/query"
+import { getConnection } from "@/db/turso"
 
 export const getAssetSearch = async (c) => {
-    const queryParams = c.req.query();
+    const queryParams = c.req.query()
     // console.log(queryParams);
-    const { query, game, asset, tags } = queryParams;
+    const { query, game, asset, tags } = queryParams
 
     // Convert game and asset parameters to arrays
-    const gameArray = game ? game.split(",") : [];
-    const assetArray = asset ? asset.split(",") : [];
-    const tagsArray = tags ? tags.split(",") : [];
+    const gameArray = game ? game.split(",") : []
+    const assetArray = asset ? asset.split(",") : []
+    const tagsArray = tags ? tags.split(",") : []
 
-    const cacheKey = new Request(c.req.url.toString(), c.req);
-    const cache = caches.default;
-    let response = await cache.match(cacheKey);
+    const cacheKey = new Request(c.req.url.toString(), c.req)
+    const cache = caches.default
+    let response = await cache.match(cacheKey)
 
-    if (response) return response;
+    if (response) return response
 
     // console.log(query, gameArray, assetArray, tags);
 
@@ -37,8 +37,8 @@ export const getAssetSearch = async (c) => {
             file_size: results.file_size,
             width: results.width,
             height: results.height,
-        };
-    });
+        }
+    })
 
     response = c.json(
         {
@@ -52,30 +52,30 @@ export const getAssetSearch = async (c) => {
         },
         200,
         responseHeaders
-    );
+    )
 
-    response.headers.set("Cache-Control", "s-maxage=3600");
-    await cache.put(cacheKey, response.clone());
+    response.headers.set("Cache-Control", "s-maxage=3600")
+    await cache.put(cacheKey, response.clone())
 
-    return response;
-};
+    return response
+}
 
 export const recentAssets = async (c) => {
-    const cacheKey = new Request(c.req.url.toString(), c.req);
-    const cache = caches.default;
-    let response = await cache.match(cacheKey);
-    if (response) return response;
+    const cacheKey = new Request(c.req.url.toString(), c.req)
+    const cache = caches.default
+    let response = await cache.match(cacheKey)
+    if (response) return response
 
-    const conn = await getConnection(c.env);
-    const db = conn.planetscale;
+    const conn = await getConnection(c.env)
+    const db = conn.planetscale
 
     const row = await db
         .execute(
             "SELECT * FROM assets WHERE 1=1 ORDER BY uploaded_date DESC LIMIT 30"
         )
-        .then((row) => row.rows as Asset[] | undefined);
+        .then((row) => row.rows as Asset[] | undefined)
 
-    if (!row) throw new Error("No results found");
+    if (!row) throw new Error("No results found")
 
     const results = row.map((asset) => {
         return {
@@ -91,8 +91,8 @@ export const recentAssets = async (c) => {
             file_size: asset.file_size,
             width: asset.width,
             height: asset.height,
-        };
-    });
+        }
+    })
 
     response = c.json(
         {
@@ -102,10 +102,10 @@ export const recentAssets = async (c) => {
         },
         200,
         responseHeaders
-    );
+    )
 
-    response.headers.set("Cache-Control", "s-maxage=3600");
-    await cache.put(cacheKey, response.clone());
+    response.headers.set("Cache-Control", "s-maxage=3600")
+    await cache.put(cacheKey, response.clone())
 
-    return response;
-};
+    return response
+}

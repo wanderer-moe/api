@@ -8,17 +8,17 @@ export const roleFlags = {
     STAFF: 1 << 3,
     DEVELOPER: 1 << 4,
     CREATOR: 1 << 5,
-};
+}
 
 export const roleFlagsToArray = (roleFlagsInt: number): string[] => {
-    const roles: string[] = [];
+    const roles: string[] = []
 
     for (const [role, flag] of Object.entries(roleFlags)) {
-        if (roleFlagsInt & flag) roles.push(role);
+        if (roleFlagsInt & flag) roles.push(role)
     }
 
-    return roles;
-};
+    return roles
+}
 
 // self assignable roles
 export const SelfAssignableRoleFlags = {
@@ -27,16 +27,16 @@ export const SelfAssignableRoleFlags = {
     WRITER: 1 << 2,
     DEVELOPER: 1 << 3,
     DESIGNER: 1 << 4,
-};
+}
 
 export const SelfAssignableRoleFlagsToArray = (
     roleFlagsInt: number
 ): string[] => {
-    const roles: string[] = [];
+    const roles: string[] = []
 
     for (const [role, flag] of Object.entries(SelfAssignableRoleFlags)) {
-        if (roleFlagsInt & flag) roles.push(role);
+        if (roleFlagsInt & flag) roles.push(role)
     }
 
-    return roles;
-};
+    return roles
+}

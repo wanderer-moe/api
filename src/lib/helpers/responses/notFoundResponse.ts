@@ -8,5 +8,5 @@ export function createNotFoundResponse(c, errorMessage, responseHeaders) {
         },
         404,
         responseHeaders
-    );
+    )
 }
