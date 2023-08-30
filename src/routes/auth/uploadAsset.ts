@@ -2,8 +2,9 @@ import { auth } from "@/lib/auth/lucia"
 import { getConnection } from "@/db/turso"
 import { eq, and } from "drizzle-orm"
 import { assets } from "@/db/schema"
+import type { Context } from "hono"
 
-export async function uploadAsset(c): Promise<Response> {
+export async function uploadAsset(c: Context): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
@@ -24,9 +25,17 @@ export async function uploadAsset(c): Promise<Response> {
     const drizzle = await getConnection(c.env).drizzle
 
     const formData = await c.req.formData()
-    const asset = formData.get("asset") as File | null
+    const asset = formData.get("asset") as unknown as File | null
 
-    if (!asset || asset.type !== "image/png") {
+    // this is temporary
+    const asset128px = formData.get("asset128px") as unknown as File | null
+
+    if (
+        !asset ||
+        asset.type !== "image/png" ||
+        !asset128px ||
+        asset128px.type !== "image/png"
+    ) {
         return c.json({ success: false, state: "invalid asset" }, 200)
     }
 
@@ -37,9 +46,9 @@ export async function uploadAsset(c): Promise<Response> {
         tags: formData.get("tags") as string, // e.g no-background, fanmade, official
         category: formData.get("category") as string, // e.g splash-art
         game: formData.get("game") as string, // e.g genshin-impact
-        size: formData.get("size") as number, // e.g 1024
-        width: formData.get("width") as number, // e.g 1920
-        height: formData.get("height") as number, // e.g 1080
+        size: formData.get("size") as unknown as number, // e.g 1024
+        width: formData.get("width") as unknown as number, // e.g 1920
+        height: formData.get("height") as unknown as number, // e.g 1080
     }
 
     const newAsset = {
@@ -77,12 +86,26 @@ export async function uploadAsset(c): Promise<Response> {
         return c.json({ success: false, state: "duplicate asset" }, 400)
 
     try {
-        await c.env.bucket.put(
-            `/assets/${metadata.game}/${metadata.category}/${metadata.title}.${metadata.extension}`,
-            newAssetFile
-        )
+        await drizzle.transaction(async () => {
+            await c.env.bucket.put(
+                `/assets/${metadata.game}/${metadata.category}/${metadata.title}.${metadata.extension}`,
+                newAssetFile
+            )
 
-        await drizzle.insert(assets).values(newAsset)
+            const newAssetClone = new File(
+                [asset128px],
+                `${metadata.title}-128.png`,
+                {
+                    type: asset.type,
+                }
+            )
+
+            await c.env.bucket.put(
+                `/assets/${metadata.game}/${metadata.category}/${metadata.title}-128.png`,
+                newAssetClone
+            )
+            await drizzle.insert(assets).values(newAsset)
+        })
     } catch (e) {
         return c.json({ success: false, state: "failed to upload asset" }, 500)
     }

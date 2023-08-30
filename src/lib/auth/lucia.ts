@@ -26,6 +26,10 @@ export const auth = (env: Env) => {
         experimental: {
             debugMode: env.ENVIRONMENT === "DEV" ? true : false,
         },
+        csrfProtection: {
+            enabled: true,
+            allowedSubDomains: ["*"],
+        },
         getUserAttributes: (dbUser) => {
             return {
                 username: dbUser.username,
@@ -44,7 +48,7 @@ export const auth = (env: Env) => {
         },
         getSessionAttributes: (dbSession) => {
             return {
-                userAgent: dbSession.user_agent as unknown as string, // md5
+                userAgent: dbSession.user_agent as string,
                 countryCode: dbSession.country_code as string,
             }
         },

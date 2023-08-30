@@ -1,7 +1,8 @@
 import { auth } from "@/lib/auth/lucia"
+import type { Context } from "hono"
 // import * as validate from "@/lib/regex/accountValidation";
 
-export async function signup(c): Promise<Response> {
+export async function signup(c: Context): Promise<Response> {
     const formData = await c.req.formData()
 
     const secretKeyRequiredForSignup = c.env.VERY_SECRET_SIGNUP_KEY
@@ -51,7 +52,7 @@ export async function signup(c): Promise<Response> {
                 username_colour: null,
                 avatar_url: null,
                 banner_url: null,
-                pronouns: null, // we can splice this into possesive, subject, and object pronouns by "/"
+                pronouns: null, // we can splice this into possesive, subject, and object pronouns by "/", e.g "he/him/his" => {subject: "he", object: "him", possesive: "his"}
                 bio: "No bio set",
             },
         })
@@ -59,6 +60,7 @@ export async function signup(c): Promise<Response> {
         const userAgent = c.req.headers.get("user-agent") ?? ""
         const countryCode = c.req.headers.get("cf-ipcountry") ?? ""
 
+        // TODO: encrypt session attributes with sha256
         const newSession = await auth(c.env).createSession({
             userId: user.userId,
             attributes: {

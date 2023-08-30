@@ -1,8 +1,9 @@
 import { responseHeaders } from "@/lib/responseHeaders"
 import { listBucket } from "@/lib/listBucket"
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse"
+import type { Context } from "hono"
 
-export async function getGeneratorFromName(c): Promise<Response> {
+export async function getGeneratorFromName(c: Context): Promise<Response> {
     const { gameName } = c.req.param()
     const cacheKey = new Request(c.req.url.toString(), c.req)
     const cache = caches.default

@@ -3,8 +3,9 @@ import { getConnection } from "@/db/turso"
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse"
 import { eq } from "drizzle-orm"
 import { assets } from "@/db/schema"
+import type { Context } from "hono"
 
-export async function downloadAsset(c): Promise<Response> {
+export async function downloadAsset(c: Context): Promise<Response> {
     const { assetId } = c.req.param()
 
     const drizzle = await getConnection(c.env).drizzle
@@ -12,7 +13,7 @@ export async function downloadAsset(c): Promise<Response> {
     const asset = await drizzle
         .select()
         .from(assets)
-        .where(eq(assets.id, assetId))
+        .where(eq(assets.id, parseInt(assetId)))
         .execute()
 
     if (!asset)

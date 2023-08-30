@@ -1,9 +1,10 @@
 import { responseHeaders } from "@/lib/responseHeaders"
 import { roles, guildId } from "@/lib/discord"
 import type { Contributor, GuildMember } from "@/lib/types/discord"
+import type { Context } from "hono"
 
 // TODO: replace discord contributors with roles on the site
-export async function contributors(c): Promise<Response> {
+export async function contributors(c: Context): Promise<Response> {
     const members: Contributor[] = []
 
     let after: string | null = null

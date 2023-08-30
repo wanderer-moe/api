@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth/lucia"
-// import * as validate from "@/lib/regex/accountValidation";
+import type { Context } from "hono"
 
 const usernameThrottling = new Map<
     string,
@@ -9,13 +9,11 @@ const usernameThrottling = new Map<
     }
 >()
 
-export async function login(c): Promise<Response> {
+export async function login(c: Context): Promise<Response> {
     const formData = await c.req.formData()
 
     const username = formData.get("username") as string
     const password = formData.get("password") as string
-    // console.log(username, password);
-
     const validSession = await auth(c.env).handleRequest(c).validate()
 
     if (validSession)

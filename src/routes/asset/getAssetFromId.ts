@@ -3,8 +3,9 @@ import { getConnection } from "@/db/turso"
 import { assets } from "@/db/schema"
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse"
 import { eq, desc } from "drizzle-orm"
+import type { Context } from "hono"
 
-export async function getAssetFromId(c): Promise<Response> {
+export async function getAssetFromId(c: Context): Promise<Response> {
     const { id } = c.req.param()
     const cacheKey = new Request(c.req.url.toString(), c.req)
     const cache = caches.default
@@ -17,7 +18,7 @@ export async function getAssetFromId(c): Promise<Response> {
     const asset = await drizzle
         .select()
         .from(assets)
-        .where(eq(assets.id, id))
+        .where(eq(assets.id, parseInt(id)))
         .execute()
 
     if (!asset) {

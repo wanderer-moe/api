@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth/lucia"
+import type { Context } from "hono"
 
-export async function logout(c): Promise<Response> {
+export async function logout(c: Context): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 

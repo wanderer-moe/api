@@ -8,8 +8,9 @@ import { uploadProfileImage } from "./uploadAvatar"
 import { uploadBannerImage } from "./uploadBanner"
 import { updateUserAttributes } from "./updateUserAttributes"
 import { uploadAsset } from "./uploadAsset"
+import { Bindings } from "@/worker-configuration"
 
-const authRoute = new Hono()
+const authRoute = new Hono<{ Bindings: Bindings }>()
 
 authRoute.use(
     "*",

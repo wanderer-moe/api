@@ -1,7 +1,9 @@
 import { auth } from "@/lib/auth/lucia"
+import type { Context } from "hono"
 
 // TODO: add support for animated avatars
-export async function uploadProfileImage(c): Promise<Response> {    const authRequest = auth(c.env).handleRequest(c)
+export async function uploadProfileImage(c: Context): Promise<Response> {
+    const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
     if (!session || session.state === "idle" || session.state === "invalid") {
@@ -14,7 +16,7 @@ export async function uploadProfileImage(c): Promise<Response> {    const authRe
 
     const formData = await c.req.formData()
 
-    const avatar = formData.get("avatar") as File | null
+    const avatar = formData.get("avatar") as unknown as File | null
 
     if (!avatar || avatar.type !== "image/png") {
         return c.json({ success: false, state: "invalid avatar" }, 200)

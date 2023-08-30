@@ -1,7 +1,8 @@
 import { auth } from "@/lib/auth/lucia"
+import type { Context } from "hono"
 
 // TODO: add support for animated banners
-export async function uploadBannerImage(c): Promise<Response> {
+export async function uploadBannerImage(c: Context): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
@@ -19,7 +20,7 @@ export async function uploadBannerImage(c): Promise<Response> {
 
     const formData = await c.req.formData()
 
-    const banner = formData.get("banner") as File | null
+    const banner = formData.get("banner") as unknown as File | null
 
     if (!banner || banner.type !== "image/png") {
         return c.json({ success: false, state: "invalid banner" }, 200)

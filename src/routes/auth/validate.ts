@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth/lucia"
+import type { Context } from "hono"
 
-export async function validate(c): Promise<Response> {
+export async function validate(c: Context): Promise<Response> {
     console.log(c)
     const authRequest = auth(c.env).handleRequest(c)
 
@@ -13,8 +14,6 @@ export async function validate(c): Promise<Response> {
         authRequest.setSession(null)
         return c.json({ success: false, state: "invalid session" }, 200)
     }
-
-    // console.log(session);
 
     if (
         session.userAgent !== userAgent ||

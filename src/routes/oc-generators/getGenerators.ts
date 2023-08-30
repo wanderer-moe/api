@@ -1,7 +1,8 @@
 import { responseHeaders } from "@/lib/responseHeaders"
 import { listBucket } from "@/lib/listBucket"
+import type { Context } from "hono"
 
-export async function getGenerators(c): Promise<Response> {
+export async function getGenerators(c: Context): Promise<Response> {
     const cacheKey = new Request(c.req.url.toString(), c.req)
     const cache = caches.default
     let response = await cache.match(cacheKey)

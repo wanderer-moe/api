@@ -1,8 +1,9 @@
 import { Hono } from "hono"
 import { getAssetFromId } from "./getAssetFromId"
 import { downloadAsset } from "./downloadAsset"
+import { Bindings } from "@/worker-configuration"
 
-const assetRoute = new Hono()
+const assetRoute = new Hono<{ Bindings: Bindings }>()
 
 assetRoute.get("/:id", async (c) => {
     return getAssetFromId(c)

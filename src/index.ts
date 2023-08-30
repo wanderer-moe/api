@@ -1,5 +1,4 @@
 import { Hono } from "hono"
-import { Env } from "./worker-configuration"
 import assetRoute from "./routes/asset/assetRoute"
 import discordRoute from "./routes/discord/discordRoute"
 import ocGeneratorRoute from "./routes/oc-generators/ocGeneratorRoutes"
@@ -7,15 +6,17 @@ import ocGeneratorRoute from "./routes/oc-generators/ocGeneratorRoutes"
 import gamesRoute from "./routes/games/gamesRoute"
 import userRoute from "./routes/user/userRoute"
 import authRoute from "./routes/auth/authRoute"
-interface Bindings extends Env {
-    [key: string]: unknown
-}
+import { getRuntimeKey } from "hono/adapter"
+import { Bindings } from "@/worker-configuration"
 
-const app = new Hono<{ Bindings: Bindings; Env: Env }>()
+const app = new Hono<{ Bindings: Bindings }>()
 
 app.get("/status", (c) => {
     c.status(200)
-    return c.json({ status: "ok" })
+    return c.json({
+        status: "ok",
+        runtime: getRuntimeKey(),
+    })
 })
 app.get("/", (c) => {
     c.status(200)

@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth/lucia"
+import type { Context } from "hono"
 
-export async function updateUserAttributes(c): Promise<Response> {
+export async function updateUserAttributes(c: Context): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
@@ -14,9 +15,9 @@ export async function updateUserAttributes(c): Promise<Response> {
     const attributes = {
         username: formData.get("username") as string | null,
         pronouns: formData.get("pronouns") as string | null,
-        self_assignable_role_flags: formData.get("self_assignable_roles") as
-            | number
-            | null,
+        self_assignable_role_flags: formData.get(
+            "self_assignable_roles"
+        ) as unknown as number | null,
         bio: formData.get("bio") as string | null,
     }
 

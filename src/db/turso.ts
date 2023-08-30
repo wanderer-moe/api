@@ -1,4 +1,4 @@
-import { Env } from "../worker-configuration"
+import { Bindings as Env } from "@/worker-configuration"
 import * as schema from "@/db/schema"
 import { drizzle as drizzleORM } from "drizzle-orm/libsql"
 import { createClient } from "@libsql/client/web" // because we're in a worker
