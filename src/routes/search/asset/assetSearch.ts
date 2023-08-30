@@ -2,7 +2,7 @@
 // import type { Asset } from "@/lib/types/asset"
 // import { getSearchResults } from "@/lib/query"
 // import { getConnection } from "@/db/turso"
-// import type { Context } from "hono"
+// import type { APIContext as Context } from "@/worker-configuration"
 
 // export async function getAssetSearch(c: Context): Promise<Response> {
 //     const queryParams = c.req.query()

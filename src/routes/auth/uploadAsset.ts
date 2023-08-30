@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth/lucia"
 import { getConnection } from "@/db/turso"
 import { eq, and } from "drizzle-orm"
 import { assets } from "@/db/schema"
-import type { Context } from "hono"
+import type { APIContext as Context } from "@/worker-configuration"
 
 export async function uploadAsset(c: Context): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)

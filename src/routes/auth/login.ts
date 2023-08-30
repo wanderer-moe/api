@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth/lucia"
-import type { Context } from "hono"
+import type { APIContext as Context } from "@/worker-configuration"
 
 const usernameThrottling = new Map<
     string,

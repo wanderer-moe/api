@@ -1,6 +1,6 @@
 import { responseHeaders } from "@/lib/responseHeaders"
 import { listBucket } from "@/lib/listBucket"
-import type { Context } from "hono"
+import type { APIContext as Context } from "@/worker-configuration"
 
 export async function getGenerators(c: Context): Promise<Response> {
     const cacheKey = new Request(c.req.url.toString(), c.req)

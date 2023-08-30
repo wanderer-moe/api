@@ -3,7 +3,7 @@ import { getConnection } from "@/db/turso"
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse"
 import { eq } from "drizzle-orm"
 import { assets } from "@/db/schema"
-import type { Context } from "hono"
+import type { APIContext as Context } from "@/worker-configuration"
 
 export async function downloadAsset(c: Context): Promise<Response> {
     const { assetId } = c.req.param()

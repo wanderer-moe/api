@@ -2,7 +2,7 @@ import { responseHeaders } from "@/lib/responseHeaders"
 import { getConnection } from "@/db/turso"
 import { listBucket } from "@/lib/listBucket"
 import { games } from "@/db/schema"
-import type { Context } from "hono"
+import type { APIContext as Context } from "@/worker-configuration"
 
 export async function getAllGames(c: Context): Promise<Response> {
     const cacheKey = new Request(c.req.url.toString(), c.req)

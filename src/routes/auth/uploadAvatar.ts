@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth/lucia"
-import type { Context } from "hono"
+import type { APIContext as Context } from "@/worker-configuration"
 
 // TODO: add support for animated avatars
 export async function uploadProfileImage(c: Context): Promise<Response> {
@@ -31,9 +31,7 @@ export async function uploadProfileImage(c: Context): Promise<Response> {
         })
     }
 
-    await c.env.bucket.put(newAvatarURL, newAvatar, {
-        contentType: "image/png",
-    })
+    await c.env.bucket.put(newAvatarURL, newAvatar)
 
     return c.json({ success: true, state: "uploaded new profile image" }, 200)
 }

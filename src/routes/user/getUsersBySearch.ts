@@ -3,7 +3,7 @@ import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse
 import { like } from "drizzle-orm"
 import { getConnection } from "@/db/turso"
 import { users } from "@/db/schema"
-import type { Context } from "hono"
+import type { APIContext as Context } from "@/worker-configuration"
 
 export async function getUsersBySearch(c: Context): Promise<Response> {
     const cacheKey = new Request(c.req.url.toString(), c.req)

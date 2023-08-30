@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth/lucia"
-import type { Context } from "hono"
+import type { APIContext as Context } from "@/worker-configuration"
 
 export async function validate(c: Context): Promise<Response> {
     console.log(c)

@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth/lucia"
-import type { Context } from "hono"
+import type { APIContext as Context } from "@/worker-configuration"
 // import * as validate from "@/lib/regex/accountValidation";
 
 export async function signup(c: Context): Promise<Response> {

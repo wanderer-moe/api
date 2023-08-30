@@ -3,7 +3,7 @@ import { getConnection } from "@/db/turso"
 import { users } from "@/db/schema"
 import { eq } from "drizzle-orm"
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse"
-import type { Context } from "hono"
+import type { APIContext as Context } from "@/worker-configuration"
 
 export async function getUserByUsername(c: Context): Promise<Response> {
     const { username } = c.req.param()

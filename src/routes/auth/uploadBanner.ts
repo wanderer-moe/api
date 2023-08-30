@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth/lucia"
-import type { Context } from "hono"
+import type { APIContext as Context } from "@/worker-configuration"
 
 // TODO: add support for animated banners
 export async function uploadBannerImage(c: Context): Promise<Response> {
@@ -35,9 +35,7 @@ export async function uploadBannerImage(c: Context): Promise<Response> {
         })
     }
 
-    await c.env.bucket.put(newBannerURL, newBanner, {
-        contentType: "image/png",
-    })
+    await c.env.bucket.put(newBannerURL, newBanner)
 
     return c.json({ success: true, state: "uploaded new banner" }, 200)
 }

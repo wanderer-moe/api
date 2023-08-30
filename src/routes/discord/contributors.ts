@@ -1,7 +1,7 @@
 import { responseHeaders } from "@/lib/responseHeaders"
 import { roles, guildId } from "@/lib/discord"
 import type { Contributor, GuildMember } from "@/lib/types/discord"
-import type { Context } from "hono"
+import type { APIContext as Context } from "@/worker-configuration"
 
 // TODO: replace discord contributors with roles on the site
 export async function contributors(c: Context): Promise<Response> {

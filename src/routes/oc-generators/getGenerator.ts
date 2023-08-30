@@ -1,7 +1,7 @@
 import { responseHeaders } from "@/lib/responseHeaders"
 import { listBucket } from "@/lib/listBucket"
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse"
-import type { Context } from "hono"
+import type { APIContext as Context } from "@/worker-configuration"
 
 export async function getGeneratorFromName(c: Context): Promise<Response> {
     const { gameName } = c.req.param()

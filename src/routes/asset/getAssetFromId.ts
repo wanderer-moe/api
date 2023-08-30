@@ -3,7 +3,7 @@ import { getConnection } from "@/db/turso"
 import { assets } from "@/db/schema"
 import { createNotFoundResponse } from "@/lib/helpers/responses/notFoundResponse"
 import { eq, desc } from "drizzle-orm"
-import type { Context } from "hono"
+import type { APIContext as Context } from "@/worker-configuration"
 
 export async function getAssetFromId(c: Context): Promise<Response> {
     const { id } = c.req.param()
