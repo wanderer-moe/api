@@ -1,7 +1,7 @@
 import { lucia } from "lucia"
 import { hono } from "lucia/middleware"
 import { getConnection } from "@/db/turso"
-import { Env } from "@/worker-configuration"
+import { Bindings as Env } from "@/worker-configuration"
 import { tableNames } from "@/db/drizzle"
 import { libsql } from "@lucia-auth/adapter-sqlite"
 

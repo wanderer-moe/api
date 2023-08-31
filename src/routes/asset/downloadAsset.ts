@@ -19,6 +19,13 @@ export async function downloadAsset(c: Context): Promise<Response> {
     if (!asset)
         return createNotFoundResponse(c, "Asset not found", responseHeaders)
 
+    if (asset)
+        await drizzle
+            .update(assets)
+            .set({ downloadCount: asset[0].downloadCount + 1 })
+            .where(eq(assets.id, parseInt(assetId)))
+            .execute()
+
     const response = await fetch(asset[0].url)
 
     const blob = await response.blob()

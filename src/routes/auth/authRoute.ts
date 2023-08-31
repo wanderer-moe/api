@@ -18,7 +18,7 @@ authRoute.use(
     "*",
     cors({
         credentials: true,
-        origin: ["https://next.wanderer.moe", "http://localhost:3000"],
+        origin: ["https://next.wanderer.moe"],
     })
 )
 
