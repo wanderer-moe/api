@@ -1,6 +1,6 @@
 /// <reference types="lucia" />
 declare namespace Lucia {
-    type Auth = import("./lib/auth/lucia").Auth
+    type Auth = import("./v2/lib/auth/lucia").Auth
     type DatabaseUserAttributes = {
         username: string
         username_colour: string | null
