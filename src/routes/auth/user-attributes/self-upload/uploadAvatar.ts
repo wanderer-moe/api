@@ -31,6 +31,14 @@ export async function uploadProfileImage(c: Context): Promise<Response> {
         })
     }
 
+    if (session.user.avatar_url) {
+        const oldAvatarObject = await c.env.bucket.get(session.user.avatar_url)
+
+        if (oldAvatarObject) {
+            await c.env.bucket.delete(session.user.avatar_url)
+        }
+    }
+
     await c.env.bucket.put(newAvatarURL, newAvatar)
 
     return c.json({ success: true, state: "uploaded new profile image" }, 200)

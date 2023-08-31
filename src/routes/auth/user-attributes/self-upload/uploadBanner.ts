@@ -35,6 +35,14 @@ export async function uploadBannerImage(c: Context): Promise<Response> {
         })
     }
 
+    if (session.user.banner_url) {
+        const oldBannerObject = await c.env.bucket.get(session.user.banner_url)
+
+        if (oldBannerObject) {
+            await c.env.bucket.delete(session.user.banner_url)
+        }
+    }
+
     await c.env.bucket.put(newBannerURL, newBanner)
 
     return c.json({ success: true, state: "uploaded new banner" }, 200)
