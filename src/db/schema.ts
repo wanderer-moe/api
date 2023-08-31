@@ -308,7 +308,9 @@ export const savedOcGenerators = sqliteTable(
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
+        name: text("name").notNull(),
         game: text("game").notNull(),
+        isPublic: integer("is_public").default(0).notNull(),
         content: text("content").notNull(), // this is stored as json
     },
     (savedOcGenerators) => {

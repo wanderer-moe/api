@@ -4,11 +4,13 @@ import { logout } from "./logout"
 import { signup } from "./signup"
 import { cors } from "hono/cors"
 import { validate } from "./validate"
-import { uploadProfileImage } from "./uploadAvatar"
-import { uploadBannerImage } from "./uploadBanner"
-import { updateUserAttributes } from "./updateUserAttributes"
-import { uploadAsset } from "./uploadAsset"
+import { uploadProfileImage } from "./user-attributes/self-upload/uploadAvatar"
+import { uploadBannerImage } from "./user-attributes/self-upload/uploadBanner"
+import { saveOCGeneratorResponse } from "./oc-generators/saveOCGeneratorResponse"
+import { updateUserAttributes } from "./user-attributes/updateUserAttributes"
+import { uploadAsset } from "./user-attributes/self-upload/uploadAsset"
 import { Bindings } from "@/worker-configuration"
+import { viewOCGeneratorResponses } from "./oc-generators/viewOCGeneratorResponses"
 
 const authRoute = new Hono<{ Bindings: Bindings }>()
 
@@ -42,6 +44,14 @@ authRoute.post("/upload/banner", async (c) => {
 
 authRoute.post("/signup", async (c) => {
     return signup(c)
+})
+
+authRoute.post("/oc-generator/save", async (c) => {
+    return saveOCGeneratorResponse(c)
+})
+
+authRoute.get("/oc-generator/view/all", async (c) => {
+    return viewOCGeneratorResponses(c)
 })
 
 authRoute.get("/validate", async (c) => {
