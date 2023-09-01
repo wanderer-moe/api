@@ -1,9 +1,10 @@
 {
-    "bracketSameLine": true,
-    "singleQuote": false,
-    "trailingComma": "es5",
-    "endOfLine": "lf",
-    "tabWidth": 4,
-    "semi": false,
-    "plugins": []
+	"bracketSameLine": true,
+	"singleQuote": false,
+	"trailingComma": "es5",
+	"endOfLine": "lf",
+	"tabWidth": 4,
+	"semi": false,
+	"useTabs": true,
+	"plugins": []
 }

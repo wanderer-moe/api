@@ -1,380 +1,380 @@
 import { tableNames } from "@/v2/db/drizzle"
 import { relations } from "drizzle-orm"
 import {
-    sqliteTable,
-    text,
-    integer,
-    uniqueIndex,
+	sqliteTable,
+	text,
+	integer,
+	uniqueIndex,
 } from "drizzle-orm/sqlite-core"
 
 // users, games, categories, assets etc, i will clean this up later, sorry for anyone looking at this
 export const users = sqliteTable(
-    tableNames.authUser,
-    {
-        id: text("id").primaryKey(),
-        avatarUrl: text("avatar_url"),
-        bannerUrl: text("banner_url"),
-        username: text("username").notNull(),
-        usernameColour: text("username_colour"),
-        email: text("email").notNull(),
-        emailVerified: integer("email_verified").default(0).notNull(),
-        pronouns: text("pronouns"),
-        verified: integer("verified").default(0).notNull(),
-        bio: text("bio").default("No bio set").notNull(),
-        dateJoined: integer("date_joined").notNull(),
-        roleFlags: integer("role_flags").default(1).notNull(),
-        isContributor: integer("is_contributor").default(0).notNull(),
-        selfAssignableRoleFlags: integer("self_assignable_role_flags"),
-    },
-    (user) => {
-        return {
-            userIdx: uniqueIndex("user_idx").on(user.id),
-            usernameIdx: uniqueIndex("username_idx").on(user.username),
-            emailIdx: uniqueIndex("email_idx").on(user.email),
-        }
-    }
+	tableNames.authUser,
+	{
+		id: text("id").primaryKey(),
+		avatarUrl: text("avatar_url"),
+		bannerUrl: text("banner_url"),
+		username: text("username").notNull(),
+		usernameColour: text("username_colour"),
+		email: text("email").notNull(),
+		emailVerified: integer("email_verified").default(0).notNull(),
+		pronouns: text("pronouns"),
+		verified: integer("verified").default(0).notNull(),
+		bio: text("bio").default("No bio set").notNull(),
+		dateJoined: integer("date_joined").notNull(),
+		roleFlags: integer("role_flags").default(1).notNull(),
+		isContributor: integer("is_contributor").default(0).notNull(),
+		selfAssignableRoleFlags: integer("self_assignable_role_flags"),
+	},
+	(user) => {
+		return {
+			userIdx: uniqueIndex("user_idx").on(user.id),
+			usernameIdx: uniqueIndex("username_idx").on(user.username),
+			emailIdx: uniqueIndex("email_idx").on(user.email),
+		}
+	}
 )
 
 export const sessions = sqliteTable(
-    tableNames.authSession,
-    {
-        id: text("id").primaryKey(),
-        userId: text("user_id")
-            .notNull()
-            .references(() => users.id, {
-                onUpdate: "cascade",
-                onDelete: "cascade",
-            }),
-        activeExpires: integer("active_expires").notNull(),
-        idleExpires: integer("idle_expires").notNull(),
-        userAgent: text("user_agent").notNull(),
-        countryCode: text("country_code").notNull(),
-    },
-    (session) => {
-        return {
-            userIdx: uniqueIndex("session_user_idx").on(session.userId),
-        }
-    }
+	tableNames.authSession,
+	{
+		id: text("id").primaryKey(),
+		userId: text("user_id")
+			.notNull()
+			.references(() => users.id, {
+				onUpdate: "cascade",
+				onDelete: "cascade",
+			}),
+		activeExpires: integer("active_expires").notNull(),
+		idleExpires: integer("idle_expires").notNull(),
+		userAgent: text("user_agent").notNull(),
+		countryCode: text("country_code").notNull(),
+	},
+	(session) => {
+		return {
+			userIdx: uniqueIndex("session_user_idx").on(session.userId),
+		}
+	}
 )
 
 export const keys = sqliteTable(
-    tableNames.authKey,
-    {
-        id: text("id").primaryKey(),
-        userId: text("user_id")
-            .notNull()
-            .references(() => users.id, {
-                onUpdate: "cascade",
-                onDelete: "cascade",
-            }),
-        hashedPassword: text("hashed_password"),
-    },
-    (key) => {
-        return {
-            userIdx: uniqueIndex("keys_user_idx").on(key.userId),
-        }
-    }
+	tableNames.authKey,
+	{
+		id: text("id").primaryKey(),
+		userId: text("user_id")
+			.notNull()
+			.references(() => users.id, {
+				onUpdate: "cascade",
+				onDelete: "cascade",
+			}),
+		hashedPassword: text("hashed_password"),
+	},
+	(key) => {
+		return {
+			userIdx: uniqueIndex("keys_user_idx").on(key.userId),
+		}
+	}
 )
 
 export const socialsConnection = sqliteTable(tableNames.socialsConnection, {
-    id: text("id").primaryKey(),
-    userId: text("user_id")
-        .notNull()
-        .references(() => users.id, {
-            onUpdate: "cascade",
-            onDelete: "cascade",
-        }),
-    discordId: text("discord_id"),
+	id: text("id").primaryKey(),
+	userId: text("user_id")
+		.notNull()
+		.references(() => users.id, {
+			onUpdate: "cascade",
+			onDelete: "cascade",
+		}),
+	discordId: text("discord_id"),
 })
 
 export const games = sqliteTable(
-    tableNames.games,
-    {
-        id: text("id").primaryKey(),
-        name: text("name").notNull(),
-        formattedName: text("formatted_name").notNull(),
-        assetCount: integer("asset_count").default(0).notNull(),
-        lastUpdated: integer("last_updated").notNull(),
-    },
-    (game) => {
-        return {
-            gameIdx: uniqueIndex("game_idx").on(game.id),
-            nameIdx: uniqueIndex("name_idx").on(game.name),
-        }
-    }
+	tableNames.games,
+	{
+		id: text("id").primaryKey(),
+		name: text("name").notNull(),
+		formattedName: text("formatted_name").notNull(),
+		assetCount: integer("asset_count").default(0).notNull(),
+		lastUpdated: integer("last_updated").notNull(),
+	},
+	(game) => {
+		return {
+			gameIdx: uniqueIndex("game_idx").on(game.id),
+			nameIdx: uniqueIndex("name_idx").on(game.name),
+		}
+	}
 )
 
 export const assetCategories = sqliteTable(
-    tableNames.assetCategories,
-    {
-        id: text("id").primaryKey(),
-        name: text("name").notNull(), // e.g genshin-impact, honkai-impact-3rd
-        formattedName: text("formatted_name").notNull(), // e.g Genshin Impact, Honkai Impact 3rd
-        assetCount: integer("asset_count").default(0).notNull(),
-        lastUpdated: integer("last_updated").notNull(),
-    },
-    (assetCategory) => {
-        return {
-            assetCategoryIdx: uniqueIndex("asset_category_idx").on(
-                assetCategory.id
-            ),
-            nameIdx: uniqueIndex("name_idx").on(assetCategory.name),
-        }
-    }
+	tableNames.assetCategories,
+	{
+		id: text("id").primaryKey(),
+		name: text("name").notNull(), // e.g genshin-impact, honkai-impact-3rd
+		formattedName: text("formatted_name").notNull(), // e.g Genshin Impact, Honkai Impact 3rd
+		assetCount: integer("asset_count").default(0).notNull(),
+		lastUpdated: integer("last_updated").notNull(),
+	},
+	(assetCategory) => {
+		return {
+			assetCategoryIdx: uniqueIndex("asset_category_idx").on(
+				assetCategory.id
+			),
+			nameIdx: uniqueIndex("name_idx").on(assetCategory.name),
+		}
+	}
 )
 
 export const assetTags = sqliteTable(
-    tableNames.assetTags,
-    {
-        id: text("id").primaryKey(),
-        name: text("name").notNull(),
-        formattedName: text("formatted_name").notNull(),
-        assetCount: integer("asset_count").default(0).notNull(),
-        lastUpdated: integer("last_updated").notNull(),
-    },
-    (assetTag) => {
-        return {
-            assetTagIdx: uniqueIndex("asset_tag_idx").on(assetTag.id),
-            nameIdx: uniqueIndex("name_idx").on(assetTag.name),
-        }
-    }
+	tableNames.assetTags,
+	{
+		id: text("id").primaryKey(),
+		name: text("name").notNull(),
+		formattedName: text("formatted_name").notNull(),
+		assetCount: integer("asset_count").default(0).notNull(),
+		lastUpdated: integer("last_updated").notNull(),
+	},
+	(assetTag) => {
+		return {
+			assetTagIdx: uniqueIndex("asset_tag_idx").on(assetTag.id),
+			nameIdx: uniqueIndex("name_idx").on(assetTag.name),
+		}
+	}
 )
 
 export const assets = sqliteTable(
-    tableNames.assets,
-    {
-        id: integer("id").primaryKey().notNull(), // primary key auto increments on sqlite
-        name: text("name").notNull(),
-        game: text("game")
-            .notNull()
-            .references(() => games.name, {
-                onUpdate: "cascade",
-                onDelete: "cascade",
-            }),
-        assetCategory: text("asset_category")
-            .notNull()
-            .references(() => assetCategories.name, {
-                onUpdate: "cascade",
-                onDelete: "cascade",
-            }),
-        // tags can be more than one tag, where we reference the name of the tag
-        tags: text("tags").notNull(),
-        url: text("url").notNull(),
-        status: text("status").notNull(),
-        uploadedById: text("uploaded_by").references(() => users.id, {
-            onUpdate: "cascade",
-            onDelete: "cascade",
-        }),
-        uploadedByName: text("uploaded_by_name").references(
-            () => users.username,
-            {
-                onUpdate: "cascade",
-                onDelete: "cascade",
-            }
-        ),
-        uploadedDate: integer("uploaded_date").notNull(),
-        viewCount: integer("view_count").default(0).notNull(),
-        downloadCount: integer("download_count").default(0).notNull(),
-        fileSize: integer("file_size").default(0).notNull(),
-        width: integer("width").default(0).notNull(),
-        height: integer("height").default(0).notNull(),
-    },
-    (table) => {
-        return {
-            idIdx: uniqueIndex("assets_id_idx").on(table.id),
-            nameIdx: uniqueIndex("assets_name_idx").on(table.name),
-            gameIdx: uniqueIndex("assets_game_idx").on(table.game),
-            assetCategoryIdx: uniqueIndex("assets_asset_category_idx").on(
-                table.assetCategory
-            ),
-            downloadCountIdx: uniqueIndex("assets_download_count_idx").on(
-                table.downloadCount
-            ),
-            statusIdx: uniqueIndex("assets_status_idx").on(table.status),
-            tagsIdx: uniqueIndex("assets_tags_idx").on(table.tags),
-            uploadedByIdx: uniqueIndex("assets_uploaded_by_idx").on(
-                table.uploadedById
-            ),
-        }
-    }
+	tableNames.assets,
+	{
+		id: integer("id").primaryKey().notNull(), // primary key auto increments on sqlite
+		name: text("name").notNull(),
+		game: text("game")
+			.notNull()
+			.references(() => games.name, {
+				onUpdate: "cascade",
+				onDelete: "cascade",
+			}),
+		assetCategory: text("asset_category")
+			.notNull()
+			.references(() => assetCategories.name, {
+				onUpdate: "cascade",
+				onDelete: "cascade",
+			}),
+		// tags can be more than one tag, where we reference the name of the tag
+		tags: text("tags").notNull(),
+		url: text("url").notNull(),
+		status: text("status").notNull(),
+		uploadedById: text("uploaded_by").references(() => users.id, {
+			onUpdate: "cascade",
+			onDelete: "cascade",
+		}),
+		uploadedByName: text("uploaded_by_name").references(
+			() => users.username,
+			{
+				onUpdate: "cascade",
+				onDelete: "cascade",
+			}
+		),
+		uploadedDate: integer("uploaded_date").notNull(),
+		viewCount: integer("view_count").default(0).notNull(),
+		downloadCount: integer("download_count").default(0).notNull(),
+		fileSize: integer("file_size").default(0).notNull(),
+		width: integer("width").default(0).notNull(),
+		height: integer("height").default(0).notNull(),
+	},
+	(table) => {
+		return {
+			idIdx: uniqueIndex("assets_id_idx").on(table.id),
+			nameIdx: uniqueIndex("assets_name_idx").on(table.name),
+			gameIdx: uniqueIndex("assets_game_idx").on(table.game),
+			assetCategoryIdx: uniqueIndex("assets_asset_category_idx").on(
+				table.assetCategory
+			),
+			downloadCountIdx: uniqueIndex("assets_download_count_idx").on(
+				table.downloadCount
+			),
+			statusIdx: uniqueIndex("assets_status_idx").on(table.status),
+			tagsIdx: uniqueIndex("assets_tags_idx").on(table.tags),
+			uploadedByIdx: uniqueIndex("assets_uploaded_by_idx").on(
+				table.uploadedById
+			),
+		}
+	}
 )
 
 export const following = sqliteTable(
-    tableNames.following,
-    {
-        id: text("id").primaryKey(),
-        followerId: text("follower_id")
-            .notNull()
-            .references(() => users.id, {
-                onUpdate: "cascade",
-                onDelete: "cascade",
-            }),
-        followingId: text("following_id")
-            .notNull()
-            .references(() => users.id, {
-                onUpdate: "cascade",
-                onDelete: "cascade",
-            }),
-    },
-    (following) => {
-        return {
-            followerIdx: uniqueIndex("follower_idx").on(following.followerId),
-            followingIdx: uniqueIndex("following_idx").on(
-                following.followingId
-            ),
-        }
-    }
+	tableNames.following,
+	{
+		id: text("id").primaryKey(),
+		followerId: text("follower_id")
+			.notNull()
+			.references(() => users.id, {
+				onUpdate: "cascade",
+				onDelete: "cascade",
+			}),
+		followingId: text("following_id")
+			.notNull()
+			.references(() => users.id, {
+				onUpdate: "cascade",
+				onDelete: "cascade",
+			}),
+	},
+	(following) => {
+		return {
+			followerIdx: uniqueIndex("follower_idx").on(following.followerId),
+			followingIdx: uniqueIndex("following_idx").on(
+				following.followingId
+			),
+		}
+	}
 )
 
 export const follower = sqliteTable(
-    tableNames.follower,
-    {
-        id: text("id").primaryKey(),
-        followerId: text("follower_id")
-            .notNull()
-            .references(() => users.id, {
-                onUpdate: "cascade",
-                onDelete: "cascade",
-            }),
-        followingId: text("following_id").notNull(),
-    },
-    (follower) => {
-        return {
-            followerIdx: uniqueIndex("follower_idx").on(follower.followerId),
-            followingIdx: uniqueIndex("following_idx").on(follower.followingId),
-        }
-    }
+	tableNames.follower,
+	{
+		id: text("id").primaryKey(),
+		followerId: text("follower_id")
+			.notNull()
+			.references(() => users.id, {
+				onUpdate: "cascade",
+				onDelete: "cascade",
+			}),
+		followingId: text("following_id").notNull(),
+	},
+	(follower) => {
+		return {
+			followerIdx: uniqueIndex("follower_idx").on(follower.followerId),
+			followingIdx: uniqueIndex("following_idx").on(follower.followingId),
+		}
+	}
 )
 
 export const collections = sqliteTable(
-    tableNames.assetCollection,
-    {
-        id: text("id").primaryKey(),
-        name: text("name").notNull(),
-        userId: text("user_id")
-            .notNull()
-            .references(() => users.id, {
-                onUpdate: "cascade",
-                onDelete: "cascade",
-            }),
-        isPublic: integer("is_public").default(0).notNull(),
-    },
-    (collection) => {
-        return {
-            collectionIdx: uniqueIndex("collection_idx").on(collection.id),
-            userCollectionIdx: uniqueIndex("user_collection_idx").on(
-                collection.userId
-            ),
-        }
-    }
+	tableNames.assetCollection,
+	{
+		id: text("id").primaryKey(),
+		name: text("name").notNull(),
+		userId: text("user_id")
+			.notNull()
+			.references(() => users.id, {
+				onUpdate: "cascade",
+				onDelete: "cascade",
+			}),
+		isPublic: integer("is_public").default(0).notNull(),
+	},
+	(collection) => {
+		return {
+			collectionIdx: uniqueIndex("collection_idx").on(collection.id),
+			userCollectionIdx: uniqueIndex("user_collection_idx").on(
+				collection.userId
+			),
+		}
+	}
 )
 
 export const collectionAssets = sqliteTable(
-    tableNames.assetCollectionAsset,
-    {
-        collectionId: text("collection_id")
-            .notNull()
-            .references(() => collections.id, {
-                onUpdate: "cascade",
-                onDelete: "cascade",
-            }),
-        assetId: integer("asset_id")
-            .notNull()
-            .references(() => assets.id, {
-                onUpdate: "cascade",
-                onDelete: "cascade",
-            }),
-    },
-    (collectionAsset) => {
-        return {
-            collectionAssetIdx: uniqueIndex("collection_asset_idx").on(
-                collectionAsset.collectionId,
-                collectionAsset.assetId
-            ),
-        }
-    }
+	tableNames.assetCollectionAsset,
+	{
+		collectionId: text("collection_id")
+			.notNull()
+			.references(() => collections.id, {
+				onUpdate: "cascade",
+				onDelete: "cascade",
+			}),
+		assetId: integer("asset_id")
+			.notNull()
+			.references(() => assets.id, {
+				onUpdate: "cascade",
+				onDelete: "cascade",
+			}),
+	},
+	(collectionAsset) => {
+		return {
+			collectionAssetIdx: uniqueIndex("collection_asset_idx").on(
+				collectionAsset.collectionId,
+				collectionAsset.assetId
+			),
+		}
+	}
 )
 
 export const savedOcGenerators = sqliteTable(
-    tableNames.savedOcGenerators,
-    {
-        id: text("id").primaryKey(),
-        userId: text("user_id")
-            .notNull()
-            .references(() => users.id, {
-                onUpdate: "cascade",
-                onDelete: "cascade",
-            }),
-        name: text("name").notNull(),
-        game: text("game").notNull(),
-        isPublic: integer("is_public").default(0).notNull(),
-        content: text("content").notNull(), // this is stored as json, which is then parsed on the frontend
-    },
-    (savedOcGenerators) => {
-        return {
-            savedOcGeneratorsIdx: uniqueIndex("saved_oc_generators_idx").on(
-                savedOcGenerators.id
-            ),
-            savedOcGeneratorsUserIdx: uniqueIndex(
-                "saved_oc_generators_user_idx"
-            ).on(savedOcGenerators.userId),
-        }
-    }
+	tableNames.savedOcGenerators,
+	{
+		id: text("id").primaryKey(),
+		userId: text("user_id")
+			.notNull()
+			.references(() => users.id, {
+				onUpdate: "cascade",
+				onDelete: "cascade",
+			}),
+		name: text("name").notNull(),
+		game: text("game").notNull(),
+		isPublic: integer("is_public").default(0).notNull(),
+		content: text("content").notNull(), // this is stored as json, which is then parsed on the frontend
+	},
+	(savedOcGenerators) => {
+		return {
+			savedOcGeneratorsIdx: uniqueIndex("saved_oc_generators_idx").on(
+				savedOcGenerators.id
+			),
+			savedOcGeneratorsUserIdx: uniqueIndex(
+				"saved_oc_generators_user_idx"
+			).on(savedOcGenerators.userId),
+		}
+	}
 )
 
 // relations
 
 export const gameRelations = relations(games, ({ many }) => ({
-    assets: many(assets),
+	assets: many(assets),
 }))
 
 export const assetCategoryRelations = relations(
-    assetCategories,
-    ({ many }) => ({
-        assets: many(assets),
-    })
+	assetCategories,
+	({ many }) => ({
+		assets: many(assets),
+	})
 )
 
 export const collectionRelations = relations(collections, ({ many }) => ({
-    assets: many(assets),
+	assets: many(assets),
 }))
 
 export const assetRelations = relations(assets, ({ one, many }) => ({
-    uploadedBy: one(users, {
-        fields: [assets.uploadedById, assets.uploadedByName],
-        references: [users.id, users.username],
-    }),
-    assetCategory: one(assetCategories, {
-        fields: [assets.assetCategory],
-        references: [assetCategories.name],
-    }),
-    tags: many(assetTags),
-    game: one(games, {
-        fields: [assets.game],
-        references: [games.name],
-    }),
+	uploadedBy: one(users, {
+		fields: [assets.uploadedById, assets.uploadedByName],
+		references: [users.id, users.username],
+	}),
+	assetCategory: one(assetCategories, {
+		fields: [assets.assetCategory],
+		references: [assetCategories.name],
+	}),
+	tags: many(assetTags),
+	game: one(games, {
+		fields: [assets.game],
+		references: [games.name],
+	}),
 }))
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
-    user: one(users, {
-        fields: [sessions.userId],
-        references: [users.id],
-    }),
+	user: one(users, {
+		fields: [sessions.userId],
+		references: [users.id],
+	}),
 }))
 
 export const keysRelations = relations(keys, ({ one }) => ({
-    user: one(users, {
-        fields: [keys.userId],
-        references: [users.id],
-    }),
+	user: one(users, {
+		fields: [keys.userId],
+		references: [users.id],
+	}),
 }))
 
 export const usersRelations = relations(users, ({ many }) => ({
-    session: many(sessions),
-    key: many(keys),
-    assets: many(assets),
-    follower: many(follower),
-    following: many(following),
-    collections: many(collections),
-    savedOcGenerators: many(savedOcGenerators),
+	session: many(sessions),
+	key: many(keys),
+	assets: many(assets),
+	follower: many(follower),
+	following: many(following),
+	collections: many(collections),
+	savedOcGenerators: many(savedOcGenerators),
 }))

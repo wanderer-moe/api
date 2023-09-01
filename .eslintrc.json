@@ -1,19 +1,19 @@
 {
-    "root": true,
-    "extends": ["plugin:@typescript-eslint/recommended"],
-    "parser": "@typescript-eslint/parser",
-    "plugins": ["json"],
-    "rules": {
-        "no-const-assign": "error",
-        "camelcase": "off",
-        "no-extra-semi": "error"
-    },
-    "parserOptions": {
-        "allowImportExportEverywhere": true,
-        "ecmaVersion": 2020,
-        "ecmaFeatures": {
-            "impliedStrict": true
-        },
-        "sourceType": "module"
-    }
+	"root": true,
+	"extends": ["plugin:@typescript-eslint/recommended"],
+	"parser": "@typescript-eslint/parser",
+	"plugins": ["json"],
+	"rules": {
+		"no-const-assign": "error",
+		"camelcase": "off",
+		"no-extra-semi": "error"
+	},
+	"parserOptions": {
+		"allowImportExportEverywhere": true,
+		"ecmaVersion": 2020,
+		"ecmaFeatures": {
+			"impliedStrict": true
+		},
+		"sourceType": "module"
+	}
 }

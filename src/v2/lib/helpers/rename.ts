@@ -1,3 +1,3 @@
 export const rename = (name: string): string => {
-    return name.replace(/-/g, "_")
+	return name.replace(/-/g, "_")
 }

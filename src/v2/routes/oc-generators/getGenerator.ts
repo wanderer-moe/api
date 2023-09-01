@@ -4,37 +4,37 @@ import { createNotFoundResponse } from "@/v2/lib/helpers/responses/notFoundRespo
 import type { APIContext as Context } from "@/worker-configuration"
 
 export async function getGeneratorFromName(c: Context): Promise<Response> {
-    const { gameName } = c.req.param()
-    const cacheKey = new Request(c.req.url.toString(), c.req)
-    const cache = caches.default
-    let response = await cache.match(cacheKey)
+	const { gameName } = c.req.param()
+	const cacheKey = new Request(c.req.url.toString(), c.req)
+	const cache = caches.default
+	let response = await cache.match(cacheKey)
 
-    if (response) return response
+	if (response) return response
 
-    const files = await listBucket(c.env.bucket, {
-        prefix: `oc-generators/${gameName}/list.json`,
-    })
+	const files = await listBucket(c.env.bucket, {
+		prefix: `oc-generators/${gameName}/list.json`,
+	})
 
-    if (files.objects.length === 0)
-        return createNotFoundResponse(c, "Generator not found", responseHeaders)
+	if (files.objects.length === 0)
+		return createNotFoundResponse(c, "Generator not found", responseHeaders)
 
-    const data = await fetch(
-        `https://files.wanderer.moe/${files.objects[0].key}`
-    )
+	const data = await fetch(
+		`https://files.wanderer.moe/${files.objects[0].key}`
+	)
 
-    const generatorData = await data.json()
+	const generatorData = await data.json()
 
-    response = c.json(
-        {
-            status: "ok",
-            data: generatorData,
-        },
-        200,
-        responseHeaders
-    )
+	response = c.json(
+		{
+			status: "ok",
+			data: generatorData,
+		},
+		200,
+		responseHeaders
+	)
 
-    response.headers.set("Cache-Control", "s-maxage=604800") // the content of this file is unlikely to change, so caching is fine
-    await cache.put(cacheKey, response.clone())
+	response.headers.set("Cache-Control", "s-maxage=604800") // the content of this file is unlikely to change, so caching is fine
+	await cache.put(cacheKey, response.clone())
 
-    return response
+	return response
 }
