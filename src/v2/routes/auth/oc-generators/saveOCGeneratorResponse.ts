@@ -5,8 +5,15 @@ import { getConnection } from "@/v2/db/turso"
 
 export async function saveOCGeneratorResponse(c: Context): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
-
     const session = await authRequest.validate()
+
+    if (!session || session.state === "idle" || session.state === "invalid") {
+        if (session) {
+            await auth(c.env).invalidateSession(session.sessionId)
+            authRequest.setSession(null)
+        }
+        return c.json({ success: false, state: "invalid session" }, 200)
+    }
 
     const drizzle = await getConnection(c.env).drizzle
 

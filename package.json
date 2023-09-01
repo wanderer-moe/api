@@ -19,6 +19,7 @@
         "eslint": "^8.48.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-json": "^3.1.0",
+        "husky": "^8.0.3",
         "tsx": "^3.12.7",
         "typescript": "^5.2.2",
         "wrangler": "3.6.0"

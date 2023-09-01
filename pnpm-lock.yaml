@@ -1,4 +1,4 @@
-lockfileVersion: "6.1"
+lockfileVersion: "6.0"
 
 settings:
     autoInstallPeers: true
@@ -55,6 +55,9 @@ devDependencies:
     eslint-plugin-json:
         specifier: ^3.1.0
         version: 3.1.0
+    husky:
+        specifier: ^8.0.3
+        version: 8.0.3
     tsx:
         specifier: ^3.12.7
         version: 3.12.7
@@ -2423,6 +2426,15 @@ packages:
             {
                 integrity: sha512-er295DKPVsV82j5kw1Gjt+ADA/XYHsajl82cGNQG2eyoPkvgUhX+nDIyelzhIWbbsXP39EHcI6l5tYs2FYqYXQ==,
             }
+        dev: true
+
+    /husky@8.0.3:
+        resolution:
+            {
+                integrity: sha512-+dQSyqPh4x1hlO1swXBiNb2HzTDN1I2IGLQx1GrBuiqFJfoMrnZWwVmatvSiO+Iz8fBUnf+lekwNo4c2LlXItg==,
+            }
+        engines: { node: ">=14" }
+        hasBin: true
         dev: true
 
     /iconv-lite@0.6.3:

@@ -5,8 +5,11 @@ export async function updateUserAttributes(c: Context): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session) {
-        authRequest.setSession(null)
+    if (!session || session.state === "idle" || session.state === "invalid") {
+        if (session) {
+            await auth(c.env).invalidateSession(session.sessionId)
+            authRequest.setSession(null)
+        }
         return c.json({ success: false, state: "invalid session" }, 200)
     }
 

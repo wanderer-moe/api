@@ -11,6 +11,7 @@ import { updateUserAttributes } from "./user-attributes/updateUserAttributes"
 import { uploadAsset } from "./user-attributes/self-upload/uploadAsset"
 import { Bindings } from "@/worker-configuration"
 import { viewOCGeneratorResponses } from "./oc-generators/viewOCGeneratorResponses"
+import { deleteOCGeneratorResponse } from "./oc-generators/deleteOCGeneratorResponse"
 
 const authRoute = new Hono<{ Bindings: Bindings }>()
 
@@ -52,6 +53,10 @@ authRoute.post("/oc-generator/save", async (c) => {
 
 authRoute.get("/oc-generator/view/all", async (c) => {
     return viewOCGeneratorResponses(c)
+})
+
+authRoute.post("/oc-generator/delete", async (c) => {
+    return deleteOCGeneratorResponse(c)
 })
 
 authRoute.get("/validate", async (c) => {
