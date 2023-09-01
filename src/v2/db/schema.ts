@@ -92,6 +92,7 @@ export const games = sqliteTable(
     {
         id: text("id").primaryKey(),
         name: text("name").notNull(),
+        formattedName: text("formatted_name").notNull(),
         assetCount: integer("asset_count").default(0).notNull(),
         lastUpdated: integer("last_updated").notNull(),
     },
@@ -122,32 +123,19 @@ export const assetCategories = sqliteTable(
     }
 )
 
-export const gameAssetCategories = sqliteTable(
-    tableNames.gameAssetCategories,
+export const assetTags = sqliteTable(
+    tableNames.assetTags,
     {
         id: text("id").primaryKey(),
-        gameId: text("game_id")
-            .notNull()
-            .references(() => games.id, {
-                onUpdate: "cascade",
-                onDelete: "cascade",
-            }),
-        assetCategoryId: text("asset_category_id")
-            .notNull()
-            .references(() => assetCategories.id, {
-                onUpdate: "cascade",
-                onDelete: "cascade",
-            }),
+        name: text("name").notNull(),
+        formattedName: text("formatted_name").notNull(),
+        assetCount: integer("asset_count").default(0).notNull(),
+        lastUpdated: integer("last_updated").notNull(),
     },
-    (gameAssetCategory) => {
+    (assetTag) => {
         return {
-            gameAssetCategoryIdx: uniqueIndex("game_asset_category_idx").on(
-                gameAssetCategory.id
-            ),
-            gameIdx: uniqueIndex("game_idx").on(gameAssetCategory.gameId),
-            assetCategoryIdx: uniqueIndex("asset_category_idx").on(
-                gameAssetCategory.assetCategoryId
-            ),
+            assetTagIdx: uniqueIndex("asset_tag_idx").on(assetTag.id),
+            nameIdx: uniqueIndex("name_idx").on(assetTag.name),
         }
     }
 )
@@ -169,6 +157,7 @@ export const assets = sqliteTable(
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
+        // tags can be more than one tag, where we reference the name of the tag
         tags: text("tags").notNull(),
         url: text("url").notNull(),
         status: text("status").notNull(),
@@ -176,6 +165,13 @@ export const assets = sqliteTable(
             onUpdate: "cascade",
             onDelete: "cascade",
         }),
+        uploadedByName: text("uploaded_by_name").references(
+            () => users.username,
+            {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }
+        ),
         uploadedDate: integer("uploaded_date").notNull(),
         viewCount: integer("view_count").default(0).notNull(),
         downloadCount: integer("download_count").default(0).notNull(),
@@ -261,6 +257,7 @@ export const collections = sqliteTable(
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
+        isPublic: integer("is_public").default(0).notNull(),
     },
     (collection) => {
         return {
@@ -311,7 +308,7 @@ export const savedOcGenerators = sqliteTable(
         name: text("name").notNull(),
         game: text("game").notNull(),
         isPublic: integer("is_public").default(0).notNull(),
-        content: text("content").notNull(), // this is stored as json
+        content: text("content").notNull(), // this is stored as json, which is then parsed on the frontend
     },
     (savedOcGenerators) => {
         return {
@@ -328,20 +325,33 @@ export const savedOcGenerators = sqliteTable(
 // relations
 
 export const gameRelations = relations(games, ({ many }) => ({
-    assetCategories: many(gameAssetCategories),
+    assets: many(assets),
 }))
 
 export const assetCategoryRelations = relations(
     assetCategories,
     ({ many }) => ({
-        games: many(gameAssetCategories),
+        assets: many(assets),
     })
 )
 
-export const assetRelations = relations(assets, ({ one }) => ({
+export const collectionRelations = relations(collections, ({ many }) => ({
+    assets: many(assets),
+}))
+
+export const assetRelations = relations(assets, ({ one, many }) => ({
     uploadedBy: one(users, {
-        fields: [assets.uploadedById],
-        references: [users.id],
+        fields: [assets.uploadedById, assets.uploadedByName],
+        references: [users.id, users.username],
+    }),
+    assetCategory: one(assetCategories, {
+        fields: [assets.assetCategory],
+        references: [assetCategories.name],
+    }),
+    tags: many(assetTags),
+    game: one(games, {
+        fields: [assets.game],
+        references: [games.name],
     }),
 }))
 
