@@ -2,10 +2,9 @@ import { Hono } from "hono"
 import assetRoute from "./v2/routes/asset/assetRoute"
 import discordRoute from "./v2/routes/discord/discordRoute"
 import ocGeneratorRoute from "./v2/routes/oc-generators/ocGeneratorRoutes"
-// import assetSearchRoute from "./routes/search/asset/searchRoute";
 import gamesRoute from "./v2/routes/games/gamesRoute"
-import userRoute from "./v2/routes/user/userRoute"
 import authRoute from "./v2/routes/auth/authRoute"
+import searchRoute from "./v2/routes/search/searchRoute"
 import { getRuntimeKey } from "hono/adapter"
 import { Bindings } from "@/worker-configuration"
 
@@ -25,9 +24,8 @@ app.get("/", (c) => {
 app.route("/v2/asset", assetRoute)
 app.route("/v2/discord", discordRoute)
 app.route("/v2/oc-generators", ocGeneratorRoute)
-// app.route("/search/assets", assetSearchRoute);
+app.route("/v2/search", searchRoute)
 app.route("/v2/games", gamesRoute)
-app.route("/v2/user", userRoute)
 app.route("/v2/auth", authRoute)
 app.all("*", (c) => {
     c.status(404)

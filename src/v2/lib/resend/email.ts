@@ -1,7 +1,7 @@
 import { Resend } from "resend"
 
 // TODO: use react email w/ tailwind
-export const resend = new Resend("")
+const resend = new Resend("")
 
 export const sendPasswordResetEmail = async (
     email: string,

@@ -15,11 +15,9 @@ export async function getAssetFromId(c: Context): Promise<Response> {
 
     const drizzle = await getConnection(c.env).drizzle
 
-    const asset = await drizzle
-        .select()
-        .from(assets)
-        .where(eq(assets.id, parseInt(id)))
-        .execute()
+    const asset = await drizzle.query.assets.findFirst({
+        where: (assets, { eq }) => eq(assets.id, parseInt(id)),
+    })
 
     if (!asset) {
         response = createNotFoundResponse(c, "Asset not found", responseHeaders)

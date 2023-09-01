@@ -1,3 +1,4 @@
+// types used for the /contributor endpoint
 export interface Contributor {
     id: string
     username: string

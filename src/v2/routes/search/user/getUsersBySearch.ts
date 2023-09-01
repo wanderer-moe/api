@@ -12,8 +12,7 @@ export async function getUsersBySearch(c: Context): Promise<Response> {
     if (response) return response
 
     const { query } = c.req.param()
-    const conn = await getConnection(c.env)
-    const { drizzle } = conn
+    const drizzle = await getConnection(c.env).drizzle
 
     const userList = await drizzle
         .select()
