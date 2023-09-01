@@ -9,6 +9,7 @@ export const tableNames = {
 	gameAssetCategories: "gameAssetCategories",
 	games: "games",
 	assetTags: "assetTags",
+	assetAssetTags: "assetAssetTags",
 	emailVerificationToken: "emailVerificationToken",
 	passwordResetToken: "passwordResetToken",
 	assetCategories: "assetCategories",
