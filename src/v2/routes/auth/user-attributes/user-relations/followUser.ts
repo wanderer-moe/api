@@ -44,7 +44,7 @@ export async function followUser(c: Context): Promise<Response> {
 	}
 
 	await drizzle.transaction(async (transaction) => {
-		const newFollower = await transaction
+		await transaction
 			.insert(follower)
 			.values({
 				id: `${session.userId}-${userToFollow}`,
@@ -53,7 +53,7 @@ export async function followUser(c: Context): Promise<Response> {
 			})
 			.execute()
 
-		const newFollowing = await transaction
+		await transaction
 			.insert(following)
 			.values({
 				id: `${userToFollow}-${session.userId}`,
@@ -61,10 +61,8 @@ export async function followUser(c: Context): Promise<Response> {
 				followingUserId: session.userId,
 			})
 			.execute()
-		return c.json(
-			{ success: true, state: "ok", newFollowing, newFollower },
-			200
-		)
+
+		return c.json({ success: true, state: "followed user" }, 200)
 	})
 
 	return c.json({ success: false, state: "failed to follow user" }, 500)

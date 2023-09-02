@@ -33,6 +33,7 @@ export async function searchAll(c: Context): Promise<Response> {
 	const drizzle = await getConnection(c.env).drizzle
 
 	// https://cdn.discordapp.com/attachments/1102306276832202813/1147291827699986572/F.gif
+	// this is really bad but i don't know how to do this better
 	const usersResponse = await drizzle
 		.select()
 		.from(users)
