@@ -2,7 +2,7 @@ import { responseHeaders } from "@/v2/lib/responseHeaders"
 import { getConnection } from "@/v2/db/turso"
 import { assets } from "@/v2/db/schema"
 import { createNotFoundResponse } from "@/v2/lib/helpers/responses/notFoundResponse"
-import { eq, desc } from "drizzle-orm"
+import { desc } from "drizzle-orm"
 import type { APIContext as Context } from "@/worker-configuration"
 
 export async function getAssetFromId(c: Context): Promise<Response> {
@@ -16,7 +16,8 @@ export async function getAssetFromId(c: Context): Promise<Response> {
 	const drizzle = await getConnection(c.env).drizzle
 
 	const asset = await drizzle.query.assets.findFirst({
-		where: (assets, { eq }) => eq(assets.id, parseInt(id)),
+		where: (assets, { eq, and }) =>
+			and(eq(assets.status, 1), eq(assets.id, parseInt(id))),
 	})
 
 	if (!asset) {
@@ -25,13 +26,15 @@ export async function getAssetFromId(c: Context): Promise<Response> {
 		return response
 	}
 
-	const similarAssets = await drizzle
-		.select()
-		.from(assets)
-		.where(eq(assets.assetCategory, asset.assetCategory))
-		.limit(6)
-		.orderBy(desc(assets.id))
-		.execute()
+	const similarAssets = await drizzle.query.assets.findMany({
+		where: (assets, { eq, and }) =>
+			and(
+				eq(assets.status, 1),
+				eq(assets.assetCategory, asset.assetCategory)
+			),
+		limit: 6,
+		orderBy: desc(assets.id),
+	})
 
 	response = c.json(
 		{

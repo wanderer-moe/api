@@ -2,6 +2,8 @@ import { responseHeaders } from "@/v2/lib/responseHeaders"
 import { getConnection } from "@/v2/db/turso"
 import { like } from "drizzle-orm"
 import type { APIContext as Context } from "@/worker-configuration"
+import { assets } from "@/v2/db/schema"
+import { desc } from "drizzle-orm"
 import { SplitQueryByCommas } from "@/v2/lib/helpers/splitQueryByCommas"
 
 export async function searchForAssets(c: Context): Promise<Response> {
@@ -46,21 +48,21 @@ export async function searchForAssets(c: Context): Promise<Response> {
 				eq(assets.status, 1)
 			)
 		},
-		...(assetTagsList.length > 0
-			? {
-					with: {
-						assetTags: {
-							where: (assetTags, { and, eq }) => {
-								return and(
-									...assetTagsList.map((assetTag) =>
-										eq(assetTags.name, assetTag)
-									)
-								)
-							},
-						},
+		...(assetTagsList.length > 0 && {
+			with: {
+				assetTags: {
+					where: (assetTags, { and, eq }) => {
+						return and(
+							...assetTagsList.map((assetTag) =>
+								eq(assetTags.name, assetTag)
+							)
+						)
 					},
-			  }
-			: {}),
+				},
+			},
+		}),
+		orderBy: desc(assets.id),
+		limit: 1000,
 	})
 
 	response = c.json(

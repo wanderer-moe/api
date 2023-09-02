@@ -138,7 +138,7 @@ export const assetCategories = sqliteTable(
 export const assets = sqliteTable(
 	tableNames.assets,
 	{
-		id: integer("id").primaryKey().notNull(), // primary key auto increments on sqlite
+		id: integer("id").primaryKey(), // primary key auto increments on sqlite
 		name: text("name").notNull(),
 		extension: text("extension").notNull(),
 		game: text("game")
@@ -280,9 +280,9 @@ export const userFavoritesAssets = sqliteTable(
 	},
 	(userFavoritesAssets) => {
 		return {
-			favoritedAssetsAssetsIdx: uniqueIndex(
-				"favorited_assets_assets_id_idx"
-			).on(userFavoritesAssets.id),
+			favoritedAssetsAssetsIdx: uniqueIndex("favorited_assets_id_idx").on(
+				userFavoritesAssets.id
+			),
 			favoritedAssetsUserIdx: uniqueIndex(
 				"favorited_assets_user_id_idx"
 			).on(userFavoritesAssets.userFavoritesId),
@@ -488,3 +488,19 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 	userCollections: many(userCollections),
 	savedOcGenerators: many(savedOcGenerators),
 }))
+
+// export types
+export type user = typeof users.$inferSelect
+export type session = typeof sessions.$inferSelect
+export type key = typeof keys.$inferSelect
+export type socialsConnection = typeof socialsConnections.$inferSelect
+export type game = typeof games.$inferSelect
+export type assetCategory = typeof assetCategories.$inferSelect
+export type asset = typeof assets.$inferSelect
+export type assetTag = typeof assetTags.$inferSelect
+export type following = typeof following.$inferSelect
+export type follower = typeof follower.$inferSelect
+export type userFavorites = typeof userFavorites.$inferSelect
+export type userFavoritesAssets = typeof userFavoritesAssets.$inferSelect
+export type userCollections = typeof userCollections.$inferSelect
+export type userCollectionAssets = typeof userCollectionAssets.$inferSelect

@@ -1,8 +1,7 @@
 import { responseHeaders } from "@/v2/lib/responseHeaders"
 import { createNotFoundResponse } from "@/v2/lib/helpers/responses/notFoundResponse"
-import { like } from "drizzle-orm"
 import { getConnection } from "@/v2/db/turso"
-import { users } from "@/v2/db/schema"
+import { like } from "drizzle-orm"
 import type { APIContext as Context } from "@/worker-configuration"
 
 export async function getUsersBySearch(c: Context): Promise<Response> {
@@ -14,11 +13,11 @@ export async function getUsersBySearch(c: Context): Promise<Response> {
 	const { query } = c.req.param()
 	const drizzle = await getConnection(c.env).drizzle
 
-	const userList = await drizzle
-		.select()
-		.from(users)
-		.where(like(users.username, `%${query}%`))
-		.execute()
+	const userList = await drizzle.query.users.findMany({
+		where: (users, { or }) => {
+			return or(like(users.username, `%${query}%`))
+		},
+	})
 
 	if (!userList) {
 		return createNotFoundResponse(c, "Users not found", responseHeaders)

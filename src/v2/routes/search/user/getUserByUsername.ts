@@ -2,6 +2,7 @@ import { responseHeaders } from "@/v2/lib/responseHeaders"
 import { getConnection } from "@/v2/db/turso"
 import { createNotFoundResponse } from "@/v2/lib/helpers/responses/notFoundResponse"
 import type { APIContext as Context } from "@/worker-configuration"
+import { roleFlagsToArray } from "@/v2/lib/helpers/roleFlags"
 
 export async function getUserByUsername(c: Context): Promise<Response> {
 	const { username } = c.req.param()
@@ -26,6 +27,9 @@ export async function getUserByUsername(c: Context): Promise<Response> {
 	// removing email-related fields
 	user.email = undefined
 	user.emailVerified = undefined
+
+	// converting role flags to array
+	user.roleFlags = roleFlagsToArray(user.role_flags)
 
 	response = c.json(
 		{

@@ -57,18 +57,6 @@ export async function uploadAsset(c: Context): Promise<Response> {
 		type: asset.type,
 	})
 
-	const duplicateAsset = await drizzle.query.assets.findFirst({
-		where: (assets, { and, eq }) =>
-			and(
-				eq(assets.name, newAsset.name),
-				eq(assets.game, newAsset.game),
-				eq(assets.assetCategory, newAsset.assetCategory)
-			),
-	})
-
-	if (duplicateAsset)
-		return c.json({ success: false, state: "duplicate asset" }, 400)
-
 	try {
 		await c.env.bucket.put(
 			`/assets/${metadata.game}/${metadata.category}/${metadata.name}.${metadata.extension}`,
