@@ -298,6 +298,7 @@ export const userCollections = sqliteTable(
 	{
 		id: text("id").primaryKey(),
 		name: text("name").notNull(),
+		description: text("description").notNull(),
 		userId: text("user_id")
 			.notNull()
 			.references(() => users.id, {
