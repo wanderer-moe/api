@@ -13,7 +13,7 @@ export async function searchForAssets(c: Context): Promise<Response> {
 	let response = await cache.match(cacheKey)
 	if (response) return response
 
-	const { query, game, assetCategory, assetTags } = c.req.param()
+	const { query, game, assetCategory, assetTags } = c.req.query()
 
 	// search parameters can include optional search params: query, game, assetCategory, assetTags
 	// query?: string => ?query=keqing
@@ -80,5 +80,7 @@ export async function searchForAssets(c: Context): Promise<Response> {
 		responseHeaders
 	)
 
+	response.headers.set("Cache-Control", "s-maxage=600")
+	await cache.put(cacheKey, response.clone())
 	return response
 }

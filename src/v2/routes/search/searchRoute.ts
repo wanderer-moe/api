@@ -4,6 +4,8 @@ import { Bindings } from "@/worker-configuration"
 import { getUserByUsername } from "./user/getUserByUsername"
 import { getUsersBySearch } from "./user/getUsersBySearch"
 import authRoute from "../auth/authRoute"
+import { searchForAssets } from "./asset/searchAssets"
+import { recentAssets } from "./asset/recentAssets"
 import { cors } from "hono/cors"
 
 const searchRoute = new Hono<{ Bindings: Bindings }>()
@@ -19,6 +21,14 @@ authRoute.use(
 		origin: ["https://next.wanderer.moe"],
 	})
 )
+
+searchRoute.get("/assets/query", async (c) => {
+	return searchForAssets(c)
+})
+
+searchRoute.get("/assets/recent", async (c) => {
+	return recentAssets(c)
+})
 
 searchRoute.get("/users/user/:username", async (c) => {
 	return getUserByUsername(c)
