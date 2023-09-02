@@ -35,12 +35,12 @@ export async function favoriteAsset(c: Context): Promise<Response> {
 	}
 
 	// this should never happen, but just in case it does, UX over reads/writes to the database
-	const userFavoritedAssets = await drizzle.query.userFavorites.findFirst({
+	const doesUserFavoritesExist = await drizzle.query.userFavorites.findFirst({
 		where: (userFavorites, { eq }) =>
 			eq(userFavorites.userId, session.userId),
 	})
 
-	if (!userFavoritedAssets) {
+	if (!doesUserFavoritesExist) {
 		// create entry in userFavorites
 		await drizzle
 			.insert(userFavorites)
@@ -52,22 +52,16 @@ export async function favoriteAsset(c: Context): Promise<Response> {
 			.execute()
 	}
 
-	const isFavorited = drizzle.query.userFavorites.findFirst({
-		where: (userFavorites, { eq }) =>
-			eq(userFavorites.id, `${session.userId}-${assetToFavorite}`),
-		with: {
-			assets: {
-				where: (assets, { eq }) =>
-					eq(assets.id, parseInt(assetToFavorite)),
-			},
-		},
+	const isFavorited = await drizzle.query.userFavorites.findFirst({
+		where: (userFavoritesAssets, { eq }) =>
+			eq(userFavoritesAssets.id, `${session.userId}-${assetToFavorite}`),
 	})
 
 	if (isFavorited) {
 		return c.json(
 			{
 				success: false,
-				state: "asset is already favorited",
+				state: "asset is already favorited, therefore cannot be favorited",
 				assetToFavorite,
 			},
 			200
@@ -77,7 +71,7 @@ export async function favoriteAsset(c: Context): Promise<Response> {
 	// add asset to userFavorites...
 	await drizzle.insert(userFavoritesAssets).values({
 		id: `${session.userId}-${assetToFavorite}`,
-		userFavoritesId: (await isFavorited).id,
+		userFavoritesId: isFavorited.id,
 		assetId: parseInt(assetToFavorite),
 	})
 

@@ -35,12 +35,12 @@ export async function removeFavoriteAsset(c: Context): Promise<Response> {
 	}
 
 	// this should never happen, but just in case it does, UX over reads/writes to the database
-	const userFavoritedAssets = await drizzle.query.userFavorites.findFirst({
+	const doesUserFavoritesExist = await drizzle.query.userFavorites.findFirst({
 		where: (userFavorites, { eq }) =>
 			eq(userFavorites.userId, session.userId),
 	})
 
-	if (!userFavoritedAssets) {
+	if (!doesUserFavoritesExist) {
 		// create entry in userFavorites
 		await drizzle
 			.insert(userFavorites)
@@ -52,28 +52,23 @@ export async function removeFavoriteAsset(c: Context): Promise<Response> {
 			.execute()
 	}
 
-	const isFavorited = drizzle.query.userFavorites.findFirst({
-		where: (userFavorites, { eq }) =>
-			eq(userFavorites.id, `${session.userId}-${assetToRemove}`),
-		with: {
-			assets: {
-				where: (assets, { eq }) =>
-					eq(assets.id, parseInt(assetToRemove)),
-			},
-		},
+	const isFavorited = await drizzle.query.userFavorites.findFirst({
+		where: (userFavoritesAssets, { eq }) =>
+			eq(userFavoritesAssets.id, `${session.userId}-${assetToRemove}`),
 	})
 
 	if (!isFavorited) {
 		return c.json(
 			{
 				success: false,
-				state: "asset isn't favorited",
+				state: "asset is not favorited, therefore cannot be removed",
 				assetToRemove,
 			},
 			200
 		)
 	}
 
+	// remove asset from userFavorites...
 	await drizzle
 		.delete(userFavoritesAssets)
 		.where(eq(userFavoritesAssets.id, `${session.userId}-${assetToRemove}`))
