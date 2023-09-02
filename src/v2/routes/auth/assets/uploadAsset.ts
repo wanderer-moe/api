@@ -38,9 +38,8 @@ export async function uploadAsset(c: Context): Promise<Response> {
 		return c.json({ success: false, state: "invalid asset" }, 200)
 	}
 
-	// clear out metadata
 	const metadata = {
-		title: formData.get("title") as string, // e.g keqing
+		name: formData.get("name`") as string, // e.g keqing
 		extension: formData.get("extension") as string, // e.g png
 		tags: formData.get("tags") as string, // e.g no-background, fanmade, official
 		category: formData.get("category") as string, // e.g splash-art
@@ -51,11 +50,12 @@ export async function uploadAsset(c: Context): Promise<Response> {
 	}
 
 	const newAsset = {
-		name: `${metadata.title}.${metadata.extension}`,
+		name: metadata.name,
+		extension: metadata.extension,
 		game: metadata.game,
 		assetCategory: metadata.category,
 		tags: metadata.tags,
-		url: `/assets/${metadata.game}/${metadata.category}/${metadata.title}.${metadata.extension}`,
+		url: `/assets/${metadata.game}/${metadata.category}/${metadata.name}.${metadata.extension}`,
 		uploadedById: session.userId,
 		status: bypassApproval ? "approved" : "pending",
 		uploadedDate: new Date().getTime(),
@@ -82,26 +82,12 @@ export async function uploadAsset(c: Context): Promise<Response> {
 		return c.json({ success: false, state: "duplicate asset" }, 400)
 
 	try {
-		await drizzle.transaction(async () => {
-			await c.env.bucket.put(
-				`/assets/${metadata.game}/${metadata.category}/${metadata.title}.${metadata.extension}`,
-				newAssetFile
-			)
+		await c.env.bucket.put(
+			`/assets/${metadata.game}/${metadata.category}/${metadata.name}.${metadata.extension}`,
+			newAssetFile
+		)
 
-			const newAssetClone = new File(
-				[asset128px],
-				`${metadata.title}-128.png`,
-				{
-					type: asset.type,
-				}
-			)
-
-			await c.env.bucket.put(
-				`/assets/${metadata.game}/${metadata.category}/${metadata.title}-128.png`,
-				newAssetClone
-			)
-			await drizzle.insert(assets).values(newAsset)
-		})
+		await drizzle.insert(assets).values(newAsset)
 	} catch (e) {
 		return c.json({ success: false, state: "failed to upload asset" }, 500)
 	}

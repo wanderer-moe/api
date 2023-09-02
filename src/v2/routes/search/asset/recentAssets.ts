@@ -4,7 +4,7 @@ import { desc } from "drizzle-orm"
 import type { APIContext as Context } from "@/worker-configuration"
 import { assets } from "@/v2/db/schema"
 
-// get 100 most recent assets, sorted by asset.upload
+// get 100 most recent assets, sorted by asset.uploadedDate
 export async function recentAssets(c: Context): Promise<Response> {
 	const cacheKey = new Request(c.req.url.toString(), c.req)
 	const cache = caches.default

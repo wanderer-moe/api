@@ -2,10 +2,7 @@ import { responseHeaders } from "@/v2/lib/responseHeaders"
 import { getConnection } from "@/v2/db/turso"
 import { like } from "drizzle-orm"
 import type { APIContext as Context } from "@/worker-configuration"
-
-function SplitQueryByCommas(query: string): string[] {
-	return query.split(",") ? query.split(",") : [query]
-}
+import { SplitQueryByCommas } from "@/v2/lib/helpers/splitQueryByCommas"
 
 export async function searchForAssets(c: Context): Promise<Response> {
 	const cacheKey = new Request(c.req.url.toString(), c.req)
@@ -74,7 +71,7 @@ export async function searchForAssets(c: Context): Promise<Response> {
 			game,
 			assetCategory,
 			assetTags,
-			results: assetResponse,
+			results: assetResponse ? assetResponse : [],
 		},
 		200,
 		responseHeaders

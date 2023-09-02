@@ -13,6 +13,8 @@ import { Bindings } from "@/worker-configuration"
 import { modifyAssetData } from "./assets/modifyAsset"
 import { approveAsset } from "./assets/approveAsset"
 import { viewOCGeneratorResponses } from "./oc-generators/viewOCGeneratorResponses"
+import { followUser } from "./user-attributes/user-relations/followUser"
+import { unFollowUser } from "./user-attributes/user-relations/unfollowUser"
 import { deleteOCGeneratorResponse } from "./oc-generators/deleteOCGeneratorResponse"
 
 const authRoute = new Hono<{ Bindings: Bindings }>()
@@ -51,6 +53,14 @@ authRoute.post("/modify/asset/:assetIdToModify", async (c) => {
 
 authRoute.post("/upload/banner", async (c) => {
 	return uploadBannerImage(c)
+})
+
+authRoute.post("/follow", async (c) => {
+	return followUser(c)
+})
+
+authRoute.post("/unfollow", async (c) => {
+	return unFollowUser(c)
 })
 
 authRoute.post("/signup", async (c) => {
