@@ -13,10 +13,11 @@ export const tableNames = {
 	passwordResetToken: "passwordResetToken",
 	assetCategories: "assetCategories",
 	savedOcGenerators: "savedOcGenerators",
-	favoritedAssets: "favoritedAssets",
-	assetCollection: "assetCollection",
-	assetCollectionAsset: "assetCollectionAsset",
-	socialsConnection: "socialsConnection",
+	userFavorites: "userFavorites",
+	userFavoritesAssets: "userFavoritesAssets",
+	userCollections: "assetCollection",
+	userCollectionAssets: "assetCollectionAsset",
+	socialsConnections: "socialsConnections",
 }
 
 export * as schema from "@/v2/db/schema"

@@ -10,7 +10,7 @@ import {
 	assetCategories,
 	assetTags,
 	savedOcGenerators,
-	collections,
+	userCollections,
 } from "@/v2/db/schema"
 
 export async function searchAll(c: Context): Promise<Response> {
@@ -74,14 +74,14 @@ export async function searchAll(c: Context): Promise<Response> {
 		.execute()
 	const collectionsResponse = await drizzle
 		.select()
-		.from(collections)
+		.from(userCollections)
 		.where(
 			and(
 				or(
-					eq(collections.userId, session.userId),
-					not(eq(collections.isPublic, 0))
+					eq(userCollections.userId, session.userId),
+					not(eq(userCollections.isPublic, 0))
 				),
-				like(collections.name, `%${query}%`)
+				like(userCollections.name, `%${query}%`)
 			)
 		)
 		.execute()

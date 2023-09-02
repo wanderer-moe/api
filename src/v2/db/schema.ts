@@ -77,7 +77,7 @@ export const keys = sqliteTable(
 )
 
 export const socialsConnections = sqliteTable(
-	tableNames.socialsConnection,
+	tableNames.socialsConnections,
 	{
 		id: text("id").primaryKey(),
 		userId: text("user_id")
@@ -237,8 +237,8 @@ export const follower = sqliteTable(tableNames.follower, {
 		.references(() => users.id),
 })
 
-export const favoritedAssets = sqliteTable(
-	tableNames.favoritedAssets,
+export const userFavorites = sqliteTable(
+	tableNames.userFavorites,
 	{
 		id: text("id").primaryKey(),
 		userId: text("user_id")
@@ -249,20 +249,52 @@ export const favoritedAssets = sqliteTable(
 			}),
 		isPublic: integer("is_public").default(0).notNull(),
 	},
-	(favoritedAssets) => {
+	(userFavorites) => {
 		return {
 			favoritedAssetsIdx: uniqueIndex("favorited_assets_id_idx").on(
-				favoritedAssets.id
+				userFavorites.id
 			),
 			favoritedAssetsUserIdx: uniqueIndex(
 				"favorited_assets_user_id_idx"
-			).on(favoritedAssets.userId),
+			).on(userFavorites.userId),
 		}
 	}
 )
 
-export const collections = sqliteTable(
-	tableNames.assetCollection,
+export const userFavoritesAssets = sqliteTable(
+	tableNames.userFavoritesAssets,
+	{
+		id: text("id").primaryKey(),
+		userFavoritesId: text("favorited_assets_id")
+			.notNull()
+			.references(() => userFavorites.id, {
+				onUpdate: "cascade",
+				onDelete: "cascade",
+			}),
+		assetId: integer("asset_id")
+			.notNull()
+			.references(() => assets.id, {
+				onUpdate: "cascade",
+				onDelete: "cascade",
+			}),
+	},
+	(userFavoritesAssets) => {
+		return {
+			favoritedAssetsAssetsIdx: uniqueIndex(
+				"favorited_assets_assets_id_idx"
+			).on(userFavoritesAssets.id),
+			favoritedAssetsUserIdx: uniqueIndex(
+				"favorited_assets_user_id_idx"
+			).on(userFavoritesAssets.userFavoritesId),
+			favoritedAssetsAssetsAssetIdx: uniqueIndex(
+				"favorited_assets_assets_asset_id_idx"
+			).on(userFavoritesAssets.assetId),
+		}
+	}
+)
+
+export const userCollections = sqliteTable(
+	tableNames.userCollections,
 	{
 		id: text("id").primaryKey(),
 		name: text("name").notNull(),
@@ -280,6 +312,38 @@ export const collections = sqliteTable(
 			userCollectionIdx: uniqueIndex("user_collection_id_idx").on(
 				collection.userId
 			),
+		}
+	}
+)
+
+export const userCollectionAssets = sqliteTable(
+	tableNames.userCollectionAssets,
+	{
+		id: text("id").primaryKey(),
+		collectionId: text("collection_id")
+			.notNull()
+			.references(() => userCollections.id, {
+				onUpdate: "cascade",
+				onDelete: "cascade",
+			}),
+		assetId: integer("asset_id")
+			.notNull()
+			.references(() => assets.id, {
+				onUpdate: "cascade",
+				onDelete: "cascade",
+			}),
+	},
+	(collectionAssets) => {
+		return {
+			collectionAssetsIdx: uniqueIndex("collection_assets_id_idx").on(
+				collectionAssets.id
+			),
+			collectionAssetsCollectionIdx: uniqueIndex(
+				"collection_assets_collection_id_idx"
+			).on(collectionAssets.collectionId),
+			collectionAssetsAssetIdx: uniqueIndex(
+				"collection_assets_asset_id_idx"
+			).on(collectionAssets.assetId),
 		}
 	}
 )
@@ -316,25 +380,6 @@ export const gameRelations = relations(games, ({ many }) => ({
 	assets: many(assets),
 }))
 
-export const assetCategoryRelations = relations(
-	assetCategories,
-	({ many }) => ({
-		assets: many(assets),
-	})
-)
-
-export const assetTagRelations = relations(assetTags, ({ many }) => ({
-	assets: many(assets),
-}))
-
-export const collectionRelations = relations(collections, ({ one, many }) => ({
-	user: one(users, {
-		fields: [collections.userId],
-		references: [users.id],
-	}),
-	assets: many(assets),
-}))
-
 export const assetRelations = relations(assets, ({ one, many }) => ({
 	uploadedBy: one(users, {
 		fields: [assets.uploadedById, assets.uploadedByName],
@@ -351,14 +396,60 @@ export const assetRelations = relations(assets, ({ one, many }) => ({
 	}),
 }))
 
-export const favoredAssetsRelations = relations(
-	favoritedAssets,
+export const assetCategoryRelations = relations(
+	assetCategories,
+	({ many }) => ({
+		assets: many(assets),
+	})
+)
+
+export const assetTagRelations = relations(assetTags, ({ many }) => ({
+	assets: many(assets),
+}))
+
+export const collectionRelations = relations(
+	userCollections,
 	({ one, many }) => ({
 		user: one(users, {
-			fields: [favoritedAssets.userId],
+			fields: [userCollections.userId],
 			references: [users.id],
 		}),
-		assets: many(assets),
+		assets: many(userCollectionAssets),
+	})
+)
+
+export const collectionAssetsRelations = relations(
+	userCollectionAssets,
+	({ one }) => ({
+		collection: one(userCollections, {
+			fields: [userCollectionAssets.collectionId],
+			references: [userCollections.id],
+		}),
+		asset: one(assets, {
+			fields: [userCollectionAssets.assetId],
+			references: [assets.id],
+		}),
+	})
+)
+
+export const userFavoritesRelations = relations(userFavorites, ({ one }) => ({
+	user: one(users, {
+		fields: [userFavorites.userId],
+		references: [users.id],
+	}),
+}))
+
+export const userFavoritesAssetsRelations = relations(
+	userFavoritesAssets,
+	({ one }) => ({
+		favoritedAssets: one(userFavorites, {
+			fields: [userFavoritesAssets.userFavoritesId],
+			references: [userFavorites.id],
+		}),
+		asset: one(assets, {
+			fields: [userFavoritesAssets.assetId],
+			references: [assets.id],
+		}),
 	})
 )
 
@@ -376,14 +467,24 @@ export const keysRelations = relations(keys, ({ one }) => ({
 	}),
 }))
 
+export const socialsConnectionsRelations = relations(
+	socialsConnections,
+	({ one }) => ({
+		user: one(users, {
+			fields: [socialsConnections.userId],
+			references: [users.id],
+		}),
+	})
+)
+
 export const usersRelations = relations(users, ({ one, many }) => ({
 	session: many(sessions),
 	key: many(keys),
 	assets: many(assets),
 	follower: many(follower),
-	favoritedAssets: one(favoritedAssets),
+	userFavorites: one(userFavorites),
 	following: many(following),
 	socialsConnection: one(socialsConnections),
-	collections: many(collections),
+	userCollections: many(userCollections),
 	savedOcGenerators: many(savedOcGenerators),
 }))

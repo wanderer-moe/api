@@ -1,7 +1,7 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { getConnection } from "@/v2/db/turso"
 import { APIContext as Context } from "@/worker-configuration"
-import { favoritedAssets } from "@/v2/db/schema"
+import { userFavorites, userFavoritesAssets } from "@/v2/db/schema"
 
 export async function favoriteAsset(c: Context): Promise<Response> {
 	const drizzle = getConnection(c.env).drizzle
@@ -35,27 +35,26 @@ export async function favoriteAsset(c: Context): Promise<Response> {
 	}
 
 	// this should never happen, but just in case it does, UX over reads/writes to the database
-	let userFavoritedAssets = await drizzle.query.favoritedAssets.findFirst({
-		where: (favoritedAssets, { eq }) =>
-			eq(favoritedAssets.userId, session.userId),
+	const userFavoritedAssets = await drizzle.query.userFavorites.findFirst({
+		where: (userFavorites, { eq }) =>
+			eq(userFavorites.userId, session.userId),
 	})
 
 	if (!userFavoritedAssets) {
-		// create entry in favoritedAssets
-		const insertedFavoritedAsset = await drizzle
-			.insert(favoritedAssets)
+		// create entry in userFavorites
+		await drizzle
+			.insert(userFavorites)
 			.values({
 				id: `${session.userId}-${assetToFavorite}`,
 				userId: session.userId,
 				isPublic: 0, // default to private
 			})
 			.execute()
-		userFavoritedAssets = insertedFavoritedAsset[0]
 	}
 
-	const isFavorited = drizzle.query.favoritedAssets.findFirst({
-		where: (favoritedAssets, { eq }) =>
-			eq(favoritedAssets.id, `${session.userId}-${assetToFavorite}`),
+	const isFavorited = drizzle.query.userFavorites.findFirst({
+		where: (userFavorites, { eq }) =>
+			eq(userFavorites.id, `${session.userId}-${assetToFavorite}`),
 		with: {
 			assets: {
 				where: (assets, { eq }) =>
@@ -75,7 +74,12 @@ export async function favoriteAsset(c: Context): Promise<Response> {
 		)
 	}
 
-	// add asset to favoritedAssets...
+	// add asset to userFavorites...
+	await drizzle.insert(userFavoritesAssets).values({
+		id: `${session.userId}-${assetToFavorite}`,
+		userFavoritesId: (await isFavorited).id,
+		assetId: parseInt(assetToFavorite),
+	})
 
 	return c.json(
 		{ success: true, state: "favorited asset", assetToFavorite },
