@@ -3,11 +3,12 @@
 // permission based roles
 export const roleFlags = {
 	USER: 1 << 0,
-	CONTRIBUTOR: 1 << 1,
-	TRANSLATOR: 1 << 2,
-	STAFF: 1 << 3,
-	DEVELOPER: 1 << 4,
-	CREATOR: 1 << 5,
+	UPLOADER: 1 << 1,
+	CONTRIBUTOR: 1 << 2,
+	TRANSLATOR: 1 << 3,
+	STAFF: 1 << 4,
+	DEVELOPER: 1 << 5,
+	CREATOR: 1 << 6,
 }
 
 export const roleFlagsToArray = (roleFlagsInt: number): string[] => {

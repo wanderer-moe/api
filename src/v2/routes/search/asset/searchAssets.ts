@@ -43,7 +43,7 @@ export async function searchForAssets(c: Context): Promise<Response> {
 							)
 					  )
 					: null,
-				eq(assets.status, "approved")
+				eq(assets.status, 1)
 			)
 		},
 		...(assetTagsList.length > 0

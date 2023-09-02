@@ -5,7 +5,7 @@ import { createNotFoundResponse } from "@/v2/lib/helpers/responses/notFoundRespo
 import { eq } from "drizzle-orm"
 import type { APIContext as Context } from "@/worker-configuration"
 import { auth } from "@/v2/lib/auth/lucia"
-import { roleFlagsToArray } from "@/v2/lib/auth/roleFlags"
+import { roleFlagsToArray } from "@/v2/lib/helpers/roleFlags"
 
 export async function approveAsset(c: Context): Promise<Response> {
 	const { assetIdToApprove } = c.req.param()
@@ -39,7 +39,7 @@ export async function approveAsset(c: Context): Promise<Response> {
 	const updatedAsset = await drizzle
 		.update(assets)
 		.set({
-			status: "approved",
+			status: 1,
 		})
 		.where(eq(assets.id, parseInt(assetIdToApprove)))
 		.execute()

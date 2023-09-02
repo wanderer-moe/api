@@ -103,7 +103,7 @@ export const games = sqliteTable(
 		id: text("id").primaryKey(),
 		name: text("name").notNull(),
 		formattedName: text("formatted_name").notNull(),
-		assetCount: integer("asset_count").default(0).notNull(),
+		assetCount: integer("asset_count").default(0),
 		lastUpdated: integer("last_updated").notNull(),
 	},
 	(game) => {
@@ -154,7 +154,7 @@ export const assets = sqliteTable(
 				onDelete: "cascade",
 			}),
 		url: text("url").notNull(),
-		status: text("status").notNull(),
+		status: integer("status").notNull(),
 		uploadedById: text("uploaded_by").references(() => users.id, {
 			onUpdate: "cascade",
 			onDelete: "cascade",
@@ -327,7 +327,11 @@ export const assetTagRelations = relations(assetTags, ({ many }) => ({
 	assets: many(assets),
 }))
 
-export const collectionRelations = relations(collections, ({ many }) => ({
+export const collectionRelations = relations(collections, ({ one, many }) => ({
+	user: one(users, {
+		fields: [collections.userId],
+		references: [users.id],
+	}),
 	assets: many(assets),
 }))
 

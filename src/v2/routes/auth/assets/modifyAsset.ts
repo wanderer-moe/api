@@ -5,7 +5,8 @@ import { createNotFoundResponse } from "@/v2/lib/helpers/responses/notFoundRespo
 import { eq } from "drizzle-orm"
 import type { APIContext as Context } from "@/worker-configuration"
 import { auth } from "@/v2/lib/auth/lucia"
-import { roleFlagsToArray } from "@/v2/lib/auth/roleFlags"
+import { roleFlagsToArray } from "@/v2/lib/helpers/roleFlags"
+import { SplitQueryByCommas } from "@/v2/lib/helpers/splitQueryByCommas"
 
 export async function modifyAssetData(c: Context): Promise<Response> {
 	const { assetIdToModify } = c.req.param()
@@ -49,8 +50,10 @@ export async function modifyAssetData(c: Context): Promise<Response> {
 	const formData = await c.req.formData()
 
 	const metadata = {
+		name: formData.get("name") as string | null,
 		game: formData.get("game") as string | null,
 		assetCategory: formData.get("assetCategory") as string | null,
+		tags: SplitQueryByCommas(formData.get("tags") as string | null),
 	}
 
 	Object.keys(metadata).forEach(

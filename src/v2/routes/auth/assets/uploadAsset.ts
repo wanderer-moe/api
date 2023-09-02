@@ -2,6 +2,7 @@ import { auth } from "@/v2/lib/auth/lucia"
 import { getConnection } from "@/v2/db/turso"
 import { assets } from "@/v2/db/schema"
 import type { APIContext as Context } from "@/worker-configuration"
+import { SplitQueryByCommas } from "@/v2/lib/helpers/splitQueryByCommas"
 
 export async function uploadAsset(c: Context): Promise<Response> {
 	const authRequest = auth(c.env).handleRequest(c)
@@ -26,22 +27,10 @@ export async function uploadAsset(c: Context): Promise<Response> {
 	const formData = await c.req.formData()
 	const asset = formData.get("asset") as unknown as File | null
 
-	// this is temporary
-	const asset128px = formData.get("asset128px") as unknown as File | null
-
-	if (
-		!asset ||
-		asset.type !== "image/png" ||
-		!asset128px ||
-		asset128px.type !== "image/png"
-	) {
-		return c.json({ success: false, state: "invalid asset" }, 200)
-	}
-
 	const metadata = {
 		name: formData.get("name`") as string, // e.g keqing
 		extension: formData.get("extension") as string, // e.g png
-		tags: formData.get("tags") as string, // e.g no-background, fanmade, official
+		tags: SplitQueryByCommas(formData.get("tags") as string), // e.g no-background, fanmade, official => ["no-background", "fanmade", "official"]
 		category: formData.get("category") as string, // e.g splash-art
 		game: formData.get("game") as string, // e.g genshin-impact
 		size: formData.get("size") as unknown as number, // e.g 1024
@@ -54,10 +43,9 @@ export async function uploadAsset(c: Context): Promise<Response> {
 		extension: metadata.extension,
 		game: metadata.game,
 		assetCategory: metadata.category,
-		tags: metadata.tags,
 		url: `/assets/${metadata.game}/${metadata.category}/${metadata.name}.${metadata.extension}`,
 		uploadedById: session.userId,
-		status: bypassApproval ? "approved" : "pending",
+		status: bypassApproval ? 1 : 2,
 		uploadedDate: new Date().getTime(),
 		fileSize: asset.size, // stored in bytes
 		width: metadata.width,
