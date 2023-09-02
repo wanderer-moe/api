@@ -28,6 +28,7 @@ export async function searchForAssets(c: Context): Promise<Response> {
 	const assetCategoryList = assetCategory
 		? SplitQueryByCommas(assetCategory)
 		: null
+	const assetTagsList = assetTags ? SplitQueryByCommas(assetTags) : null
 
 	const assetResponse = await drizzle.query.assets.findMany({
 		where: (assets, { and, or, eq }) => {
@@ -46,31 +47,22 @@ export async function searchForAssets(c: Context): Promise<Response> {
 				eq(assets.status, "approved")
 			)
 		},
+		...(assetTagsList.length > 0
+			? {
+					with: {
+						assetTags: {
+							where: (assetTags, { and, eq }) => {
+								return and(
+									...assetTagsList.map((assetTag) =>
+										eq(assetTags.name, assetTag)
+									)
+								)
+							},
+						},
+					},
+			  }
+			: {}),
 	})
-
-	let assetsWithTags = null
-	if (assetTags) {
-		const assetIds = assetResponse.map((asset) => asset.id)
-
-		const assetTagsResponse = await drizzle.query.assetAssetTags.findMany({
-			where: (assetAssetTags, { and, or, eq }) => {
-				return and(
-					or(
-						...assetIds.map((assetId) =>
-							eq(assetAssetTags.assetId, assetId)
-						)
-					)
-				)
-			},
-		})
-
-		assetsWithTags = assetResponse.map((asset) => {
-			const assetTags = assetTagsResponse.filter(
-				(assetTag) => assetTag.assetId === asset.id
-			)
-			return { ...asset, assetTags }
-		})
-	}
 
 	response = c.json(
 		{
@@ -80,7 +72,7 @@ export async function searchForAssets(c: Context): Promise<Response> {
 			game,
 			assetCategory,
 			assetTags,
-			results: assetTags ? assetsWithTags : assetResponse,
+			results: assetResponse,
 		},
 		200,
 		responseHeaders

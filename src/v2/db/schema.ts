@@ -195,46 +195,6 @@ export const assetTags = sqliteTable(
 	}
 )
 
-export const assetAssetTags = sqliteTable(
-	tableNames.assetAssetTags,
-	{
-		assetId: integer("asset_id")
-			.notNull()
-			.references(() => assets.id, {
-				onUpdate: "cascade",
-				onDelete: "cascade",
-			}),
-		assetTagId: text("asset_tag_id")
-			.notNull()
-			.references(() => assetTags.id, {
-				onUpdate: "cascade",
-				onDelete: "cascade",
-			}),
-		assetTagName: text("asset_tag_name")
-			.notNull()
-			.references(() => assetTags.name, {
-				onUpdate: "cascade",
-				onDelete: "cascade",
-			}),
-		assetTagFormattedName: text("asset_tag_formatted_name")
-			.notNull()
-			.references(() => assetTags.formattedName, {
-				onUpdate: "cascade",
-				onDelete: "cascade",
-			}),
-	},
-	(assetAssetTag) => {
-		return {
-			assetIdx: uniqueIndex("asset_asset_tag_asset_idx").on(
-				assetAssetTag.assetId
-			),
-			assetTagIdx: uniqueIndex("asset_asset_tag_asset_tag_idx").on(
-				assetAssetTag.assetTagId
-			),
-		}
-	}
-)
-
 export const following = sqliteTable(
 	tableNames.following,
 	{
@@ -349,11 +309,12 @@ export const collectionRelations = relations(collections, ({ many }) => ({
 	assets: many(assets),
 }))
 
-export const assetRelations = relations(assets, ({ one }) => ({
+export const assetRelations = relations(assets, ({ one, many }) => ({
 	uploadedBy: one(users, {
 		fields: [assets.uploadedById, assets.uploadedByName],
 		references: [users.id, users.username],
 	}),
+	tags: many(assetTags),
 	assetCategory: one(assetCategories, {
 		fields: [assets.assetCategory],
 		references: [assetCategories.name],
