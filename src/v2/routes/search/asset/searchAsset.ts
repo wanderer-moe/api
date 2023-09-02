@@ -23,6 +23,7 @@ export async function searchForAssets(c: Context): Promise<Response> {
 
 	const drizzle = await getConnection(c.env).drizzle
 
+	// check if certian search parameters are present, if not, set them to null
 	const searchQuery = query ?? null
 	const gameList = game ? SplitQueryByCommas(game) : null
 	const assetCategoryList = assetCategory
@@ -30,6 +31,7 @@ export async function searchForAssets(c: Context): Promise<Response> {
 		: null
 	const assetTagsList = assetTags ? SplitQueryByCommas(assetTags) : null
 
+	// query the database for assets that match the search parameters
 	const assetResponse = await drizzle.query.assets.findMany({
 		where: (assets, { and, or, eq }) => {
 			return and(

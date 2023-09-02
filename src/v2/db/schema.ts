@@ -28,9 +28,9 @@ export const users = sqliteTable(
 	},
 	(user) => {
 		return {
-			userIdx: uniqueIndex("user_idx").on(user.id),
-			usernameIdx: uniqueIndex("username_idx").on(user.username),
-			emailIdx: uniqueIndex("email_idx").on(user.email),
+			userIdx: uniqueIndex("user_id_idx").on(user.id),
+			usernameIdx: uniqueIndex("user_username_idx").on(user.username),
+			emailIdx: uniqueIndex("user_email_idx").on(user.email),
 		}
 	}
 )
@@ -52,7 +52,7 @@ export const sessions = sqliteTable(
 	},
 	(session) => {
 		return {
-			userIdx: uniqueIndex("session_user_idx").on(session.userId),
+			userIdx: uniqueIndex("session_user_id_idx").on(session.userId),
 		}
 	}
 )
@@ -71,21 +71,31 @@ export const keys = sqliteTable(
 	},
 	(key) => {
 		return {
-			userIdx: uniqueIndex("keys_user_idx").on(key.userId),
+			userIdx: uniqueIndex("key_user_id_idx").on(key.userId),
 		}
 	}
 )
 
-export const socialsConnection = sqliteTable(tableNames.socialsConnection, {
-	id: text("id").primaryKey(),
-	userId: text("user_id")
-		.notNull()
-		.references(() => users.id, {
-			onUpdate: "cascade",
-			onDelete: "cascade",
-		}),
-	discordId: text("discord_id"),
-})
+export const socialsConnections = sqliteTable(
+	tableNames.socialsConnection,
+	{
+		id: text("id").primaryKey(),
+		userId: text("user_id")
+			.notNull()
+			.references(() => users.id, {
+				onUpdate: "cascade",
+				onDelete: "cascade",
+			}),
+		discordId: text("discord_id"),
+	},
+	(socialsConnection) => {
+		return {
+			userIdx: uniqueIndex("socials_connection_user_id_idx").on(
+				socialsConnection.userId
+			),
+		}
+	}
+)
 
 export const games = sqliteTable(
 	tableNames.games,
@@ -98,8 +108,8 @@ export const games = sqliteTable(
 	},
 	(game) => {
 		return {
-			gameIdx: uniqueIndex("game_idx").on(game.id),
-			nameIdx: uniqueIndex("name_idx").on(game.name),
+			gameIdx: uniqueIndex("game_id_idx").on(game.id),
+			nameIdx: uniqueIndex("game_name_idx").on(game.name),
 		}
 	}
 )
@@ -115,10 +125,12 @@ export const assetCategories = sqliteTable(
 	},
 	(assetCategory) => {
 		return {
-			assetCategoryIdx: uniqueIndex("asset_category_idx").on(
+			assetCategoryIdx: uniqueIndex("asset_category_id_idx").on(
 				assetCategory.id
 			),
-			nameIdx: uniqueIndex("name_idx").on(assetCategory.name),
+			nameIdx: uniqueIndex("asset_category_name_idx").on(
+				assetCategory.name
+			),
 		}
 	}
 )
@@ -189,58 +201,38 @@ export const assetTags = sqliteTable(
 	},
 	(assetTag) => {
 		return {
-			assetTagIdx: uniqueIndex("asset_tag_idx").on(assetTag.id),
-			nameIdx: uniqueIndex("name_idx").on(assetTag.name),
+			assetTagIdx: uniqueIndex("asset_tag_id_idx").on(assetTag.id),
+			nameIdx: uniqueIndex("asset_tag_name_idx").on(assetTag.name),
 		}
 	}
 )
 
-export const following = sqliteTable(
-	tableNames.following,
-	{
-		id: text("id").primaryKey(),
-		followerId: text("follower_id")
-			.notNull()
-			.references(() => users.id, {
-				onUpdate: "cascade",
-				onDelete: "cascade",
-			}),
-		followingId: text("following_id")
-			.notNull()
-			.references(() => users.id, {
-				onUpdate: "cascade",
-				onDelete: "cascade",
-			}),
-	},
-	(following) => {
-		return {
-			followerIdx: uniqueIndex("follower_idx").on(following.followerId),
-			followingIdx: uniqueIndex("following_idx").on(
-				following.followingId
-			),
-		}
-	}
-)
+export const following = sqliteTable(tableNames.following, {
+	id: text("id").primaryKey(),
+	followerId: text("follower_id")
+		.notNull()
+		.references(() => users.id, {
+			onUpdate: "cascade",
+			onDelete: "cascade",
+		}),
+	followingId: text("following_id")
+		.notNull()
+		.references(() => users.id, {
+			onUpdate: "cascade",
+			onDelete: "cascade",
+		}),
+})
 
-export const follower = sqliteTable(
-	tableNames.follower,
-	{
-		id: text("id").primaryKey(),
-		followerId: text("follower_id")
-			.notNull()
-			.references(() => users.id, {
-				onUpdate: "cascade",
-				onDelete: "cascade",
-			}),
-		followingId: text("following_id").notNull(),
-	},
-	(follower) => {
-		return {
-			followerIdx: uniqueIndex("follower_idx").on(follower.followerId),
-			followingIdx: uniqueIndex("following_idx").on(follower.followingId),
-		}
-	}
-)
+export const follower = sqliteTable(tableNames.follower, {
+	id: text("id").primaryKey(),
+	followerId: text("follower_id")
+		.notNull()
+		.references(() => users.id, {
+			onUpdate: "cascade",
+			onDelete: "cascade",
+		}),
+	followingId: text("following_id").notNull(),
+})
 
 export const collections = sqliteTable(
 	tableNames.assetCollection,
@@ -257,8 +249,8 @@ export const collections = sqliteTable(
 	},
 	(collection) => {
 		return {
-			collectionIdx: uniqueIndex("collection_idx").on(collection.id),
-			userCollectionIdx: uniqueIndex("user_collection_idx").on(
+			collectionIdx: uniqueIndex("collection_id_idx").on(collection.id),
+			userCollectionIdx: uniqueIndex("user_collection_id_idx").on(
 				collection.userId
 			),
 		}
@@ -282,11 +274,11 @@ export const savedOcGenerators = sqliteTable(
 	},
 	(savedOcGenerators) => {
 		return {
-			savedOcGeneratorsIdx: uniqueIndex("saved_oc_generators_idx").on(
+			savedOcGeneratorsIdx: uniqueIndex("saved_oc_generators_id_idx").on(
 				savedOcGenerators.id
 			),
 			savedOcGeneratorsUserIdx: uniqueIndex(
-				"saved_oc_generators_user_idx"
+				"saved_oc_generators_user_id_idx"
 			).on(savedOcGenerators.userId),
 		}
 	}

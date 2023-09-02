@@ -13,14 +13,14 @@
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20230821.0",
-		"@types/node": "^20.5.7",
+		"@types/node": "^20.5.8",
 		"dotenv": "^16.3.1",
 		"drizzle-kit": "^0.19.13",
 		"eslint": "^8.48.0",
 		"eslint-config-google": "^0.14.0",
 		"eslint-plugin-json": "^3.1.0",
 		"husky": "^8.0.3",
-		"tsx": "^3.12.7",
+		"tsx": "^3.12.8",
 		"typescript": "^5.2.2",
 		"wrangler": "3.6.0"
 	},
@@ -31,7 +31,7 @@
 		"@typescript-eslint/eslint-plugin": "^6.5.0",
 		"drizzle-orm": "^0.28.5",
 		"hono": "^3.5.6",
-		"lucia": "^2.4.0",
+		"lucia": "^2.4.1",
 		"mysql2": "^3.6.0",
 		"prettier": "^3.0.3",
 		"resend": "^1.0.0"
