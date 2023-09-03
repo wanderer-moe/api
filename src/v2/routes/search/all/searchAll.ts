@@ -1,17 +1,8 @@
 import { responseHeaders } from "@/v2/lib/responseHeaders"
 import { getConnection } from "@/v2/db/turso"
 import type { APIContext as Context } from "@/worker-configuration"
-import { like, and, eq, not, or } from "drizzle-orm"
+import { like, eq } from "drizzle-orm"
 import { auth } from "@/v2/lib/auth/lucia"
-import {
-	users,
-	assets,
-	games,
-	assetCategories,
-	assetTags,
-	savedOcGenerators,
-	userCollections,
-} from "@/v2/db/schema"
 
 export async function searchAll(c: Context): Promise<Response> {
 	const { query } = c.req.param()
@@ -33,58 +24,60 @@ export async function searchAll(c: Context): Promise<Response> {
 	const drizzle = await getConnection(c.env).drizzle
 
 	// https://cdn.discordapp.com/attachments/1102306276832202813/1147291827699986572/F.gif
-	// this is really bad but i don't know how to do this better
-	const usersResponse = await drizzle
-		.select()
-		.from(users)
-		.where(like(users.username, `%${query}%`))
-		.execute()
-	const assetsResponse = await drizzle
-		.select()
-		.from(assets)
-		.where(like(assets.name, `%${query}%`))
-		.execute()
-	const assetCategoryResponse = await drizzle
-		.select()
-		.from(assetCategories)
-		.where(like(assetCategories.name, `%${query}%`))
-		.execute()
-	const assetTagsResponse = await drizzle
-		.select()
-		.from(assetTags)
-		.where(like(assetTags.name, `%${query}%`))
-		.execute()
-	const gamesResponse = await drizzle
-		.select()
-		.from(games)
-		.where(like(games.name, `%${query}%`))
-		.execute()
-	const savedOcGeneratorsResponse = await drizzle
-		.select()
-		.from(savedOcGenerators)
-		.where(
-			and(
-				or(
-					eq(savedOcGenerators.userId, session.userId),
-					not(eq(savedOcGenerators.isPublic, 0))
-				),
-				like(savedOcGenerators.name, `%${query}%`)
-			)
-		)
-		.execute()
-	const collectionsResponse = await drizzle
-		.select()
-		.from(userCollections)
-		.where(
-			and(
+	const usersResponse = await drizzle.query.users.findMany({
+		where: (users) => {
+			return like(users.username, `%${query}%`)
+		},
+	})
+
+	const assetCategoryResponse = await drizzle.query.assetCategories.findMany({
+		where: (assetCategories) => {
+			return like(assetCategories.name, `%${query}%`)
+		},
+	})
+
+	const assetTagsResponse = await drizzle.query.assetTags.findMany({
+		where: (assetTags) => {
+			return like(assetTags.name, `%${query}%`)
+		},
+	})
+
+	const assetsResponse = await drizzle.query.assets.findMany({
+		where: (assets) => {
+			return like(assets.name, `%${query}%`)
+		},
+	})
+
+	const gamesResponse = await drizzle.query.games.findMany({
+		where: (games) => {
+			return like(games.name, `%${query}%`)
+		},
+	})
+
+	const savedOcGeneratorsResponse =
+		await drizzle.query.savedOcGenerators.findMany({
+			where: (savedOcGenerators, { or, and }) => {
+				return or(
+					and(
+						eq(savedOcGenerators.isPublic, 1),
+						eq(savedOcGenerators.userId, session.userId)
+					),
+					like(savedOcGenerators.name, `%${query}%`)
+				)
+			},
+		})
+
+	const collectionsResponse = await drizzle.query.userCollections.findMany({
+		where: (userCollections, { or, and }) => {
+			return and(
 				or(
 					eq(userCollections.userId, session.userId),
-					not(eq(userCollections.isPublic, 0))
+					eq(userCollections.isPublic, 1)
 				),
 				like(userCollections.name, `%${query}%`)
 			)
-		)
-		.execute()
+		},
+	})
 
 	response = c.json(
 		{
@@ -93,20 +86,26 @@ export async function searchAll(c: Context): Promise<Response> {
 			query,
 			isAuthed: session.userId ? true : false,
 			results: {
-				usersResponse,
-				assetsResponse,
-				assetCategoryResponse,
-				assetTagsResponse,
-				savedOcGeneratorsResponse,
-				gamesResponse,
-				collectionsResponse,
+				usersResponse: usersResponse ? usersResponse : [],
+				assetsResponse: assetsResponse ? assetsResponse : [],
+				assetCategoryResponse: assetCategoryResponse
+					? assetCategoryResponse
+					: [],
+				assetTagsResponse: assetTagsResponse ? assetTagsResponse : [],
+				savedOcGeneratorsResponse: savedOcGeneratorsResponse
+					? savedOcGeneratorsResponse
+					: [],
+				gamesResponse: gamesResponse ? gamesResponse : [],
+				collectionsResponse: collectionsResponse
+					? collectionsResponse
+					: [],
 			},
 		},
 		200,
 		responseHeaders
 	)
 
-	response.headers.set("Cache-Control", "s-maxage=60")
+	response.headers.set("Cache-Control", "s-maxage=300")
 	await cache.put(cacheKey, response.clone())
 	return response
 }

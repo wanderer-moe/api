@@ -22,6 +22,14 @@ authRoute.use(
 	})
 )
 
+authRoute.use(
+	"/users/user/:username",
+	cors({
+		credentials: true,
+		origin: ["https://next.wanderer.moe"],
+	})
+)
+
 searchRoute.get("/assets/query", async (c) => {
 	return searchForAssets(c)
 })
