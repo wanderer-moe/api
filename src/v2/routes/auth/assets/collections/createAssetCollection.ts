@@ -59,6 +59,7 @@ export async function createAssetCollection(c: Context): Promise<Response> {
 			name: collection.name,
 			description: collection.description,
 			userId: session.userId,
+			dateCreated: new Date().getTime(),
 			isPublic: 0, // default to private
 		})
 		.execute()

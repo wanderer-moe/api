@@ -305,6 +305,7 @@ export const userCollections = sqliteTable(
 				onUpdate: "cascade",
 				onDelete: "cascade",
 			}),
+		dateCreated: integer("date_created").notNull(),
 		isPublic: integer("is_public").default(0).notNull(),
 	},
 	(collection) => {
@@ -361,6 +362,7 @@ export const savedOcGenerators = sqliteTable(
 			}),
 		name: text("name").notNull(),
 		game: text("game").notNull(),
+		dateCreated: integer("date_created").notNull(),
 		isPublic: integer("is_public").default(0).notNull(),
 		content: text("content").notNull(), // this is stored as json, which is then parsed on the frontend
 	},

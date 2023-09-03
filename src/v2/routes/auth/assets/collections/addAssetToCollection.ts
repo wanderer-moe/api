@@ -48,9 +48,13 @@ export async function addAssetToCollection(c: Context): Promise<Response> {
 		)
 	}
 
-	// check if asset exists
+	// check if asset exists, and status is 1 (approved)
 	const assetExists = await drizzle.query.assets.findFirst({
-		where: (assets, { eq }) => eq(assets.id, parseInt(collection.assetId)),
+		where: (assets, { eq, and }) =>
+			and(
+				eq(assets.id, parseInt(collection.assetId)),
+				eq(assets.status, 1)
+			),
 	})
 
 	if (!assetExists) {
@@ -60,9 +64,14 @@ export async function addAssetToCollection(c: Context): Promise<Response> {
 	// check if userCollectionAssets exists
 	const userCollectionAssetsExists =
 		await drizzle.query.userCollectionAssets.findFirst({
-			where: (userCollectionAssets, { eq }) =>
-				eq(userCollectionAssets.collectionId, collection.id) &&
-				eq(userCollectionAssets.assetId, parseInt(collection.assetId)),
+			where: (userCollectionAssets, { eq, and }) =>
+				and(
+					eq(userCollectionAssets.collectionId, collection.id),
+					eq(
+						userCollectionAssets.assetId,
+						parseInt(collection.assetId)
+					)
+				),
 		})
 
 	if (userCollectionAssetsExists) {

@@ -25,6 +25,7 @@ export async function saveOCGeneratorResponse(c: Context): Promise<Response> {
 		userId: session.userId as string,
 		name: formData.get("name") as string,
 		game: formData.get("game") as string,
+		dateCreated: new Date().getTime(),
 		isPublic: parseInt(formData.get("isPublic") as string), // 1 = yes, 0 = no, default = 0
 		content: formData.get("content") as string, // this is stored as json, which can then be parsed
 	}

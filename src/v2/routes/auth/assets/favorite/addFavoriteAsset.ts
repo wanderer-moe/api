@@ -25,12 +25,13 @@ export async function favoriteAsset(c: Context): Promise<Response> {
 		return c.json({ success: false, state: "no assetid entered" }, 200)
 	}
 
-	// check if asset exists
-	const asset = await drizzle.query.assets.findFirst({
-		where: (assets, { eq }) => eq(assets.id, parseInt(assetToFavorite)),
+	// check if asset exists, and status is 1 (approved)
+	const assetExists = await drizzle.query.assets.findFirst({
+		where: (assets, { eq, and }) =>
+			and(eq(assets.id, parseInt(assetToFavorite)), eq(assets.status, 1)),
 	})
 
-	if (!asset) {
+	if (!assetExists) {
 		return c.json({ success: false, state: "asset not found" }, 200)
 	}
 

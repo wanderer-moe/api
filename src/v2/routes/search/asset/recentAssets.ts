@@ -14,12 +14,11 @@ export async function recentAssets(c: Context): Promise<Response> {
 
 	const drizzle = await getConnection(c.env).drizzle
 
-	const assetResponse = await drizzle
-		.select()
-		.from(assets)
-		.orderBy(desc(assets.uploadedDate))
-		.limit(100)
-		.execute()
+	const assetResponse = await drizzle.query.assets.findMany({
+		orderBy: desc(assets.uploadedDate),
+		limit: 100,
+		where: (assets, { eq }) => eq(assets.status, 1),
+	})
 
 	response = c.json(
 		{
