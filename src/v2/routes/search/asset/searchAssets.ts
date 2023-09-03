@@ -48,15 +48,20 @@ export async function searchForAssets(c: Context): Promise<Response> {
 				eq(assets.status, 1)
 			)
 		},
-		...(assetTagsList.length > 0 && {
+		// i think i am overcomplicating this
+		...((assetTagsList?.length ?? 0) > 0 && {
 			with: {
-				assetTags: {
-					where: (assetTags, { and, eq }) => {
-						return and(
-							...assetTagsList.map((assetTag) =>
-								eq(assetTags.name, assetTag)
-							)
-						)
+				assetTagsAssets: {
+					with: {
+						assetTags: {
+							where: (assetTags, { or, eq }) => {
+								return or(
+									...assetTagsList.map((assetTag) =>
+										eq(assetTags.name, assetTag)
+									)
+								)
+							},
+						},
 					},
 				},
 			},

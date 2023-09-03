@@ -18,6 +18,13 @@ export async function getAssetFromId(c: Context): Promise<Response> {
 	const asset = await drizzle.query.assets.findFirst({
 		where: (assets, { eq, and }) =>
 			and(eq(assets.status, 1), eq(assets.id, parseInt(id))),
+		with: {
+			assetTagsAssets: {
+				with: {
+					assetTags: true,
+				},
+			},
+		},
 	})
 
 	if (!asset) {

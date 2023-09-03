@@ -208,6 +208,38 @@ export const assetTags = sqliteTable(
 	}
 )
 
+export const assetTagsAssets = sqliteTable(
+	tableNames.assetTagsAssets,
+	{
+		id: text("id").primaryKey(),
+		assetTagId: text("asset_tag_id")
+			.notNull()
+			.references(() => assetTags.id, {
+				onUpdate: "cascade",
+				onDelete: "cascade",
+			}),
+		assetId: integer("asset_id")
+			.notNull()
+			.references(() => assets.id, {
+				onUpdate: "cascade",
+				onDelete: "cascade",
+			}),
+	},
+	(assetTagsAssets) => {
+		return {
+			assetTagsAssetsIdx: uniqueIndex("asset_tags_assets_id_idx").on(
+				assetTagsAssets.id
+			),
+			assetTagsAssetsAssetTagIdx: uniqueIndex(
+				"asset_tags_assets_asset_tag_id_idx"
+			).on(assetTagsAssets.assetTagId),
+			assetTagsAssetsAssetIdx: uniqueIndex(
+				"asset_tags_assets_asset_id_idx"
+			).on(assetTagsAssets.assetId),
+		}
+	}
+)
+
 export const following = sqliteTable(tableNames.following, {
 	id: text("id").primaryKey(),
 	followerUserId: text("follower_id")
@@ -388,7 +420,7 @@ export const assetRelations = relations(assets, ({ one, many }) => ({
 		fields: [assets.uploadedById, assets.uploadedByName],
 		references: [users.id, users.username],
 	}),
-	tags: many(assetTags),
+	assetTagsAssets: many(assetTagsAssets),
 	assetCategory: one(assetCategories, {
 		fields: [assets.assetCategory],
 		references: [assetCategories.name],
@@ -406,9 +438,19 @@ export const assetCategoryRelations = relations(
 	})
 )
 
-export const assetTagRelations = relations(assetTags, ({ many }) => ({
-	assets: many(assets),
-}))
+export const assetTagsAssetsRelations = relations(
+	assetTagsAssets,
+	({ one }) => ({
+		assetTag: one(assetTags, {
+			fields: [assetTagsAssets.assetTagId],
+			references: [assetTags.id],
+		}),
+		asset: one(assets, {
+			fields: [assetTagsAssets.assetId],
+			references: [assets.id],
+		}),
+	})
+)
 
 export const collectionRelations = relations(
 	userCollections,
@@ -493,14 +535,19 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 }))
 
 // export types
-export type user = typeof users.$inferSelect
-export type session = typeof sessions.$inferSelect
-export type key = typeof keys.$inferSelect
-export type socialsConnection = typeof socialsConnections.$inferSelect
+
+// game, asset types
 export type game = typeof games.$inferSelect
 export type assetCategory = typeof assetCategories.$inferSelect
 export type asset = typeof assets.$inferSelect
 export type assetTag = typeof assetTags.$inferSelect
+export type assetTagsAsset = typeof assetTagsAssets.$inferSelect
+
+// user types
+export type user = typeof users.$inferSelect
+export type session = typeof sessions.$inferSelect
+export type key = typeof keys.$inferSelect
+export type socialsConnection = typeof socialsConnections.$inferSelect
 export type following = typeof following.$inferSelect
 export type follower = typeof follower.$inferSelect
 export type userFavorites = typeof userFavorites.$inferSelect

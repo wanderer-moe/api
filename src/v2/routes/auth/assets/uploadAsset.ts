@@ -1,7 +1,8 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { getConnection } from "@/v2/db/turso"
-import { assets } from "@/v2/db/schema"
+import { assets, assetTagsAssets } from "@/v2/db/schema"
 import type { APIContext as Context } from "@/worker-configuration"
+import { eq } from "drizzle-orm"
 import { SplitQueryByCommas } from "@/v2/lib/helpers/splitQueryByCommas"
 
 export async function uploadAsset(c: Context): Promise<Response> {
@@ -38,6 +39,15 @@ export async function uploadAsset(c: Context): Promise<Response> {
 		height: formData.get("height") as unknown as number, // e.g 1080
 	}
 
+	if (metadata.tags.length > 5)
+		return c.json(
+			{
+				success: false,
+				state: `too many tags (${metadata.tags.length}). maximum is 5 tags per asset`,
+			},
+			400
+		)
+
 	const newAsset = {
 		name: metadata.name,
 		extension: metadata.extension,
@@ -63,8 +73,41 @@ export async function uploadAsset(c: Context): Promise<Response> {
 			newAssetFile
 		)
 
-		await drizzle.insert(assets).values(newAsset)
+		await drizzle.transaction(async (trx) => {
+			const newAssetDB = await trx
+				.insert(assets)
+				.values(newAsset)
+				.returning({
+					assetId: assets.id,
+				})
+			if (metadata.tags.length > 0) {
+				for (const tag of metadata.tags) {
+					const tagExists = await trx.query.assetTags.findFirst({
+						where: (assetTags) => {
+							return eq(assetTags.name, tag)
+						},
+					})
+					if (tagExists) {
+						await trx
+							.insert(assetTagsAssets)
+							.values({
+								id: crypto.randomUUID(),
+								assetId: newAssetDB[0].assetId,
+								assetTagId: tagExists[0].assetTagId,
+							})
+							.returning({
+								assetTagId: assetTagsAssets.assetTagId,
+							})
+					} else {
+						continue
+					}
+				}
+			}
+		})
 	} catch (e) {
+		await c.env.bucket.delete(
+			`/assets/${metadata.game}/${metadata.category}/${metadata.name}.${metadata.extension}`
+		)
 		return c.json({ success: false, state: "failed to upload asset" }, 500)
 	}
 
