@@ -54,8 +54,8 @@ export async function searchForAssets(c: Context): Promise<Response> {
 				assetTagsAssets: {
 					with: {
 						assetTags: {
-							where: (assetTags, { or, eq }) => {
-								return or(
+							where: (assetTags, { and, eq }) => {
+								return and(
 									...assetTagsList.map((assetTag) =>
 										eq(assetTags.name, assetTag)
 									)
