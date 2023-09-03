@@ -1,16 +1,16 @@
-import "dotenv/config";
-
-import type { Config } from "drizzle-kit";
+import "dotenv/config"
+const { TURSO_DATABASE_AUTH_TOKEN, TURSO_DATABASE_URL } = process.env
+import type { Config } from "drizzle-kit"
 
 export default {
-    out: "./src/db/migrations",
-    schema: "./src/db/schema.ts",
-    breakpoints: true,
-    driver: "mysql2",
-    dbCredentials: {
-        host: process.env.DATABASE_HOST || "",
-        user: process.env.DATABASE_USERNAME || "",
-        password: process.env.DATABASE_PASSWORD || "",
-        database: "planetscale",
-    },
-} satisfies Config;
+	out: "./src/v2/db/migrations",
+	schema: "./src/v2/db/schema.ts",
+	driver: "turso",
+	breakpoints: true,
+	strict: true,
+	verbose: true,
+	dbCredentials: {
+		url: TURSO_DATABASE_URL as string,
+		authToken: TURSO_DATABASE_AUTH_TOKEN as string,
+	},
+} satisfies Config

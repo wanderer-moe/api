@@ -1,13 +1,14 @@
 # webstorm
 .idea
 
-# Wrangler
+# Wrangler & env
 
+.env
 .wrangler
 .dev.vars
 
 # temp 
-src/routes/check.ts
+scripts/
 
 # Logs
 

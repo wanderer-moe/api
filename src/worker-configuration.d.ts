@@ -1,10 +1,13 @@
-export interface Env {
-    DISCORD_TOKEN: string;
-    bucket: R2Bucket;
-    DATABASE_URL: string;
-    DATABASE_PASSWORD: string;
-    DATABASE_USERNAME: string;
-    DATABASE_HOST: string;
-    ENVIRONMENT: string;
-    VERY_SECRET_SIGNUP_KEY: string;
+import type { Context } from "hono"
+
+export type Bindings = {
+	DISCORD_TOKEN: string
+	bucket: R2Bucket
+	ENVIRONMENT: string
+	VERY_SECRET_SIGNUP_KEY: string
+	TURSO_DATABASE_URL: string
+	TURSO_DATABASE_AUTH_TOKEN: string
 }
+
+// this is the onl way i could figure out how to pass bindings to all the routes
+export type APIContext = Context<{ Bindings: Bindings }>
