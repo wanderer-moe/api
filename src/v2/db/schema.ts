@@ -312,11 +312,11 @@ export const userFavoritesAssets = sqliteTable(
 	},
 	(userFavoritesAssets) => {
 		return {
-			favoritedAssetsAssetsIdx: uniqueIndex("favorited_assets_id_idx").on(
-				userFavoritesAssets.id
-			),
-			favoritedAssetsUserIdx: uniqueIndex(
-				"favorited_assets_user_id_idx"
+			favoritedAssetsAssetsIdx: uniqueIndex(
+				"favorited_assets_assets_id_idx"
+			).on(userFavoritesAssets.id),
+			favoritedAssetsAssetsUserIdx: uniqueIndex(
+				"favorited_assets_assets_user_id_idx"
 			).on(userFavoritesAssets.userFavoritesId),
 			favoritedAssetsAssetsAssetIdx: uniqueIndex(
 				"favorited_assets_assets_asset_id_idx"
