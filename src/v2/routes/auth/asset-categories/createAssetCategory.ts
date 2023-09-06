@@ -13,16 +13,18 @@ export async function createAssetCategory(c: Context): Promise<Response> {
 			await auth(c.env).invalidateSession(session.sessionId)
 			authRequest.setSession(null)
 		}
-		return c.json({ success: false, state: "invalid session" }, 200)
+		c.status(401)
+		return c.json({ success: false, state: "unauthorized" })
 	}
 
 	const roleFlags = roleFlagsToArray(session.user.role_flags)
 
 	if (!roleFlags.includes("CREATOR")) {
-		return c.json({ success: false, state: "unauthorized" }, 401)
+		c.status(401)
+		return c.json({ success: false, state: "unauthorized" })
 	}
 
-	const drizzle = await getConnection(c.env).drizzle
+	const drizzle = getConnection(c.env).drizzle
 
 	const formData = await c.req.formData()
 
@@ -41,19 +43,21 @@ export async function createAssetCategory(c: Context): Promise<Response> {
 	})
 
 	if (assetCategoryExists) {
-		return c.json(
-			{ success: false, state: "assetCategory with name already exists" },
-			200
-		)
+		c.status(200)
+		return c.json({
+			success: false,
+			state: "assetCategory with name already exists",
+		})
 	}
 
 	try {
 		await drizzle.insert(assetCategories).values(assetCategory).execute()
 	} catch (e) {
-		return c.json(
-			{ success: false, state: "failed to create assetCategory" },
-			200
-		)
+		c.status(500)
+		return c.json({
+			success: false,
+			state: "failed to create assetCategory",
+		})
 	}
 
 	return c.json(

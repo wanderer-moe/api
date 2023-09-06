@@ -15,7 +15,8 @@ export async function deleteAssetFromCollection(c: Context): Promise<Response> {
 			await auth(c.env).invalidateSession(session.sessionId)
 			authRequest.setSession(null)
 		}
-		return c.json({ success: false, state: "invalid session" }, 200)
+		c.status(401)
+		return c.json({ success: false, state: "invalid session" })
 	}
 
 	const formData = await c.req.formData()
@@ -26,14 +27,13 @@ export async function deleteAssetFromCollection(c: Context): Promise<Response> {
 	}
 
 	if (!collection.id) {
-		return c.json(
-			{ success: false, state: "no collection id entered" },
-			200
-		)
+		c.status(200)
+		return c.json({ success: false, state: "no collection id entered" })
 	}
 
 	if (!collection.assetId) {
-		return c.json({ success: false, state: "no asset id entered" }, 200)
+		c.status(401)
+		return c.json({ success: false, state: "no asset id entered" })
 	}
 
 	// check if collection exists
@@ -43,10 +43,11 @@ export async function deleteAssetFromCollection(c: Context): Promise<Response> {
 	})
 
 	if (!collectionExists) {
-		return c.json(
-			{ success: false, state: "collection with ID doesn't exist" },
-			200
-		)
+		c.status(200)
+		return c.json({
+			success: false,
+			state: "collection with ID doesn't exist",
+		})
 	}
 
 	// check if asset exists
@@ -67,10 +68,11 @@ export async function deleteAssetFromCollection(c: Context): Promise<Response> {
 		})
 
 	if (!userCollectionAssetsExists) {
-		return c.json(
-			{ success: false, state: "asset not found in collection" },
-			200
-		)
+		c.status(200)
+		return c.json({
+			success: false,
+			state: "asset not found in collection",
+		})
 	}
 
 	try {
@@ -79,14 +81,13 @@ export async function deleteAssetFromCollection(c: Context): Promise<Response> {
 			.where(eq(userCollectionAssets.id, userCollectionAssetsExists.id))
 			.execute()
 	} catch (e) {
-		return c.json(
-			{ success: false, state: "failed to delete asset from collection" },
-			200
-		)
+		c.status(500)
+		return c.json({
+			success: false,
+			state: "failed to delete asset from collection",
+		})
 	}
 
-	return c.json(
-		{ success: true, state: "deleted asset from collection" },
-		200
-	)
+	c.status(200)
+	return c.json({ success: true, state: "deleted asset from collection" })
 }

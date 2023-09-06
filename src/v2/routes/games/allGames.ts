@@ -22,7 +22,7 @@ export async function getAllGames(c: Context): Promise<Response> {
 		}
 	})
 
-	const drizzle = await getConnection(c.env).drizzle
+	const drizzle = getConnection(c.env).drizzle
 
 	const gamesList = await drizzle
 		.select()

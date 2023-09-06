@@ -58,21 +58,27 @@ export async function removeFavoriteAsset(c: Context): Promise<Response> {
 	})
 
 	if (!isFavorited) {
-		return c.json(
-			{
-				success: false,
-				state: "asset is not favorited, therefore cannot be removed",
-				assetToRemove,
-			},
-			200
-		)
+		c.status(200)
+		return c.json({
+			success: false,
+			state: "asset is not favorited, therefore cannot be removed",
+			assetToRemove,
+		})
 	}
 
 	// remove asset from userFavorites...
-	await drizzle
-		.delete(userFavoritesAssets)
-		.where(eq(userFavoritesAssets.id, `${session.userId}-${assetToRemove}`))
-		.execute()
+	try {
+		await drizzle
+			.delete(userFavoritesAssets)
+			.where(
+				eq(userFavoritesAssets.id, `${session.userId}-${assetToRemove}`)
+			)
+			.execute()
+	} catch (e) {
+		c.status(500)
+		return c.json({ success: false, state: "failed to remove asset" })
+	}
 
-	return c.json({ success: true, state: "removed asset", assetToRemove }, 200)
+	c.status(200)
+	return c.json({ success: true, state: "removed asset", assetToRemove })
 }

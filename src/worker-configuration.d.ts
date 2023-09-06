@@ -9,5 +9,5 @@ export type Bindings = {
 	TURSO_DATABASE_AUTH_TOKEN: string
 }
 
-// this is the onl way i could figure out how to pass bindings to all the routes
+
 export type APIContext = Context<{ Bindings: Bindings }>

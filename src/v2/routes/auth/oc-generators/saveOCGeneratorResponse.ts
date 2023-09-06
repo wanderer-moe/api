@@ -12,10 +12,11 @@ export async function saveOCGeneratorResponse(c: Context): Promise<Response> {
 			await auth(c.env).invalidateSession(session.sessionId)
 			authRequest.setSession(null)
 		}
-		return c.json({ success: false, state: "invalid session" }, 200)
+		c.status(401)
+		return c.json({ success: false, state: "invalid session" })
 	}
 
-	const drizzle = await getConnection(c.env).drizzle
+	const drizzle = getConnection(c.env).drizzle
 
 	const formData = await c.req.formData()
 
@@ -32,5 +33,6 @@ export async function saveOCGeneratorResponse(c: Context): Promise<Response> {
 
 	await drizzle.insert(savedOcGenerators).values(ocGeneratorResponse)
 
-	return c.json({ success: true, state: "saved", ocGeneratorResponse }, 200)
+	c.status(200)
+	return c.json({ success: true, state: "saved", ocGeneratorResponse })
 }

@@ -23,7 +23,7 @@ authRoute.use(
 	"*",
 	cors({
 		credentials: true,
-		origin: ["https://next.wanderer.moe"],
+		origin: ["*"], // TODO: update this - temporary
 	})
 )
 

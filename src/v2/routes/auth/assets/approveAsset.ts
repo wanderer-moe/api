@@ -1,7 +1,6 @@
 import { responseHeaders } from "@/v2/lib/responseHeaders"
 import { getConnection } from "@/v2/db/turso"
 import { assets } from "@/v2/db/schema"
-import { createNotFoundResponse } from "@/v2/lib/helpers/responses/notFoundResponse"
 import { eq } from "drizzle-orm"
 import type { APIContext as Context } from "@/worker-configuration"
 import { auth } from "@/v2/lib/auth/lucia"
@@ -17,23 +16,26 @@ export async function approveAsset(c: Context): Promise<Response> {
 			await auth(c.env).invalidateSession(session.sessionId)
 			authRequest.setSession(null)
 		}
-		return c.json({ success: false, state: "invalid session" }, 200)
+		c.status(401)
+		return c.json({ success: false, state: "unauthorized" }, 401)
 	}
 
 	const roleFlags = roleFlagsToArray(session.user.role_flags)
 
 	if (!roleFlags.includes("CREATOR")) {
-		return c.json({ success: false, state: "unauthorized" }, 401)
+		c.status(401)
+		return c.json({ success: false, state: "unauthorized" })
 	}
 
-	const drizzle = await getConnection(c.env).drizzle
+	const drizzle = getConnection(c.env).drizzle
 
 	const asset = await drizzle.query.assets.findFirst({
 		where: (assets, { eq }) => eq(assets.id, parseInt(assetIdToApprove)),
 	})
 
-	if (!asset) {
-		return createNotFoundResponse(c, "Asset not found", responseHeaders)
+	if (!asset || asset.status === 1) {
+		c.status(404)
+		c.json({ success: false, state: "asset not found or already approved" })
 	}
 
 	const updatedAsset = await drizzle
@@ -44,7 +46,8 @@ export async function approveAsset(c: Context): Promise<Response> {
 		.where(eq(assets.id, parseInt(assetIdToApprove)))
 		.execute()
 
-	const response = c.json(
+	c.status(200)
+	return c.json(
 		{
 			success: true,
 			status: "ok",
@@ -53,6 +56,4 @@ export async function approveAsset(c: Context): Promise<Response> {
 		200,
 		responseHeaders
 	)
-
-	return response
 }

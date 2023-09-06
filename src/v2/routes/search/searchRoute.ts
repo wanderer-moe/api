@@ -10,15 +10,15 @@ import { cors } from "hono/cors"
 
 const searchRoute = new Hono<{ Bindings: Bindings }>()
 
-searchRoute.get("/all", async (c) => {
+searchRoute.get("/all/:query", async (c) => {
 	return searchAll(c)
 })
 
 authRoute.use(
-	"/all",
+	"/all/:query",
 	cors({
 		credentials: true,
-		origin: ["https://next.wanderer.moe"],
+		origin: ["*"], // TODO: update this - temporary
 	})
 )
 
@@ -26,7 +26,7 @@ authRoute.use(
 	"/users/user/:username",
 	cors({
 		credentials: true,
-		origin: ["https://next.wanderer.moe"],
+		origin: ["*"], // TODO: update this - temporary
 	})
 )
 

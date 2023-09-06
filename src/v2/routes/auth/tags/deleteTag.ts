@@ -23,7 +23,7 @@ export async function deleteTag(c: Context): Promise<Response> {
 		return c.json({ success: false, state: "unauthorized" }, 401)
 	}
 
-	const drizzle = await getConnection(c.env).drizzle
+	const drizzle = getConnection(c.env).drizzle
 
 	const formData = await c.req.formData()
 

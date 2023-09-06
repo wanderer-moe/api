@@ -2,8 +2,6 @@ import { responseHeaders } from "@/v2/lib/responseHeaders"
 import { getConnection } from "@/v2/db/turso"
 import { createNotFoundResponse } from "@/v2/lib/helpers/responses/notFoundResponse"
 import type { APIContext as Context } from "@/worker-configuration"
-import { desc } from "drizzle-orm"
-import { assets, userCollections } from "@/v2/db/schema"
 import { auth } from "@/v2/lib/auth/lucia"
 import { roleFlagsToArray } from "@/v2/lib/helpers/roleFlags"
 
@@ -24,50 +22,10 @@ export async function getUserByUsername(c: Context): Promise<Response> {
 	}
 
 	if (response) return response
-	const drizzle = await getConnection(c.env).drizzle
+	const drizzle = getConnection(c.env).drizzle
 
 	const user = await drizzle.query.users.findFirst({
 		where: (users, { and, eq }) => and(eq(users.username, username)),
-		with: {
-			assets: {
-				orderBy: desc(assets.uploadedDate),
-				limit: 100,
-				where: (assets, { eq }) => eq(assets.status, 1),
-			},
-			userCollections: {
-				orderBy: desc(userCollections.dateCreated),
-				where: (userCollections, { eq, or }) =>
-					or(
-						eq(userCollections.isPublic, 1),
-						session && eq(userCollections.userId, session.userId)
-					),
-				limit: 5,
-				with: {
-					assets: {
-						orderBy: desc(assets.uploadedDate),
-						limit: 100,
-						where: (assets, { eq }) => eq(assets.status, 1),
-					},
-				},
-			},
-			userFavorites: {
-				where: (userFavorites, { eq }) => eq(userFavorites.isPublic, 1),
-				with: {
-					assets: {
-						orderBy: desc(assets.uploadedDate),
-						limit: 100,
-						where: (assets, { eq }) => eq(assets.status, 1),
-					},
-				},
-			},
-			savedOcGenerators: {
-				where: (savedOcGenerators, { eq, or }) =>
-					or(
-						eq(savedOcGenerators.isPublic, 1),
-						session && eq(savedOcGenerators.userId, session.userId)
-					),
-			},
-		},
 	})
 
 	if (!user) {
@@ -84,7 +42,7 @@ export async function getUserByUsername(c: Context): Promise<Response> {
 		{
 			success: true,
 			status: "ok",
-			accountIsAuthed: session.userId ? true : false,
+			accountIsAuthed: session && session.userId ? true : false,
 			userIsQueryingOwnAccount:
 				session && session.userId === user.id ? true : false,
 			userRoleFlagsArray: roleFlagsToArray(user.roleFlags),

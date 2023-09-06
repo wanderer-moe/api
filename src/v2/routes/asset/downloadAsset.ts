@@ -1,6 +1,4 @@
-import { responseHeaders } from "@/v2/lib/responseHeaders"
 import { getConnection } from "@/v2/db/turso"
-import { createNotFoundResponse } from "@/v2/lib/helpers/responses/notFoundResponse"
 import { eq } from "drizzle-orm"
 import { assets } from "@/v2/db/schema"
 import type { APIContext as Context } from "@/worker-configuration"
@@ -8,23 +6,28 @@ import type { APIContext as Context } from "@/worker-configuration"
 export async function downloadAsset(c: Context): Promise<Response> {
 	const { assetId } = c.req.param()
 
-	const drizzle = await getConnection(c.env).drizzle
+	const drizzle = getConnection(c.env).drizzle
 
-	const asset = await drizzle
-		.select()
-		.from(assets)
-		.where(eq(assets.id, parseInt(assetId)))
-		.execute()
+	const asset = await drizzle.query.assets.findFirst({
+		where: (assets, { eq }) => eq(assets.id, parseInt(assetId)),
+	})
 
-	if (!asset)
-		return createNotFoundResponse(c, "Asset not found", responseHeaders)
+	if (!asset) {
+		c.status(200)
+		return c.json({ success: false, state: "asset not found" })
+	}
 
-	if (asset)
+	try {
 		await drizzle
 			.update(assets)
-			.set({ downloadCount: asset[0].downloadCount + 1 })
+			.set({ downloadCount: asset.downloadCount + 1 })
 			.where(eq(assets.id, parseInt(assetId)))
 			.execute()
+	} catch (e) {
+		console.error(e)
+		c.status(500)
+		return c.json({ success: false, state: "failed to download asset" })
+	}
 
 	const response = await fetch(asset[0].url)
 

@@ -15,7 +15,8 @@ export async function deleteAssetCollection(c: Context): Promise<Response> {
 			await auth(c.env).invalidateSession(session.sessionId)
 			authRequest.setSession(null)
 		}
-		return c.json({ success: false, state: "invalid session" }, 200)
+		c.status(401)
+		return c.json({ success: false, state: "invalid session" })
 	}
 
 	const formData = await c.req.formData()
@@ -25,10 +26,8 @@ export async function deleteAssetCollection(c: Context): Promise<Response> {
 	}
 
 	if (!collection.id) {
-		return c.json(
-			{ success: false, state: "no collection id entered" },
-			200
-		)
+		c.status(200)
+		return c.json({ success: false, state: "no collection id entered" })
 	}
 
 	// check if collection exists
@@ -38,10 +37,11 @@ export async function deleteAssetCollection(c: Context): Promise<Response> {
 	})
 
 	if (!collectionExists) {
-		return c.json(
-			{ success: false, state: "collection with ID doesn't exist" },
-			200
-		)
+		c.status(200)
+		return c.json({
+			success: false,
+			state: "collection with ID doesn't exist",
+		})
 	}
 
 	// delete collection
@@ -50,5 +50,6 @@ export async function deleteAssetCollection(c: Context): Promise<Response> {
 		.where(eq(userCollections.id, collection.id))
 		.execute()
 
-	return c.json({ success: true, state: "collection deleted" }, 200)
+	c.status(200)
+	return c.json({ success: true, state: "collection deleted" })
 }

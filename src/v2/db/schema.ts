@@ -537,20 +537,20 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 // export types
 
 // game, asset types
-export type game = typeof games.$inferSelect
-export type assetCategory = typeof assetCategories.$inferSelect
-export type asset = typeof assets.$inferSelect
-export type assetTag = typeof assetTags.$inferSelect
-export type assetTagsAsset = typeof assetTagsAssets.$inferSelect
+export type Game = typeof games.$inferSelect
+export type AssetCategory = typeof assetCategories.$inferSelect
+export type Asset = typeof assets.$inferSelect
+export type AssetTag = typeof assetTags.$inferSelect
+export type AssetTagsAsset = typeof assetTagsAssets.$inferSelect
 
 // user types
-export type user = typeof users.$inferSelect
-export type session = typeof sessions.$inferSelect
-export type key = typeof keys.$inferSelect
-export type socialsConnection = typeof socialsConnections.$inferSelect
-export type following = typeof following.$inferSelect
-export type follower = typeof follower.$inferSelect
-export type userFavorites = typeof userFavorites.$inferSelect
-export type userFavoritesAssets = typeof userFavoritesAssets.$inferSelect
-export type userCollections = typeof userCollections.$inferSelect
-export type userCollectionAssets = typeof userCollectionAssets.$inferSelect
+export type User = typeof users.$inferSelect
+export type Session = typeof sessions.$inferSelect
+export type Key = typeof keys.$inferSelect
+export type SocialsConnection = typeof socialsConnections.$inferSelect
+export type Following = typeof following.$inferSelect
+export type Follower = typeof follower.$inferSelect
+export type UserFavorites = typeof userFavorites.$inferSelect
+export type UserFavoritesAssets = typeof userFavoritesAssets.$inferSelect
+export type UserCollections = typeof userCollections.$inferSelect
+export type UserCollectionAssets = typeof userCollectionAssets.$inferSelect

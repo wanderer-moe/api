@@ -13,7 +13,8 @@ export async function viewAssetCollections(c: Context): Promise<Response> {
 			await auth(c.env).invalidateSession(session.sessionId)
 			authRequest.setSession(null)
 		}
-		return c.json({ success: false, state: "invalid session" }, 200)
+		c.status(401)
+		return c.json({ success: false, state: "invalid session" })
 	}
 
 	// check if userCollections exists
@@ -25,7 +26,8 @@ export async function viewAssetCollections(c: Context): Promise<Response> {
 	)
 
 	if (!userCollectionsExists) {
-		return c.json({ success: false, state: "no collections found" }, 200)
+		c.status(200)
+		return c.json({ success: false, state: "no collections found" })
 	}
 
 	const assetCollection = await drizzle.query.userCollectionAssets.findMany({
@@ -36,8 +38,10 @@ export async function viewAssetCollections(c: Context): Promise<Response> {
 		},
 	})
 
-	return c.json(
-		{ success: true, state: "found collections", assetCollection },
-		200
-	)
+	c.status(200)
+	return c.json({
+		success: true,
+		state: "found collections",
+		assetCollection,
+	})
 }

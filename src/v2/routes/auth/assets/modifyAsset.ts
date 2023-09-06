@@ -1,7 +1,6 @@
 import { responseHeaders } from "@/v2/lib/responseHeaders"
 import { getConnection } from "@/v2/db/turso"
 import { assets } from "@/v2/db/schema"
-import { createNotFoundResponse } from "@/v2/lib/helpers/responses/notFoundResponse"
 import { eq } from "drizzle-orm"
 import type { APIContext as Context } from "@/worker-configuration"
 import { auth } from "@/v2/lib/auth/lucia"
@@ -18,21 +17,25 @@ export async function modifyAssetData(c: Context): Promise<Response> {
 			await auth(c.env).invalidateSession(session.sessionId)
 			authRequest.setSession(null)
 		}
-		return c.json({ success: false, state: "invalid session" }, 200)
+		c.status(401)
+		return c.json({ success: false, state: "invalid session" })
 	}
 
 	// return unauthorized if user is not a contributor
-	if (session.user.is_contributor !== 1)
-		return c.json({ success: false, state: "unauthorized" }, 401)
+	if (session.user.is_contributor !== 1) {
+		c.status(401)
+		return c.json({ success: false, state: "unauthorized" })
+	}
 
-	const drizzle = await getConnection(c.env).drizzle
+	const drizzle = getConnection(c.env).drizzle
 
 	const asset = await drizzle.query.assets.findFirst({
 		where: (assets, { eq }) => eq(assets.id, parseInt(assetIdToModify)),
 	})
 
 	if (!asset) {
-		return createNotFoundResponse(c, "Asset not found", responseHeaders)
+		c.status(200)
+		return c.json({ success: false, state: "asset not found" })
 	}
 
 	const roleFlags = roleFlagsToArray(session.user.role_flags)
@@ -41,10 +44,11 @@ export async function modifyAssetData(c: Context): Promise<Response> {
 		asset.uploadedById !== session.userId ||
 		!roleFlags.includes("CREATOR")
 	) {
-		return c.json(
-			{ success: false, state: "unauthorized to modify this asset" },
-			401
-		)
+		c.status(401)
+		return c.json({
+			success: false,
+			state: "unauthorized to modify this asset",
+		})
 	}
 
 	const formData = await c.req.formData()

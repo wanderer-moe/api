@@ -70,14 +70,20 @@ export async function favoriteAsset(c: Context): Promise<Response> {
 	}
 
 	// add asset to userFavorites...
-	await drizzle.insert(userFavoritesAssets).values({
-		id: `${session.userId}-${assetToFavorite}`,
-		userFavoritesId: isFavorited.id,
-		assetId: parseInt(assetToFavorite),
-	})
+	try {
+		await drizzle.insert(userFavoritesAssets).values({
+			id: `${session.userId}-${assetToFavorite}`,
+			userFavoritesId: isFavorited.id,
+			assetId: parseInt(assetToFavorite),
+		})
+	} catch (e) {
+		c.status(500)
+		return c.json(
+			{ success: false, state: "failed to favorite asset" },
+			500
+		)
+	}
 
-	return c.json(
-		{ success: true, state: "favorited asset", assetToFavorite },
-		200
-	)
+	c.status(200)
+	return c.json({ success: true, state: "favorited asset", assetToFavorite })
 }

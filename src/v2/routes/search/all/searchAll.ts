@@ -21,7 +21,7 @@ export async function searchAll(c: Context): Promise<Response> {
 	}
 
 	if (response) return response
-	const drizzle = await getConnection(c.env).drizzle
+	const drizzle = getConnection(c.env).drizzle
 
 	// https://cdn.discordapp.com/attachments/1102306276832202813/1147291827699986572/F.gif
 	const usersResponse = await drizzle.query.users.findMany({
@@ -60,7 +60,7 @@ export async function searchAll(c: Context): Promise<Response> {
 				return or(
 					and(
 						eq(savedOcGenerators.isPublic, 1),
-						eq(savedOcGenerators.userId, session.userId)
+						session && eq(savedOcGenerators.userId, session.userId)
 					),
 					like(savedOcGenerators.name, `%${query}%`)
 				)
@@ -71,7 +71,7 @@ export async function searchAll(c: Context): Promise<Response> {
 		where: (userCollections, { or, and }) => {
 			return and(
 				or(
-					eq(userCollections.userId, session.userId),
+					session && eq(userCollections.userId, session.userId),
 					eq(userCollections.isPublic, 1)
 				),
 				like(userCollections.name, `%${query}%`)
@@ -84,7 +84,7 @@ export async function searchAll(c: Context): Promise<Response> {
 			success: true,
 			status: "ok",
 			query,
-			isAuthed: session.userId ? true : false,
+			isAuthed: session && session.userId ? true : false,
 			results: {
 				usersResponse: usersResponse ? usersResponse : [],
 				assetsResponse: assetsResponse ? assetsResponse : [],

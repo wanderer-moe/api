@@ -8,7 +8,7 @@ export async function listAllAssetTags(c: Context): Promise<Response> {
 
 	if (response) return response
 
-	const drizzle = await getConnection(c.env).drizzle
+	const drizzle = getConnection(c.env).drizzle
 
 	const allAssetTags = await drizzle.query.assetTags.findMany({
 		orderBy: (assetTags) => assetTags.name,

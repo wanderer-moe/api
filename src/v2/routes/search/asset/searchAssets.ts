@@ -20,7 +20,7 @@ export async function searchForAssets(c: Context): Promise<Response> {
 	// assetCategory?: comma separated list of asset category names => ?assetCategory=splash-art,character-sheets
 	// assetTags?: comma separated list of asset tag names => ?assetTags=no-background,fanmade,official
 
-	const drizzle = await getConnection(c.env).drizzle
+	const drizzle = getConnection(c.env).drizzle
 
 	// check if certian search parameters are present, if not, set them to null
 	const searchQuery = query ?? null
@@ -29,6 +29,8 @@ export async function searchForAssets(c: Context): Promise<Response> {
 		? SplitQueryByCommas(assetCategory)
 		: null
 	const assetTagsList = assetTags ? SplitQueryByCommas(assetTags) : null
+
+	console.log(searchQuery, gameList, assetCategoryList, assetTagsList)
 
 	// query the database for assets that match the search parameters
 	const assetResponse = await drizzle.query.assets.findMany({
@@ -48,24 +50,6 @@ export async function searchForAssets(c: Context): Promise<Response> {
 				eq(assets.status, 1)
 			)
 		},
-		// i think i am overcomplicating this
-		...((assetTagsList?.length ?? 0) > 0 && {
-			with: {
-				assetTagsAssets: {
-					with: {
-						assetTags: {
-							where: (assetTags, { and, eq }) => {
-								return and(
-									...assetTagsList.map((assetTag) =>
-										eq(assetTags.name, assetTag)
-									)
-								)
-							},
-						},
-					},
-				},
-			},
-		}),
 		orderBy: desc(assets.id),
 		limit: 1000,
 	})

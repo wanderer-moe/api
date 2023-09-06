@@ -16,8 +16,10 @@ export async function login(c: Context): Promise<Response> {
 	const password = formData.get("password") as string
 	const validSession = await auth(c.env).handleRequest(c).validate()
 
-	if (validSession)
-		return c.json({ success: false, state: "already logged in" }, 200)
+	if (validSession) {
+		c.status(200)
+		return c.json({ success: false, state: "already logged in" })
+	}
 
 	const storedThrottling = usernameThrottling.get(username)
 	const timeoutUntil = storedThrottling?.timeoutUntil ?? 0
@@ -75,5 +77,6 @@ export async function login(c: Context): Promise<Response> {
 	const authRequest = await auth(c.env).handleRequest(c)
 	authRequest.setSession(newSession)
 
-	return c.json({ success: true, state: "logged in" }, 200)
+	c.status(200)
+	return c.json({ success: true, state: "logged in" })
 }

@@ -1,7 +1,5 @@
-import { responseHeaders } from "@/v2/lib/responseHeaders"
 import { getConnection } from "@/v2/db/turso"
 import { assets } from "@/v2/db/schema"
-import { createNotFoundResponse } from "@/v2/lib/helpers/responses/notFoundResponse"
 import { desc } from "drizzle-orm"
 import type { APIContext as Context } from "@/worker-configuration"
 
@@ -13,7 +11,7 @@ export async function getAssetFromId(c: Context): Promise<Response> {
 
 	if (response) return response
 
-	const drizzle = await getConnection(c.env).drizzle
+	const drizzle = getConnection(c.env).drizzle
 
 	const asset = await drizzle.query.assets.findFirst({
 		where: (assets, { eq, and }) =>
@@ -28,7 +26,11 @@ export async function getAssetFromId(c: Context): Promise<Response> {
 	})
 
 	if (!asset) {
-		response = createNotFoundResponse(c, "Asset not found", responseHeaders)
+		c.status(200)
+		response = c.json({
+			success: false,
+			status: "not found",
+		})
 		await cache.put(cacheKey, response.clone())
 		return response
 	}
@@ -43,16 +45,13 @@ export async function getAssetFromId(c: Context): Promise<Response> {
 		orderBy: desc(assets.id),
 	})
 
-	response = c.json(
-		{
-			success: true,
-			status: "ok",
-			asset,
-			similarAssets,
-		},
-		200,
-		responseHeaders
-	)
+	c.status(200)
+	response = c.json({
+		success: true,
+		status: "ok",
+		asset,
+		similarAssets,
+	})
 
 	response.headers.set("Cache-Control", "s-maxage=604800")
 	await cache.put(cacheKey, response.clone())

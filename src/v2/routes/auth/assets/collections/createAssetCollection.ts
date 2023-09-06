@@ -14,7 +14,8 @@ export async function createAssetCollection(c: Context): Promise<Response> {
 			await auth(c.env).invalidateSession(session.sessionId)
 			authRequest.setSession(null)
 		}
-		return c.json({ success: false, state: "invalid session" }, 200)
+		c.status(401)
+		return c.json({ success: false, state: "invalid session" })
 	}
 
 	const formData = await c.req.formData()
@@ -25,17 +26,16 @@ export async function createAssetCollection(c: Context): Promise<Response> {
 	}
 
 	if (!collection.name) {
-		return c.json(
-			{ success: false, state: "no collection name entered" },
-			200
-		)
+		c.status(200)
+		return c.json({ success: false, state: "no collection name entered" })
 	}
 
 	if (!collection.description) {
-		return c.json(
-			{ success: false, state: "no collection description entered" },
-			200
-		)
+		c.status(200)
+		return c.json({
+			success: false,
+			state: "no collection description entered",
+		})
 	}
 
 	// check if collection exists
@@ -45,24 +45,31 @@ export async function createAssetCollection(c: Context): Promise<Response> {
 	})
 
 	if (collectionExists) {
-		return c.json(
-			{ success: false, state: "collection with name already exists" },
-			200
-		)
+		c.status(200)
+		return c.json({
+			success: false,
+			state: "collection with name already exists",
+		})
 	}
 
 	// create entry in userCollections
-	await drizzle
-		.insert(userCollections)
-		.values({
-			id: crypto.randomUUID(),
-			name: collection.name,
-			description: collection.description,
-			userId: session.userId,
-			dateCreated: new Date().getTime(),
-			isPublic: 0, // default to private
-		})
-		.execute()
+	try {
+		await drizzle
+			.insert(userCollections)
+			.values({
+				id: crypto.randomUUID(),
+				name: collection.name,
+				description: collection.description,
+				userId: session.userId,
+				dateCreated: new Date().getTime(),
+				isPublic: 0, // default to private
+			})
+			.execute()
+	} catch (e) {
+		c.status(200)
+		return c.json({ success: false, state: "failed to create collection" })
+	}
 
-	return c.json({ success: true, state: "created collection" }, 200)
+	c.status(200)
+	return c.json({ success: true, state: "created collection" })
 }

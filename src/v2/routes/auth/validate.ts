@@ -12,22 +12,20 @@ export async function validate(c: Context): Promise<Response> {
 
 	if (!session) {
 		authRequest.setSession(null)
-		return c.json({ success: false, state: "invalid session" }, 200)
+		c.status(401)
+		return c.json({ success: false, state: "invalid session" })
 	}
 
 	if (
 		session.userAgent !== userAgent ||
-		session.countryCode !== countryCode
+		session.countryCode !== countryCode ||
+		session.state === "invalid" ||
+		session.state === "idle"
 	) {
 		await auth(c.env).invalidateSession(session.sessionId)
 		authRequest.setSession(null)
-		return c.json({ success: false, state: "invalid session" }, 200)
-	}
-
-	if (session.state === "idle") {
-		await auth(c.env).invalidateSession(session.sessionId)
-		authRequest.setSession(null)
-		return c.json({ success: false, state: "invalid session" }, 200)
+		c.status(401)
+		return c.json({ success: false, state: "invalid session" })
 	}
 
 	return c.json({ success: true, state: "valid session", session }, 200)

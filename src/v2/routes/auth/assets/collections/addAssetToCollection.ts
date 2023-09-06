@@ -14,7 +14,8 @@ export async function addAssetToCollection(c: Context): Promise<Response> {
 			await auth(c.env).invalidateSession(session.sessionId)
 			authRequest.setSession(null)
 		}
-		return c.json({ success: false, state: "invalid session" }, 200)
+		c.status(401)
+		return c.json({ success: false, state: "invalid session" })
 	}
 
 	const formData = await c.req.formData()
@@ -25,14 +26,13 @@ export async function addAssetToCollection(c: Context): Promise<Response> {
 	}
 
 	if (!collection.id) {
-		return c.json(
-			{ success: false, state: "no collection id entered" },
-			200
-		)
+		c.status(200)
+		return c.json({ success: false, state: "no collection id entered" })
 	}
 
 	if (!collection.assetId) {
-		return c.json({ success: false, state: "no asset id entered" }, 200)
+		c.status(401)
+		return c.json({ success: false, state: "no asset id entered" })
 	}
 
 	// check if collection exists
@@ -42,10 +42,11 @@ export async function addAssetToCollection(c: Context): Promise<Response> {
 	})
 
 	if (!collectionExists) {
-		return c.json(
-			{ success: false, state: "collection with ID doesn't exist" },
-			200
-		)
+		c.status(200)
+		return c.json({
+			success: false,
+			state: "collection with ID doesn't exist",
+		})
 	}
 
 	// check if asset exists, and status is 1 (approved)
@@ -58,7 +59,8 @@ export async function addAssetToCollection(c: Context): Promise<Response> {
 	})
 
 	if (!assetExists) {
-		return c.json({ success: false, state: "asset not found" }, 200)
+		c.status(200)
+		return c.json({ success: false, state: "asset not found" })
 	}
 
 	// check if userCollectionAssets exists
@@ -75,21 +77,30 @@ export async function addAssetToCollection(c: Context): Promise<Response> {
 		})
 
 	if (userCollectionAssetsExists) {
-		return c.json(
-			{ success: false, state: "asset already exists in collection" },
-			200
-		)
+		c.status(200)
+		return c.json({
+			success: false,
+			state: "asset already exists in collection",
+		})
 	}
 
 	// create entry in userCollectionAssets
-	await drizzle
-		.insert(userCollectionAssets)
-		.values({
-			id: crypto.randomUUID(),
-			collectionId: collection.id,
-			assetId: parseInt(collection.assetId),
-		})
-		.execute()
+	try {
+		await drizzle
+			.insert(userCollectionAssets)
+			.values({
+				id: crypto.randomUUID(),
+				collectionId: collection.id,
+				assetId: parseInt(collection.assetId),
+			})
+			.execute()
+	} catch (e) {
+		c.status(500)
+		return c.json(
+			{ success: false, state: "failed to add asset to collection" },
+			500
+		)
+	}
 
 	return c.json({ success: true, state: "added asset to collection" }, 200)
 }

@@ -14,16 +14,19 @@ export async function uploadAsset(c: Context): Promise<Response> {
 			await auth(c.env).invalidateSession(session.sessionId)
 			authRequest.setSession(null)
 		}
-		return c.json({ success: false, state: "invalid session" }, 200)
+		c.status(401)
+		return c.json({ success: false, state: "unauthorized" })
 	}
 
 	// return unauthorized if user is not a contributor
-	if (session.user.is_contributor !== 1)
-		return c.json({ success: false, state: "unauthorized" }, 401)
+	if (session.user.is_contributor !== 1) {
+		c.status(401)
+		return c.json({ success: false, state: "unauthorized" })
+	}
 
 	const bypassApproval = session.user.is_contributor === 1
 
-	const drizzle = await getConnection(c.env).drizzle
+	const drizzle = getConnection(c.env).drizzle
 
 	const formData = await c.req.formData()
 	const asset = formData.get("asset") as unknown as File | null
@@ -40,13 +43,10 @@ export async function uploadAsset(c: Context): Promise<Response> {
 	}
 
 	if (metadata.tags.length > 5)
-		return c.json(
-			{
-				success: false,
-				state: `too many tags (${metadata.tags.length}). maximum is 5 tags per asset`,
-			},
-			400
-		)
+		return c.json({
+			success: false,
+			state: `too many tags (${metadata.tags.length}). maximum is 5 tags per asset`,
+		})
 
 	const newAsset = {
 		name: metadata.name,
@@ -108,8 +108,10 @@ export async function uploadAsset(c: Context): Promise<Response> {
 		await c.env.bucket.delete(
 			`/assets/${metadata.game}/${metadata.category}/${metadata.name}.${metadata.extension}`
 		)
-		return c.json({ success: false, state: "failed to upload asset" }, 500)
+		c.status(500)
+		return c.json({ success: false, state: "failed to upload asset" })
 	}
 
-	return c.json({ success: true, state: "uploaded asset" }, 200)
+	c.status(200)
+	return c.json({ success: true, state: "uploaded asset" })
 }
