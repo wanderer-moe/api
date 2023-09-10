@@ -7,7 +7,7 @@ import {
 	uniqueIndex,
 } from "drizzle-orm/sqlite-core"
 
-// users, games, categories, assets etc, i will clean this up later, sorry for anyone looking at this
+// TODO: move tables into seperate appropiate files
 export const users = sqliteTable(
 	tableNames.authUser,
 	{
@@ -167,6 +167,7 @@ export const assets = sqliteTable(
 			}
 		),
 		uploadedDate: integer("uploaded_date").notNull(),
+		assetIsOptimized: integer("asset_is_optimized").default(0).notNull(),
 		viewCount: integer("view_count").default(0).notNull(),
 		downloadCount: integer("download_count").default(0).notNull(),
 		fileSize: integer("file_size").default(0).notNull(),

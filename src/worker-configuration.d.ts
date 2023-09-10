@@ -9,5 +9,4 @@ export type Bindings = {
 	TURSO_DATABASE_AUTH_TOKEN: string
 }
 
-
 export type APIContext = Context<{ Bindings: Bindings }>
