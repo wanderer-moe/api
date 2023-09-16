@@ -18,7 +18,7 @@ export async function getUsersBySearch(c: Context): Promise<Response> {
 		columns: {
 			email: false,
 			emailVerified: false,
-		}
+		},
 	})
 
 	if (!userList) {

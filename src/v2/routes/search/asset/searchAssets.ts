@@ -64,7 +64,7 @@ export async function searchForAssets(c: Context): Promise<Response> {
 			},
 		},
 		orderBy: desc(assets.id),
-		limit: 1000,
+		limit: 500,
 	})
 
 	response = c.json(
