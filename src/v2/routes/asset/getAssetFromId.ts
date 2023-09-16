@@ -22,6 +22,12 @@ export async function getAssetFromId(c: Context): Promise<Response> {
 					assetTags: true,
 				},
 			},
+			users: {
+				columns: {
+					email: false,
+					emailVerified: false,
+				},
+			},
 		},
 	})
 

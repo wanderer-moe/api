@@ -50,6 +50,19 @@ export async function searchForAssets(c: Context): Promise<Response> {
 				eq(assets.status, 1)
 			)
 		},
+		with: {
+			assetTagsAssets: {
+				with: {
+					assetTags: true,
+				},
+			},
+			users: {
+				columns: {
+					email: false,
+					emailVerified: false,
+				},
+			},
+		},
 		orderBy: desc(assets.id),
 		limit: 1000,
 	})

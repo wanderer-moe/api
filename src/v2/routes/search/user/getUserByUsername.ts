@@ -26,6 +26,10 @@ export async function getUserByUsername(c: Context): Promise<Response> {
 
 	const user = await drizzle.query.users.findFirst({
 		where: (users, { and, eq }) => and(eq(users.username, username)),
+		columns: {
+			email: false,
+			emailVerified: false,
+		},
 	})
 
 	if (!user) {
@@ -33,10 +37,6 @@ export async function getUserByUsername(c: Context): Promise<Response> {
 		await cache.put(cacheKey, response.clone())
 		return response
 	}
-
-	// removing email-related fields
-	user.email = undefined
-	user.emailVerified = undefined
 
 	response = c.json(
 		{

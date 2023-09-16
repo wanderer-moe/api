@@ -15,6 +15,10 @@ export async function getUsersBySearch(c: Context): Promise<Response> {
 		where: (users, { or }) => {
 			return or(like(users.username, `%${query}%`))
 		},
+		columns: {
+			email: false,
+			emailVerified: false,
+		}
 	})
 
 	if (!userList) {

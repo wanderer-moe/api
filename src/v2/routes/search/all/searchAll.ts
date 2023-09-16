@@ -28,6 +28,10 @@ export async function searchAll(c: Context): Promise<Response> {
 		where: (users) => {
 			return like(users.username, `%${query}%`)
 		},
+		columns: {
+			email: false,
+			emailVerified: false,
+		},
 	})
 
 	const assetCategoryResponse = await drizzle.query.assetCategories.findMany({
@@ -105,7 +109,7 @@ export async function searchAll(c: Context): Promise<Response> {
 		responseHeaders
 	)
 
-	response.headers.set("Cache-Control", "s-maxage=300")
+	response.headers.set("Cache-Control", "s-maxage=1200")
 	await cache.put(cacheKey, response.clone())
 	return response
 }
