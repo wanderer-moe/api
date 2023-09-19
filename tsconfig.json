@@ -1,15 +1,15 @@
 {
-	"compilerOptions": {
-		"skipLibCheck": true,
-		"target": "es2021",
-		"module": "es2022",
-		"moduleResolution": "node",
-		"lib": ["es2021"],
-		"baseUrl": "./",
-		"paths": {
-			"@/*": ["src/*"]
-		},
-		"types": ["@cloudflare/workers-types"]
-	},
-	"include": ["src/**/*.ts"]
+    "compilerOptions": {
+        "skipLibCheck": true,
+        "target": "es2021",
+        "module": "es2022",
+        "moduleResolution": "node",
+        "lib": ["es2021"],
+        "baseUrl": "./",
+        "paths": {
+            "@/*": ["src/*"]
+        },
+        "types": ["@cloudflare/workers-types"]
+    },
+    "include": ["src/**/*.ts"]
 }

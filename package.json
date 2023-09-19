@@ -1,39 +1,39 @@
 {
-	"name": "wanderer-moe-api",
-	"version": "1.0.1b",
-	"scripts": {
-		"prettier:fmt": "prettier --write .",
-		"dev": "wrangler dev --remote",
-		"publish": "wrangler publish --minify",
-		"lint": "eslint . --ext .ts",
-		"prettier:check": "prettier --check .",
-		"typecheck": "tsc --noEmit",
-		"drizzle:generate": "drizzle-kit generate:sqlite",
-		"drizzle:push": "drizzle-kit push:sqlite"
-	},
-	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20230904.0",
-		"@types/node": "^20.6.0",
-		"dotenv": "^16.3.1",
-		"drizzle-kit": "^0.19.13",
-		"eslint": "^8.49.0",
-		"eslint-config-google": "^0.14.0",
-		"eslint-plugin-json": "^3.1.0",
-		"husky": "^8.0.3",
-		"tsx": "^3.12.10",
-		"typescript": "^5.2.2",
-		"wrangler": "3.8.0"
-	},
-	"private": true,
-	"dependencies": {
-		"@libsql/client": "0.3.4",
-		"@lucia-auth/adapter-sqlite": "^2.0.0",
-		"@typescript-eslint/eslint-plugin": "^6.7.0",
-		"drizzle-orm": "^0.28.6",
-		"hono": "^3.6.0",
-		"lucia": "^2.6.0",
-		"mysql2": "^3.6.1",
-		"prettier": "^3.0.3",
-		"resend": "^1.0.0"
-	}
+    "name": "wanderer-moe-api",
+    "version": "1.0.1b",
+    "scripts": {
+        "prettier:fmt": "prettier --write .",
+        "dev": "wrangler dev --remote",
+        "publish": "wrangler publish --minify",
+        "lint": "eslint . --ext .ts",
+        "prettier:check": "prettier --check .",
+        "typecheck": "tsc --noEmit",
+        "drizzle:generate": "drizzle-kit generate:sqlite",
+        "drizzle:push": "drizzle-kit push:sqlite"
+    },
+    "devDependencies": {
+        "@cloudflare/workers-types": "^4.20230904.0",
+        "@types/node": "^20.6.0",
+        "dotenv": "^16.3.1",
+        "drizzle-kit": "^0.19.13",
+        "eslint": "^8.49.0",
+        "eslint-config-google": "^0.14.0",
+        "eslint-plugin-json": "^3.1.0",
+        "husky": "^8.0.3",
+        "tsx": "^3.12.10",
+        "typescript": "^5.2.2",
+        "wrangler": "3.8.0"
+    },
+    "private": true,
+    "dependencies": {
+        "@libsql/client": "0.3.4",
+        "@lucia-auth/adapter-sqlite": "^2.0.0",
+        "@typescript-eslint/eslint-plugin": "^6.7.0",
+        "drizzle-orm": "^0.28.6",
+        "hono": "^3.6.0",
+        "lucia": "^2.6.0",
+        "mysql2": "^3.6.1",
+        "prettier": "^3.0.3",
+        "resend": "^1.0.0"
+    }
 }
