@@ -3,7 +3,7 @@ declare global {
      * The `Bindings` type is used to define the shape of the environment variables that are used by the application.
      * It includes properties for the Discord token, R2 bucket, current environment, and necessary Database credentials for Turso.
      */
-    export type Bindings = {
+    type Bindings = {
         DISCORD_TOKEN: string
         bucket: R2Bucket
         ENVIRONMENT: string
@@ -17,10 +17,10 @@ declare global {
      * It is defined as a global type in the `globals.d.ts` file and includes properties for the request object, environment variables, and response methods.
      * @template Bindings - The shape of the environment variables that are used by the application.
      */
-    export type APIContext = import("hono").Context<{
+    type APIContext = import("hono").Context<{
         Bindings: Bindings
     }>
 }
 
-// This allows the types to be defined in the global scope throughout the API.
+// This allows the types to be defined in the global scope throughout the API. Do not remove.
 export {}

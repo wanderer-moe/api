@@ -34,27 +34,27 @@ export const auth = (env: Bindings) => {
             enabled: true,
             allowedSubDomains: ["*"],
         },
-        getUserAttributes: (dbUser) => {
+        getUserAttributes: (user) => {
             return {
-                username: dbUser.username,
-                usernameColour: dbUser.username_colour,
-                avatarUrl: dbUser.avatar_url,
-                bannerUrl: dbUser.banner_url,
-                email: dbUser.email,
-                emailVerified: dbUser.email_verified,
-                pronouns: dbUser.pronouns,
-                verified: dbUser.verified,
-                bio: dbUser.bio,
-                roleFlags: dbUser.role_flags,
-                selfAssignableRoleFlags: dbUser.self_assignable_role_flags,
-                dateJoined: dbUser.date_joined,
+                username: user.username,
+                usernameColour: user.username_colour,
+                avatarUrl: user.avatar_url,
+                bannerUrl: user.banner_url,
+                email: user.email,
+                emailVerified: user.email_verified,
+                pronouns: user.pronouns,
+                verified: user.verified,
+                bio: user.bio,
+                roleFlags: user.role_flags,
+                selfAssignableRoleFlags: user.self_assignable_role_flags,
+                dateJoined: user.date_joined,
             }
         },
-        getSessionAttributes: (dbSession) => {
+        getSessionAttributes: (session) => {
             return {
-                userAgent: dbSession.user_agent as string,
-                countryCode: dbSession.country_code as string,
-                ipAddress: dbSession.ip_address as string,
+                userAgent: session.user_agent,
+                countryCode: session.country_code,
+                ipAddress: session.ip_address,
             }
         },
     })
