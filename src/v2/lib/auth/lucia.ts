@@ -17,7 +17,7 @@ import { discord } from "@lucia-auth/oauth/providers"
 export function KVSessionStorage(env: Bindings) {
     return createStorage({
         driver: cloudflareKVBindingDriver({
-            binding: env.kv,
+            binding: env.KV_SESSION_STORAGE,
         }),
     })
 }

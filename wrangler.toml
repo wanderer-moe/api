@@ -6,8 +6,13 @@ account_id = "ba4e8f7f9ffbc23dba6acd0d9bd3ef46"
 workers_dev = true
 
 [[r2_buckets]]
-binding = 'bucket'
+binding = 'FILES_BUCKET'
 bucket_name = 'files'
 preview_bucket_name = 'files'
+
+kv_namespaces = [
+    { binding = "KV_SESSION_STORAGE", id = "a5ee030621cf4dfda60e0ad81bfd2f3b" },
+]
+
 
 [vars]

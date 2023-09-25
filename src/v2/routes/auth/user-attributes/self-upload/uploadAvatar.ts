@@ -31,14 +31,16 @@ export async function uploadProfileImage(c: APIContext): Promise<Response> {
     }
 
     if (session.user.avatarUrl) {
-        const oldAvatarObject = await c.env.bucket.get(session.user.avatarUrl)
+        const oldAvatarObject = await c.env.FILES_BUCKET.get(
+            session.user.avatarUrl
+        )
 
         if (oldAvatarObject) {
-            await c.env.bucket.delete(session.user.avatarUrl)
+            await c.env.FILES_BUCKET.delete(session.user.avatarUrl)
         }
     }
 
-    await c.env.bucket.put(newAvatarURL, newAvatar)
+    await c.env.FILES_BUCKET.put(newAvatarURL, newAvatar)
 
     return c.json({ success: true, state: "uploaded new profile image" }, 200)
 }

@@ -10,7 +10,7 @@ export async function getGenerators(c: APIContext): Promise<Response> {
 
     // listing all files inside of oc-generators subfolder, as they can't be manually inputted
     // by users but instead stored on the oc-generators repo which is synced with R2 bucket
-    const files = await listBucket(c.env.bucket, {
+    const files = await listBucket(c.env.FILES_BUCKET, {
         prefix: "oc-generators/",
         delimiter: "/",
     })

@@ -10,7 +10,7 @@ export async function getGeneratorFromName(c: APIContext): Promise<Response> {
 
     if (response) return response
 
-    const files = await listBucket(c.env.bucket, {
+    const files = await listBucket(c.env.FILES_BUCKET, {
         prefix: `oc-generators/${gameName}/list.json`,
     })
 

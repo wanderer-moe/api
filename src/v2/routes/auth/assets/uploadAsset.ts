@@ -32,7 +32,7 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
     const asset = formData.get("asset") as unknown as File | null
 
     const metadata = {
-        name: formData.get("name`") as string, // e.g keqing
+        name: formData.get("name") as string, // e.g keqing
         extension: formData.get("extension") as string, // e.g png
         tags: SplitQueryByCommas(formData.get("tags") as string), // e.g no-background, fanmade, official => ["no-background", "fanmade", "official"]
         category: formData.get("category") as string, // e.g splash-art
@@ -68,7 +68,7 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
     })
 
     try {
-        await c.env.bucket.put(
+        await c.env.FILES_BUCKET.put(
             `/assets/${metadata.game}/${metadata.category}/${metadata.name}.${metadata.extension}`,
             newAssetFile
         )
@@ -105,7 +105,7 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
             }
         })
     } catch (e) {
-        await c.env.bucket.delete(
+        await c.env.FILES_BUCKET.delete(
             `/assets/${metadata.game}/${metadata.category}/${metadata.name}.${metadata.extension}`
         )
         c.status(500)
