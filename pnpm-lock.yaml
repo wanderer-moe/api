@@ -11,6 +11,9 @@ dependencies:
     "@libsql/client":
         specifier: 0.3.4
         version: 0.3.4
+    "@lucia-auth/adapter-session-unstorage":
+        specifier: ^2.1.0
+        version: 2.1.0(lucia@2.7.0)(unstorage@1.9.0)
     "@lucia-auth/adapter-sqlite":
         specifier: ^2.0.0
         version: 2.0.0(@libsql/client@0.3.4)(lucia@2.7.0)
@@ -917,6 +920,19 @@ packages:
             - utf-8-validate
         dev: false
 
+    /@lucia-auth/adapter-session-unstorage@2.1.0(lucia@2.7.0)(unstorage@1.9.0):
+        resolution:
+            {
+                integrity: sha512-ItK7urZhLZv7UO99BcODjRhSAv58UPc+KQAmnkSvri2WBc22vFEjnjd/oWp3CZPdbbrJkuTvsuhFXH1ySBfOLg==,
+            }
+        peerDependencies:
+            lucia: ^2.0.0
+            unstorage: ^1.9.0
+        dependencies:
+            lucia: 2.7.0
+            unstorage: 1.9.0
+        dev: false
+
     /@lucia-auth/adapter-sqlite@2.0.0(@libsql/client@0.3.4)(lucia@2.7.0):
         resolution:
             {
@@ -1098,6 +1114,7 @@ packages:
         dependencies:
             is-glob: 4.0.3
             micromatch: 4.0.5
+            napi-wasm: 1.1.0
         dev: false
         bundledDependencies:
             - napi-wasm
@@ -3547,6 +3564,13 @@ packages:
         resolution:
             {
                 integrity: sha512-ONmRUqK7zj7DWX0D9ADe03wbwOBZxNAfF20PlGfCWQcD3+/MakShIHrMqx9YwPTfxDdF1zLeL+RGZiR9kGMLdg==,
+            }
+        dev: false
+
+    /napi-wasm@1.1.0:
+        resolution:
+            {
+                integrity: sha512-lHwIAJbmLSjF9VDRm9GoVOy9AGp3aIvkjv+Kvz9h16QR3uSVYH78PNQUnT2U4X53mhlnV2M7wrhibQ3GHicDmg==,
             }
         dev: false
 

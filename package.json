@@ -28,6 +28,7 @@
     "dependencies": {
         "@hono/zod-openapi": "^0.6.0",
         "@libsql/client": "0.3.4",
+        "@lucia-auth/adapter-session-unstorage": "^2.1.0",
         "@lucia-auth/adapter-sqlite": "^2.0.0",
         "@lucia-auth/oauth": "^3.3.0",
         "@typescript-eslint/eslint-plugin": "^6.7.2",
