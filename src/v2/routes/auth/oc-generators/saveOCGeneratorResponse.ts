@@ -9,7 +9,7 @@ export async function saveOCGeneratorResponse(
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session || session.state === "idle" || session.state === "invalid") {
+    if (!session || session.state === "idle") {
         if (session) {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
@@ -25,7 +25,7 @@ export async function saveOCGeneratorResponse(
     // TODO: make sure data is actually valid before inserting it into the database
     const ocGeneratorResponse = {
         id: crypto.randomUUID(),
-        userId: session.userId as string,
+        userId: session.user.userId,
         name: formData.get("name") as string,
         game: formData.get("game") as string,
         dateCreated: new Date().getTime(),

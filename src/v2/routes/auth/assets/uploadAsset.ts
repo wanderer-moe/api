@@ -9,7 +9,7 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session || session.state === "idle" || session.state === "invalid") {
+    if (!session || session.state === "idle") {
         if (session) {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
@@ -19,12 +19,12 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
     }
 
     // return unauthorized if user is not a contributor
-    if (session.user.is_contributor !== 1) {
+    if (session.user.isContributor !== 1) {
         c.status(401)
         return c.json({ success: false, state: "unauthorized" })
     }
 
-    const bypassApproval = session.user.is_contributor === 1
+    const bypassApproval = session.user.isContributor === 1
 
     const drizzle = getConnection(c.env).drizzle
 
@@ -54,7 +54,7 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
         game: metadata.game,
         assetCategory: metadata.category,
         url: `/assets/${metadata.game}/${metadata.category}/${metadata.name}.${metadata.extension}`,
-        uploadedById: session.userId,
+        uploadedById: session.user.userId,
         status: bypassApproval ? 1 : 2,
         uploadedDate: new Date().getTime(),
         fileSize: asset.size, // stored in bytes

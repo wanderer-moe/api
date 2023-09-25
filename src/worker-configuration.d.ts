@@ -6,10 +6,14 @@ declare global {
     type Bindings = {
         DISCORD_TOKEN: string
         bucket: R2Bucket
+        kv: KVNamespace
         ENVIRONMENT: string
         VERY_SECRET_SIGNUP_KEY: string
         TURSO_DATABASE_URL: string
         TURSO_DATABASE_AUTH_TOKEN: string
+        DISCORD_CLIENT_ID: string
+        DISCORD_CLIENT_SECRET: string
+        DISCORD_REDIRECT_URI: string
     }
 
     /**

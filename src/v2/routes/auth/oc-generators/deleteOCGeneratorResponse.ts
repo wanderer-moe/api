@@ -10,7 +10,7 @@ export async function deleteOCGeneratorResponse(
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session || session.state === "idle" || session.state === "invalid") {
+    if (!session || session.state === "idle") {
         if (session) {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
@@ -33,7 +33,7 @@ export async function deleteOCGeneratorResponse(
         .where(
             and(
                 eq(savedOcGenerators.id, deleteID),
-                eq(savedOcGenerators.userId, session.userId)
+                eq(savedOcGenerators.userId, session.user.userId)
             )
         )
 
@@ -48,7 +48,7 @@ export async function deleteOCGeneratorResponse(
         .where(
             and(
                 eq(savedOcGenerators.id, deleteID),
-                eq(savedOcGenerators.userId, session.userId)
+                eq(savedOcGenerators.userId, session.user.userId)
             )
         )
 

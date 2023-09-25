@@ -29,6 +29,7 @@
         "@hono/zod-openapi": "^0.6.0",
         "@libsql/client": "0.3.4",
         "@lucia-auth/adapter-sqlite": "^2.0.0",
+        "@lucia-auth/oauth": "^3.3.0",
         "@typescript-eslint/eslint-plugin": "^6.7.2",
         "drizzle-orm": "^0.28.6",
         "hono": "^3.7.2",
@@ -36,6 +37,7 @@
         "mysql2": "^3.6.1",
         "prettier": "^3.0.3",
         "resend": "^1.1.0",
+        "unstorage": "^1.9.0",
         "zod": "^3.22.2"
     }
 }

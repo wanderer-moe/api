@@ -10,7 +10,7 @@ export async function unFollowUser(c: APIContext): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session || session.state === "idle" || session.state === "invalid") {
+    if (!session || session.state === "idle") {
         if (session) {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
@@ -37,7 +37,7 @@ export async function unFollowUser(c: APIContext): Promise<Response> {
 
     const isFollowing = await drizzle.query.following.findFirst({
         where: (following, { eq }) =>
-            eq(following.id, `${session.userId}-${userToUnFollow}`),
+            eq(following.id, `${session.user.userId}-${userToUnFollow}`),
     })
 
     if (!isFollowing) {
@@ -47,12 +47,12 @@ export async function unFollowUser(c: APIContext): Promise<Response> {
     await drizzle.transaction(async (transaction) => {
         await transaction
             .delete(follower)
-            .where(eq(follower.id, `${session.userId}-${userToUnFollow}`))
+            .where(eq(follower.id, `${session.user.userId}-${userToUnFollow}`))
             .execute()
 
         await transaction
             .delete(following)
-            .where(eq(following.id, `${session.userId}-${userToUnFollow}`))
+            .where(eq(following.id, `${session.user.userId}-${userToUnFollow}`))
             .execute()
 
         return c.json({ success: true, state: "unfollowed user" }, 200)

@@ -13,7 +13,7 @@ export async function searchAll(c: APIContext): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session || session.state === "idle" || session.state === "invalid") {
+    if (!session || session.state === "idle") {
         if (session) {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
@@ -64,7 +64,8 @@ export async function searchAll(c: APIContext): Promise<Response> {
                 return or(
                     and(
                         eq(savedOcGenerators.isPublic, 1),
-                        session && eq(savedOcGenerators.userId, session.userId)
+                        session &&
+                            eq(savedOcGenerators.userId, session.user.userId)
                     ),
                     like(savedOcGenerators.name, `%${query}%`)
                 )
@@ -75,7 +76,7 @@ export async function searchAll(c: APIContext): Promise<Response> {
         where: (userCollections, { or, and }) => {
             return and(
                 or(
-                    session && eq(userCollections.userId, session.userId),
+                    session && eq(userCollections.userId, session.user.userId),
                     eq(userCollections.isPublic, 1)
                 ),
                 like(userCollections.name, `%${query}%`)
@@ -88,7 +89,7 @@ export async function searchAll(c: APIContext): Promise<Response> {
             success: true,
             status: "ok",
             query,
-            isAuthed: session && session.userId ? true : false,
+            isAuthed: session && session.user.userId ? true : false,
             results: {
                 usersResponse: usersResponse ? usersResponse : [],
                 assetsResponse: assetsResponse ? assetsResponse : [],

@@ -7,7 +7,7 @@ export async function viewAssetCollections(c: APIContext): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session || session.state === "idle" || session.state === "invalid") {
+    if (!session || session.state === "idle") {
         if (session) {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
@@ -20,7 +20,7 @@ export async function viewAssetCollections(c: APIContext): Promise<Response> {
     const userCollectionsExists = await drizzle.query.userCollections.findFirst(
         {
             where: (userCollections, { eq }) =>
-                eq(userCollections.userId, session.userId),
+                eq(userCollections.userId, session.user.userId),
         }
     )
 

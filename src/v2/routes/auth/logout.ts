@@ -10,7 +10,7 @@ export async function logout(c: APIContext): Promise<Response> {
     }
 
     // this is useful to clean up dead sessions that are still in the database
-    await auth(c.env).deleteDeadUserSessions(session.userId)
+    await auth(c.env).deleteDeadUserSessions(session.user.userId)
     await auth(c.env).invalidateSession(session.sessionId)
     authRequest.setSession(null)
 

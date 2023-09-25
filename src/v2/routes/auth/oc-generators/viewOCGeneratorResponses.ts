@@ -10,7 +10,7 @@ export async function viewOCGeneratorResponses(
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session || session.state === "idle" || session.state === "invalid") {
+    if (!session || session.state === "idle") {
         if (session) {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
@@ -24,7 +24,7 @@ export async function viewOCGeneratorResponses(
     const ocGeneratorResponses = await drizzle
         .select()
         .from(savedOcGenerators)
-        .where(eq(savedOcGenerators.userId, session.userId))
+        .where(eq(savedOcGenerators.userId, session.user.userId))
 
     c.status(200)
     return c.json({

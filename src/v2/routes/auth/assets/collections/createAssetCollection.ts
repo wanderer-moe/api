@@ -9,7 +9,7 @@ export async function createAssetCollection(c: APIContext): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session || session.state === "idle" || session.state === "invalid") {
+    if (!session || session.state === "idle") {
         if (session) {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
@@ -60,7 +60,7 @@ export async function createAssetCollection(c: APIContext): Promise<Response> {
                 id: crypto.randomUUID(),
                 name: collection.name,
                 description: collection.description,
-                userId: session.userId,
+                userId: session.user.userId,
                 dateCreated: new Date().getTime(),
                 isPublic: 0, // default to private
             })

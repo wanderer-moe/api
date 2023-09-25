@@ -9,7 +9,7 @@ export async function followUser(c: APIContext): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session || session.state === "idle" || session.state === "invalid") {
+    if (!session || session.state === "idle") {
         if (session) {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
@@ -36,7 +36,7 @@ export async function followUser(c: APIContext): Promise<Response> {
 
     const isFollowing = await drizzle.query.following.findFirst({
         where: (following, { eq }) =>
-            eq(following.id, `${session.userId}-${userToFollow}`),
+            eq(following.id, `${session.user.userId}-${userToFollow}`),
     })
 
     if (isFollowing) {
@@ -47,8 +47,8 @@ export async function followUser(c: APIContext): Promise<Response> {
         await transaction
             .insert(follower)
             .values({
-                id: `${session.userId}-${userToFollow}`,
-                followerUserId: session.userId,
+                id: `${session.user.userId}-${userToFollow}`,
+                followerUserId: session.user.userId,
                 followingUserId: userToFollow,
             })
             .execute()
@@ -56,9 +56,9 @@ export async function followUser(c: APIContext): Promise<Response> {
         await transaction
             .insert(following)
             .values({
-                id: `${userToFollow}-${session.userId}`,
+                id: `${userToFollow}-${session.user.userId}`,
                 followerUserId: userToFollow,
-                followingUserId: session.userId,
+                followingUserId: session.user.userId,
             })
             .execute()
 

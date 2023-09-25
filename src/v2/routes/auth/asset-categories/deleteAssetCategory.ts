@@ -9,7 +9,7 @@ export async function deleteAssetCategory(c: APIContext): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session || session.state === "idle" || session.state === "invalid") {
+    if (!session || session.state === "idle") {
         if (session) {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
@@ -18,7 +18,7 @@ export async function deleteAssetCategory(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "unauthorized" })
     }
 
-    const roleFlags = roleFlagsToArray(session.user.role_flags)
+    const roleFlags = roleFlagsToArray(session.user.roleFlags)
 
     if (!roleFlags.includes("CREATOR")) {
         c.status(401)

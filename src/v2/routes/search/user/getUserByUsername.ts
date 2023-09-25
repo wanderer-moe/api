@@ -14,7 +14,7 @@ export async function getUserByUsername(c: APIContext): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session || session.state === "idle" || session.state === "invalid") {
+    if (!session || session.state === "idle") {
         if (session) {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
@@ -42,9 +42,9 @@ export async function getUserByUsername(c: APIContext): Promise<Response> {
         {
             success: true,
             status: "ok",
-            accountIsAuthed: session && session.userId ? true : false,
+            accountIsAuthed: session && session.user.userId ? true : false,
             userIsQueryingOwnAccount:
-                session && session.userId === user.id ? true : false,
+                session && session.user.userId === user.id ? true : false,
             userRoleFlagsArray: roleFlagsToArray(user.roleFlags),
             user,
         },

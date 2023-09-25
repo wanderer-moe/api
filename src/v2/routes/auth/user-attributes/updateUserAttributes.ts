@@ -4,7 +4,7 @@ export async function updateUserAttributes(c: APIContext): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session || session.state === "idle" || session.state === "invalid") {
+    if (!session || session.state === "idle") {
         if (session) {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
@@ -28,7 +28,7 @@ export async function updateUserAttributes(c: APIContext): Promise<Response> {
         if (attributes[key] === null) delete attributes[key]
     })
 
-    await auth(c.env).updateUserAttributes(session.userId, attributes)
+    await auth(c.env).updateUserAttributes(session.user.userId, attributes)
 
     return c.json(
         { success: true, state: "updated user attributes", session },

@@ -9,7 +9,7 @@ export async function deleteTag(c: APIContext): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session || session.state === "idle" || session.state === "invalid") {
+    if (!session || session.state === "idle") {
         if (session) {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
@@ -17,7 +17,7 @@ export async function deleteTag(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "invalid session" }, 200)
     }
 
-    const roleFlags = roleFlagsToArray(session.user.role_flags)
+    const roleFlags = roleFlagsToArray(session.user.roleFlags)
 
     if (!roleFlags.includes("CREATOR")) {
         return c.json({ success: false, state: "unauthorized" }, 401)

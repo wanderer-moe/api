@@ -12,7 +12,7 @@ export async function modifyAssetData(c: APIContext): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session || session.state === "idle" || session.state === "invalid") {
+    if (!session || session.state === "idle") {
         if (session) {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
@@ -22,7 +22,7 @@ export async function modifyAssetData(c: APIContext): Promise<Response> {
     }
 
     // return unauthorized if user is not a contributor
-    if (session.user.is_contributor !== 1) {
+    if (session.user.isContributor === 0) {
         c.status(401)
         return c.json({ success: false, state: "unauthorized" })
     }
@@ -38,10 +38,10 @@ export async function modifyAssetData(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "asset not found" })
     }
 
-    const roleFlags = roleFlagsToArray(session.user.role_flags)
+    const roleFlags = roleFlagsToArray(session.user.roleFlags)
 
     if (
-        asset.uploadedById !== session.userId ||
+        asset.uploadedById !== session.user.userId ||
         !roleFlags.includes("CREATOR")
     ) {
         c.status(401)

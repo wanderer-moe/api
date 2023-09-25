@@ -10,7 +10,7 @@ export async function removeFavoriteAsset(c: APIContext): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session || session.state === "idle" || session.state === "invalid") {
+    if (!session || session.state === "idle") {
         if (session) {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
@@ -37,7 +37,7 @@ export async function removeFavoriteAsset(c: APIContext): Promise<Response> {
     // this should never happen, but just in case it does, UX over reads/writes to the database
     const doesUserFavoritesExist = await drizzle.query.userFavorites.findFirst({
         where: (userFavorites, { eq }) =>
-            eq(userFavorites.userId, session.userId),
+            eq(userFavorites.userId, session.user.userId),
     })
 
     if (!doesUserFavoritesExist) {
@@ -45,8 +45,8 @@ export async function removeFavoriteAsset(c: APIContext): Promise<Response> {
         await drizzle
             .insert(userFavorites)
             .values({
-                id: `${session.userId}-${assetToRemove}`,
-                userId: session.userId,
+                id: `${session.user.userId}-${assetToRemove}`,
+                userId: session.user.userId,
                 isPublic: 0, // default to private
             })
             .execute()
@@ -54,7 +54,10 @@ export async function removeFavoriteAsset(c: APIContext): Promise<Response> {
 
     const isFavorited = await drizzle.query.userFavorites.findFirst({
         where: (userFavoritesAssets, { eq }) =>
-            eq(userFavoritesAssets.id, `${session.userId}-${assetToRemove}`),
+            eq(
+                userFavoritesAssets.id,
+                `${session.user.userId}-${assetToRemove}`
+            ),
     })
 
     if (!isFavorited) {
@@ -71,7 +74,10 @@ export async function removeFavoriteAsset(c: APIContext): Promise<Response> {
         await drizzle
             .delete(userFavoritesAssets)
             .where(
-                eq(userFavoritesAssets.id, `${session.userId}-${assetToRemove}`)
+                eq(
+                    userFavoritesAssets.id,
+                    `${session.user.userId}-${assetToRemove}`
+                )
             )
             .execute()
     } catch (e) {

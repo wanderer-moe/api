@@ -20,7 +20,6 @@ export async function validate(c: APIContext): Promise<Response> {
         session.userAgent !== userAgent ||
         session.countryCode !== countryCode ||
         session.ipAddress !== ipAddress ||
-        session.state === "invalid" ||
         session.state === "idle"
     ) {
         await auth(c.env).invalidateSession(session.sessionId)

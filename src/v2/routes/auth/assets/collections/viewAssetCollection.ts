@@ -7,7 +7,7 @@ export async function viewAssetCollection(c: APIContext): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session || session.state === "idle" || session.state === "invalid") {
+    if (!session || session.state === "idle") {
         if (session) {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
@@ -36,7 +36,7 @@ export async function viewAssetCollection(c: APIContext): Promise<Response> {
                         eq(userCollections.id, collection.id),
                         eq(userCollections.isPublic, 1)
                     ),
-                    eq(userCollections.userId, session.userId)
+                    eq(userCollections.userId, session.user.userId)
                 ),
         })
     } catch (e) {
@@ -54,7 +54,7 @@ export async function viewAssetCollection(c: APIContext): Promise<Response> {
                     eq(userCollections.id, collection.id),
                     eq(userCollections.isPublic, 1)
                 ),
-                eq(userCollections.userId, session.userId)
+                eq(userCollections.userId, session.user.userId)
             ),
         with: {
             userCollectionAssets: {

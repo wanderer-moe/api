@@ -7,7 +7,7 @@ export async function viewFavoriteAssets(c: APIContext): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session || session.state === "idle" || session.state === "invalid") {
+    if (!session || session.state === "idle") {
         if (session) {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
@@ -19,7 +19,7 @@ export async function viewFavoriteAssets(c: APIContext): Promise<Response> {
     // check if userFavorites exists
     const userFavoritesExists = await drizzle.query.userFavorites.findFirst({
         where: (userFavorites, { eq }) =>
-            eq(userFavorites.userId, session.userId),
+            eq(userFavorites.userId, session.user.userId),
     })
 
     if (!userFavoritesExists) {

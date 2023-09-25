@@ -5,7 +5,7 @@ export async function uploadProfileImage(c: APIContext): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session || session.state === "idle" || session.state === "invalid") {
+    if (!session || session.state === "idle") {
         if (session) {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
@@ -21,20 +21,20 @@ export async function uploadProfileImage(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "invalid avatar" }, 200)
     }
 
-    const newAvatar = new File([avatar], `${session.userId}.png`)
-    const newAvatarURL = `/avatars/${session.userId}.png`
+    const newAvatar = new File([avatar], `${session.user.userId}.png`)
+    const newAvatarURL = `/avatars/${session.user.userId}.png`
 
-    if (!session.user.avatar_url) {
-        await auth(c.env).updateUserAttributes(session.userId, {
+    if (!session.user.avatarUrl) {
+        await auth(c.env).updateUserAttributes(session.user.userId, {
             avatar_url: newAvatarURL,
         })
     }
 
-    if (session.user.avatar_url) {
-        const oldAvatarObject = await c.env.bucket.get(session.user.avatar_url)
+    if (session.user.avatarUrl) {
+        const oldAvatarObject = await c.env.bucket.get(session.user.avatarUrl)
 
         if (oldAvatarObject) {
-            await c.env.bucket.delete(session.user.avatar_url)
+            await c.env.bucket.delete(session.user.avatarUrl)
         }
     }
 

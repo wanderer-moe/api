@@ -2,19 +2,19 @@
 declare namespace Lucia {
     type Auth = import("./v2/lib/auth/lucia").Auth
     type DatabaseUserAttributes = {
-        username: string
-        username_colour: string | null
         avatar_url: string | null
         banner_url: string | null
+        username: string
+        username_colour: string | null
         email: string
         email_verified: number
         pronouns: string | null
-        is_contributor: number
         verified: number
         bio: string | null
-        role_flags: number
-        self_assignable_role_flags: number | null
         date_joined: number
+        role_flags: number
+        is_contributor: number
+        self_assignable_role_flags: number | null
     }
     // stored to prevent session hijacking by checking if the session attributes match the ones stored in the database
     type DatabaseSessionAttributes = {

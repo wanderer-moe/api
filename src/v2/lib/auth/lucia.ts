@@ -3,6 +3,7 @@ import { hono } from "lucia/middleware"
 import { getConnection } from "@/v2/db/turso"
 import { tableNames } from "@/v2/db/drizzle"
 import { libsql } from "@lucia-auth/adapter-sqlite"
+import { discord } from "@lucia-auth/oauth/providers"
 
 /**
  * The `auth` function is used to create a `lucia` instance with authentication middleware and a `libsql` adapter.
@@ -36,18 +37,19 @@ export const auth = (env: Bindings) => {
         },
         getUserAttributes: (user) => {
             return {
-                username: user.username,
-                usernameColour: user.username_colour,
                 avatarUrl: user.avatar_url,
                 bannerUrl: user.banner_url,
+                username: user.username,
+                usernameColour: user.username_colour,
                 email: user.email,
                 emailVerified: user.email_verified,
                 pronouns: user.pronouns,
                 verified: user.verified,
                 bio: user.bio,
-                roleFlags: user.role_flags,
-                selfAssignableRoleFlags: user.self_assignable_role_flags,
                 dateJoined: user.date_joined,
+                roleFlags: user.role_flags,
+                isContributor: user.is_contributor,
+                selfAssignableRoleFlags: user.self_assignable_role_flags,
             }
         },
         getSessionAttributes: (session) => {
@@ -60,7 +62,13 @@ export const auth = (env: Bindings) => {
     })
 }
 
-/**
- * The `Auth` type is a type alias for the `auth` function.
- */
-export type Auth = typeof auth
+export type Auth = ReturnType<typeof auth>
+
+export function discordAuth(auth: Auth, env: Bindings) {
+    return discord(auth, {
+        clientId: env.DISCORD_CLIENT_ID,
+        clientSecret: env.DISCORD_CLIENT_SECRET,
+        redirectUri: env.DISCORD_REDIRECT_URI,
+        scope: ["identify", "email"],
+    })
+}

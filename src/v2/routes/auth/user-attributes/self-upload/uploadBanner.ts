@@ -5,7 +5,7 @@ export async function uploadBannerImage(c: APIContext): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
-    if (!session || session.state === "idle" || session.state === "invalid") {
+    if (!session || session.state === "idle") {
         if (session) {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
@@ -13,7 +13,7 @@ export async function uploadBannerImage(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "invalid session" }, 200)
     }
 
-    if (session.user.is_contributor !== 1) {
+    if (session.user.isContributor !== 1) {
         return c.json({ success: false, state: "unauthorized" }, 401)
     }
 
@@ -25,20 +25,20 @@ export async function uploadBannerImage(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "invalid banner" }, 200)
     }
 
-    const newBanner = new File([banner], `${session.userId}.png`)
-    const newBannerURL = `/banners/${session.userId}.png`
+    const newBanner = new File([banner], `${session.user.userId}.png`)
+    const newBannerURL = `/banners/${session.user.userId}.png`
 
-    if (!session.user.banner_url) {
-        await auth(c.env).updateUserAttributes(session.userId, {
+    if (!session.user.avatarUrl) {
+        await auth(c.env).updateUserAttributes(session.user.userId, {
             banner_url: newBannerURL,
         })
     }
 
-    if (session.user.banner_url) {
-        const oldBannerObject = await c.env.bucket.get(session.user.banner_url)
+    if (session.user.avatarUrl) {
+        const oldBannerObject = await c.env.bucket.get(session.user.bannerUrl)
 
         if (oldBannerObject) {
-            await c.env.bucket.delete(session.user.banner_url)
+            await c.env.bucket.delete(session.user.avatarUrl)
         }
     }
 
