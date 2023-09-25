@@ -93,6 +93,9 @@ export const socialsConnections = sqliteTable(
             userIdx: uniqueIndex("socials_connection_user_id_idx").on(
                 socialsConnection.userId
             ),
+            discordIdIdx: uniqueIndex("socials_connection_discord_id_idx").on(
+                socialsConnection.discordId
+            ),
         }
     }
 )

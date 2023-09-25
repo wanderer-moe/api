@@ -1,18 +1,22 @@
-import { auth, discordAuth } from "@/v2/lib/auth/lucia"
+import {
+    auth as authAdapter,
+    discordAuth as discordAuthAdapter,
+} from "@/v2/lib/auth/lucia"
 import { setCookie, getCookie } from "hono/cookie"
 import { getConnection } from "@/v2/db/turso"
+import { socialsConnections } from "@/v2/db/schema"
 
 export async function loginWithDiscord(c: APIContext): Promise<Response> {
-    const curr_auth = await auth(c.env)
-    const session = auth(c.env).handleRequest(c).validate()
+    const auth = await authAdapter(c.env)
+    const session = authAdapter(c.env).handleRequest(c).validate()
 
     if (session) {
         c.status(200)
         return c.json({ success: false, state: "already logged in" })
     }
 
-    const discord_auth = await discordAuth(curr_auth, c.env)
-    const [url, state] = await discord_auth.getAuthorizationUrl()
+    const discordAuth = await discordAuthAdapter(auth, c.env)
+    const [url, state] = await discordAuth.getAuthorizationUrl()
 
     // set state cookie for validation
     setCookie(c, "discord_oauth_state", state, {
@@ -36,11 +40,11 @@ export async function discordCallback(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "missing parameters" })
     }
 
-    const curr_auth = await auth(c.env)
-    const discord_auth = await discordAuth(curr_auth, c.env)
+    const auth = await authAdapter(c.env)
+    const discordAuth = await discordAuthAdapter(auth, c.env)
 
     const { getExistingUser, discordUser, createUser, createKey } =
-        await discord_auth.validateCallback(code)
+        await discordAuth.validateCallback(code)
 
     const getDiscordUser = async () => {
         const existingUser = await getExistingUser()
@@ -63,24 +67,40 @@ export async function discordCallback(c: APIContext): Promise<Response> {
 
         const drizzle = getConnection(c.env).drizzle
 
-        // TODO: users can set discord ID manually, as they may have a different email, etc.
         const userWithEmail = await drizzle.query.users.findFirst({
             where: (users, { eq }) => eq(users.email, discordUser.email),
         })
 
-        // if user exists, create a key for them and update their email_verified attribute
+        // if user exists, we create a key for them and update their email_verified attribute
         if (userWithEmail) {
-            // @ts-expect-error, this is valid and i don't feel like doing wizardry to make it work
-            const user = curr_auth.transformDatabaseUser(userWithEmail)
+            // check if user with same email has a discord id set as a social connection
+            const getUsersConnections =
+                await drizzle.query.socialsConnections.findFirst({
+                    where: (socialsConnections, { eq }) =>
+                        eq(socialsConnections.userId, userWithEmail.id),
+                })
+
+            if (
+                getUsersConnections &&
+                getUsersConnections.discordId !== discordUser.id
+            ) {
+                throw new Error(
+                    "user with same email has a different discord id set as a social connection"
+                )
+            }
+
+            // @ts-expect-error, this is valid, i don't feel like doing wizardry to make it work
+            const user = auth.transformDatabaseUser(userWithEmail)
             await createKey(user.userId)
-            await curr_auth.updateUserAttributes(user.userId, {
+            await auth.updateUserAttributes(user.userId, {
                 email_verified: 1,
             })
             return user
         }
 
         // if user doesn't exist, create it based off their discord info
-        return createUser({
+
+        const createdUser = await createUser({
             attributes: {
                 username: discordUser.username,
                 email: discordUser.email,
@@ -97,11 +117,23 @@ export async function discordCallback(c: APIContext): Promise<Response> {
                 bio: "No bio set",
             },
         })
+
+        // add discord id as a social connection
+        await drizzle
+            .insert(socialsConnections)
+            .values({
+                id: `${createdUser.userId}`,
+                userId: createdUser.userId,
+                discordId: discordUser.id,
+            })
+            .execute()
+
+        return createdUser
     }
 
     const user = await getDiscordUser()
 
-    const session = await curr_auth.createSession({
+    const session = await auth.createSession({
         userId: user.userId,
         attributes: {
             country_code: c.req.header("cf-ipcountry") ?? "",
