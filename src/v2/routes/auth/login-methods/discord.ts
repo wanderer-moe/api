@@ -89,8 +89,7 @@ export async function discordCallback(c: APIContext): Promise<Response> {
                 )
             }
 
-            // @ts-expect-error, this is valid, i don't feel like doing wizardry to make it work
-            const user = auth.transformDatabaseUser(userWithEmail)
+            const user = await auth.getUser(userWithEmail.id)
             await createKey(user.userId)
             await auth.updateUserAttributes(user.userId, {
                 email_verified: 1,
