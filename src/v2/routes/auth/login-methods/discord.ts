@@ -54,15 +54,12 @@ export async function discordCallback(c: APIContext): Promise<Response> {
         }
 
         // check if discord user exists && they have a verified email
-        if (
-            !discordUser ||
-            discordUser.bot ||
-            !discordUser.email ||
-            !discordUser.verified
-        ) {
-            throw new Error(
-                "discord user doesn't exist or doesn't have a valid email"
-            )
+        if (!discordUser || discordUser.bot) {
+            throw new Error("discord user is invalid email")
+        }
+
+        if (!discordUser.email || !discordUser.verified) {
+            throw new Error("discord user doesnt have a verified email")
         }
 
         const drizzle = getConnection(c.env).drizzle
@@ -90,15 +87,18 @@ export async function discordCallback(c: APIContext): Promise<Response> {
             }
 
             const user = await auth.getUser(userWithEmail.id)
+
             await createKey(user.userId)
-            await auth.updateUserAttributes(user.userId, {
-                email_verified: 1,
-            })
+            if (user.emailVerified !== 1) {
+                await auth.updateUserAttributes(user.userId, {
+                    email_verified: 1,
+                })
+            }
+
             return user
         }
 
         // if user doesn't exist, create it based off their discord info
-
         const createdUser = await createUser({
             attributes: {
                 username: discordUser.username,
