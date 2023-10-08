@@ -35,27 +35,28 @@ export const users = sqliteTable(
     }
 )
 
-export const sessions = sqliteTable(
-    tableNames.authSession,
-    {
-        id: text("id").primaryKey(),
-        userId: text("user_id")
-            .notNull()
-            .references(() => users.id, {
-                onUpdate: "cascade",
-                onDelete: "cascade",
-            }),
-        activeExpires: integer("active_expires").notNull(),
-        idleExpires: integer("idle_expires").notNull(),
-        userAgent: text("user_agent").notNull(),
-        countryCode: text("country_code").notNull(),
-    },
-    (session) => {
-        return {
-            userIdx: uniqueIndex("session_user_id_idx").on(session.userId),
-        }
-    }
-)
+// NOTE: sessions are now managed by CF KV instead of SQLite DB
+// export const sessions = sqliteTable(
+//     tableNames.authSession,
+//     {
+//         id: text("id").primaryKey(),
+//         userId: text("user_id")
+//             .notNull()
+//             .references(() => users.id, {
+//                 onUpdate: "cascade",
+//                 onDelete: "cascade",
+//             }),
+//         activeExpires: integer("active_expires").notNull(),
+//         idleExpires: integer("idle_expires").notNull(),
+//         userAgent: text("user_agent").notNull(),
+//         countryCode: text("country_code").notNull(),
+//     },
+//     (session) => {
+//         return {
+//             userIdx: uniqueIndex("session_user_id_idx").on(session.userId),
+//         }
+//     }
+// )
 
 export const keys = sqliteTable(
     tableNames.authKey,
@@ -503,12 +504,12 @@ export const userFavoritesAssetsRelations = relations(
     })
 )
 
-export const sessionsRelations = relations(sessions, ({ one }) => ({
-    user: one(users, {
-        fields: [sessions.userId],
-        references: [users.id],
-    }),
-}))
+// export const sessionsRelations = relations(sessions, ({ one }) => ({
+//     user: one(users, {
+//         fields: [sessions.userId],
+//         references: [users.id],
+//     }),
+// }))
 
 export const keysRelations = relations(keys, ({ one }) => ({
     user: one(users, {
@@ -528,7 +529,7 @@ export const socialsConnectionsRelations = relations(
 )
 
 export const usersRelations = relations(users, ({ one, many }) => ({
-    session: many(sessions),
+    // session: many(sessions),
     key: many(keys),
     assets: many(assets),
     follower: many(follower),
@@ -550,7 +551,7 @@ export type AssetTagsAsset = typeof assetTagsAssets.$inferSelect
 
 // user types
 export type User = typeof users.$inferSelect
-export type Session = typeof sessions.$inferSelect
+// export type Session = typeof sessions.$inferSelect
 export type Key = typeof keys.$inferSelect
 export type SocialsConnection = typeof socialsConnections.$inferSelect
 export type Following = typeof following.$inferSelect
