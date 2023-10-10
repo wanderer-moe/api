@@ -1,7 +1,39 @@
 import { auth } from "@/v2/lib/auth/lucia"
-
+import { listBucket } from "@/v2/lib/listBucket"
 import { savedOcGenerators } from "@/v2/db/schema"
 import { getConnection } from "@/v2/db/turso"
+import type { OCGeneratorResponse as OCGeneratorRequestResponse } from "@/v2/lib/types/oc-generator"
+
+// matches data from oc generator and random entries from oc generator to prevent mismatched data from being saved
+function isValidOCGeneratorResponse(
+    content: string,
+    response: OCGeneratorRequestResponse
+) {
+    try {
+        const parsedContent = JSON.parse(content)
+
+        if (typeof parsedContent !== "object") return false
+
+        for (const key of Object.keys(parsedContent)) {
+            const foundOption = response.options.find(
+                (option) => option.name === key
+            )
+
+            if (!foundOption || !Array.isArray(parsedContent[key])) return false
+
+            if (
+                !parsedContent[key].every((entry) =>
+                    foundOption.entries.includes(entry)
+                )
+            )
+                return false
+        }
+
+        return true
+    } catch (error) {
+        return false
+    }
+}
 
 export async function saveOCGeneratorResponse(
     c: APIContext
@@ -14,8 +46,7 @@ export async function saveOCGeneratorResponse(
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
         }
-        c.status(401)
-        return c.json({ success: false, state: "invalid session" })
+        return c.json({ success: false, state: "invalid session" }, 401)
     }
 
     const drizzle = getConnection(c.env).drizzle
@@ -33,8 +64,27 @@ export async function saveOCGeneratorResponse(
         content: formData.get("content") as string, // this is stored as json, which can then be parsed
     }
 
+    const files = await listBucket(c.env.FILES_BUCKET, {
+        prefix: `oc-generators/${ocGeneratorResponse.game}/list.json`,
+    })
+
+    if (files.objects.length === 0)
+        return c.json(
+            { success: false, state: "no oc generators with name found" },
+            200
+        )
+
+    const ResponseData = await fetch(
+        `https://files.wanderer.moe/${files.objects[0].key}`
+    ).then((res) => res.json() as Promise<OCGeneratorRequestResponse>)
+
+    if (!isValidOCGeneratorResponse(ocGeneratorResponse.content, ResponseData))
+        return c.json(
+            { success: false, state: "invalid data attempted to be saved" },
+            200
+        )
+
     await drizzle.insert(savedOcGenerators).values(ocGeneratorResponse)
 
-    c.status(200)
-    return c.json({ success: true, state: "saved", ocGeneratorResponse })
+    return c.json({ success: true, state: "saved", ocGeneratorResponse }, 200)
 }

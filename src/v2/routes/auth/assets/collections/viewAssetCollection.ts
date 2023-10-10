@@ -12,8 +12,7 @@ export async function viewAssetCollection(c: APIContext): Promise<Response> {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
         }
-        c.status(401)
-        return c.json({ success: false, state: "invalid session" })
+        return c.json({ success: false, state: "invalid session" }, 401)
     }
 
     const formData = await c.req.formData()
@@ -23,8 +22,10 @@ export async function viewAssetCollection(c: APIContext): Promise<Response> {
     }
 
     if (!collection.id) {
-        c.status(200)
-        return c.json({ success: false, state: "no collection id entered" })
+        return c.json(
+            { success: false, state: "no collection id entered" },
+            200
+        )
     }
 
     // check if the user owns the collection, or if the collection is public
@@ -40,11 +41,13 @@ export async function viewAssetCollection(c: APIContext): Promise<Response> {
                 ),
         })
     } catch (e) {
-        c.status(200)
-        return c.json({
-            success: false,
-            state: "collection with ID doesn't exist",
-        })
+        return c.json(
+            {
+                success: false,
+                state: "collection with ID doesn't exist",
+            },
+            200
+        )
     }
 
     const assetCollection = await drizzle.query.userCollections.findFirst({
@@ -65,6 +68,8 @@ export async function viewAssetCollection(c: APIContext): Promise<Response> {
         },
     })
 
-    c.status(200)
-    return c.json({ success: true, state: "found collection", assetCollection })
+    return c.json(
+        { success: true, state: "found collection", assetCollection },
+        200
+    )
 }

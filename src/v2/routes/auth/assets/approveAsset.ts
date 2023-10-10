@@ -16,15 +16,13 @@ export async function approveAsset(c: APIContext): Promise<Response> {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
         }
-        c.status(401)
         return c.json({ success: false, state: "unauthorized" }, 401)
     }
 
     const roleFlags = roleFlagsToArray(session.user.roleFlags)
 
     if (!roleFlags.includes("CREATOR")) {
-        c.status(401)
-        return c.json({ success: false, state: "unauthorized" })
+        return c.json({ success: false, state: "unauthorized" }, 401)
     }
 
     const drizzle = getConnection(c.env).drizzle
@@ -34,8 +32,10 @@ export async function approveAsset(c: APIContext): Promise<Response> {
     })
 
     if (!asset || asset.status === 1) {
-        c.status(404)
-        c.json({ success: false, state: "asset not found or already approved" })
+        c.json(
+            { success: false, state: "asset not found or already approved" },
+            200
+        )
     }
 
     const updatedAsset = await drizzle
@@ -46,7 +46,6 @@ export async function approveAsset(c: APIContext): Promise<Response> {
         .where(eq(assets.id, parseInt(assetIdToApprove)))
         .execute()
 
-    c.status(200)
     return c.json(
         {
             success: true,

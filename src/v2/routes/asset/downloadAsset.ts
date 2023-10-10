@@ -12,8 +12,7 @@ export async function downloadAsset(c: APIContext): Promise<Response> {
     })
 
     if (!asset) {
-        c.status(200)
-        return c.json({ success: false, state: "asset not found" })
+        return c.json({ success: false, state: "asset not found" }, 200)
     }
 
     try {
@@ -23,9 +22,10 @@ export async function downloadAsset(c: APIContext): Promise<Response> {
             .where(eq(assets.id, parseInt(assetId)))
             .execute()
     } catch (e) {
-        console.error(e)
-        c.status(500)
-        return c.json({ success: false, state: "failed to download asset" })
+        return c.json(
+            { success: false, state: "failed to download asset" },
+            500
+        )
     }
 
     const response = await fetch(asset[0].url)

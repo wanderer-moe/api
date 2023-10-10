@@ -80,13 +80,14 @@ export async function favoriteAsset(c: APIContext): Promise<Response> {
             assetId: parseInt(assetToFavorite),
         })
     } catch (e) {
-        c.status(500)
         return c.json(
             { success: false, state: "failed to favorite asset" },
             500
         )
     }
 
-    c.status(200)
-    return c.json({ success: true, state: "favorited asset", assetToFavorite })
+    return c.json(
+        { success: true, state: "favorited asset", assetToFavorite },
+        200
+    )
 }

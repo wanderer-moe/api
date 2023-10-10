@@ -12,8 +12,7 @@ export async function viewFavoriteAssets(c: APIContext): Promise<Response> {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
         }
-        c.status(401)
-        return c.json({ success: false, state: "invalid session" })
+        return c.json({ success: false, state: "invalid session" }, 401)
     }
 
     // check if userFavorites exists
@@ -23,8 +22,7 @@ export async function viewFavoriteAssets(c: APIContext): Promise<Response> {
     })
 
     if (!userFavoritesExists) {
-        c.status(200)
-        return c.json({ success: false, state: "no favorites found" })
+        return c.json({ success: false, state: "no favorites found" }, 200)
     }
 
     const favoriteAssets = await drizzle.query.userFavoritesAssets.findMany({
@@ -35,6 +33,8 @@ export async function viewFavoriteAssets(c: APIContext): Promise<Response> {
         },
     })
 
-    c.status(200)
-    return c.json({ success: true, state: "found favorites", favoriteAssets })
+    return c.json(
+        { success: true, state: "found favorites", favoriteAssets },
+        200
+    )
 }

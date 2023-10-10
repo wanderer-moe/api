@@ -15,8 +15,7 @@ export async function viewOCGeneratorResponses(
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
         }
-        c.status(401)
-        return c.json({ success: false, state: "unauthorized" })
+        return c.json({ success: false, state: "unauthorized" }, 401)
     }
 
     const drizzle = getConnection(c.env).drizzle
@@ -26,10 +25,12 @@ export async function viewOCGeneratorResponses(
         .from(savedOcGenerators)
         .where(eq(savedOcGenerators.userId, session.user.userId))
 
-    c.status(200)
-    return c.json({
-        success: true,
-        state: "valid session",
-        ocGeneratorResponses,
-    })
+    return c.json(
+        {
+            success: true,
+            state: "valid session",
+            ocGeneratorResponses,
+        },
+        401
+    )
 }

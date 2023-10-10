@@ -22,21 +22,25 @@ export async function getUsersBySearch(c: APIContext): Promise<Response> {
     })
 
     if (!userList) {
-        c.status(200)
-        return c.json({
-            success: false,
-            status: "user not found",
-        })
+        return c.json(
+            {
+                success: false,
+                status: "user not found",
+            },
+            200
+        )
     }
 
-    response = c.json({
-        success: true,
-        status: "ok",
-        query,
-        results: userList,
-    })
+    response = c.json(
+        {
+            success: true,
+            status: "ok",
+            query,
+            results: userList,
+        },
+        200
+    )
 
-    c.status(200)
     response.headers.set("Cache-Control", "s-maxage=60")
     await cache.put(cacheKey, response.clone())
 

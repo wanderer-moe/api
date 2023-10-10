@@ -14,15 +14,13 @@ export async function deleteAssetCategory(c: APIContext): Promise<Response> {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
         }
-        c.status(401)
-        return c.json({ success: false, state: "unauthorized" })
+        return c.json({ success: false, state: "unauthorized" }, 401)
     }
 
     const roleFlags = roleFlagsToArray(session.user.roleFlags)
 
     if (!roleFlags.includes("CREATOR")) {
-        c.status(401)
-        return c.json({ success: false, state: "unauthorized" })
+        return c.json({ success: false, state: "unauthorized" }, 401)
     }
 
     const drizzle = getConnection(c.env).drizzle
@@ -34,8 +32,7 @@ export async function deleteAssetCategory(c: APIContext): Promise<Response> {
     }
 
     if (!assetCategory.id) {
-        c.status(200)
-        return c.json({ success: false, state: "no id entered" })
+        return c.json({ success: false, state: "no id entered" }, 200)
     }
 
     // check if assetCategory exists
@@ -45,11 +42,13 @@ export async function deleteAssetCategory(c: APIContext): Promise<Response> {
     })
 
     if (!assetCategoryExists) {
-        c.status(200)
-        return c.json({
-            success: false,
-            state: "assetCategory with ID doesn't exist",
-        })
+        return c.json(
+            {
+                success: false,
+                state: "assetCategory with ID doesn't exist",
+            },
+            200
+        )
     }
 
     try {

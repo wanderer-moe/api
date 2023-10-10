@@ -13,15 +13,13 @@ export async function createGame(c: APIContext): Promise<Response> {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
         }
-        c.status(401)
-        return c.json({ success: false, state: "invalid session" })
+        return c.json({ success: false, state: "invalid session" }, 401)
     }
 
     const roleFlags = roleFlagsToArray(session.user.roleFlags)
 
     if (!roleFlags.includes("CREATOR")) {
-        c.status(401)
-        return c.json({ success: false, state: "unauthorized" })
+        return c.json({ success: false, state: "unauthorized" }, 401)
     }
 
     const drizzle = getConnection(c.env).drizzle
@@ -51,10 +49,8 @@ export async function createGame(c: APIContext): Promise<Response> {
     try {
         await drizzle.insert(games).values(game).execute()
     } catch (e) {
-        c.status(500)
-        return c.json({ success: false, state: "failed to create game" })
+        return c.json({ success: false, state: "failed to create game" }, 500)
     }
 
-    c.status(200)
-    return c.json({ success: true, state: "created game", game })
+    return c.json({ success: true, state: "created game", game }, 200)
 }

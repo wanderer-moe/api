@@ -16,8 +16,7 @@ export async function login(c: APIContext): Promise<Response> {
     const validSession = await auth(c.env).handleRequest(c).validate()
 
     if (validSession) {
-        c.status(200)
-        return c.json({ success: false, state: "already logged in" })
+        return c.json({ success: false, state: "already logged in" }, 200)
     }
 
     const storedThrottling = usernameThrottling.get(username)
@@ -78,6 +77,5 @@ export async function login(c: APIContext): Promise<Response> {
     const authRequest = await auth(c.env).handleRequest(c)
     authRequest.setSession(newSession)
 
-    c.status(200)
-    return c.json({ success: true, state: "logged in" })
+    return c.json({ success: true, state: "logged in" }, 200)
 }

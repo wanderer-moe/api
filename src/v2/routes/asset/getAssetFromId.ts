@@ -31,11 +31,13 @@ export async function getAssetFromId(c: APIContext): Promise<Response> {
     })
 
     if (!asset) {
-        c.status(200)
-        response = c.json({
-            success: false,
-            status: "not found",
-        })
+        response = c.json(
+            {
+                success: false,
+                status: "not found",
+            },
+            200
+        )
         await cache.put(cacheKey, response.clone())
         return response
     }
@@ -52,13 +54,15 @@ export async function getAssetFromId(c: APIContext): Promise<Response> {
         orderBy: desc(assets.id),
     })
 
-    c.status(200)
-    response = c.json({
-        success: true,
-        status: "ok",
-        asset,
-        similarAssets,
-    })
+    response = c.json(
+        {
+            success: true,
+            status: "ok",
+            asset,
+            similarAssets,
+        },
+        200
+    )
 
     response.headers.set("Cache-Control", "s-maxage=604800")
     await cache.put(cacheKey, response.clone())

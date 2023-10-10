@@ -14,8 +14,7 @@ export async function createAssetCollection(c: APIContext): Promise<Response> {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
         }
-        c.status(401)
-        return c.json({ success: false, state: "invalid session" })
+        return c.json({ success: false, state: "invalid session" }, 401)
     }
 
     const formData = await c.req.formData()
@@ -26,16 +25,20 @@ export async function createAssetCollection(c: APIContext): Promise<Response> {
     }
 
     if (!collection.name) {
-        c.status(200)
-        return c.json({ success: false, state: "no collection name entered" })
+        return c.json(
+            { success: false, state: "no collection name entered" },
+            200
+        )
     }
 
     if (!collection.description) {
-        c.status(200)
-        return c.json({
-            success: false,
-            state: "no collection description entered",
-        })
+        return c.json(
+            {
+                success: false,
+                state: "no collection description entered",
+            },
+            200
+        )
     }
 
     // check if collection exists
@@ -45,11 +48,13 @@ export async function createAssetCollection(c: APIContext): Promise<Response> {
     })
 
     if (collectionExists) {
-        c.status(200)
-        return c.json({
-            success: false,
-            state: "collection with name already exists",
-        })
+        return c.json(
+            {
+                success: false,
+                state: "collection with name already exists",
+            },
+            200
+        )
     }
 
     // create entry in userCollections
@@ -66,10 +71,11 @@ export async function createAssetCollection(c: APIContext): Promise<Response> {
             })
             .execute()
     } catch (e) {
-        c.status(200)
-        return c.json({ success: false, state: "failed to create collection" })
+        return c.json(
+            { success: false, state: "failed to create collection" },
+            200
+        )
     }
 
-    c.status(200)
-    return c.json({ success: true, state: "created collection" })
+    return c.json({ success: true, state: "created collection" }, 200)
 }

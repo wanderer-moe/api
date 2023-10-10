@@ -16,14 +16,12 @@ export async function modifyAssetData(c: APIContext): Promise<Response> {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
         }
-        c.status(401)
-        return c.json({ success: false, state: "invalid session" })
+        return c.json({ success: false, state: "invalid session" }, 401)
     }
 
     // return unauthorized if user is not a contributor
     if (session.user.isContributor === 0) {
-        c.status(401)
-        return c.json({ success: false, state: "unauthorized" })
+        return c.json({ success: false, state: "unauthorized" }, 401)
     }
 
     const drizzle = getConnection(c.env).drizzle
@@ -33,8 +31,7 @@ export async function modifyAssetData(c: APIContext): Promise<Response> {
     })
 
     if (!asset) {
-        c.status(200)
-        return c.json({ success: false, state: "asset not found" })
+        return c.json({ success: false, state: "asset not found" }, 200)
     }
 
     const roleFlags = roleFlagsToArray(session.user.roleFlags)
@@ -43,11 +40,13 @@ export async function modifyAssetData(c: APIContext): Promise<Response> {
         asset.uploadedById !== session.user.userId ||
         !roleFlags.includes("CREATOR")
     ) {
-        c.status(401)
-        return c.json({
-            success: false,
-            state: "unauthorized to modify this asset",
-        })
+        return c.json(
+            {
+                success: false,
+                state: "unauthorized to modify this asset",
+            },
+            401
+        )
     }
 
     const formData = await c.req.formData()

@@ -61,12 +61,14 @@ export async function removeFavoriteAsset(c: APIContext): Promise<Response> {
     })
 
     if (!isFavorited) {
-        c.status(200)
-        return c.json({
-            success: false,
-            state: "asset is not favorited, therefore cannot be removed",
-            assetToRemove,
-        })
+        return c.json(
+            {
+                success: false,
+                state: "asset is not favorited, therefore cannot be removed",
+                assetToRemove,
+            },
+            200
+        )
     }
 
     // remove asset from userFavorites...
@@ -81,10 +83,8 @@ export async function removeFavoriteAsset(c: APIContext): Promise<Response> {
             )
             .execute()
     } catch (e) {
-        c.status(500)
-        return c.json({ success: false, state: "failed to remove asset" })
+        return c.json({ success: false, state: "failed to remove asset" }, 500)
     }
 
-    c.status(200)
-    return c.json({ success: true, state: "removed asset", assetToRemove })
+    return c.json({ success: true, state: "removed asset", assetToRemove }, 200)
 }

@@ -10,15 +10,16 @@ import { getRuntimeKey } from "hono/adapter"
 const app = new Hono<{ Bindings: Bindings }>()
 
 app.get("/status", (c) => {
-    c.status(200)
-    return c.json({
-        status: "ok",
-        runtime: getRuntimeKey(),
-    })
+    return c.json(
+        {
+            status: "ok",
+            runtime: getRuntimeKey(),
+        },
+        200
+    )
 })
 app.get("/", (c) => {
-    c.status(200)
-    return c.json({ success: "true", status: "ok", routes: app.routes })
+    return c.json({ success: "true", status: "ok", routes: app.routes }, 200)
 })
 app.route("/v2/asset", assetRoute)
 app.route("/v2/discord", discordRoute)
@@ -27,8 +28,10 @@ app.route("/v2/search", searchRoute)
 app.route("/v2/games", gamesRoute)
 app.route("/v2/auth", authRoute)
 app.all("*", (c) => {
-    c.status(404)
-    return c.json({ success: false, status: "error", error: "Not Found" })
+    return c.json(
+        { success: false, status: "error", error: "route doesn't exist" },
+        404
+    )
 })
 
 // https://hono.dev/api/hono#showroutes

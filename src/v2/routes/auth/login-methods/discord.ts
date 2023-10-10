@@ -11,8 +11,7 @@ export async function loginWithDiscord(c: APIContext): Promise<Response> {
     const session = authAdapter(c.env).handleRequest(c).validate()
 
     if (session) {
-        c.status(200)
-        return c.json({ success: false, state: "already logged in" })
+        return c.json({ success: false, state: "already logged in" }, 200)
     }
 
     const discordAuth = await discordAuthAdapter(auth, c.env)
@@ -36,8 +35,7 @@ export async function discordCallback(c: APIContext): Promise<Response> {
 
     // check if state is valid
     if (!storedState || !state || storedState !== state || !code) {
-        c.status(400)
-        return c.json({ success: false, state: "missing parameters" })
+        return c.json({ success: false, state: "missing parameters" }, 200)
     }
 
     const auth = await authAdapter(c.env)
@@ -49,7 +47,6 @@ export async function discordCallback(c: APIContext): Promise<Response> {
     const getDiscordUser = async () => {
         const existingUser = await getExistingUser()
         if (existingUser) {
-            c.status(200)
             return existingUser
         }
 

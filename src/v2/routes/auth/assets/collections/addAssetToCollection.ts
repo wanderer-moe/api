@@ -14,8 +14,7 @@ export async function addAssetToCollection(c: APIContext): Promise<Response> {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
         }
-        c.status(401)
-        return c.json({ success: false, state: "invalid session" })
+        return c.json({ success: false, state: "invalid session" }, 401)
     }
 
     const formData = await c.req.formData()
@@ -26,13 +25,14 @@ export async function addAssetToCollection(c: APIContext): Promise<Response> {
     }
 
     if (!collection.id) {
-        c.status(200)
-        return c.json({ success: false, state: "no collection id entered" })
+        return c.json(
+            { success: false, state: "no collection id entered" },
+            200
+        )
     }
 
     if (!collection.assetId) {
-        c.status(401)
-        return c.json({ success: false, state: "no asset id entered" })
+        return c.json({ success: false, state: "no asset id entered" }, 200)
     }
 
     // check if collection exists
@@ -42,11 +42,13 @@ export async function addAssetToCollection(c: APIContext): Promise<Response> {
     })
 
     if (!collectionExists) {
-        c.status(200)
-        return c.json({
-            success: false,
-            state: "collection with ID doesn't exist",
-        })
+        return c.json(
+            {
+                success: false,
+                state: "collection with ID doesn't exist",
+            },
+            200
+        )
     }
 
     // check if asset exists, and status is 1 (approved)
@@ -59,8 +61,7 @@ export async function addAssetToCollection(c: APIContext): Promise<Response> {
     })
 
     if (!assetExists) {
-        c.status(200)
-        return c.json({ success: false, state: "asset not found" })
+        return c.json({ success: false, state: "asset not found" }, 200)
     }
 
     // check if userCollectionAssets exists
@@ -77,11 +78,13 @@ export async function addAssetToCollection(c: APIContext): Promise<Response> {
         })
 
     if (userCollectionAssetsExists) {
-        c.status(200)
-        return c.json({
-            success: false,
-            state: "asset already exists in collection",
-        })
+        return c.json(
+            {
+                success: false,
+                state: "asset already exists in collection",
+            },
+            200
+        )
     }
 
     // create entry in userCollectionAssets
@@ -95,7 +98,6 @@ export async function addAssetToCollection(c: APIContext): Promise<Response> {
             })
             .execute()
     } catch (e) {
-        c.status(500)
         return c.json(
             { success: false, state: "failed to add asset to collection" },
             500

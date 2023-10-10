@@ -14,14 +14,12 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
         }
-        c.status(401)
-        return c.json({ success: false, state: "unauthorized" })
+        return c.json({ success: false, state: "unauthorized" }, 401)
     }
 
     // return unauthorized if user is not a contributor
     if (session.user.isContributor !== 1) {
-        c.status(401)
-        return c.json({ success: false, state: "unauthorized" })
+        return c.json({ success: false, state: "unauthorized" }, 401)
     }
 
     const bypassApproval = session.user.isContributor === 1
@@ -108,10 +106,8 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
         await c.env.FILES_BUCKET.delete(
             `/assets/${metadata.game}/${metadata.category}/${metadata.name}.${metadata.extension}`
         )
-        c.status(500)
-        return c.json({ success: false, state: "failed to upload asset" })
+        return c.json({ success: false, state: "failed to upload asset" }, 500)
     }
 
-    c.status(200)
-    return c.json({ success: true, state: "uploaded asset" })
+    return c.json({ success: true, state: "uploaded asset" }, 200)
 }

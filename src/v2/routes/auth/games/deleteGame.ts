@@ -14,15 +14,13 @@ export async function deleteGame(c: APIContext): Promise<Response> {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
         }
-        c.status(401)
-        return c.json({ success: false, state: "invalid session" })
+        return c.json({ success: false, state: "invalid session" }, 401)
     }
 
     const roleFlags = roleFlagsToArray(session.user.roleFlags)
 
     if (!roleFlags.includes("CREATOR")) {
-        c.status(401)
-        return c.json({ success: false, state: "unauthorized" })
+        return c.json({ success: false, state: "unauthorized" }, 401)
     }
 
     const drizzle = getConnection(c.env).drizzle
@@ -43,17 +41,17 @@ export async function deleteGame(c: APIContext): Promise<Response> {
     })
 
     if (!gameExists) {
-        c.status(404)
-        return c.json({ success: false, state: "game with ID doesn't exist" })
+        return c.json(
+            { success: false, state: "game with ID doesn't exist" },
+            200
+        )
     }
 
     try {
         await drizzle.delete(games).where(eq(games.id, game.id)).execute()
     } catch (e) {
-        c.status(500)
-        return c.json({ success: false, state: "failed to delete game" })
+        return c.json({ success: false, state: "failed to delete game" }, 500)
     }
 
-    c.status(200)
-    return c.json({ success: true, state: "deleted game", game })
+    return c.json({ success: true, state: "deleted game", game }, 200)
 }

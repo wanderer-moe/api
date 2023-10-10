@@ -12,8 +12,7 @@ export async function validate(c: APIContext): Promise<Response> {
 
     if (!session) {
         authRequest.setSession(null)
-        c.status(401)
-        return c.json({ success: false, state: "invalid session" })
+        return c.json({ success: false, state: "invalid session" }, 401)
     }
 
     if (
@@ -24,8 +23,7 @@ export async function validate(c: APIContext): Promise<Response> {
     ) {
         await auth(c.env).invalidateSession(session.sessionId)
         authRequest.setSession(null)
-        c.status(401)
-        return c.json({ success: false, state: "invalid session" })
+        return c.json({ success: false, state: "invalid session" }, 401)
     }
 
     return c.json({ success: true, state: "valid session", session }, 200)

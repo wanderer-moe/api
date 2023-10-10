@@ -13,15 +13,13 @@ export async function createTag(c: APIContext): Promise<Response> {
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
         }
-        c.status(401)
-        return c.json({ success: false, state: "invalid session" })
+        return c.json({ success: false, state: "invalid session" }, 401)
     }
 
     const roleFlags = roleFlagsToArray(session.user.roleFlags)
 
     if (!roleFlags.includes("CREATOR")) {
-        c.status(401)
-        return c.json({ success: false, state: "unauthorized" })
+        return c.json({ success: false, state: "unauthorized" }, 401)
     }
 
     const drizzle = getConnection(c.env).drizzle
@@ -42,17 +40,17 @@ export async function createTag(c: APIContext): Promise<Response> {
     })
 
     if (tagExists) {
-        c.status(200)
-        return c.json({ success: false, state: "tag with name already exists" })
+        return c.json(
+            { success: false, state: "tag with name already exists" },
+            200
+        )
     }
 
     try {
         await drizzle.insert(assetTags).values(tag).execute()
     } catch (e) {
-        c.status(200)
-        return c.json({ success: false, state: "failed to create tag" })
+        return c.json({ success: false, state: "failed to create tag" }, 200)
     }
 
-    c.status(200)
-    return c.json({ success: true, state: "created tag", tag })
+    return c.json({ success: true, state: "created tag", tag }, 200)
 }

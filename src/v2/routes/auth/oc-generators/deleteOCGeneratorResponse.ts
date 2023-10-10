@@ -15,8 +15,7 @@ export async function deleteOCGeneratorResponse(
             await auth(c.env).invalidateSession(session.sessionId)
             authRequest.setSession(null)
         }
-        c.status(401)
-        return c.json({ success: false, state: "unauthorized" })
+        return c.json({ success: false, state: "unauthorized" }, 401)
     }
 
     const drizzle = getConnection(c.env).drizzle
@@ -25,7 +24,7 @@ export async function deleteOCGeneratorResponse(
     const deleteID = (formData.get("deleteID") as string) || null
 
     if (!formData || !deleteID)
-        return c.json({ success: false, state: "no formdata provided" })
+        return c.json({ success: false, state: "no formdata provided" }, 200)
 
     const ocGeneratorResponse = await drizzle
         .select()
@@ -52,10 +51,12 @@ export async function deleteOCGeneratorResponse(
             )
         )
 
-    c.status(200)
-    return c.json({
-        success: true,
-        state: `deleted saved oc generator with id ${deleteID}`,
-        ocGeneratorResponse,
-    })
+    return c.json(
+        {
+            success: true,
+            state: `deleted saved oc generator with id ${deleteID}`,
+            ocGeneratorResponse,
+        },
+        200
+    )
 }
