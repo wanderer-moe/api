@@ -7,7 +7,7 @@ declare global {
         DISCORD_TOKEN: string
         FILES_BUCKET: R2Bucket
         KV_SESSION_STORAGE: KVNamespace
-        ENVIRONMENT: string
+        ENVIRONMENT: string // should be "DEV", "PROD"
         VERY_SECRET_SIGNUP_KEY: string
         TURSO_DATABASE_URL: string
         TURSO_DATABASE_AUTH_TOKEN: string
@@ -18,8 +18,6 @@ declare global {
 
     /**
      * The `APIContext` type is used to provide access to the request context within routes that are separated into individual functions.
-     * It is defined as a global type in the `globals.d.ts` file and includes properties for the request object, environment variables, and response methods.
-     * @template Bindings - The shape of the environment variables that are used by the application.
      */
     type APIContext = import("hono").Context<{
         Bindings: Bindings

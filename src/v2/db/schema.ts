@@ -105,8 +105,8 @@ export const games = sqliteTable(
     tableNames.games,
     {
         id: text("id").primaryKey(),
-        name: text("name").notNull(),
-        formattedName: text("formatted_name").notNull(),
+        name: text("name").notNull(), // e.g genshin-impact, honkai-impact-3rd
+        formattedName: text("formatted_name").notNull(), // e.g Genshin Impact, Honkai Impact 3rd
         assetCount: integer("asset_count").default(0),
         lastUpdated: integer("last_updated").notNull(),
     },
@@ -122,8 +122,8 @@ export const assetCategories = sqliteTable(
     tableNames.assetCategories,
     {
         id: text("id").primaryKey(),
-        name: text("name").notNull(), // e.g genshin-impact, honkai-impact-3rd
-        formattedName: text("formatted_name").notNull(), // e.g Genshin Impact, Honkai Impact 3rd
+        name: text("name").notNull(), // e.g tcg-sheets, splash-art
+        formattedName: text("formatted_name").notNull(), // e.g TCG Sheets, Splash Art
         assetCount: integer("asset_count").default(0).notNull(),
         lastUpdated: integer("last_updated").notNull(),
     },

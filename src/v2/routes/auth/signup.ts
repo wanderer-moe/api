@@ -1,7 +1,5 @@
 import { auth } from "@/v2/lib/auth/lucia"
 
-// import * as validate from "@/v2/lib/regex/accountValidation";
-
 export async function signup(c: APIContext): Promise<Response> {
     const formData = await c.req.formData()
 

@@ -23,6 +23,7 @@ export async function searchAll(c: APIContext): Promise<Response> {
     if (response) return response
     const drizzle = getConnection(c.env).drizzle
 
+    // this is a disaster
     // https://cdn.discordapp.com/attachments/1102306276832202813/1147291827699986572/F.gif
     const usersResponse = await drizzle.query.users.findMany({
         where: (users) => {
@@ -32,30 +33,35 @@ export async function searchAll(c: APIContext): Promise<Response> {
             email: false,
             emailVerified: false,
         },
+        limit: 25,
     })
 
     const assetCategoryResponse = await drizzle.query.assetCategories.findMany({
         where: (assetCategories) => {
             return like(assetCategories.name, `%${query}%`)
         },
+        limit: 25,
     })
 
     const assetTagsResponse = await drizzle.query.assetTags.findMany({
         where: (assetTags) => {
             return like(assetTags.name, `%${query}%`)
         },
+        limit: 25,
     })
 
     const assetsResponse = await drizzle.query.assets.findMany({
         where: (assets) => {
             return like(assets.name, `%${query}%`)
         },
+        limit: 25,
     })
 
     const gamesResponse = await drizzle.query.games.findMany({
         where: (games) => {
             return like(games.name, `%${query}%`)
         },
+        limit: 25,
     })
 
     const savedOcGeneratorsResponse =
@@ -70,6 +76,7 @@ export async function searchAll(c: APIContext): Promise<Response> {
                     like(savedOcGenerators.name, `%${query}%`)
                 )
             },
+            limit: 25,
         })
 
     const collectionsResponse = await drizzle.query.userCollections.findMany({
@@ -82,6 +89,7 @@ export async function searchAll(c: APIContext): Promise<Response> {
                 like(userCollections.name, `%${query}%`)
             )
         },
+        limit: 25,
     })
 
     response = c.json(

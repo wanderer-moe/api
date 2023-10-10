@@ -40,6 +40,8 @@ export async function getAssetFromId(c: APIContext): Promise<Response> {
         return response
     }
 
+    await drizzle.update(assets).set({ viewCount: asset.viewCount + 1 })
+
     const similarAssets = await drizzle.query.assets.findMany({
         where: (assets, { eq, and }) =>
             and(

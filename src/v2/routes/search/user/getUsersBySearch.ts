@@ -18,6 +18,7 @@ export async function getUsersBySearch(c: APIContext): Promise<Response> {
             email: false,
             emailVerified: false,
         },
+        limit: 25,
     })
 
     if (!userList) {

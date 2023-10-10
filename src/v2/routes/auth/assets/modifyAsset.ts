@@ -5,7 +5,6 @@ import { eq } from "drizzle-orm"
 
 import { auth } from "@/v2/lib/auth/lucia"
 import { roleFlagsToArray } from "@/v2/lib/helpers/roleFlags"
-import { SplitQueryByCommas } from "@/v2/lib/helpers/splitQueryByCommas"
 
 export async function modifyAssetData(c: APIContext): Promise<Response> {
     const { assetIdToModify } = c.req.param()
@@ -57,7 +56,7 @@ export async function modifyAssetData(c: APIContext): Promise<Response> {
         name: formData.get("name") as string | null,
         game: formData.get("game") as string | null,
         assetCategory: formData.get("assetCategory") as string | null,
-        tags: SplitQueryByCommas(formData.get("tags") as string | null),
+        // tags: SplitQueryByCommas(formData.get("tags") as string | null),
     }
 
     Object.keys(metadata).forEach(

@@ -68,7 +68,7 @@ export async function discordCallback(c: APIContext): Promise<Response> {
             where: (users, { eq }) => eq(users.email, discordUser.email),
         })
 
-        // if user exists, we create a key for them and update their email_verified attribute
+        // if user exists, we create a discord key for them and update their email_verified attribute
         if (userWithEmail) {
             // check if user with same email has a discord id set as a social connection
             const getUsersConnections =
