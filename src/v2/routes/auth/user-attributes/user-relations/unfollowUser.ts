@@ -35,6 +35,13 @@ export async function unFollowUser(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "user not found" }, 200)
     }
 
+    if (user.id === session.user.userId) {
+        return c.json(
+            { success: false, state: "cannot unfollow yourself" },
+            200
+        )
+    }
+
     const isFollowing = await drizzle.query.following.findFirst({
         where: (following, { eq }) =>
             eq(following.id, `${session.user.userId}-${userToUnFollow}`),
