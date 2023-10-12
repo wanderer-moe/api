@@ -65,6 +65,9 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
         type: asset.type,
     })
 
+    const validTags = []
+    const invalidTags = []
+
     try {
         await c.env.FILES_BUCKET.put(
             `/assets/${metadata.game}/${metadata.category}/${metadata.name}.${metadata.extension}`,
@@ -72,12 +75,15 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
         )
 
         await drizzle.transaction(async (trx) => {
+            // inserting new asset
             const newAssetDB = await trx
                 .insert(assets)
                 .values(newAsset)
                 .returning({
                     assetId: assets.id,
                 })
+
+            // checking if tags exist and setting relations
             if (metadata.tags.length > 0) {
                 for (const tag of metadata.tags) {
                     const tagExists = await trx.query.assetTags.findFirst({
@@ -96,8 +102,9 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
                             .returning({
                                 assetTagId: assetTagsAssets.assetTagId,
                             })
+                        validTags.push(tag)
                     } else {
-                        continue
+                        invalidTags.push(tag)
                     }
                 }
             }
@@ -109,5 +116,13 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "failed to upload asset" }, 500)
     }
 
-    return c.json({ success: true, state: "uploaded asset" }, 200)
+    return c.json(
+        {
+            success: true,
+            state: "uploaded asset",
+            validTags,
+            invalidTags,
+        },
+        200
+    )
 }
