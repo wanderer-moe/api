@@ -99,6 +99,7 @@ export async function discordCallback(c: APIContext): Promise<Response> {
         const createdUser = await createUser({
             attributes: {
                 username: discordUser.username,
+                display_name: discordUser.username,
                 email: discordUser.email,
                 email_verified: 1,
                 date_joined: Date.now(),

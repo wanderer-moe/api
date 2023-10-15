@@ -14,6 +14,7 @@ export const users = sqliteTable(
         id: text("id").primaryKey(),
         avatarUrl: text("avatar_url"),
         bannerUrl: text("banner_url"),
+        displayName: text("display_name"),
         username: text("username").notNull(),
         usernameColour: text("username_colour"),
         email: text("email").notNull(),
@@ -35,28 +36,55 @@ export const users = sqliteTable(
     }
 )
 
-// NOTE: sessions are now managed by CF KV instead of SQLite DB
-// export const sessions = sqliteTable(
-//     tableNames.authSession,
-//     {
-//         id: text("id").primaryKey(),
-//         userId: text("user_id")
-//             .notNull()
-//             .references(() => users.id, {
-//                 onUpdate: "cascade",
-//                 onDelete: "cascade",
-//             }),
-//         activeExpires: integer("active_expires").notNull(),
-//         idleExpires: integer("idle_expires").notNull(),
-//         userAgent: text("user_agent").notNull(),
-//         countryCode: text("country_code").notNull(),
-//     },
-//     (session) => {
-//         return {
-//             userIdx: uniqueIndex("session_user_id_idx").on(session.userId),
-//         }
-//     }
-// )
+export const emailVerificationToken = sqliteTable(
+    tableNames.emailVerificationToken,
+    {
+        id: text("id").primaryKey(),
+        userId: text("user_id")
+            .notNull()
+            .references(() => users.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
+        token: text("token").notNull(),
+        expiresAt: integer("expires_at").notNull(),
+    },
+    (emailVerificationToken) => {
+        return {
+            userIdx: uniqueIndex("email_verification_token_user_id_idx").on(
+                emailVerificationToken.userId
+            ),
+            tokenIdx: uniqueIndex("email_verification_token_token_idx").on(
+                emailVerificationToken.token
+            ),
+        }
+    }
+)
+
+export const passwordResetToken = sqliteTable(
+    tableNames.passwordResetToken,
+    {
+        id: text("id").primaryKey(),
+        userId: text("user_id")
+            .notNull()
+            .references(() => users.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
+        token: text("token").notNull(),
+        expiresAt: integer("expires_at").notNull(),
+    },
+    (passwordResetToken) => {
+        return {
+            userIdx: uniqueIndex("password_reset_token_user_id_idx").on(
+                passwordResetToken.userId
+            ),
+            tokenIdx: uniqueIndex("password_reset_token_token_idx").on(
+                passwordResetToken.token
+            ),
+        }
+    }
+)
 
 export const keys = sqliteTable(
     tableNames.authKey,
@@ -504,13 +532,6 @@ export const userFavoritesAssetsRelations = relations(
     })
 )
 
-// export const sessionsRelations = relations(sessions, ({ one }) => ({
-//     user: one(users, {
-//         fields: [sessions.userId],
-//         references: [users.id],
-//     }),
-// }))
-
 export const keysRelations = relations(keys, ({ one }) => ({
     user: one(users, {
         fields: [keys.userId],
@@ -529,7 +550,6 @@ export const socialsConnectionsRelations = relations(
 )
 
 export const usersRelations = relations(users, ({ one, many }) => ({
-    // session: many(sessions),
     key: many(keys),
     assets: many(assets),
     follower: many(follower),
@@ -537,6 +557,8 @@ export const usersRelations = relations(users, ({ one, many }) => ({
     following: many(following),
     socialsConnection: one(socialsConnections),
     userCollections: many(userCollections),
+    passwordResetToken: one(passwordResetToken),
+    emailVerificationToken: one(emailVerificationToken),
     savedOcGenerators: many(savedOcGenerators),
 }))
 
@@ -551,7 +573,8 @@ export type AssetTagsAsset = typeof assetTagsAssets.$inferSelect
 
 // user types
 export type User = typeof users.$inferSelect
-// export type Session = typeof sessions.$inferSelect
+export type EmailVerificationToken = typeof emailVerificationToken.$inferSelect
+export type PasswordResetToken = typeof passwordResetToken.$inferSelect
 export type Key = typeof keys.$inferSelect
 export type SocialsConnection = typeof socialsConnections.$inferSelect
 export type Following = typeof following.$inferSelect

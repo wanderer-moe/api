@@ -22,6 +22,7 @@ export async function signup(c: APIContext): Promise<Response> {
             },
             attributes: {
                 username,
+                display_name: username,
                 email,
                 email_verified: 0,
                 date_joined: Date.now(),

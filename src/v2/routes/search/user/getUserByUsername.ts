@@ -3,7 +3,10 @@ import { getConnection } from "@/v2/db/turso"
 import { createNotFoundResponse } from "@/v2/lib/helpers/responses/notFoundResponse"
 
 import { auth } from "@/v2/lib/auth/lucia"
-import { roleFlagsToArray } from "@/v2/lib/helpers/roleFlags"
+import {
+    roleFlagsToArray,
+    SelfAssignableRoleFlagsToArray,
+} from "@/v2/lib/helpers/roleFlags"
 
 export async function getUserByUsername(c: APIContext): Promise<Response> {
     const { username } = c.req.param()
@@ -46,6 +49,8 @@ export async function getUserByUsername(c: APIContext): Promise<Response> {
             userIsQueryingOwnAccount:
                 session && session.user.userId === user.id ? true : false,
             userRoleFlagsArray: roleFlagsToArray(user.roleFlags),
+            userSelfAssignableRoleFlagsArray:
+                SelfAssignableRoleFlagsToArray(user.roleFlags) ?? [],
             user,
         },
         200,

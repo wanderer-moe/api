@@ -38,7 +38,6 @@ export async function deleteAssetFromCollection(
         return c.json({ success: false, state: "no asset id entered" }, 401)
     }
 
-    // check if collection exists
     const collectionExists = await drizzle.query.userCollections.findFirst({
         where: (userCollections, { eq }) =>
             eq(userCollections.id, collection.id),
@@ -66,9 +65,14 @@ export async function deleteAssetFromCollection(
     // check if userCollectionAssets exists
     const userCollectionAssetsExists =
         await drizzle.query.userCollectionAssets.findFirst({
-            where: (userCollectionAssets, { eq }) =>
-                eq(userCollectionAssets.collectionId, collection.id) &&
-                eq(userCollectionAssets.assetId, parseInt(collection.assetId)),
+            where: (userCollectionAssets, { eq, and }) =>
+                and(
+                    eq(userCollectionAssets.collectionId, collection.id),
+                    eq(
+                        userCollectionAssets.assetId,
+                        parseInt(collection.assetId)
+                    )
+                ),
         })
 
     if (!userCollectionAssetsExists) {

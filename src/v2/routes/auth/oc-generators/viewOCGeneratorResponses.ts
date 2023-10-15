@@ -1,8 +1,7 @@
 import { auth } from "@/v2/lib/auth/lucia"
-
-import { savedOcGenerators } from "@/v2/db/schema"
 import { getConnection } from "@/v2/db/turso"
-import { eq } from "drizzle-orm"
+import { savedOcGenerators } from "@/v2/db/schema"
+import { desc } from "drizzle-orm"
 
 export async function viewOCGeneratorResponses(
     c: APIContext
@@ -20,10 +19,13 @@ export async function viewOCGeneratorResponses(
 
     const drizzle = getConnection(c.env).drizzle
 
-    const ocGeneratorResponses = await drizzle
-        .select()
-        .from(savedOcGenerators)
-        .where(eq(savedOcGenerators.userId, session.user.userId))
+    const ocGeneratorResponses = await drizzle.query.savedOcGenerators.findMany(
+        {
+            where: (savedOcGenerators, { eq }) =>
+                eq(savedOcGenerators.userId, session.user.userId),
+            orderBy: desc(savedOcGenerators.dateCreated),
+        }
+    )
 
     return c.json(
         {
