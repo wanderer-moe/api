@@ -102,7 +102,7 @@ export async function discordCallback(c: APIContext): Promise<Response> {
                 display_name: discordUser.username,
                 email: discordUser.email,
                 email_verified: 1,
-                date_joined: Date.now(),
+                date_joined: new Date().toISOString(),
                 verified: 0,
                 role_flags: 1,
                 is_contributor: 0,

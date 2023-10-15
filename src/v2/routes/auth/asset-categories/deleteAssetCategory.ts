@@ -1,11 +1,26 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { roleFlagsToArray } from "@/v2/lib/helpers/roleFlags"
 import { getConnection } from "@/v2/db/turso"
-
+import { z } from "zod"
 import { eq } from "drizzle-orm"
 import { assetCategories } from "@/v2/db/schema"
 
+const DeleteAssetCategorySchema = z.object({
+    id: z.string({
+        required_error: "ID is required",
+        invalid_type_error: "ID must be a string",
+    }),
+})
+
 export async function deleteAssetCategory(c: APIContext): Promise<Response> {
+    const formData = DeleteAssetCategorySchema.safeParse(await c.req.formData())
+
+    if (!formData.success) {
+        return c.json({ success: false, state: "invalid data" }, 400)
+    }
+
+    const { id } = formData.data
+
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
@@ -25,20 +40,13 @@ export async function deleteAssetCategory(c: APIContext): Promise<Response> {
 
     const drizzle = getConnection(c.env).drizzle
 
-    const formData = await c.req.formData()
-
-    const assetCategory = {
-        id: formData.get("id") as string | null,
-    }
-
-    if (!assetCategory.id) {
+    if (!id) {
         return c.json({ success: false, state: "no id entered" }, 200)
     }
 
     // check if assetCategory exists
     const assetCategoryExists = await drizzle.query.assetCategories.findFirst({
-        where: (assetCategories, { eq }) =>
-            eq(assetCategories.id, assetCategory.id),
+        where: (assetCategories, { eq }) => eq(assetCategories.id, id),
     })
 
     if (!assetCategoryExists) {
@@ -54,7 +62,7 @@ export async function deleteAssetCategory(c: APIContext): Promise<Response> {
     try {
         await drizzle
             .delete(assetCategories)
-            .where(eq(assetCategories.id, assetCategory.id))
+            .where(eq(assetCategories.id, id))
             .execute()
     } catch (e) {
         return c.json(
@@ -63,8 +71,5 @@ export async function deleteAssetCategory(c: APIContext): Promise<Response> {
         )
     }
 
-    return c.json(
-        { success: true, state: "deleted assetCategory", assetCategory },
-        200
-    )
+    return c.json({ success: true, state: "deleted assetCategory", id }, 200)
 }

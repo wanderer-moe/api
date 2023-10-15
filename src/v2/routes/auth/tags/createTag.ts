@@ -1,10 +1,29 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { roleFlagsToArray } from "@/v2/lib/helpers/roleFlags"
 import { getConnection } from "@/v2/db/turso"
-
+import { z } from "zod"
 import { assetTags } from "@/v2/db/schema"
 
+const CreateTagSchema = z.object({
+    name: z.string({
+        required_error: "Name is required",
+        invalid_type_error: "Name must be a string",
+    }),
+    formattedName: z.string({
+        required_error: "Formatted name is required",
+        invalid_type_error: "Formatted name must be a string",
+    }),
+})
+
 export async function createTag(c: APIContext): Promise<Response> {
+    const formData = CreateTagSchema.safeParse(await c.req.formData())
+
+    if (!formData.success) {
+        return c.json({ success: false, state: "invalid data" }, 400)
+    }
+
+    const { name, formattedName } = formData.data
+
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
@@ -24,12 +43,10 @@ export async function createTag(c: APIContext): Promise<Response> {
 
     const drizzle = getConnection(c.env).drizzle
 
-    const formData = await c.req.formData()
-
     const tag = {
         id: crypto.randomUUID(),
-        name: formData.get("name") as string,
-        formattedName: formData.get("formattedName") as string,
+        name,
+        formattedName,
         assetCount: 0,
         lastUpdated: new Date().getTime(), // unix timestamp
     }

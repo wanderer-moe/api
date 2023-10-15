@@ -1,11 +1,26 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { roleFlagsToArray } from "@/v2/lib/helpers/roleFlags"
 import { getConnection } from "@/v2/db/turso"
-
+import { z } from "zod"
 import { games } from "@/v2/db/schema"
 import { eq } from "drizzle-orm"
 
+const DeleteGameSchema = z.object({
+    id: z.string({
+        required_error: "ID is required",
+        invalid_type_error: "ID must be a string",
+    }),
+})
+
 export async function deleteGame(c: APIContext): Promise<Response> {
+    const formData = DeleteGameSchema.safeParse(await c.req.formData())
+
+    if (!formData.success) {
+        return c.json({ success: false, state: "invalid data" }, 400)
+    }
+
+    const { id } = formData.data
+
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
@@ -25,33 +40,11 @@ export async function deleteGame(c: APIContext): Promise<Response> {
 
     const drizzle = getConnection(c.env).drizzle
 
-    const formData = await c.req.formData()
-
-    const game = {
-        id: formData.get("id") as string | null,
-    }
-
-    if (!game.id) {
-        return c.json({ success: false, state: "no id entered" }, 200)
-    }
-
-    // check if game exists
-    const gameExists = await drizzle.query.games.findFirst({
-        where: (games, { eq }) => eq(games.id, game.id),
-    })
-
-    if (!gameExists) {
-        return c.json(
-            { success: false, state: "game with ID doesn't exist" },
-            200
-        )
-    }
-
     try {
-        await drizzle.delete(games).where(eq(games.id, game.id)).execute()
+        await drizzle.delete(games).where(eq(games.id, id)).execute()
     } catch (e) {
         return c.json({ success: false, state: "failed to delete game" }, 500)
     }
 
-    return c.json({ success: true, state: "deleted game", game }, 200)
+    return c.json({ success: true, state: "deleted game", id }, 200)
 }

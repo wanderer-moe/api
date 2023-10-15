@@ -1,10 +1,25 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { getConnection } from "@/v2/db/turso"
 import { eq } from "drizzle-orm"
-
+import { z } from "zod"
 import { userFavorites, userFavoritesAssets } from "@/v2/db/schema"
 
+const RemoveFavoriteAssetSchema = z.object({
+    assetToRemove: z.string({
+        required_error: "Asset ID is required",
+        invalid_type_error: "Asset ID must be a string",
+    }),
+})
+
 export async function removeFavoriteAsset(c: APIContext): Promise<Response> {
+    const formData = RemoveFavoriteAssetSchema.safeParse(await c.req.formData())
+
+    if (!formData.success) {
+        return c.json({ success: false, state: "invalid data" }, 400)
+    }
+
+    const { assetToRemove } = formData.data
+
     const drizzle = getConnection(c.env).drizzle
 
     const authRequest = auth(c.env).handleRequest(c)
@@ -16,13 +31,6 @@ export async function removeFavoriteAsset(c: APIContext): Promise<Response> {
             authRequest.setSession(null)
         }
         return c.json({ success: false, state: "invalid session" }, 200)
-    }
-
-    const formData = await c.req.formData()
-    const assetToRemove = formData.get("assetToRemove") as string | null
-
-    if (!assetToRemove) {
-        return c.json({ success: false, state: "no assetid entered" }, 200)
     }
 
     // check if asset exists

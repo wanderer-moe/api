@@ -1,9 +1,24 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { getConnection } from "@/v2/db/turso"
-
+import { z } from "zod"
 import { following, follower } from "@/v2/db/schema"
 
+const FollowUserSchema = z.object({
+    userIdToFollow: z.string({
+        required_error: "User ID is required",
+        invalid_type_error: "User ID must be a string",
+    }),
+})
+
 export async function followUser(c: APIContext): Promise<Response> {
+    const formData = FollowUserSchema.safeParse(await c.req.formData())
+
+    if (!formData.success) {
+        return c.json({ success: false, state: "invalid data" }, 400)
+    }
+
+    const { userIdToFollow: userToFollow } = formData.data
+
     const drizzle = getConnection(c.env).drizzle
 
     const authRequest = auth(c.env).handleRequest(c)
@@ -15,14 +30,6 @@ export async function followUser(c: APIContext): Promise<Response> {
             authRequest.setSession(null)
         }
         return c.json({ success: false, state: "invalid session" }, 200)
-    }
-
-    const formData = await c.req.formData()
-
-    const userToFollow = formData.get("userIdToFollow") as string | null
-
-    if (!userToFollow) {
-        return c.json({ success: false, state: "no userid entered" }, 200)
     }
 
     // check if user exists

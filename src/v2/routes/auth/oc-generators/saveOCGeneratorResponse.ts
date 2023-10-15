@@ -2,6 +2,7 @@ import { auth } from "@/v2/lib/auth/lucia"
 import { listBucket } from "@/v2/lib/listBucket"
 import { savedOcGenerators } from "@/v2/db/schema"
 import { getConnection } from "@/v2/db/turso"
+import { z } from "zod"
 import type { OCGeneratorResponse as OCGeneratorRequestResponse } from "@/v2/lib/types/oc-generator"
 
 // matches data from oc generator and random entries from oc generator to prevent mismatched data from being saved
@@ -35,9 +36,36 @@ function isValidOCGeneratorResponse(
     }
 }
 
+const SaveOCGeneratorResponseSchema = z.object({
+    name: z.string({
+        required_error: "Name is required",
+        invalid_type_error: "Name must be a string",
+    }),
+    game: z.string({
+        required_error: "Game is required",
+        invalid_type_error: "Game must be a string",
+    }),
+    isPublic: z.string({
+        required_error: "isPublic is required",
+        invalid_type_error: "isPublic must be a string",
+    }),
+    content: z.string({
+        required_error: "Content is required",
+        invalid_type_error: "Content must be a string",
+    }),
+})
+
 export async function saveOCGeneratorResponse(
     c: APIContext
 ): Promise<Response> {
+    const formData = SaveOCGeneratorResponseSchema.safeParse(
+        await c.req.formData()
+    )
+
+    if (!formData.success) {
+        return c.json({ success: false, state: "invalid data" }, 400)
+    }
+
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
@@ -51,17 +79,15 @@ export async function saveOCGeneratorResponse(
 
     const drizzle = getConnection(c.env).drizzle
 
-    const formData = await c.req.formData()
-
     // TODO: make sure data is actually valid before inserting it into the database
     const ocGeneratorResponse = {
         id: crypto.randomUUID(),
         userId: session.user.userId,
-        name: formData.get("name") as string,
-        game: formData.get("game") as string,
+        name: formData.data.name,
+        game: formData.data.game,
         dateCreated: new Date().getTime(),
-        isPublic: parseInt(formData.get("isPublic") as string), // 1 = yes, 0 = no, default = 0
-        content: formData.get("content") as string, // this is stored as json, which can then be parsed
+        isPublic: parseInt(formData.data.isPublic), // 1 = yes, 0 = no, default = 0
+        content: formData.data.content, // this is stored as json, which can then be parsed
     }
 
     const files = await listBucket(c.env.FILES_BUCKET, {

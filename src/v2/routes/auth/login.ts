@@ -1,4 +1,5 @@
 import { auth } from "@/v2/lib/auth/lucia"
+import { z } from "zod"
 
 const usernameThrottling = new Map<
     string,
@@ -8,11 +9,39 @@ const usernameThrottling = new Map<
     }
 >()
 
-export async function login(c: APIContext): Promise<Response> {
-    const formData = await c.req.formData()
+const LoginSchema = z.object({
+    username: z
+        .string({
+            required_error: "Username is required",
+            invalid_type_error: "Username must be a string",
+        })
+        .min(3, "Username must be at least 3 characters long")
+        .max(32, "Username must be at most 32 characters long"),
+    password: z
+        .string({
+            required_error: "Password is required",
+            invalid_type_error: "Password must be a string",
+        })
+        .regex(new RegExp(".*[A-Z].*"), "One uppercase character is required")
+        .regex(new RegExp(".*[a-z].*"), "One lowercase character is required")
+        .regex(new RegExp(".*\\d.*"), "One number is required")
+        .regex(
+            new RegExp(".*[`~<>?,./!@#$%^&*()\\-_+=\"'|{}\\[\\];:\\\\].*"),
+            "One special character is required"
+        )
+        .min(8, "Password must be at least 8 characters long")
+        .max(128, "Password must be at most 128 characters long"),
+})
 
-    const username = formData.get("username") as string
-    const password = formData.get("password") as string
+export async function login(c: APIContext): Promise<Response> {
+    const formData = LoginSchema.safeParse(await c.req.formData())
+
+    if (!formData.success) {
+        return c.json({ success: false, state: "invalid data" }, 400)
+    }
+
+    const { username, password } = formData.data
+
     const validSession = await auth(c.env).handleRequest(c).validate()
 
     if (validSession) {

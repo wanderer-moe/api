@@ -1,12 +1,29 @@
 import { auth } from "@/v2/lib/auth/lucia"
-
+import { z } from "zod"
 import { savedOcGenerators } from "@/v2/db/schema"
 import { getConnection } from "@/v2/db/turso"
 import { eq, and } from "drizzle-orm"
 
+const DeleteOCGeneratorResponseSchema = z.object({
+    deleteID: z.string({
+        required_error: "ID is required",
+        invalid_type_error: "ID must be a string",
+    }),
+})
+
 export async function deleteOCGeneratorResponse(
     c: APIContext
 ): Promise<Response> {
+    const formData = DeleteOCGeneratorResponseSchema.safeParse(
+        await c.req.formData()
+    )
+
+    if (!formData.success) {
+        return c.json({ success: false, state: "invalid data" }, 400)
+    }
+
+    const { deleteID } = formData.data
+
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
@@ -20,42 +37,26 @@ export async function deleteOCGeneratorResponse(
 
     const drizzle = getConnection(c.env).drizzle
 
-    const formData = await c.req.formData()
-    const deleteID = (formData.get("deleteID") as string) || null
-
-    if (!formData || !deleteID)
-        return c.json({ success: false, state: "no formdata provided" }, 200)
-
-    const ocGeneratorResponse = await drizzle
-        .select()
-        .from(savedOcGenerators)
-        .where(
-            and(
-                eq(savedOcGenerators.id, deleteID),
-                eq(savedOcGenerators.userId, session.user.userId)
+    try {
+        await drizzle
+            .delete(savedOcGenerators)
+            .where(
+                and(
+                    eq(savedOcGenerators.id, deleteID),
+                    eq(savedOcGenerators.userId, session.user.userId)
+                )
             )
+    } catch (e) {
+        return c.json(
+            { success: false, state: "failed to delete saved oc generator" },
+            500
         )
-
-    if (!ocGeneratorResponse)
-        return c.json({
-            success: false,
-            state: "no generator found matching id",
-        })
-
-    await drizzle
-        .delete(savedOcGenerators)
-        .where(
-            and(
-                eq(savedOcGenerators.id, deleteID),
-                eq(savedOcGenerators.userId, session.user.userId)
-            )
-        )
+    }
 
     return c.json(
         {
             success: true,
             state: `deleted saved oc generator with id ${deleteID}`,
-            ocGeneratorResponse,
         },
         200
     )

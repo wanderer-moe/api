@@ -12,7 +12,7 @@ declare namespace Lucia {
         pronouns: string | null
         verified: number
         bio: string | null
-        date_joined: number
+        date_joined: string
         role_flags: number
         is_contributor: number
         self_assignable_role_flags: number | null

@@ -1,11 +1,26 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { roleFlagsToArray } from "@/v2/lib/helpers/roleFlags"
 import { getConnection } from "@/v2/db/turso"
-
+import { z } from "zod"
 import { assetTags } from "@/v2/db/schema"
 import { eq } from "drizzle-orm"
 
+const DeleteTagSchema = z.object({
+    id: z.string({
+        required_error: "ID is required",
+        invalid_type_error: "ID must be a string",
+    }),
+})
+
 export async function deleteTag(c: APIContext): Promise<Response> {
+    const formData = DeleteTagSchema.safeParse(await c.req.formData())
+
+    if (!formData.success) {
+        return c.json({ success: false, state: "invalid data" }, 400)
+    }
+
+    const { id } = formData.data
+
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
@@ -25,36 +40,11 @@ export async function deleteTag(c: APIContext): Promise<Response> {
 
     const drizzle = getConnection(c.env).drizzle
 
-    const formData = await c.req.formData()
-
-    const tag = {
-        id: formData.get("id") as string | null,
-    }
-
-    if (!tag.id) {
-        return c.json({ success: false, state: "no id entered" }, 200)
-    }
-
-    // check if tag exists
-    const tagExists = await drizzle.query.assetTags.findFirst({
-        where: (assetTags, { eq }) => eq(assetTags.id, tag.id),
-    })
-
-    if (!tagExists) {
-        return c.json(
-            { success: false, state: "tag with ID doesn't exist" },
-            200
-        )
-    }
-
     try {
-        await drizzle
-            .delete(assetTags)
-            .where(eq(assetTags.id, tag.id))
-            .execute()
+        await drizzle.delete(assetTags).where(eq(assetTags.id, id)).execute()
     } catch (e) {
         return c.json({ success: false, state: "failed to delete tag" }, 200)
     }
 
-    return c.json({ success: true, state: "deleted tag", tag }, 200)
+    return c.json({ success: true, state: "deleted tag", id }, 200)
 }

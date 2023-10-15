@@ -1,7 +1,33 @@
 import { auth } from "@/v2/lib/auth/lucia"
+import { z } from "zod"
+
+const ALLOWED_BANNER_TYPES = ["image/png"]
+const MAX_AVATAR_SIZE = 5000
+
+const UploadProfileImageSchema = z.object({
+    avatar: z
+        .any()
+        .refine((files) => files?.length == 1, "Avatar is required.")
+        .refine(
+            (files) => files?.[0]?.size <= MAX_AVATAR_SIZE,
+            `Max file size is 5MB.`
+        )
+        .refine(
+            (files) => ALLOWED_BANNER_TYPES.includes(files?.[0]?.type),
+            ".png files are accepted."
+        ),
+})
 
 // TODO: add support for animated avatars
 export async function uploadProfileImage(c: APIContext): Promise<Response> {
+    const formData = UploadProfileImageSchema.safeParse(await c.req.formData())
+
+    if (!formData.success) {
+        return c.json({ success: false, state: "invalid data" }, 400)
+    }
+
+    const { avatar } = formData.data
+
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
@@ -11,14 +37,6 @@ export async function uploadProfileImage(c: APIContext): Promise<Response> {
             authRequest.setSession(null)
         }
         return c.json({ success: false, state: "invalid session" }, 200)
-    }
-
-    const formData = await c.req.formData()
-
-    const avatar = formData.get("avatar") as unknown as File | null
-
-    if (!avatar || avatar.type !== "image/png") {
-        return c.json({ success: false, state: "invalid avatar" }, 200)
     }
 
     const newAvatar = new File([avatar], `${session.user.userId}.png`)

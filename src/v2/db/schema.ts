@@ -22,7 +22,7 @@ export const users = sqliteTable(
         pronouns: text("pronouns"),
         verified: integer("verified").default(0).notNull(),
         bio: text("bio").default("No bio set").notNull(),
-        dateJoined: integer("date_joined").notNull(),
+        dateJoined: text("date_joined").notNull(),
         roleFlags: integer("role_flags").default(1).notNull(),
         isContributor: integer("is_contributor").default(0).notNull(),
         selfAssignableRoleFlags: integer("self_assignable_role_flags"),
@@ -136,6 +136,9 @@ export const games = sqliteTable(
         name: text("name").notNull(), // e.g genshin-impact, honkai-impact-3rd
         formattedName: text("formatted_name").notNull(), // e.g Genshin Impact, Honkai Impact 3rd
         assetCount: integer("asset_count").default(0),
+        possibleSuggestiveContent: integer("possible_suggestive_content")
+            .default(0)
+            .notNull(),
         lastUpdated: integer("last_updated").notNull(),
     },
     (game) => {

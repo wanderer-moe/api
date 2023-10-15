@@ -1,7 +1,36 @@
 import { auth } from "@/v2/lib/auth/lucia"
+import { z } from "zod"
+
+const ALLOWED_BANNER_TYPES = ["image/png"]
+const MAX_BANNER_SIZE = 5000
+// TODO(dromzeh): implement size checks
+// const MAX_BANNER_WIDTH = 1920
+// const MAX_BANNER_HEIGHT = 1080
+
+const UploadBannerSchema = z.object({
+    banner: z
+        .any()
+        .refine((files) => files?.length == 1, "Banner is required.")
+        .refine(
+            (files) => files?.[0]?.size <= MAX_BANNER_SIZE,
+            `Max file size is 5MB.`
+        )
+        .refine(
+            (files) => ALLOWED_BANNER_TYPES.includes(files?.[0]?.type),
+            ".png files are accepted."
+        ),
+})
 
 // TODO: add support for animated banners
 export async function uploadBannerImage(c: APIContext): Promise<Response> {
+    const formData = UploadBannerSchema.safeParse(await c.req.formData())
+
+    if (!formData.success) {
+        return c.json({ success: false, state: "invalid data" }, 400)
+    }
+
+    const { banner } = formData.data
+
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
@@ -15,14 +44,6 @@ export async function uploadBannerImage(c: APIContext): Promise<Response> {
 
     if (session.user.isContributor !== 1) {
         return c.json({ success: false, state: "unauthorized" }, 401)
-    }
-
-    const formData = await c.req.formData()
-
-    const banner = formData.get("banner") as unknown as File | null
-
-    if (!banner || banner.type !== "image/png") {
-        return c.json({ success: false, state: "invalid banner" }, 200)
     }
 
     const newBanner = new File([banner], `${session.user.userId}.png`)

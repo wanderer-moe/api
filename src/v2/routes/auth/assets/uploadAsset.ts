@@ -1,11 +1,63 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { getConnection } from "@/v2/db/turso"
-import { assets, assetTagsAssets } from "@/v2/db/schema"
-
+import { assets, assetTagsAssets, games, assetCategories } from "@/v2/db/schema"
+import { z } from "zod"
 import { eq } from "drizzle-orm"
 import { SplitQueryByCommas } from "@/v2/lib/helpers/splitQueryByCommas"
 
+const MAX_FILE_SIZE = 5000
+const ACCEPTED_IMAGE_TYPES = ["image/png"]
+
+const UploadAssetSchema = z.object({
+    asset: z
+        .any()
+        .refine((files) => files?.length == 1, "Image is required.")
+        .refine(
+            (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+            `Max file size is 5MB.`
+        )
+        .refine(
+            (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+            ".jpg, .jpeg, .png and .webp files are accepted."
+        ),
+    name: z.string({
+        required_error: "Name is required",
+        invalid_type_error: "Name must be a string",
+    }),
+    extension: z.string({
+        required_error: "Extension is required",
+        invalid_type_error: "Extension must be a string",
+    }),
+    tags: z.string().optional(),
+    category: z.string({
+        required_error: "Category is required",
+        invalid_type_error: "Category must be a string",
+    }),
+    game: z.string({
+        required_error: "Game is required",
+        invalid_type_error: "Game must be a string",
+    }),
+    size: z.number({
+        required_error: "Size is required",
+        invalid_type_error: "Size must be a number",
+    }),
+    width: z.number({
+        required_error: "Width is required",
+        invalid_type_error: "Width must be a number",
+    }),
+    height: z.number({
+        required_error: "Height is required",
+        invalid_type_error: "Height must be a number",
+    }),
+})
+
 export async function uploadAsset(c: APIContext): Promise<Response> {
+    const formData = UploadAssetSchema.safeParse(await c.req.formData())
+
+    if (!formData.success) {
+        return c.json({ success: false, state: "invalid data" }, 400)
+    }
+
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()
 
@@ -26,51 +78,52 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
 
     const drizzle = getConnection(c.env).drizzle
 
-    const formData = await c.req.formData()
-    const asset = formData.get("asset") as unknown as File | null
-
-    const metadata = {
-        name: formData.get("name") as string, // e.g keqing
-        extension: formData.get("extension") as string, // e.g png
-        tags: SplitQueryByCommas(formData.get("tags") as string), // e.g no-background, fanmade, official => ["no-background", "fanmade", "official"]
-        category: formData.get("category") as string, // e.g splash-art
-        game: formData.get("game") as string, // e.g genshin-impact
-        size: formData.get("size") as unknown as number, // e.g 1024
-        width: formData.get("width") as unknown as number, // e.g 1920
-        height: formData.get("height") as unknown as number, // e.g 1080
-    }
-
-    if (metadata.tags.length > 5)
-        return c.json({
-            success: false,
-            state: `too many tags (${metadata.tags.length}). maximum is 5 tags per asset`,
-        })
-
     const newAsset = {
-        name: metadata.name,
-        extension: metadata.extension,
-        game: metadata.game,
-        assetCategory: metadata.category,
-        url: `/assets/${metadata.game}/${metadata.category}/${metadata.name}.${metadata.extension}`,
+        name: formData.data.name,
+        extension: formData.data.extension,
+        game: formData.data.game,
+        assetCategory: formData.data.category,
+        url: `/assets/${formData.data.game}/${formData.data.category}/${formData.data.name}.${formData.data.extension}`,
         uploadedById: session.user.userId,
         status: bypassApproval ? 1 : 2,
         uploadedDate: new Date().getTime(),
-        fileSize: asset.size, // stored in bytes
-        width: metadata.width,
-        height: metadata.height,
+        fileSize: formData.data.size, // stored in bytes
+        width: formData.data.width,
+        height: formData.data.height,
     }
 
     // rename file name to match metadata
-    const newAssetFile = new File([asset], newAsset.name, {
-        type: asset.type,
+    const newAssetFile = new File([formData.data.asset], newAsset.name, {
+        type: "image/png",
     })
 
     const validTags = []
     const invalidTags = []
 
+    const game = await drizzle.query.games.findFirst({
+        where: (games) => {
+            return eq(games.name, formData.data.game)
+        },
+    })
+
+    const assetCategory = await drizzle.query.assetCategories.findFirst({
+        where: (assetCategories) => {
+            return eq(assetCategories.name, formData.data.category)
+        },
+    })
+
+    if (!game)
+        return c.json({ success: false, state: "game does not exist" }, 404)
+
+    if (!assetCategory)
+        return c.json(
+            { success: false, state: "asset category does not exist" },
+            404
+        )
+
     try {
         await c.env.FILES_BUCKET.put(
-            `/assets/${metadata.game}/${metadata.category}/${metadata.name}.${metadata.extension}`,
+            `/assets/${formData.data.game}/${formData.data.category}/${formData.data.name}.${formData.data.extension}`,
             newAssetFile
         )
 
@@ -84,8 +137,8 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
                 })
 
             // checking if tags exist and setting relations
-            if (metadata.tags.length > 0) {
-                for (const tag of metadata.tags) {
+            if (formData.data.tags.length > 0) {
+                for (const tag of SplitQueryByCommas(formData.data.tags)) {
                     const tagExists = await trx.query.assetTags.findFirst({
                         where: (assetTags) => {
                             return eq(assetTags.name, tag)
@@ -108,10 +161,27 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
                     }
                 }
             }
+
+            // updating game and category asset count
+            await trx
+                .update(games)
+                .set({
+                    assetCount: game.assetCount + 1,
+                })
+                .where(eq(games.name, formData.data.game))
+                .execute()
+
+            await trx
+                .update(assetCategories)
+                .set({
+                    assetCount: assetCategory.assetCount + 1,
+                })
+                .where(eq(assetCategories.name, formData.data.category))
+                .execute()
         })
     } catch (e) {
         await c.env.FILES_BUCKET.delete(
-            `/assets/${metadata.game}/${metadata.category}/${metadata.name}.${metadata.extension}`
+            `/assets/${formData.data.game}/${formData.data.category}/${formData.data.name}.${formData.data.extension}`
         )
         return c.json({ success: false, state: "failed to upload asset" }, 500)
     }

@@ -31,7 +31,7 @@ export async function createGame(c: APIContext): Promise<Response> {
         name: formData.get("name") as string,
         formattedName: formData.get("formattedName") as string,
         assetCount: 0,
-        lastUpdated: new Date().getTime(), // unix timestamp
+        lastUpdated: new Date().getTime(),
     }
 
     // check if game.name exists

@@ -9,23 +9,15 @@ export async function listAllAssetTags(c: APIContext): Promise<Response> {
 
     const drizzle = getConnection(c.env).drizzle
 
-    const someAssetTags = await drizzle.query.assetTags.findMany({
+    const allAssetTags = await drizzle.query.assetTags.findMany({
         orderBy: (assetTags) => assetTags.name,
-        limit: 500,
-        with: {
-            assetTagsAssets: {
-                with: {
-                    assets: true,
-                },
-            },
-        },
     })
 
     response = c.json(
         {
             success: true,
             status: "ok",
-            someAssetTags,
+            allAssetTags,
         },
         200
     )

@@ -1,10 +1,27 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { getConnection } from "@/v2/db/turso"
-
+import { z } from "zod"
 import { eq } from "drizzle-orm"
 import { userCollections } from "@/v2/db/schema"
 
+const DeleteAssetCollectionSchema = z.object({
+    collectionId: z.string({
+        required_error: "Collection ID is required",
+        invalid_type_error: "Collection ID must be a string",
+    }),
+})
+
 export async function deleteAssetCollection(c: APIContext): Promise<Response> {
+    const formData = DeleteAssetCollectionSchema.safeParse(
+        await c.req.formData()
+    )
+
+    if (!formData.success) {
+        return c.json({ success: false, state: "invalid data" }, 400)
+    }
+
+    const { collectionId } = formData.data
+
     const drizzle = getConnection(c.env).drizzle
 
     const authRequest = auth(c.env).handleRequest(c)
@@ -18,13 +35,7 @@ export async function deleteAssetCollection(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "invalid session" }, 401)
     }
 
-    const formData = await c.req.formData()
-
-    const collection = {
-        id: formData.get("collectionId") as string | null,
-    }
-
-    if (!collection.id) {
+    if (!collectionId) {
         return c.json(
             { success: false, state: "no collection id entered" },
             200
@@ -34,7 +45,7 @@ export async function deleteAssetCollection(c: APIContext): Promise<Response> {
     // check if collection exists
     const collectionExists = await drizzle.query.userCollections.findFirst({
         where: (userCollections, { eq }) =>
-            eq(userCollections.id, collection.id),
+            eq(userCollections.id, collectionId),
     })
 
     if (!collectionExists) {
@@ -50,7 +61,7 @@ export async function deleteAssetCollection(c: APIContext): Promise<Response> {
     // delete collection
     await drizzle
         .delete(userCollections)
-        .where(eq(userCollections.id, collection.id))
+        .where(eq(userCollections.id, collectionId))
         .execute()
 
     return c.json({ success: true, state: "collection deleted" }, 200)
