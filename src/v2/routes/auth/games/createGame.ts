@@ -35,8 +35,8 @@ export async function createGame(c: APIContext): Promise<Response> {
     }
 
     // check if game.name exists
-    const gameExists = await drizzle.query.assetCategories.findFirst({
-        where: (assetCategories, { eq }) => eq(assetCategories.name, game.name),
+    const gameExists = await drizzle.query.games.findFirst({
+        where: (games, { eq }) => eq(games.name, game.name),
     })
 
     if (gameExists) {

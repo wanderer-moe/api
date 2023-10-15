@@ -429,8 +429,9 @@ export const savedOcGenerators = sqliteTable(
         game: text("game").notNull(),
         dateCreated: integer("date_created").notNull(),
         isPublic: integer("is_public").default(0).notNull(),
-        content: text("content").notNull(), // this is stored as json, which is then parsed on the frontend
-        savedColorPalette: text("saved_color_palette"), // array of 5 hex values, completely optional
+        content: text("content").notNull(),
+        savedColorPalette: text("saved_color_palette"), // array of 5 hex values, completely optional for the user to save
+        sakuraUrl: text("sakura_url"),
     },
     (savedOcGenerators) => {
         return {

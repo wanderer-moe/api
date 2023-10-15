@@ -31,6 +31,14 @@ authRoute.post("/login", async (c) => {
     return login(c)
 })
 
+authRoute.get("/validate", async (c) => {
+    return validate(c)
+})
+
+authRoute.post("/logout", async (c) => {
+    return logout(c)
+})
+
 authRoute.post("/update/attributes", async (c) => {
     return updateUserAttributes(c)
 })
@@ -77,14 +85,6 @@ authRoute.get("/oc-generator/view/all", async (c) => {
 
 authRoute.post("/oc-generator/delete", async (c) => {
     return deleteOCGeneratorResponse(c)
-})
-
-authRoute.get("/validate", async (c) => {
-    return validate(c)
-})
-
-authRoute.post("/logout", async (c) => {
-    return logout(c)
 })
 
 export default authRoute

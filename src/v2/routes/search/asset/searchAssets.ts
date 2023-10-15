@@ -1,9 +1,8 @@
 import { responseHeaders } from "@/v2/lib/responseHeaders"
 import { getConnection } from "@/v2/db/turso"
-import { like } from "drizzle-orm"
 
-import { assets } from "@/v2/db/schema"
-import { desc } from "drizzle-orm"
+import { assetTagsAssets, assets, assetTags, users } from "@/v2/db/schema"
+import { desc, like, sql, eq, and, or } from "drizzle-orm"
 import { SplitQueryByCommas } from "@/v2/lib/helpers/splitQueryByCommas"
 
 export async function searchForAssets(c: APIContext): Promise<Response> {
@@ -12,7 +11,8 @@ export async function searchForAssets(c: APIContext): Promise<Response> {
     let response = await cache.match(cacheKey)
     if (response) return response
 
-    const { query, game, assetCategory, assetTags } = c.req.query()
+    const { query, gameQuery, assetCategoryQuery, assetTagsQuery } =
+        c.req.query()
 
     // search parameters can include optional search params: query, game, assetCategory, assetTags
     // query?: string => ?query=keqing
@@ -22,60 +22,62 @@ export async function searchForAssets(c: APIContext): Promise<Response> {
 
     const drizzle = getConnection(c.env).drizzle
 
-    // check if certian search parameters are present, if not, set them to null
     const searchQuery = query ?? null
-    const gameList = game ? SplitQueryByCommas(game) : null
-    const assetCategoryList = assetCategory
-        ? SplitQueryByCommas(assetCategory)
+    const gameList = gameQuery
+        ? SplitQueryByCommas(gameQuery.toLowerCase())
         : null
-    const assetTagsList = assetTags ? SplitQueryByCommas(assetTags) : null
+    const assetCategoryList = assetCategoryQuery
+        ? SplitQueryByCommas(assetCategoryQuery.toLowerCase())
+        : null
+    const assetTagsList = assetTagsQuery
+        ? SplitQueryByCommas(assetTagsQuery.toLowerCase())
+        : // TODO(dromzeh): allow for no tags to be specified, this is just temporary as it creates unnecessary complexity
+          ["official", "fanmade"]
 
-    console.log(searchQuery, gameList, assetCategoryList, assetTagsList)
+    const assetTagResponse = drizzle.$with("sq").as(
+        drizzle
+            .select({
+                assetId: assetTagsAssets.assetId,
+                tags: sql<string[] | null>`array_agg(${assetTags})`.as("tags"),
+            })
+            .from(assetTagsAssets)
+            .leftJoin(assetTags, eq(assetTags.id, assetTagsAssets.assetTagId))
+            .where(or(...assetTagsList.map((tag) => eq(assetTags.name, tag))))
+            .groupBy(assetTagsAssets.assetId)
+    )
 
-    // query the database for assets that match the search parameters
-    const assetResponse = await drizzle.query.assets.findMany({
-        where: (assets, { and, or, eq }) => {
-            return and(
-                searchQuery ? like(assets.name, `%${searchQuery}%`) : null,
-                gameList
-                    ? or(...gameList.map((game) => eq(assets.game, game)))
-                    : null,
-                assetCategoryList
-                    ? or(
-                          ...assetCategoryList.map((assetCategory) =>
-                              eq(assets.assetCategory, assetCategory)
-                          )
-                      )
-                    : null,
+    const result = await drizzle
+        .with(assetTagResponse)
+        .select()
+        .from(assets)
+        .innerJoin(assetTagResponse, eq(assetTagResponse.assetId, assets.id))
+        .where(
+            and(
+                searchQuery && like(assets.name, `%${searchQuery}%`),
+                gameList &&
+                    or(...gameList.map((game) => eq(assets.game, game))),
+                assetCategoryList &&
+                    or(
+                        ...assetCategoryList.map((category) =>
+                            eq(assets.assetCategory, category)
+                        )
+                    ),
                 eq(assets.status, 1)
             )
-        },
-        with: {
-            assetTagsAssets: {
-                with: {
-                    assetTags: true,
-                },
-            },
-            users: {
-                columns: {
-                    email: false,
-                    emailVerified: false,
-                },
-            },
-        },
-        orderBy: desc(assets.id),
-        limit: 500,
-    })
+        )
+        .leftJoin(users, eq(users.id, assets.uploadedById))
+        .orderBy(desc(assets.uploadedDate))
+        .limit(500)
 
     response = c.json(
         {
             success: true,
             status: "ok",
             query,
-            game,
-            assetCategory,
-            assetTags,
-            results: assetResponse ? assetResponse : [],
+            gameQuery,
+            assetCategoryQuery,
+            assetTagsQuery,
+            results: result ?? [],
         },
         200,
         responseHeaders
