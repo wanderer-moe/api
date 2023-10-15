@@ -15,13 +15,9 @@ export async function viewAssetCollection(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "invalid session" }, 401)
     }
 
-    const formData = await c.req.formData()
+    const collectionId = c.req.param("collectionId")
 
-    const collection = {
-        id: formData.get("collectionId") as string | null,
-    }
-
-    if (!collection.id) {
+    if (!collectionId) {
         return c.json(
             { success: false, state: "no collection id entered" },
             200
@@ -34,7 +30,7 @@ export async function viewAssetCollection(c: APIContext): Promise<Response> {
             where: (userCollections, { eq, or, and }) =>
                 and(
                     or(
-                        eq(userCollections.id, collection.id),
+                        eq(userCollections.id, collectionId),
                         eq(userCollections.isPublic, 1)
                     ),
                     eq(userCollections.userId, session.user.userId)
@@ -54,7 +50,7 @@ export async function viewAssetCollection(c: APIContext): Promise<Response> {
         where: (userCollections, { eq, or, and }) =>
             and(
                 or(
-                    eq(userCollections.id, collection.id),
+                    eq(userCollections.id, collectionId),
                     eq(userCollections.isPublic, 1)
                 ),
                 eq(userCollections.userId, session.user.userId)

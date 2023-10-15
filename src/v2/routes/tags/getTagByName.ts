@@ -1,6 +1,6 @@
 import { getConnection } from "@/v2/db/turso"
 
-export async function listAllAssetTags(c: APIContext): Promise<Response> {
+export async function getTagByName(c: APIContext): Promise<Response> {
     const cacheKey = new Request(c.req.url.toString(), c.req)
     const cache = caches.default
     let response = await cache.match(cacheKey)
@@ -9,23 +9,15 @@ export async function listAllAssetTags(c: APIContext): Promise<Response> {
 
     const drizzle = getConnection(c.env).drizzle
 
-    const someAssetTags = await drizzle.query.assetTags.findMany({
-        orderBy: (assetTags) => assetTags.name,
-        limit: 500,
-        with: {
-            assetTagsAssets: {
-                with: {
-                    assets: true,
-                },
-            },
-        },
+    const assetTag = await drizzle.query.assetTags.findFirst({
+        where: (assetTags, { eq }) => eq(assetTags.name, c.req.param("name")),
     })
 
     response = c.json(
         {
             success: true,
             status: "ok",
-            someAssetTags,
+            assetTag,
         },
         200
     )

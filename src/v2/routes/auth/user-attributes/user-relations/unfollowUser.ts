@@ -4,7 +4,7 @@ import { getConnection } from "@/v2/db/turso"
 import { following, follower } from "@/v2/db/schema"
 import { eq } from "drizzle-orm"
 
-export async function unFollowUser(c: APIContext): Promise<Response> {
+export async function unfollowUser(c: APIContext): Promise<Response> {
     const drizzle = getConnection(c.env).drizzle
 
     const authRequest = auth(c.env).handleRequest(c)

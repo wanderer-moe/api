@@ -31,8 +31,8 @@ export async function searchForAssets(c: APIContext): Promise<Response> {
         : null
     const assetTagsList = assetTagsQuery
         ? SplitQueryByCommas(assetTagsQuery.toLowerCase())
-        : // TODO(dromzeh): allow for no tags to be specified, this is just temporary as it creates unnecessary complexity
-          ["official", "fanmade"]
+        : // TODO(dromzeh): allow for no tags to be specified
+          ["official"]
 
     const assetTagResponse = drizzle.$with("sq").as(
         drizzle
