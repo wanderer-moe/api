@@ -13,7 +13,12 @@ const DeleteAssetCategorySchema = z.object({
 })
 
 export async function deleteAssetCategory(c: APIContext): Promise<Response> {
-    const formData = DeleteAssetCategorySchema.safeParse(await c.req.formData())
+    const formData = DeleteAssetCategorySchema.safeParse(
+        await c.req.formData().then((formData) => {
+            const data = Object.fromEntries(formData.entries())
+            return data
+        })
+    )
 
     if (!formData.success) {
         return c.json({ success: false, state: "invalid data" }, 400)

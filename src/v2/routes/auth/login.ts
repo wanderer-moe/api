@@ -29,7 +29,6 @@ export async function login(c: APIContext): Promise<Response> {
     )
 
     if (!formData.success) {
-        console.log(formData)
         return c.json({ success: false, state: "invalid data" }, 400)
     }
 

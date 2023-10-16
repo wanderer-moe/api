@@ -43,7 +43,10 @@ const UpdateUserAttributesSchema = z
 
 export async function updateUserAttributes(c: APIContext): Promise<Response> {
     const formData = UpdateUserAttributesSchema.safeParse(
-        await c.req.formData()
+        await c.req.formData().then((formData) => {
+            const data = Object.fromEntries(formData.entries())
+            return data
+        })
     )
 
     if (!formData.success) {

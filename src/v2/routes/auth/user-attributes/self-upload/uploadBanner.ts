@@ -23,7 +23,12 @@ const UploadBannerSchema = z.object({
 
 // TODO: add support for animated banners
 export async function uploadBannerImage(c: APIContext): Promise<Response> {
-    const formData = UploadBannerSchema.safeParse(await c.req.formData())
+    const formData = UploadBannerSchema.safeParse(
+        await c.req.formData().then((formData) => {
+            const data = Object.fromEntries(formData.entries())
+            return data
+        })
+    )
 
     if (!formData.success) {
         return c.json({ success: false, state: "invalid data" }, 400)

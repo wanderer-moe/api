@@ -12,8 +12,12 @@ const UnfollowUserSchema = z.object({
 })
 
 export async function unfollowUser(c: APIContext): Promise<Response> {
-    const formData = UnfollowUserSchema.safeParse(await c.req.formData())
-
+    const formData = UnfollowUserSchema.safeParse(
+        await c.req.formData().then((formData) => {
+            const data = Object.fromEntries(formData.entries())
+            return data
+        })
+    )
     if (!formData.success) {
         return c.json({ success: false, state: "invalid data" }, 400)
     }
