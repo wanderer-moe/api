@@ -1,6 +1,13 @@
+type EmailData = {
+    to: string
+    from: string
+    subject: string
+    html: string
+}
+
 export async function ResendWrapper(
     c: APIContext,
-    emailData: Record<string, string>
+    emailData: EmailData
 ): Promise<Response> {
     const response = await fetch(`https://api.resend.com/emails`, {
         method: "POST",
