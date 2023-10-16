@@ -70,7 +70,12 @@ const CreateAccountSchema = z
     })
 
 export async function signup(c: APIContext): Promise<Response> {
-    const formData = CreateAccountSchema.safeParse(await c.req.formData())
+    const formData = CreateAccountSchema.safeParse(
+        await c.req.formData().then((formData) => {
+            const data = Object.fromEntries(formData.entries())
+            return data
+        })
+    )
 
     if (!formData.success) {
         return c.json({ success: false, state: "invalid data" }, 400)

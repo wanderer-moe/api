@@ -10,43 +10,34 @@ const usernameThrottling = new Map<
 >()
 
 const LoginSchema = z.object({
-    username: z
-        .string({
-            required_error: "Username is required",
-            invalid_type_error: "Username must be a string",
-        })
-        .min(3, "Username must be at least 3 characters long")
-        .max(32, "Username must be at most 32 characters long"),
-    password: z
-        .string({
-            required_error: "Password is required",
-            invalid_type_error: "Password must be a string",
-        })
-        .regex(new RegExp(".*[A-Z].*"), "One uppercase character is required")
-        .regex(new RegExp(".*[a-z].*"), "One lowercase character is required")
-        .regex(new RegExp(".*\\d.*"), "One number is required")
-        .regex(
-            new RegExp(".*[`~<>?,./!@#$%^&*()\\-_+=\"'|{}\\[\\];:\\\\].*"),
-            "One special character is required"
-        )
-        .min(8, "Password must be at least 8 characters long")
-        .max(128, "Password must be at most 128 characters long"),
+    username: z.string({
+        required_error: "Username is required",
+        invalid_type_error: "Username must be a string",
+    }),
+    password: z.string({
+        required_error: "Password is required",
+        invalid_type_error: "Password must be a string",
+    }),
 })
 
 export async function login(c: APIContext): Promise<Response> {
-    const formData = LoginSchema.safeParse(await c.req.formData())
+    const formData = LoginSchema.safeParse(
+        await c.req.formData().then((formData) => {
+            const data = Object.fromEntries(formData.entries())
+            return data
+        })
+    )
 
     if (!formData.success) {
+        console.log(formData)
         return c.json({ success: false, state: "invalid data" }, 400)
     }
 
     const { username, password } = formData.data
 
     const validSession = await auth(c.env).handleRequest(c).validate()
-
-    if (validSession) {
+    if (validSession)
         return c.json({ success: false, state: "already logged in" }, 200)
-    }
 
     const storedThrottling = usernameThrottling.get(username)
     const timeoutUntil = storedThrottling?.timeoutUntil ?? 0

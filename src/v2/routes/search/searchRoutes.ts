@@ -17,7 +17,7 @@ authRoute.use(
     "/all/:query",
     cors({
         credentials: true,
-        origin: ["*"], // TODO: update this - temporary
+        origin: ["http://localhost:3000"], // TODO: update this - temporary
     })
 )
 
@@ -25,7 +25,7 @@ authRoute.use(
     "/users/user/:username",
     cors({
         credentials: true,
-        origin: ["*"], // TODO: update this - temporary
+        origin: ["http://localhost:3000"], // TODO: update this - temporary
     })
 )
 

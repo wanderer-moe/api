@@ -2,6 +2,7 @@ import { auth } from "@/v2/lib/auth/lucia"
 import { z } from "zod"
 
 type UserAttributes = {
+    display_name?: string
     username?: string
     pronouns?: string
     self_assignable_role_flags?: number
@@ -10,6 +11,11 @@ type UserAttributes = {
 
 const UpdateUserAttributesSchema = z
     .object({
+        display_name: z
+            .string({
+                invalid_type_error: "Display name must be a string",
+            })
+            .optional(),
         username: z
             .string({
                 invalid_type_error: "Username must be a string",
@@ -56,6 +62,7 @@ export async function updateUserAttributes(c: APIContext): Promise<Response> {
     }
 
     const attributes: UserAttributes = {
+        display_name: formData.data.display_name,
         username: formData.data.username,
         pronouns: formData.data.pronouns,
         self_assignable_role_flags: formData.data.self_assignable_roles,
