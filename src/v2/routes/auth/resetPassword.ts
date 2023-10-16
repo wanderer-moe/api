@@ -36,7 +36,7 @@ export async function generatePasswordResetToken(
 
     const { email } = formData.data
 
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
     const session = await authRequest.validate()
 
     if (session) {
@@ -68,20 +68,25 @@ export async function generatePasswordResetToken(
     return c.json({ success: true, state: "valid data" }, 200)
 }
 
-const resetPasswordSchema = z.object({
-    token: z.string({
-        required_error: "Token is required",
-        invalid_type_error: "Token must be a string",
-    }),
-    newPassword: z.string({
-        required_error: "Password is required",
-        invalid_type_error: "Password must be a string",
-    }),
-    newPasswordConfirm: z.string({
-        required_error: "Password confirmation is required",
-        invalid_type_error: "Password confirmation must be a string",
-    }),
-})
+const resetPasswordSchema = z
+    .object({
+        token: z.string({
+            required_error: "Token is required",
+            invalid_type_error: "Token must be a string",
+        }),
+        newPassword: z.string({
+            required_error: "Password is required",
+            invalid_type_error: "Password must be a string",
+        }),
+        newPasswordConfirm: z.string({
+            required_error: "Password confirmation is required",
+            invalid_type_error: "Password confirmation must be a string",
+        }),
+    })
+    .refine((data) => data.newPassword === data.newPasswordConfirm, {
+        message: "Passwords do not match",
+        path: ["passwordConfirm"],
+    })
 
 export async function resetPassword(c: APIContext): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
@@ -99,7 +104,7 @@ export async function resetPassword(c: APIContext): Promise<Response> {
 
     const { token, newPassword } = formData.data
 
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     const session = await authRequest.validate()
 

@@ -21,7 +21,7 @@ export async function getAllGames(c: APIContext): Promise<Response> {
         }
     })
 
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     const gamesList = await drizzle
         .select()

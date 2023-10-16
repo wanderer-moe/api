@@ -17,7 +17,7 @@ export async function viewOCGeneratorResponses(
         return c.json({ success: false, state: "unauthorized" }, 401)
     }
 
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     const ocGeneratorResponses = await drizzle.query.savedOcGenerators.findMany(
         {

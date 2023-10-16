@@ -8,7 +8,7 @@ export async function getUsersBySearch(c: APIContext): Promise<Response> {
     if (response) return response
 
     const { query } = c.req.param()
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     const userList = await drizzle.query.users.findMany({
         where: (users, { or }) => {

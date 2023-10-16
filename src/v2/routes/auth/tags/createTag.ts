@@ -46,7 +46,7 @@ export async function createTag(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "unauthorized" }, 401)
     }
 
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     const tag = {
         id: crypto.randomUUID(),

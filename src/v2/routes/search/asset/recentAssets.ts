@@ -12,7 +12,7 @@ export async function recentAssets(c: APIContext): Promise<Response> {
 
     if (response) return response
 
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     const assetResponse = await drizzle.query.assets.findMany({
         orderBy: desc(assets.uploadedDate),

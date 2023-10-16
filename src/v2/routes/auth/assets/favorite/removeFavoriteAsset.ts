@@ -25,7 +25,7 @@ export async function removeFavoriteAsset(c: APIContext): Promise<Response> {
 
     const { assetToRemove } = formData.data
 
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()

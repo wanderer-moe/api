@@ -12,7 +12,7 @@ export async function verifyEmail(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "invalid token entered" }, 200)
     }
 
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
     const session = await authRequest.validate()
 
     const relatedUser = await drizzle

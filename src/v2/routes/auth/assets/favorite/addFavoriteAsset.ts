@@ -4,7 +4,7 @@ import { getConnection } from "@/v2/db/turso"
 import { userFavorites, userFavoritesAssets } from "@/v2/db/schema"
 
 export async function favoriteAsset(c: APIContext): Promise<Response> {
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()

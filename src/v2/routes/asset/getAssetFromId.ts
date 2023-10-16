@@ -10,7 +10,7 @@ export async function getAssetFromId(c: APIContext): Promise<Response> {
 
     if (response) return response
 
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     const asset = await drizzle.query.assets.findFirst({
         where: (assets, { eq, and }) =>

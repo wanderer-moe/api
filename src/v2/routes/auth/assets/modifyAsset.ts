@@ -24,7 +24,7 @@ export async function modifyAssetData(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "unauthorized" }, 401)
     }
 
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     const asset = await drizzle.query.assets.findFirst({
         where: (assets, { eq }) => eq(assets.id, parseInt(assetIdToModify)),

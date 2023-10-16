@@ -2,7 +2,7 @@ import { auth } from "@/v2/lib/auth/lucia"
 import { getConnection } from "@/v2/db/turso"
 
 export async function viewAssetCollections(c: APIContext): Promise<Response> {
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()

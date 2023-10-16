@@ -7,7 +7,7 @@ export async function getTagByName(c: APIContext): Promise<Response> {
 
     if (response) return response
 
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     const assetTag = await drizzle.query.assetTags.findFirst({
         where: (assetTags, { eq }) => eq(assetTags.name, c.req.param("name")),

@@ -21,7 +21,7 @@ export async function searchAll(c: APIContext): Promise<Response> {
     }
 
     if (response) return response
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     // this is a disaster
     // https://cdn.discordapp.com/attachments/1102306276832202813/1147291827699986572/F.gif

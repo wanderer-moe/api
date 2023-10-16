@@ -80,7 +80,7 @@ export async function saveOCGeneratorResponse(
         return c.json({ success: false, state: "invalid session" }, 401)
     }
 
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     // TODO: make sure data is actually valid before inserting it into the database
     const ocGeneratorResponse = {

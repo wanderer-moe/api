@@ -24,7 +24,7 @@ export async function unfollowUser(c: APIContext): Promise<Response> {
 
     const { userIdToUnFollow: userToUnFollow } = formData.data
 
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     const authRequest = auth(c.env).handleRequest(c)
     const session = await authRequest.validate()

@@ -76,7 +76,7 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
 
     const bypassApproval = session.user.isContributor === 1
 
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     const newAsset = {
         name: formData.data.name,

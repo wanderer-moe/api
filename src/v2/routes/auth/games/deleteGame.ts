@@ -38,7 +38,7 @@ export async function deleteGame(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "unauthorized" }, 401)
     }
 
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     try {
         await drizzle.delete(games).where(eq(games.id, id)).execute()

@@ -19,7 +19,7 @@ export async function searchForAssets(c: APIContext): Promise<Response> {
     // assetCategory?: comma separated list of asset category names => ?assetCategory=splash-art,character-sheets
     // assetTags?: comma separated list of asset tag names => ?assetTags=no-background,fanmade,official
 
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     const searchQuery = query ?? null
     const gameList = gameQuery

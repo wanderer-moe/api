@@ -43,7 +43,7 @@ export async function deleteAssetCategory(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "unauthorized" }, 401)
     }
 
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     if (!id) {
         return c.json({ success: false, state: "no id entered" }, 200)

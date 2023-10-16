@@ -25,7 +25,7 @@ export async function getUserByUsername(c: APIContext): Promise<Response> {
     }
 
     if (response) return response
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     const user = await drizzle.query.users.findFirst({
         where: (users, { and, eq }) => and(eq(users.username, username)),

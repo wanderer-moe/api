@@ -5,7 +5,7 @@ import { assets } from "@/v2/db/schema"
 export async function downloadAsset(c: APIContext): Promise<Response> {
     const { assetId } = c.req.param()
 
-    const drizzle = getConnection(c.env).drizzle
+    const { drizzle } = getConnection(c.env)
 
     const asset = await drizzle.query.assets.findFirst({
         where: (assets, { eq }) => eq(assets.id, parseInt(assetId)),

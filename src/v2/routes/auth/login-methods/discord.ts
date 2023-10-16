@@ -59,7 +59,7 @@ export async function discordCallback(c: APIContext): Promise<Response> {
             throw new Error("discord user doesnt have a verified email")
         }
 
-        const drizzle = getConnection(c.env).drizzle
+        const { drizzle } = getConnection(c.env)
 
         const userWithEmail = await drizzle.query.users.findFirst({
             where: (users, { eq }) => eq(users.email, discordUser.email),
