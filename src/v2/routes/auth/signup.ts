@@ -1,5 +1,9 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { z } from "zod"
+import { getConnection } from "@/v2/db/turso"
+import { generateRandomString } from "lucia/utils"
+import { emailVerificationToken } from "@/v2/db/schema"
+import { sendEmailConfirmationEmail } from "@/v2/lib/resend/email"
 
 const CreateAccountSchema = z
     .object({
@@ -127,6 +131,25 @@ export async function signup(c: APIContext): Promise<Response> {
                 ip_address: ipAddress,
             },
         })
+
+        const drizzle = await getConnection(c.env).drizzle
+        const emailVerificationKey = generateRandomString(16)
+
+        await drizzle.transaction(async (trx) => {
+            await trx.insert(emailVerificationToken).values({
+                id: emailVerificationKey,
+                userId: user.userId,
+                token: emailVerificationKey,
+                expiresAt: Date.now() + 86400000,
+            })
+        })
+
+        await sendEmailConfirmationEmail(
+            email,
+            emailVerificationKey,
+            username,
+            c
+        )
 
         const authRequest = auth(c.env).handleRequest(c)
         authRequest.setSession(newSession)

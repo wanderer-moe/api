@@ -4,6 +4,8 @@ import { logout } from "./logout"
 import { signup } from "./signup"
 import { cors } from "hono/cors"
 import { validate } from "./validate"
+import { verifyEmail } from "./verifyEmail"
+import { resetPassword, generatePasswordResetToken } from "./resetPassword"
 import assetCategoryRoute from "./asset-categories/assetCategoryRoutes"
 import assetRoute from "./assets/assetRoutes"
 import ocGeneratorRoute from "./oc-generators/ocGeneratorRoutes"
@@ -25,6 +27,10 @@ authRoute.post("/login", async (c) => {
     return login(c)
 })
 
+authRoute.get("/verify-email/:token", async (c) => {
+    return verifyEmail(c)
+})
+
 authRoute.get("/validate", async (c) => {
     return validate(c)
 })
@@ -35,6 +41,14 @@ authRoute.post("/logout", async (c) => {
 
 authRoute.post("/signup", async (c) => {
     return signup(c)
+})
+
+authRoute.post("/reset-password", async (c) => {
+    return resetPassword(c)
+})
+
+authRoute.post("/generate-password-reset-token", async (c) => {
+    return generatePasswordResetToken(c)
 })
 
 authRoute.route("/assets", assetRoute)

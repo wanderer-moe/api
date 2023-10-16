@@ -1,16 +1,20 @@
 import { Resend } from "resend"
 
-// TODO: use react email w/ tailwind
-const resend = new Resend("")
+const emailFrom = "Test <test@test.wanderer.moe>"
+
+const resend = (c: APIContext) => {
+    return new Resend(c.env.RESEND_API_KEY)
+}
 
 export const sendPasswordResetEmail = async (
     email: string,
     link: string,
-    username: string
+    username: string,
+    c: APIContext
 ) => {
     try {
-        await resend.emails.send({
-            from: "Test <test@test.wanderer.moe>",
+        await resend(c).emails.send({
+            from: emailFrom,
             to: email,
             subject: "Password Reset Request",
             html: `<strong>Password reset for ${username}</strong><br /><a href = "${link}">Click here to reset your password</a>`,
@@ -22,11 +26,12 @@ export const sendPasswordResetEmail = async (
 
 export const sendPasswordChangeEmail = async (
     email: string,
-    username: string
+    username: string,
+    c: APIContext
 ) => {
     try {
-        await resend.emails.send({
-            from: "Test <test@test.wanderer.moe>",
+        await resend(c).emails.send({
+            from: emailFrom,
             to: email,
             subject: "Password Updated Confirmation",
             html: `<strong>Your password for ${username} has been updated.</strong><br /> Wasn't you? Contact us at <a href = "mailto:support@wanderer.moe">support@wanderer.moe</a>`,
@@ -36,10 +41,14 @@ export const sendPasswordChangeEmail = async (
     }
 }
 
-export const sendEmailChangeEmail = async (email: string, username: string) => {
+export const sendEmailChangeEmail = async (
+    email: string,
+    username: string,
+    c: APIContext
+) => {
     try {
-        await resend.emails.send({
-            from: "Test <test@wanderer.moe>",
+        await resend(c).emails.send({
+            from: emailFrom,
             to: email,
             subject: "Email Change Request",
             html: `<strong>Your email address for ${username} has been changed.</strong><br /> Wasn't you? Contact us at <a href = "mailto:support@wanderermoe">support@wanderer.moe</a>`,
@@ -52,11 +61,12 @@ export const sendEmailChangeEmail = async (email: string, username: string) => {
 export const sendEmailConfirmationEmail = async (
     email: string,
     link: string,
-    username: string
+    username: string,
+    c: APIContext
 ) => {
     try {
-        await resend.emails.send({
-            from: "Test <test@test.wanderer.moe>",
+        await resend(c).emails.send({
+            from: emailFrom,
             to: email,
             subject: "Email Confirmation",
             html: `<strong>Email confirmation for ${username}</strong><br /><a href = "${link}">Click here to confirm your email</a>`,
