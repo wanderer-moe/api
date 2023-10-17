@@ -54,7 +54,7 @@ authRoute.post("/generate-password-reset-token", async (c) => {
 authRoute.route("/assets", assetRoute)
 authRoute.route("/asset-categories", assetCategoryRoute)
 authRoute.route("/oc-generators", ocGeneratorRoute)
-authRoute.route("/games", gameRoute)
+authRoute.route("/game", gameRoute)
 authRoute.route("/tags", tagRoute)
 authRoute.route("/user-attributes", userAttributesRoute)
 

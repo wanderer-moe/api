@@ -1,7 +1,7 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { getConnection } from "@/v2/db/turso"
 
-import { userCollections } from "@/v2/db/schema"
+import { userCollection } from "@/v2/db/schema"
 
 export async function createAssetCollection(c: APIContext): Promise<Response> {
     const { drizzle } = getConnection(c.env)
@@ -42,9 +42,9 @@ export async function createAssetCollection(c: APIContext): Promise<Response> {
     }
 
     // check if collection exists
-    const collectionExists = await drizzle.query.userCollections.findFirst({
-        where: (userCollections, { eq }) =>
-            eq(userCollections.name, collection.name),
+    const collectionExists = await drizzle.query.userCollection.findFirst({
+        where: (userCollection, { eq }) =>
+            eq(userCollection.name, collection.name),
     })
 
     if (collectionExists) {
@@ -57,10 +57,10 @@ export async function createAssetCollection(c: APIContext): Promise<Response> {
         )
     }
 
-    // create entry in userCollections
+    // create entry in userCollection
     try {
         await drizzle
-            .insert(userCollections)
+            .insert(userCollection)
             .values({
                 id: crypto.randomUUID(),
                 name: collection.name,

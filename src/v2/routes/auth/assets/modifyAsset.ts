@@ -1,6 +1,6 @@
 import { responseHeaders } from "@/v2/lib/responseHeaders"
 import { getConnection } from "@/v2/db/turso"
-import { assetTagsAssets, assets } from "@/v2/db/schema"
+import { assetTagAsset, assets } from "@/v2/db/schema"
 import { eq } from "drizzle-orm"
 import { SplitQueryByCommas } from "@/v2/lib/helpers/splitQueryByCommas"
 import { auth } from "@/v2/lib/auth/lucia"
@@ -29,9 +29,9 @@ export async function modifyAssetData(c: APIContext): Promise<Response> {
     const asset = await drizzle.query.assets.findFirst({
         where: (assets, { eq }) => eq(assets.id, parseInt(assetIdToModify)),
         with: {
-            assetTagsAssets: {
+            assetTagAsset: {
                 with: {
-                    assetTags: true,
+                    assetTag: true,
                 },
             },
         },
@@ -84,28 +84,28 @@ export async function modifyAssetData(c: APIContext): Promise<Response> {
     if (tags && tags.length > 0) {
         // remove all existing tags
         await drizzle
-            .delete(assetTagsAssets)
-            .where(eq(assetTagsAssets.assetId, parseInt(assetIdToModify)))
+            .delete(assetTagAsset)
+            .where(eq(assetTagAsset.assetId, parseInt(assetIdToModify)))
             .execute()
 
         // add new tags
         await drizzle.transaction(async (trx) => {
             for (const tag of tags) {
-                const tagExists = await trx.query.assetTags.findFirst({
-                    where: (assetTags) => {
-                        return eq(assetTags.name, tag)
+                const tagExists = await trx.query.assetTag.findFirst({
+                    where: (assetTag) => {
+                        return eq(assetTag.name, tag)
                     },
                 })
                 if (tagExists) {
                     await trx
-                        .insert(assetTagsAssets)
+                        .insert(assetTagAsset)
                         .values({
                             id: crypto.randomUUID(),
                             assetId: parseInt(assetIdToModify),
                             assetTagId: tagExists[0].assetTagId,
                         })
                         .returning({
-                            assetTagId: assetTagsAssets.assetTagId,
+                            assetTagId: assetTagAsset.assetTagId,
                         })
                     validTags.push(tag)
                 } else {

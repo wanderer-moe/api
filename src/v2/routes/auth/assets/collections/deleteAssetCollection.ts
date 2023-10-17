@@ -2,7 +2,7 @@ import { auth } from "@/v2/lib/auth/lucia"
 import { getConnection } from "@/v2/db/turso"
 import { z } from "zod"
 import { eq } from "drizzle-orm"
-import { userCollections } from "@/v2/db/schema"
+import { userCollection } from "@/v2/db/schema"
 
 const DeleteAssetCollectionSchema = z.object({
     collectionId: z.string({
@@ -43,9 +43,8 @@ export async function deleteAssetCollection(c: APIContext): Promise<Response> {
     }
 
     // check if collection exists
-    const collectionExists = await drizzle.query.userCollections.findFirst({
-        where: (userCollections, { eq }) =>
-            eq(userCollections.id, collectionId),
+    const collectionExists = await drizzle.query.userCollection.findFirst({
+        where: (userCollection, { eq }) => eq(userCollection.id, collectionId),
     })
 
     if (!collectionExists) {
@@ -60,8 +59,8 @@ export async function deleteAssetCollection(c: APIContext): Promise<Response> {
 
     // delete collection
     await drizzle
-        .delete(userCollections)
-        .where(eq(userCollections.id, collectionId))
+        .delete(userCollection)
+        .where(eq(userCollection.id, collectionId))
         .execute()
 
     return c.json({ success: true, state: "collection deleted" }, 200)

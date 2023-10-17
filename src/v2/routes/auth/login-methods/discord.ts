@@ -4,7 +4,7 @@ import {
 } from "@/v2/lib/auth/lucia"
 import { setCookie, getCookie } from "hono/cookie"
 import { getConnection } from "@/v2/db/turso"
-import { socialsConnections } from "@/v2/db/schema"
+import { socialsConnection } from "@/v2/db/schema"
 
 export async function loginWithDiscord(c: APIContext): Promise<Response> {
     const auth = await authAdapter(c.env)
@@ -69,9 +69,9 @@ export async function discordCallback(c: APIContext): Promise<Response> {
         if (userWithEmail) {
             // check if user with same email has a discord id set as a social connection
             const getUsersConnections =
-                await drizzle.query.socialsConnections.findFirst({
-                    where: (socialsConnections, { eq }) =>
-                        eq(socialsConnections.userId, userWithEmail.id),
+                await drizzle.query.socialsConnection.findFirst({
+                    where: (socialsConnection, { eq }) =>
+                        eq(socialsConnection.userId, userWithEmail.id),
                 })
 
             if (
@@ -117,7 +117,7 @@ export async function discordCallback(c: APIContext): Promise<Response> {
 
         // add discord id as a social connection
         await drizzle
-            .insert(socialsConnections)
+            .insert(socialsConnection)
             .values({
                 id: `${createdUser.userId}`,
                 userId: createdUser.userId,

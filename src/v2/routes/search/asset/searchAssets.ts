@@ -1,6 +1,6 @@
 import { responseHeaders } from "@/v2/lib/responseHeaders"
 import { getConnection } from "@/v2/db/turso"
-import { assetTagsAssets, assets, assetTags, users } from "@/v2/db/schema"
+import { assetTagAsset, assets, assetTag, users } from "@/v2/db/schema"
 import { desc, like, sql, eq, and, or } from "drizzle-orm"
 import { SplitQueryByCommas } from "@/v2/lib/helpers/splitQueryByCommas"
 
@@ -10,14 +10,14 @@ export async function searchForAssets(c: APIContext): Promise<Response> {
     let response = await cache.match(cacheKey)
     if (response) return response
 
-    const { query, gameQuery, assetCategoryQuery, assetTagsQuery } =
+    const { query, gameQuery, assetCategoryQuery, assetTagQuery } =
         c.req.query()
 
-    // search parameters can include optional search params: query, game, assetCategory, assetTags
+    // search parameters can include optional search params: query, game, assetCategory, assetTag
     // query?: string => ?query=keqing
     // game?: comma separated list of game names => ?game=genshin-impact,honkai-impact-3rd
     // assetCategory?: comma separated list of asset category names => ?assetCategory=splash-art,character-sheets
-    // assetTags?: comma separated list of asset tag names => ?assetTags=no-background,fanmade,official
+    // assetTag?: comma separated list of asset tag names => ?assetTag=no-background,fanmade,official
 
     const { drizzle } = getConnection(c.env)
 
@@ -28,21 +28,21 @@ export async function searchForAssets(c: APIContext): Promise<Response> {
     const assetCategoryList = assetCategoryQuery
         ? SplitQueryByCommas(assetCategoryQuery.toLowerCase())
         : null
-    const assetTagsList = assetTagsQuery
-        ? SplitQueryByCommas(assetTagsQuery.toLowerCase())
+    const assetTagList = assetTagQuery
+        ? SplitQueryByCommas(assetTagQuery.toLowerCase())
         : // TODO(dromzeh): allow for no tags to be specified
           ["official"]
 
     const assetTagResponse = drizzle.$with("sq").as(
         drizzle
             .select({
-                assetId: assetTagsAssets.assetId,
-                tags: sql<string[] | null>`array_agg(${assetTags})`.as("tags"),
+                assetId: assetTagAsset.assetId,
+                tags: sql<string[] | null>`array_agg(${assetTag})`.as("tags"),
             })
-            .from(assetTagsAssets)
-            .leftJoin(assetTags, eq(assetTags.id, assetTagsAssets.assetTagId))
-            .where(or(...assetTagsList.map((tag) => eq(assetTags.name, tag))))
-            .groupBy(assetTagsAssets.assetId)
+            .from(assetTagAsset)
+            .leftJoin(assetTag, eq(assetTag.id, assetTagAsset.assetTagId))
+            .where(or(...assetTagList.map((tag) => eq(assetTag.name, tag))))
+            .groupBy(assetTagAsset.assetId)
     )
 
     const result = await drizzle
@@ -75,7 +75,7 @@ export async function searchForAssets(c: APIContext): Promise<Response> {
             query,
             gameQuery,
             assetCategoryQuery,
-            assetTagsQuery,
+            assetTagQuery,
             results: result ?? [],
         },
         200,

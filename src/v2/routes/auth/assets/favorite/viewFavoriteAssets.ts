@@ -15,19 +15,19 @@ export async function viewFavoriteAssets(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "invalid session" }, 401)
     }
 
-    // check if userFavorites exists
-    const userFavoritesExists = await drizzle.query.userFavorites.findFirst({
-        where: (userFavorites, { eq }) =>
-            eq(userFavorites.userId, session.user.userId),
+    // check if userFavorite exists
+    const userFavoriteExists = await drizzle.query.userFavorite.findFirst({
+        where: (userFavorite, { eq }) =>
+            eq(userFavorite.userId, session.user.userId),
     })
 
-    if (!userFavoritesExists) {
+    if (!userFavoriteExists) {
         return c.json({ success: false, state: "no favorites found" }, 200)
     }
 
-    const favoriteAssets = await drizzle.query.userFavoritesAssets.findMany({
-        where: (userFavoritesAssets, { eq }) =>
-            eq(userFavoritesAssets.userFavoritesId, userFavoritesExists.id),
+    const favoriteAssets = await drizzle.query.userFavoriteAsset.findMany({
+        where: (userFavoriteAsset, { eq }) =>
+            eq(userFavoriteAsset.userFavoriteId, userFavoriteExists.id),
         with: {
             assets: true,
         },

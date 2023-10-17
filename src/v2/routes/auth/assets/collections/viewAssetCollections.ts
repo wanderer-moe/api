@@ -15,21 +15,19 @@ export async function viewAssetCollections(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "invalid session" }, 401)
     }
 
-    // check if userCollections exists
-    const userCollectionsExists = await drizzle.query.userCollections.findFirst(
-        {
-            where: (userCollections, { eq }) =>
-                eq(userCollections.userId, session.user.userId),
-        }
-    )
+    // check if userCollection exists
+    const userCollectionExists = await drizzle.query.userCollection.findFirst({
+        where: (userCollection, { eq }) =>
+            eq(userCollection.userId, session.user.userId),
+    })
 
-    if (!userCollectionsExists) {
+    if (!userCollectionExists) {
         return c.json({ success: false, state: "no collections found" }, 200)
     }
 
-    const assetCollection = await drizzle.query.userCollectionAssets.findMany({
-        where: (userCollectionAssets, { eq }) =>
-            eq(userCollectionAssets.collectionId, userCollectionsExists.id),
+    const assetCollection = await drizzle.query.userCollectionAsset.findMany({
+        where: (userCollectionAsset, { eq }) =>
+            eq(userCollectionAsset.collectionId, userCollectionExists.id),
         with: {
             assets: true,
         },

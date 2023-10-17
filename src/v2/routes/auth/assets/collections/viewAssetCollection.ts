@@ -26,14 +26,14 @@ export async function viewAssetCollection(c: APIContext): Promise<Response> {
 
     // check if the user owns the collection, or if the collection is public
     try {
-        await drizzle.query.userCollections.findFirst({
-            where: (userCollections, { eq, or, and }) =>
+        await drizzle.query.userCollection.findFirst({
+            where: (userCollection, { eq, or, and }) =>
                 and(
                     or(
-                        eq(userCollections.id, collectionId),
-                        eq(userCollections.isPublic, 1)
+                        eq(userCollection.id, collectionId),
+                        eq(userCollection.isPublic, 1)
                     ),
-                    eq(userCollections.userId, session.user.userId)
+                    eq(userCollection.userId, session.user.userId)
                 ),
         })
     } catch (e) {
@@ -46,17 +46,17 @@ export async function viewAssetCollection(c: APIContext): Promise<Response> {
         )
     }
 
-    const assetCollection = await drizzle.query.userCollections.findFirst({
-        where: (userCollections, { eq, or, and }) =>
+    const assetCollection = await drizzle.query.userCollection.findFirst({
+        where: (userCollection, { eq, or, and }) =>
             and(
                 or(
-                    eq(userCollections.id, collectionId),
-                    eq(userCollections.isPublic, 1)
+                    eq(userCollection.id, collectionId),
+                    eq(userCollection.isPublic, 1)
                 ),
-                eq(userCollections.userId, session.user.userId)
+                eq(userCollection.userId, session.user.userId)
             ),
         with: {
-            userCollectionAssets: {
+            userCollectionAsset: {
                 with: {
                     assets: true,
                 },

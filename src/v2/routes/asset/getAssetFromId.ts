@@ -16,9 +16,9 @@ export async function getAssetFromId(c: APIContext): Promise<Response> {
         where: (assets, { eq, and }) =>
             and(eq(assets.status, 1), eq(assets.id, parseInt(id))),
         with: {
-            assetTagsAssets: {
+            assetTagAsset: {
                 with: {
-                    assetTags: true,
+                    assetTag: true,
                 },
             },
             users: {

@@ -1,8 +1,7 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { roleFlagsToArray } from "@/v2/lib/helpers/roleFlags"
 import { getConnection } from "@/v2/db/turso"
-
-import { games } from "@/v2/db/schema"
+import { game } from "@/v2/db/schema"
 
 export async function createGame(c: APIContext): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
@@ -26,7 +25,7 @@ export async function createGame(c: APIContext): Promise<Response> {
 
     const formData = await c.req.formData()
 
-    const game = {
+    const newGame = {
         id: crypto.randomUUID(),
         name: formData.get("name") as string,
         formattedName: formData.get("formattedName") as string,
@@ -35,8 +34,8 @@ export async function createGame(c: APIContext): Promise<Response> {
     }
 
     // check if game.name exists
-    const gameExists = await drizzle.query.games.findFirst({
-        where: (games, { eq }) => eq(games.name, game.name),
+    const gameExists = await drizzle.query.game.findFirst({
+        where: (game, { eq }) => eq(game.name, game.name),
     })
 
     if (gameExists) {
@@ -47,7 +46,7 @@ export async function createGame(c: APIContext): Promise<Response> {
     }
 
     try {
-        await drizzle.insert(games).values(game).execute()
+        await drizzle.insert(game).values(newGame).execute()
     } catch (e) {
         return c.json({ success: false, state: "failed to create game" }, 500)
     }

@@ -1,7 +1,7 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { getConnection } from "@/v2/db/turso"
 import { z } from "zod"
-import { userCollectionAssets } from "@/v2/db/schema"
+import { userCollectionAsset } from "@/v2/db/schema"
 import { eq } from "drizzle-orm"
 
 const DeleteAssetFromCollectionSchema = z.object({
@@ -55,9 +55,8 @@ export async function deleteAssetFromCollection(
         return c.json({ success: false, state: "no asset id entered" }, 401)
     }
 
-    const collectionExists = await drizzle.query.userCollections.findFirst({
-        where: (userCollections, { eq }) =>
-            eq(userCollections.id, collectionId),
+    const collectionExists = await drizzle.query.userCollection.findFirst({
+        where: (userCollection, { eq }) => eq(userCollection.id, collectionId),
     })
 
     if (!collectionExists) {
@@ -79,17 +78,17 @@ export async function deleteAssetFromCollection(
         return c.json({ success: false, state: "asset not found" }, 200)
     }
 
-    // check if userCollectionAssets exists
-    const userCollectionAssetsExists =
-        await drizzle.query.userCollectionAssets.findFirst({
-            where: (userCollectionAssets, { eq, and }) =>
+    // check if userCollectionAsset exists
+    const userCollectionAssetExists =
+        await drizzle.query.userCollectionAsset.findFirst({
+            where: (userCollectionAsset, { eq, and }) =>
                 and(
-                    eq(userCollectionAssets.collectionId, collectionId),
-                    eq(userCollectionAssets.assetId, parseInt(assetId))
+                    eq(userCollectionAsset.collectionId, collectionId),
+                    eq(userCollectionAsset.assetId, parseInt(assetId))
                 ),
         })
 
-    if (!userCollectionAssetsExists) {
+    if (!userCollectionAssetExists) {
         return c.json({
             success: false,
             state: "asset not found in collection",
@@ -98,8 +97,8 @@ export async function deleteAssetFromCollection(
 
     try {
         await drizzle
-            .delete(userCollectionAssets)
-            .where(eq(userCollectionAssets.id, userCollectionAssetsExists.id))
+            .delete(userCollectionAsset)
+            .where(eq(userCollectionAsset.id, userCollectionAssetExists.id))
             .execute()
     } catch (e) {
         return c.json(

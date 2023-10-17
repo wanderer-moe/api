@@ -2,7 +2,7 @@ import { auth } from "@/v2/lib/auth/lucia"
 import { roleFlagsToArray } from "@/v2/lib/helpers/roleFlags"
 import { getConnection } from "@/v2/db/turso"
 import { z } from "zod"
-import { assetTags } from "@/v2/db/schema"
+import { assetTag } from "@/v2/db/schema"
 import { eq } from "drizzle-orm"
 
 const DeleteTagSchema = z.object({
@@ -46,7 +46,7 @@ export async function deleteTag(c: APIContext): Promise<Response> {
     const { drizzle } = getConnection(c.env)
 
     try {
-        await drizzle.delete(assetTags).where(eq(assetTags.id, id)).execute()
+        await drizzle.delete(assetTag).where(eq(assetTag.id, id)).execute()
     } catch (e) {
         return c.json({ success: false, state: "failed to delete tag" }, 200)
     }

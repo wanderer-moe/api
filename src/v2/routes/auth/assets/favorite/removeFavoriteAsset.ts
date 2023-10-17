@@ -2,7 +2,7 @@ import { auth } from "@/v2/lib/auth/lucia"
 import { getConnection } from "@/v2/db/turso"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
-import { userFavorites, userFavoritesAssets } from "@/v2/db/schema"
+import { userFavorite, userFavoriteAsset } from "@/v2/db/schema"
 
 const RemoveFavoriteAssetSchema = z.object({
     assetToRemove: z.string({
@@ -48,15 +48,15 @@ export async function removeFavoriteAsset(c: APIContext): Promise<Response> {
     }
 
     // this should never happen, but just in case it does, UX over reads/writes to the database
-    const doesUserFavoritesExist = await drizzle.query.userFavorites.findFirst({
-        where: (userFavorites, { eq }) =>
-            eq(userFavorites.userId, session.user.userId),
+    const doesuserFavoriteExist = await drizzle.query.userFavorite.findFirst({
+        where: (userFavorite, { eq }) =>
+            eq(userFavorite.userId, session.user.userId),
     })
 
-    if (!doesUserFavoritesExist) {
-        // create entry in userFavorites
+    if (!doesuserFavoriteExist) {
+        // create entry in userFavorite
         await drizzle
-            .insert(userFavorites)
+            .insert(userFavorite)
             .values({
                 id: `${session.user.userId}-${assetToRemove}`,
                 userId: session.user.userId,
@@ -65,12 +65,9 @@ export async function removeFavoriteAsset(c: APIContext): Promise<Response> {
             .execute()
     }
 
-    const isFavorited = await drizzle.query.userFavorites.findFirst({
-        where: (userFavoritesAssets, { eq }) =>
-            eq(
-                userFavoritesAssets.id,
-                `${session.user.userId}-${assetToRemove}`
-            ),
+    const isFavorited = await drizzle.query.userFavorite.findFirst({
+        where: (userFavoriteAsset, { eq }) =>
+            eq(userFavoriteAsset.id, `${session.user.userId}-${assetToRemove}`),
     })
 
     if (!isFavorited) {
@@ -84,13 +81,13 @@ export async function removeFavoriteAsset(c: APIContext): Promise<Response> {
         )
     }
 
-    // remove asset from userFavorites...
+    // remove asset from userFavorite...
     try {
         await drizzle
-            .delete(userFavoritesAssets)
+            .delete(userFavoriteAsset)
             .where(
                 eq(
-                    userFavoritesAssets.id,
+                    userFavoriteAsset.id,
                     `${session.user.userId}-${assetToRemove}`
                 )
             )

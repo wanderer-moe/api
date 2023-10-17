@@ -1,7 +1,7 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { getConnection } from "@/v2/db/turso"
 
-import { userFavorites, userFavoritesAssets } from "@/v2/db/schema"
+import { userFavorite, userFavoriteAsset } from "@/v2/db/schema"
 
 export async function favoriteAsset(c: APIContext): Promise<Response> {
     const { drizzle } = getConnection(c.env)
@@ -36,15 +36,15 @@ export async function favoriteAsset(c: APIContext): Promise<Response> {
     }
 
     // this should never happen, but just in case it does, UX over reads/writes to the database
-    const doesUserFavoritesExist = await drizzle.query.userFavorites.findFirst({
-        where: (userFavorites, { eq }) =>
-            eq(userFavorites.userId, session.user.userId),
+    const doesuserFavoriteExist = await drizzle.query.userFavorite.findFirst({
+        where: (userFavorite, { eq }) =>
+            eq(userFavorite.userId, session.user.userId),
     })
 
-    if (!doesUserFavoritesExist) {
-        // create entry in userFavorites
+    if (!doesuserFavoriteExist) {
+        // create entry in userFavorite
         await drizzle
-            .insert(userFavorites)
+            .insert(userFavorite)
             .values({
                 id: `${session.user.userId}-${assetToFavorite}`,
                 userId: session.user.userId,
@@ -53,10 +53,10 @@ export async function favoriteAsset(c: APIContext): Promise<Response> {
             .execute()
     }
 
-    const isFavorited = await drizzle.query.userFavorites.findFirst({
-        where: (userFavoritesAssets, { eq }) =>
+    const isFavorited = await drizzle.query.userFavorite.findFirst({
+        where: (userFavoriteAsset, { eq }) =>
             eq(
-                userFavoritesAssets.id,
+                userFavoriteAsset.id,
                 `${session.user.userId}-${assetToFavorite}`
             ),
     })
@@ -72,11 +72,11 @@ export async function favoriteAsset(c: APIContext): Promise<Response> {
         )
     }
 
-    // add asset to userFavorites...
+    // add asset to userFavorite...
     try {
-        await drizzle.insert(userFavoritesAssets).values({
+        await drizzle.insert(userFavoriteAsset).values({
             id: `${session.user.userId}-${assetToFavorite}`,
-            userFavoritesId: isFavorited.id,
+            userFavoriteId: isFavorited.id,
             assetId: parseInt(assetToFavorite),
         })
     } catch (e) {

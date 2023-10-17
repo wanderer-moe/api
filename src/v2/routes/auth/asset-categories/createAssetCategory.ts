@@ -1,8 +1,7 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { roleFlagsToArray } from "@/v2/lib/helpers/roleFlags"
 import { getConnection } from "@/v2/db/turso"
-
-import { assetCategories } from "@/v2/db/schema"
+import { assetCategory } from "@/v2/db/schema"
 
 export async function createAssetCategory(c: APIContext): Promise<Response> {
     const authRequest = auth(c.env).handleRequest(c)
@@ -26,7 +25,7 @@ export async function createAssetCategory(c: APIContext): Promise<Response> {
 
     const formData = await c.req.formData()
 
-    const assetCategory = {
+    const newAssetCategory = {
         id: crypto.randomUUID(),
         name: formData.get("name") as string,
         formattedName: formData.get("formattedName") as string,
@@ -35,9 +34,9 @@ export async function createAssetCategory(c: APIContext): Promise<Response> {
     }
 
     // check if assetCategory.name exists
-    const assetCategoryExists = await drizzle.query.assetCategories.findFirst({
-        where: (assetCategories, { eq }) =>
-            eq(assetCategories.name, assetCategory.name),
+    const assetCategoryExists = await drizzle.query.assetCategory.findFirst({
+        where: (assetCategory, { eq }) =>
+            eq(assetCategory.name, assetCategory.name),
     })
 
     if (assetCategoryExists) {
@@ -51,7 +50,7 @@ export async function createAssetCategory(c: APIContext): Promise<Response> {
     }
 
     try {
-        await drizzle.insert(assetCategories).values(assetCategory).execute()
+        await drizzle.insert(assetCategory).values(newAssetCategory).execute()
     } catch (e) {
         return c.json(
             {

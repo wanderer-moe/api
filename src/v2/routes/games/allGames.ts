@@ -1,7 +1,7 @@
 import { responseHeaders } from "@/v2/lib/responseHeaders"
 import { getConnection } from "@/v2/db/turso"
 import { listBucket } from "@/v2/lib/listBucket"
-import { games } from "@/v2/db/schema"
+import { game } from "@/v2/db/schema"
 
 export async function getAllGames(c: APIContext): Promise<Response> {
     const cacheKey = new Request(c.req.url.toString(), c.req)
@@ -23,9 +23,9 @@ export async function getAllGames(c: APIContext): Promise<Response> {
 
     const { drizzle } = getConnection(c.env)
 
-    const gamesList = await drizzle
+    const gameList = await drizzle
         .select()
-        .from(games)
+        .from(game)
         .execute()
         .then((row) =>
             row.map((game) => ({
@@ -40,7 +40,7 @@ export async function getAllGames(c: APIContext): Promise<Response> {
         {
             success: true,
             status: "ok",
-            results: gamesList,
+            results: gameList,
         },
         200,
         responseHeaders

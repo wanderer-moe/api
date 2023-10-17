@@ -36,16 +36,16 @@ export async function searchAll(c: APIContext): Promise<Response> {
         limit: 25,
     })
 
-    const assetCategoryResponse = await drizzle.query.assetCategories.findMany({
-        where: (assetCategories) => {
-            return like(assetCategories.name, `%${query}%`)
+    const assetCategoryResponse = await drizzle.query.assetCategory.findMany({
+        where: (assetCategory) => {
+            return like(assetCategory.name, `%${query}%`)
         },
         limit: 25,
     })
 
-    const assetTagsResponse = await drizzle.query.assetTags.findMany({
-        where: (assetTags) => {
-            return like(assetTags.name, `%${query}%`)
+    const assetTagResponse = await drizzle.query.assetTag.findMany({
+        where: (assetTag) => {
+            return like(assetTag.name, `%${query}%`)
         },
         limit: 25,
     })
@@ -57,9 +57,9 @@ export async function searchAll(c: APIContext): Promise<Response> {
         limit: 25,
     })
 
-    const gamesResponse = await drizzle.query.games.findMany({
-        where: (games) => {
-            return like(games.name, `%${query}%`)
+    const gameResponse = await drizzle.query.game.findMany({
+        where: (game) => {
+            return like(game.name, `%${query}%`)
         },
         limit: 25,
     })
@@ -79,14 +79,14 @@ export async function searchAll(c: APIContext): Promise<Response> {
             limit: 25,
         })
 
-    const collectionsResponse = await drizzle.query.userCollections.findMany({
-        where: (userCollections, { or, and }) => {
+    const collectionsResponse = await drizzle.query.userCollection.findMany({
+        where: (userCollection, { or, and }) => {
             return and(
                 or(
-                    session && eq(userCollections.userId, session.user.userId),
-                    eq(userCollections.isPublic, 1)
+                    session && eq(userCollection.userId, session.user.userId),
+                    eq(userCollection.isPublic, 1)
                 ),
-                like(userCollections.name, `%${query}%`)
+                like(userCollection.name, `%${query}%`)
             )
         },
         limit: 25,
@@ -104,11 +104,11 @@ export async function searchAll(c: APIContext): Promise<Response> {
                 assetCategoryResponse: assetCategoryResponse
                     ? assetCategoryResponse
                     : [],
-                assetTagsResponse: assetTagsResponse ? assetTagsResponse : [],
+                assetTagResponse: assetTagResponse ? assetTagResponse : [],
                 savedOcGeneratorsResponse: savedOcGeneratorsResponse
                     ? savedOcGeneratorsResponse
                     : [],
-                gamesResponse: gamesResponse ? gamesResponse : [],
+                gameResponse: gameResponse ? gameResponse : [],
                 collectionsResponse: collectionsResponse
                     ? collectionsResponse
                     : [],

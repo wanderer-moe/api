@@ -1,6 +1,11 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { getConnection } from "@/v2/db/turso"
-import { assets, assetTagsAssets, games, assetCategories } from "@/v2/db/schema"
+import {
+    assets,
+    assetTagAsset,
+    game as gameTable,
+    assetCategory as assetCategoryTable,
+} from "@/v2/db/schema"
 import { z } from "zod"
 import { eq } from "drizzle-orm"
 import { SplitQueryByCommas } from "@/v2/lib/helpers/splitQueryByCommas"
@@ -100,15 +105,15 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
     const validTags = []
     const invalidTags = []
 
-    const game = await drizzle.query.games.findFirst({
-        where: (games) => {
-            return eq(games.name, formData.data.game)
+    const game = await drizzle.query.game.findFirst({
+        where: (game) => {
+            return eq(game.name, formData.data.game)
         },
     })
 
-    const assetCategory = await drizzle.query.assetCategories.findFirst({
-        where: (assetCategories) => {
-            return eq(assetCategories.name, formData.data.category)
+    const assetCategory = await drizzle.query.assetCategory.findFirst({
+        where: (assetCategory) => {
+            return eq(assetCategory.name, formData.data.category)
         },
     })
 
@@ -139,21 +144,21 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
             // checking if tags exist and setting relations
             if (formData.data.tags.length > 0) {
                 for (const tag of SplitQueryByCommas(formData.data.tags)) {
-                    const tagExists = await trx.query.assetTags.findFirst({
-                        where: (assetTags) => {
-                            return eq(assetTags.name, tag)
+                    const tagExists = await trx.query.assetTag.findFirst({
+                        where: (assetTag) => {
+                            return eq(assetTag.name, tag)
                         },
                     })
                     if (tagExists) {
                         await trx
-                            .insert(assetTagsAssets)
+                            .insert(assetTagAsset)
                             .values({
                                 id: crypto.randomUUID(),
                                 assetId: newAssetDB[0].assetId,
                                 assetTagId: tagExists[0].assetTagId,
                             })
                             .returning({
-                                assetTagId: assetTagsAssets.assetTagId,
+                                assetTagId: assetTagAsset.assetTagId,
                             })
                         validTags.push(tag)
                     } else {
@@ -164,19 +169,19 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
 
             // updating game and category asset count
             await trx
-                .update(games)
+                .update(gameTable)
                 .set({
                     assetCount: game.assetCount + 1,
                 })
-                .where(eq(games.name, formData.data.game))
+                .where(eq(gameTable.name, formData.data.game))
                 .execute()
 
             await trx
-                .update(assetCategories)
+                .update(assetCategoryTable)
                 .set({
                     assetCount: assetCategory.assetCount + 1,
                 })
-                .where(eq(assetCategories.name, formData.data.category))
+                .where(eq(assetCategoryTable.name, formData.data.category))
                 .execute()
         })
     } catch (e) {

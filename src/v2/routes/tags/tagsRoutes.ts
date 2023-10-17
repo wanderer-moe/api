@@ -1,12 +1,12 @@
 import { Hono } from "hono"
-import { listAllAssetTags } from "./allTags"
+import { listAllassetTag } from "./allTags"
 import { getTagById } from "./getTagById"
 import { getTagByName } from "./getTagByName"
 
 const tagsRoute = new Hono<{ Bindings: Bindings }>()
 
 tagsRoute.get("/all", async (c) => {
-    return listAllAssetTags(c)
+    return listAllassetTag(c)
 })
 
 tagsRoute.get("/id/:id", async (c) => {

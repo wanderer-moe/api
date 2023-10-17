@@ -2,7 +2,7 @@ import { auth } from "@/v2/lib/auth/lucia"
 import { roleFlagsToArray } from "@/v2/lib/helpers/roleFlags"
 import { getConnection } from "@/v2/db/turso"
 import { z } from "zod"
-import { assetTags } from "@/v2/db/schema"
+import { assetTag } from "@/v2/db/schema"
 
 const CreateTagSchema = z.object({
     name: z.string({
@@ -57,8 +57,8 @@ export async function createTag(c: APIContext): Promise<Response> {
     }
 
     // check if tag.name exists
-    const tagExists = await drizzle.query.assetTags.findFirst({
-        where: (assetTags, { eq }) => eq(assetTags.name, tag.name),
+    const tagExists = await drizzle.query.assetTag.findFirst({
+        where: (assetTag, { eq }) => eq(assetTag.name, tag.name),
     })
 
     if (tagExists) {
@@ -69,7 +69,7 @@ export async function createTag(c: APIContext): Promise<Response> {
     }
 
     try {
-        await drizzle.insert(assetTags).values(tag).execute()
+        await drizzle.insert(assetTag).values(tag).execute()
     } catch (e) {
         return c.json({ success: false, state: "failed to create tag" }, 200)
     }

@@ -3,7 +3,7 @@ import { roleFlagsToArray } from "@/v2/lib/helpers/roleFlags"
 import { getConnection } from "@/v2/db/turso"
 import { z } from "zod"
 import { eq } from "drizzle-orm"
-import { assetCategories } from "@/v2/db/schema"
+import { assetCategory } from "@/v2/db/schema"
 
 const DeleteAssetCategorySchema = z.object({
     id: z.string({
@@ -50,8 +50,8 @@ export async function deleteAssetCategory(c: APIContext): Promise<Response> {
     }
 
     // check if assetCategory exists
-    const assetCategoryExists = await drizzle.query.assetCategories.findFirst({
-        where: (assetCategories, { eq }) => eq(assetCategories.id, id),
+    const assetCategoryExists = await drizzle.query.assetCategory.findFirst({
+        where: (assetCategory, { eq }) => eq(assetCategory.id, id),
     })
 
     if (!assetCategoryExists) {
@@ -66,8 +66,8 @@ export async function deleteAssetCategory(c: APIContext): Promise<Response> {
 
     try {
         await drizzle
-            .delete(assetCategories)
-            .where(eq(assetCategories.id, id))
+            .delete(assetCategory)
+            .where(eq(assetCategory.id, id))
             .execute()
     } catch (e) {
         return c.json(

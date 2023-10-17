@@ -129,8 +129,8 @@ export const userNetworking = sqliteTable(
     }
 )
 
-export const socialsConnections = sqliteTable(
-    tableNames.socialsConnections,
+export const socialsConnection = sqliteTable(
+    tableNames.socialsConnection,
     {
         id: text("id").primaryKey(),
         userId: text("user_id")
@@ -153,8 +153,8 @@ export const socialsConnections = sqliteTable(
     }
 )
 
-export const games = sqliteTable(
-    tableNames.games,
+export const game = sqliteTable(
+    tableNames.game,
     {
         id: text("id").primaryKey(),
         name: text("name").notNull(), // e.g genshin-impact, honkai-impact-3rd
@@ -173,8 +173,8 @@ export const games = sqliteTable(
     }
 )
 
-export const assetCategories = sqliteTable(
-    tableNames.assetCategories,
+export const assetCategory = sqliteTable(
+    tableNames.assetCategory,
     {
         id: text("id").primaryKey(),
         name: text("name").notNull(), // e.g tcg-sheets, splash-art
@@ -194,6 +194,38 @@ export const assetCategories = sqliteTable(
     }
 )
 
+export const gameAssetCategory = sqliteTable(
+    tableNames.gameAssetCategory,
+    {
+        id: text("id").primaryKey(),
+        gameId: text("game_id")
+            .notNull()
+            .references(() => game.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
+        assetCategoryId: text("asset_category_id")
+            .notNull()
+            .references(() => assetCategory.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
+    },
+    (gameAssetCategory) => {
+        return {
+            gameAssetCategoryIdx: uniqueIndex("game_asset_category_id_idx").on(
+                gameAssetCategory.id
+            ),
+            gameAssetCategoryGameIdx: uniqueIndex(
+                "game_asset_category_game_id_idx"
+            ).on(gameAssetCategory.gameId),
+            gameAssetCategoryAssetCategoryIdx: uniqueIndex(
+                "game_asset_category_asset_category_id_idx"
+            ).on(gameAssetCategory.assetCategoryId),
+        }
+    }
+)
+
 export const assets = sqliteTable(
     tableNames.assets,
     {
@@ -202,13 +234,13 @@ export const assets = sqliteTable(
         extension: text("extension").notNull(),
         game: text("game")
             .notNull()
-            .references(() => games.name, {
+            .references(() => game.name, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
         assetCategory: text("asset_category")
             .notNull()
-            .references(() => assetCategories.name, {
+            .references(() => assetCategory.name, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
@@ -251,8 +283,8 @@ export const assets = sqliteTable(
     }
 )
 
-export const assetTags = sqliteTable(
-    tableNames.assetTags,
+export const assetTag = sqliteTable(
+    tableNames.assetTag,
     {
         id: text("id").primaryKey(),
         name: text("name").notNull(),
@@ -268,13 +300,13 @@ export const assetTags = sqliteTable(
     }
 )
 
-export const assetTagsAssets = sqliteTable(
-    tableNames.assetTagsAssets,
+export const assetTagAsset = sqliteTable(
+    tableNames.assetTagAsset,
     {
         id: text("id").primaryKey(),
         assetTagId: text("asset_tag_id")
             .notNull()
-            .references(() => assetTags.id, {
+            .references(() => assetTag.id, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
@@ -285,23 +317,23 @@ export const assetTagsAssets = sqliteTable(
                 onDelete: "cascade",
             }),
     },
-    (assetTagsAssets) => {
+    (assetTagAsset) => {
         return {
-            assetTagsAssetsIdx: uniqueIndex("asset_tags_assets_id_idx").on(
-                assetTagsAssets.id
+            assetTagAssetIdx: uniqueIndex("asset_tags_assets_id_idx").on(
+                assetTagAsset.id
             ),
-            assetTagsAssetsAssetTagIdx: uniqueIndex(
+            assetTagAssetAssetTagIdx: uniqueIndex(
                 "asset_tags_assets_asset_tag_id_idx"
-            ).on(assetTagsAssets.assetTagId),
-            assetTagsAssetsAssetIdx: uniqueIndex(
+            ).on(assetTagAsset.assetTagId),
+            assetTagAssetAssetIdx: uniqueIndex(
                 "asset_tags_assets_asset_id_idx"
-            ).on(assetTagsAssets.assetId),
+            ).on(assetTagAsset.assetId),
         }
     }
 )
 
-export const userFavorites = sqliteTable(
-    tableNames.userFavorites,
+export const userFavorite = sqliteTable(
+    tableNames.userFavorite,
     {
         id: text("id").primaryKey(),
         userId: text("user_id")
@@ -312,25 +344,25 @@ export const userFavorites = sqliteTable(
             }),
         isPublic: integer("is_public").default(0).notNull(),
     },
-    (userFavorites) => {
+    (userFavorite) => {
         return {
             favoritedAssetsIdx: uniqueIndex("favorited_assets_id_idx").on(
-                userFavorites.id
+                userFavorite.id
             ),
             favoritedAssetsUserIdx: uniqueIndex(
                 "favorited_assets_user_id_idx"
-            ).on(userFavorites.userId),
+            ).on(userFavorite.userId),
         }
     }
 )
 
-export const userFavoritesAssets = sqliteTable(
-    tableNames.userFavoritesAssets,
+export const userFavoriteAsset = sqliteTable(
+    tableNames.userFavoriteAsset,
     {
         id: text("id").primaryKey(),
-        userFavoritesId: text("favorited_assets_id")
+        userFavoriteId: text("favorited_assets_id")
             .notNull()
-            .references(() => userFavorites.id, {
+            .references(() => userFavorite.id, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
@@ -341,23 +373,23 @@ export const userFavoritesAssets = sqliteTable(
                 onDelete: "cascade",
             }),
     },
-    (userFavoritesAssets) => {
+    (userFavoriteAsset) => {
         return {
             favoritedAssetsAssetsIdx: uniqueIndex(
                 "favorited_assets_assets_id_idx"
-            ).on(userFavoritesAssets.id),
+            ).on(userFavoriteAsset.id),
             favoritedAssetsAssetsUserIdx: uniqueIndex(
                 "favorited_assets_assets_user_id_idx"
-            ).on(userFavoritesAssets.userFavoritesId),
+            ).on(userFavoriteAsset.userFavoriteId),
             favoritedAssetsAssetsAssetIdx: uniqueIndex(
                 "favorited_assets_assets_asset_id_idx"
-            ).on(userFavoritesAssets.assetId),
+            ).on(userFavoriteAsset.assetId),
         }
     }
 )
 
-export const userCollections = sqliteTable(
-    tableNames.userCollections,
+export const userCollection = sqliteTable(
+    tableNames.userCollection,
     {
         id: text("id").primaryKey(),
         name: text("name").notNull(),
@@ -381,13 +413,13 @@ export const userCollections = sqliteTable(
     }
 )
 
-export const userCollectionAssets = sqliteTable(
-    tableNames.userCollectionAssets,
+export const userCollectionAsset = sqliteTable(
+    tableNames.userCollectionAsset,
     {
         id: text("id").primaryKey(),
         collectionId: text("collection_id")
             .notNull()
-            .references(() => userCollections.id, {
+            .references(() => userCollection.id, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
@@ -444,8 +476,9 @@ export const savedOcGenerators = sqliteTable(
 )
 
 // relations
-export const gameRelations = relations(games, ({ many }) => ({
+export const gameRelations = relations(game, ({ many }) => ({
     assets: many(assets),
+    gameAssetCategory: many(gameAssetCategory),
 }))
 
 export const assetRelations = relations(assets, ({ one, many }) => ({
@@ -453,37 +486,46 @@ export const assetRelations = relations(assets, ({ one, many }) => ({
         fields: [assets.uploadedById, assets.uploadedByName],
         references: [users.id, users.username],
     }),
-    assetTagsAssets: many(assetTagsAssets),
-    assetCategory: one(assetCategories, {
+    assetTagAsset: many(assetTagAsset),
+    assetCategory: one(assetCategory, {
         fields: [assets.assetCategory],
-        references: [assetCategories.name],
+        references: [assetCategory.name],
     }),
-    game: one(games, {
+    game: one(game, {
         fields: [assets.game],
-        references: [games.name],
+        references: [game.name],
     }),
 }))
 
-export const assetCategoryRelations = relations(
-    assetCategories,
-    ({ many }) => ({
-        assets: many(assets),
+export const assetCategoryRelations = relations(assetCategory, ({ many }) => ({
+    assets: many(assets),
+    gameAssetCategory: many(gameAssetCategory),
+}))
+
+export const gameAssetCategoryRelations = relations(
+    gameAssetCategory,
+    ({ one }) => ({
+        game: one(game, {
+            fields: [gameAssetCategory.gameId],
+            references: [game.id],
+        }),
+        assetCategory: one(assetCategory, {
+            fields: [gameAssetCategory.assetCategoryId],
+            references: [assetCategory.id],
+        }),
     })
 )
 
-export const assetTagsAssetsRelations = relations(
-    assetTagsAssets,
-    ({ one }) => ({
-        assetTag: one(assetTags, {
-            fields: [assetTagsAssets.assetTagId],
-            references: [assetTags.id],
-        }),
-        asset: one(assets, {
-            fields: [assetTagsAssets.assetId],
-            references: [assets.id],
-        }),
-    })
-)
+export const assetTagAssetRelations = relations(assetTagAsset, ({ one }) => ({
+    assetTag: one(assetTag, {
+        fields: [assetTagAsset.assetTagId],
+        references: [assetTag.id],
+    }),
+    asset: one(assets, {
+        fields: [assetTagAsset.assetId],
+        references: [assets.id],
+    }),
+}))
 
 export const userNetworkingRelations = relations(userNetworking, ({ one }) => ({
     follower: one(users, {
@@ -499,46 +541,46 @@ export const userNetworkingRelations = relations(userNetworking, ({ one }) => ({
 }))
 
 export const collectionRelations = relations(
-    userCollections,
+    userCollection,
     ({ one, many }) => ({
         user: one(users, {
-            fields: [userCollections.userId],
+            fields: [userCollection.userId],
             references: [users.id],
         }),
-        assets: many(userCollectionAssets),
+        assets: many(userCollectionAsset),
     })
 )
 
 export const collectionAssetsRelations = relations(
-    userCollectionAssets,
+    userCollectionAsset,
     ({ one }) => ({
-        collection: one(userCollections, {
-            fields: [userCollectionAssets.collectionId],
-            references: [userCollections.id],
+        collection: one(userCollection, {
+            fields: [userCollectionAsset.collectionId],
+            references: [userCollection.id],
         }),
         asset: one(assets, {
-            fields: [userCollectionAssets.assetId],
+            fields: [userCollectionAsset.assetId],
             references: [assets.id],
         }),
     })
 )
 
-export const userFavoritesRelations = relations(userFavorites, ({ one }) => ({
+export const userFavoriteRelations = relations(userFavorite, ({ one }) => ({
     user: one(users, {
-        fields: [userFavorites.userId],
+        fields: [userFavorite.userId],
         references: [users.id],
     }),
 }))
 
-export const userFavoritesAssetsRelations = relations(
-    userFavoritesAssets,
+export const userFavoriteAssetRelations = relations(
+    userFavoriteAsset,
     ({ one }) => ({
-        favoritedAssets: one(userFavorites, {
-            fields: [userFavoritesAssets.userFavoritesId],
-            references: [userFavorites.id],
+        favoritedAssets: one(userFavorite, {
+            fields: [userFavoriteAsset.userFavoriteId],
+            references: [userFavorite.id],
         }),
         asset: one(assets, {
-            fields: [userFavoritesAssets.assetId],
+            fields: [userFavoriteAsset.assetId],
             references: [assets.id],
         }),
     })
@@ -551,11 +593,11 @@ export const keysRelations = relations(keys, ({ one }) => ({
     }),
 }))
 
-export const socialsConnectionsRelations = relations(
-    socialsConnections,
+export const socialsConnectionRelations = relations(
+    socialsConnection,
     ({ one }) => ({
         user: one(users, {
-            fields: [socialsConnections.userId],
+            fields: [socialsConnection.userId],
             references: [users.id],
         }),
     })
@@ -564,11 +606,11 @@ export const socialsConnectionsRelations = relations(
 export const usersRelations = relations(users, ({ one, many }) => ({
     key: many(keys),
     assets: many(assets),
-    followers: many(userNetworking, { relationName: "follower" }),
+    follower: many(userNetworking, { relationName: "follower" }),
     following: many(userNetworking, { relationName: "following" }),
-    userFavorites: one(userFavorites),
-    socialsConnection: one(socialsConnections),
-    userCollections: many(userCollections),
+    userFavorite: one(userFavorite),
+    socialsConnection: one(socialsConnection),
+    userCollection: many(userCollection),
     passwordResetToken: one(passwordResetToken),
     emailVerificationToken: one(emailVerificationToken),
     savedOcGenerators: many(savedOcGenerators),
@@ -577,11 +619,12 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 // export types
 
 // game, asset types
-export type Game = typeof games.$inferSelect
-export type AssetCategory = typeof assetCategories.$inferSelect
+export type Game = typeof game.$inferSelect
+export type AssetCategory = typeof assetCategory.$inferSelect
+export type GameAssetCategory = typeof gameAssetCategory.$inferSelect
 export type Asset = typeof assets.$inferSelect
-export type AssetTag = typeof assetTags.$inferSelect
-export type AssetTagsAsset = typeof assetTagsAssets.$inferSelect
+export type AssetTag = typeof assetTag.$inferSelect
+export type AssetTagAsset = typeof assetTagAsset.$inferSelect
 
 // user types
 export type User = typeof users.$inferSelect
@@ -589,8 +632,8 @@ export type EmailVerificationToken = typeof emailVerificationToken.$inferSelect
 export type PasswordResetToken = typeof passwordResetToken.$inferSelect
 export type Key = typeof keys.$inferSelect
 export type UserNetworking = typeof userNetworking.$inferSelect
-export type SocialsConnection = typeof socialsConnections.$inferSelect
-export type UserFavorites = typeof userFavorites.$inferSelect
-export type UserFavoritesAssets = typeof userFavoritesAssets.$inferSelect
-export type UserCollections = typeof userCollections.$inferSelect
-export type UserCollectionAssets = typeof userCollectionAssets.$inferSelect
+export type SocialsConnection = typeof socialsConnection.$inferSelect
+export type UserFavorite = typeof userFavorite.$inferSelect
+export type UserFavoriteAsset = typeof userFavoriteAsset.$inferSelect
+export type UserCollection = typeof userCollection.$inferSelect
+export type UserCollectionAsset = typeof userCollectionAsset.$inferSelect
