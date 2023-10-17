@@ -7,9 +7,6 @@
 .wrangler
 .dev.vars
 
-# temp 
-scripts/
-
 # Logs
 
 logs

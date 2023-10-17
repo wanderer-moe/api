@@ -9,6 +9,7 @@
         "prettier:check": "prettier --check .",
         "typecheck": "tsc --noEmit",
         "drizzle:generate": "drizzle-kit generate:sqlite",
+        "drizzle:migrate": "ts-node ./src/scripts/migrate/migrate",
         "drizzle:push": "drizzle-kit push:sqlite"
     },
     "devDependencies": {

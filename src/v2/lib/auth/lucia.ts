@@ -43,10 +43,10 @@ export function auth(env: Bindings) {
             session: unstorage(storage),
         },
         middleware: hono(),
-        sessionExpiresIn: {
-            idlePeriod: 0,
-            activePeriod: 30 * 24 * 60 * 60 * 1000, // 30 days
-        },
+        // sessionExpiresIn: {
+        //     idlePeriod: 0,
+        //     activePeriod: 30 * 24 * 60 * 60 * 1000, // 30 days
+        // },
         env: env.ENVIRONMENT === "DEV" ? "DEV" : "PROD",
         experimental: {
             debugMode: env.ENVIRONMENT === "DEV" ? true : false,
