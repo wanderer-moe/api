@@ -4,7 +4,8 @@ import {
     sqliteTable,
     text,
     integer,
-    uniqueIndex,
+    // uniqueIndex,
+    index,
 } from "drizzle-orm/sqlite-core"
 
 // TODO: move tables into seperate appropiate files
@@ -25,13 +26,15 @@ export const users = sqliteTable(
         dateJoined: text("date_joined").notNull(),
         roleFlags: integer("role_flags").default(1).notNull(),
         isContributor: integer("is_contributor").default(0).notNull(),
-        selfAssignableRoleFlags: integer("self_assignable_role_flags"),
+        selfAssignableRoleFlags: integer("self_assignable_role_flags")
+            .default(0)
+            .notNull(),
     },
     (user) => {
         return {
-            userIdx: uniqueIndex("user_id_idx").on(user.id),
-            usernameIdx: uniqueIndex("user_username_idx").on(user.username),
-            emailIdx: uniqueIndex("user_email_idx").on(user.email),
+            userIdx: index("user_id_idx").on(user.id),
+            usernameIdx: index("user_username_idx").on(user.username),
+            emailIdx: index("user_email_idx").on(user.email),
         }
     }
 )
@@ -51,10 +54,10 @@ export const emailVerificationToken = sqliteTable(
     },
     (emailVerificationToken) => {
         return {
-            userIdx: uniqueIndex("email_verification_token_user_id_idx").on(
+            userIdx: index("email_verification_token_user_id_idx").on(
                 emailVerificationToken.userId
             ),
-            tokenIdx: uniqueIndex("email_verification_token_token_idx").on(
+            tokenIdx: index("email_verification_token_token_idx").on(
                 emailVerificationToken.token
             ),
         }
@@ -76,10 +79,10 @@ export const passwordResetToken = sqliteTable(
     },
     (passwordResetToken) => {
         return {
-            userIdx: uniqueIndex("password_reset_token_user_id_idx").on(
+            userIdx: index("password_reset_token_user_id_idx").on(
                 passwordResetToken.userId
             ),
-            tokenIdx: uniqueIndex("password_reset_token_token_idx").on(
+            tokenIdx: index("password_reset_token_token_idx").on(
                 passwordResetToken.token
             ),
         }
@@ -100,7 +103,7 @@ export const keys = sqliteTable(
     },
     (key) => {
         return {
-            userIdx: uniqueIndex("key_user_id_idx").on(key.userId),
+            userIdx: index("key_user_id_idx").on(key.userId),
         }
     }
 )
@@ -119,10 +122,10 @@ export const userNetworking = sqliteTable(
     },
     (userNetworking) => {
         return {
-            followerIdx: uniqueIndex("userNetworking_follower_idx").on(
+            followerIdx: index("userNetworking_follower_idx").on(
                 userNetworking.followerId
             ),
-            followingIdx: uniqueIndex("userNetworking_following_idx").on(
+            followingIdx: index("userNetworking_following_idx").on(
                 userNetworking.followingId
             ),
         }
@@ -143,10 +146,10 @@ export const socialsConnection = sqliteTable(
     },
     (socialsConnection) => {
         return {
-            userIdx: uniqueIndex("socials_connection_user_id_idx").on(
+            userIdx: index("socials_connection_user_id_idx").on(
                 socialsConnection.userId
             ),
-            discordIdIdx: uniqueIndex("socials_connection_discord_id_idx").on(
+            discordIdIdx: index("socials_connection_discord_id_idx").on(
                 socialsConnection.discordId
             ),
         }
@@ -167,8 +170,8 @@ export const game = sqliteTable(
     },
     (game) => {
         return {
-            gameIdx: uniqueIndex("game_id_idx").on(game.id),
-            nameIdx: uniqueIndex("game_name_idx").on(game.name),
+            gameIdx: index("game_id_idx").on(game.id),
+            nameIdx: index("game_name_idx").on(game.name),
         }
     }
 )
@@ -184,12 +187,10 @@ export const assetCategory = sqliteTable(
     },
     (assetCategory) => {
         return {
-            assetCategoryIdx: uniqueIndex("asset_category_id_idx").on(
+            assetCategoryIdx: index("asset_category_id_idx").on(
                 assetCategory.id
             ),
-            nameIdx: uniqueIndex("asset_category_name_idx").on(
-                assetCategory.name
-            ),
+            nameIdx: index("asset_category_name_idx").on(assetCategory.name),
         }
     }
 )
@@ -213,13 +214,13 @@ export const gameAssetCategory = sqliteTable(
     },
     (gameAssetCategory) => {
         return {
-            gameAssetCategoryIdx: uniqueIndex("game_asset_category_id_idx").on(
+            gameAssetCategoryIdx: index("game_asset_category_id_idx").on(
                 gameAssetCategory.id
             ),
-            gameAssetCategoryGameIdx: uniqueIndex(
+            gameAssetCategoryGameIdx: index(
                 "game_asset_category_game_id_idx"
             ).on(gameAssetCategory.gameId),
-            gameAssetCategoryAssetCategoryIdx: uniqueIndex(
+            gameAssetCategoryAssetCategoryIdx: index(
                 "game_asset_category_asset_category_id_idx"
             ).on(gameAssetCategory.assetCategoryId),
         }
@@ -267,16 +268,16 @@ export const assets = sqliteTable(
     },
     (table) => {
         return {
-            idIdx: uniqueIndex("assets_id_idx").on(table.id),
-            nameIdx: uniqueIndex("assets_name_idx").on(table.name),
-            gameIdx: uniqueIndex("assets_game_idx").on(table.game),
-            assetCategoryIdx: uniqueIndex("assets_asset_category_idx").on(
+            idIdx: index("assets_id_idx").on(table.id),
+            nameIdx: index("assets_name_idx").on(table.name),
+            gameIdx: index("assets_game_idx").on(table.game),
+            assetCategoryIdx: index("assets_asset_category_idx").on(
                 table.assetCategory
             ),
-            uploadedByIdIdx: uniqueIndex("assets_uploaded_by_idx").on(
+            uploadedByIdIdx: index("assets_uploaded_by_idx").on(
                 table.uploadedById
             ),
-            uploadedByNameIdx: uniqueIndex("assets_uploaded_by_name_idx").on(
+            uploadedByNameIdx: index("assets_uploaded_by_name_idx").on(
                 table.uploadedByName
             ),
         }
@@ -294,8 +295,8 @@ export const assetTag = sqliteTable(
     },
     (assetTag) => {
         return {
-            assetTagIdx: uniqueIndex("asset_tag_id_idx").on(assetTag.id),
-            nameIdx: uniqueIndex("asset_tag_name_idx").on(assetTag.name),
+            assetTagIdx: index("asset_tag_id_idx").on(assetTag.id),
+            nameIdx: index("asset_tag_name_idx").on(assetTag.name),
         }
     }
 )
@@ -319,15 +320,15 @@ export const assetTagAsset = sqliteTable(
     },
     (assetTagAsset) => {
         return {
-            assetTagAssetIdx: uniqueIndex("asset_tags_assets_id_idx").on(
+            assetTagAssetIdx: index("asset_tags_assets_id_idx").on(
                 assetTagAsset.id
             ),
-            assetTagAssetAssetTagIdx: uniqueIndex(
+            assetTagAssetAssetTagIdx: index(
                 "asset_tags_assets_asset_tag_id_idx"
             ).on(assetTagAsset.assetTagId),
-            assetTagAssetAssetIdx: uniqueIndex(
-                "asset_tags_assets_asset_id_idx"
-            ).on(assetTagAsset.assetId),
+            assetTagAssetAssetIdx: index("asset_tags_assets_asset_id_idx").on(
+                assetTagAsset.assetId
+            ),
         }
     }
 )
@@ -346,12 +347,12 @@ export const userFavorite = sqliteTable(
     },
     (userFavorite) => {
         return {
-            favoritedAssetsIdx: uniqueIndex("favorited_assets_id_idx").on(
+            favoritedAssetsIdx: index("favorited_assets_id_idx").on(
                 userFavorite.id
             ),
-            favoritedAssetsUserIdx: uniqueIndex(
-                "favorited_assets_user_id_idx"
-            ).on(userFavorite.userId),
+            favoritedAssetsUserIdx: index("favorited_assets_user_id_idx").on(
+                userFavorite.userId
+            ),
         }
     }
 )
@@ -375,13 +376,13 @@ export const userFavoriteAsset = sqliteTable(
     },
     (userFavoriteAsset) => {
         return {
-            favoritedAssetsAssetsIdx: uniqueIndex(
+            favoritedAssetsAssetsIdx: index(
                 "favorited_assets_assets_id_idx"
             ).on(userFavoriteAsset.id),
-            favoritedAssetsAssetsUserIdx: uniqueIndex(
+            favoritedAssetsAssetsUserIdx: index(
                 "favorited_assets_assets_user_id_idx"
             ).on(userFavoriteAsset.userFavoriteId),
-            favoritedAssetsAssetsAssetIdx: uniqueIndex(
+            favoritedAssetsAssetsAssetIdx: index(
                 "favorited_assets_assets_asset_id_idx"
             ).on(userFavoriteAsset.assetId),
         }
@@ -405,8 +406,8 @@ export const userCollection = sqliteTable(
     },
     (collection) => {
         return {
-            collectionIdx: uniqueIndex("collection_id_idx").on(collection.id),
-            userCollectionIdx: uniqueIndex("user_collection_id_idx").on(
+            collectionIdx: index("collection_id_idx").on(collection.id),
+            userCollectionIdx: index("user_collection_id_idx").on(
                 collection.userId
             ),
         }
@@ -432,13 +433,13 @@ export const userCollectionAsset = sqliteTable(
     },
     (collectionAssets) => {
         return {
-            collectionAssetsIdx: uniqueIndex("collection_assets_id_idx").on(
+            collectionAssetsIdx: index("collection_assets_id_idx").on(
                 collectionAssets.id
             ),
-            collectionAssetsCollectionIdx: uniqueIndex(
+            collectionAssetsCollectionIdx: index(
                 "collection_assets_collection_id_idx"
             ).on(collectionAssets.collectionId),
-            collectionAssetsAssetIdx: uniqueIndex(
+            collectionAssetsAssetIdx: index(
                 "collection_assets_asset_id_idx"
             ).on(collectionAssets.assetId),
         }
@@ -465,10 +466,10 @@ export const savedOcGenerators = sqliteTable(
     },
     (savedOcGenerators) => {
         return {
-            savedOcGeneratorsIdx: uniqueIndex("saved_oc_generators_id_idx").on(
+            savedOcGeneratorsIdx: index("saved_oc_generators_id_idx").on(
                 savedOcGenerators.id
             ),
-            savedOcGeneratorsUserIdx: uniqueIndex(
+            savedOcGeneratorsUserIdx: index(
                 "saved_oc_generators_user_id_idx"
             ).on(savedOcGenerators.userId),
         }

@@ -21,6 +21,7 @@ export async function contributors(c: APIContext): Promise<Response> {
             }
         )
 
+        // @ts-expect-error: ok
         const guildMembers: GuildMember[] = await response.json()
 
         const filteredMembers: GuildMember[] = guildMembers.filter((member) => {
