@@ -1,7 +1,7 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { getConnection } from "@/v2/db/turso"
 import { z } from "zod"
-import { following, follower } from "@/v2/db/schema"
+import { userNetworking } from "@/v2/db/schema"
 
 const FollowUserSchema = z.object({
     userIdToFollow: z.string({
@@ -50,36 +50,30 @@ export async function followUser(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "cannot follow yourself" }, 200)
     }
 
-    const isFollowing = await drizzle.query.following.findFirst({
-        where: (following, { eq }) =>
-            eq(following.id, `${session.user.userId}-${userToFollow}`),
+    // check if user is already following
+
+    const existingFollow = await drizzle.query.userNetworking.findFirst({
+        where: (userNetworking, { and, eq }) =>
+            and(
+                eq(userNetworking.followerId, session.user.userId),
+                eq(userNetworking.followingId, user.id)
+            ),
     })
 
-    if (isFollowing) {
-        return c.json({ success: false, state: "already following" }, 200)
+    if (existingFollow) {
+        return c.json({ success: false, state: "already following user" }, 200)
     }
 
-    await drizzle.transaction(async (transaction) => {
-        await transaction
-            .insert(follower)
-            .values({
-                id: `${session.user.userId}-${userToFollow}`,
-                followerUserId: session.user.userId,
-                followingUserId: userToFollow,
-            })
-            .execute()
+    try {
+        await drizzle.insert(userNetworking).values({
+            followerId: session.user.userId,
+            followingId: user.id,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        })
+    } catch (e) {
+        return c.json({ success: false, state: "failed to follow user" }, 200)
+    }
 
-        await transaction
-            .insert(following)
-            .values({
-                id: `${userToFollow}-${session.user.userId}`,
-                followerUserId: userToFollow,
-                followingUserId: session.user.userId,
-            })
-            .execute()
-
-        return c.json({ success: true, state: "followed user" }, 200)
-    })
-
-    return c.json({ success: false, state: "failed to follow user" }, 500)
+    return c.json({ success: true, state: "followed" }, 200)
 }

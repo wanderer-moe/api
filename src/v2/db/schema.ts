@@ -105,6 +105,30 @@ export const keys = sqliteTable(
     }
 )
 
+export const userNetworking = sqliteTable(
+    tableNames.userNetworking,
+    {
+        followerId: text("followerId")
+            .notNull()
+            .references(() => users.id),
+        followingId: text("followingId")
+            .notNull()
+            .references(() => users.id),
+        createdAt: text("createdAt").notNull(),
+        updatedAt: text("updatedAt").notNull(),
+    },
+    (userNetworking) => {
+        return {
+            followerIdx: uniqueIndex("userNetworking_follower_idx").on(
+                userNetworking.followerId
+            ),
+            followingIdx: uniqueIndex("userNetworking_following_idx").on(
+                userNetworking.followingId
+            ),
+        }
+    }
+)
+
 export const socialsConnections = sqliteTable(
     tableNames.socialsConnections,
     {
@@ -275,35 +299,6 @@ export const assetTagsAssets = sqliteTable(
         }
     }
 )
-
-export const following = sqliteTable(tableNames.following, {
-    id: text("id").primaryKey(),
-    followerUserId: text("follower_id")
-        .notNull()
-        .references(() => users.id, {
-            onUpdate: "cascade",
-            onDelete: "cascade",
-        }),
-    followingUserId: text("following_id")
-        .notNull()
-        .references(() => users.id, {
-            onUpdate: "cascade",
-            onDelete: "cascade",
-        }),
-})
-
-export const follower = sqliteTable(tableNames.follower, {
-    id: text("id").primaryKey(),
-    followerUserId: text("follower_id")
-        .notNull()
-        .references(() => users.id, {
-            onUpdate: "cascade",
-            onDelete: "cascade",
-        }),
-    followingUserId: text("following_id")
-        .notNull()
-        .references(() => users.id),
-})
 
 export const userFavorites = sqliteTable(
     tableNames.userFavorites,
@@ -490,6 +485,19 @@ export const assetTagsAssetsRelations = relations(
     })
 )
 
+export const userNetworkingRelations = relations(userNetworking, ({ one }) => ({
+    follower: one(users, {
+        fields: [userNetworking.followerId],
+        references: [users.id],
+        relationName: "followers",
+    }),
+    following: one(users, {
+        fields: [userNetworking.followingId],
+        references: [users.id],
+        relationName: "following",
+    }),
+}))
+
 export const collectionRelations = relations(
     userCollections,
     ({ one, many }) => ({
@@ -556,9 +564,9 @@ export const socialsConnectionsRelations = relations(
 export const usersRelations = relations(users, ({ one, many }) => ({
     key: many(keys),
     assets: many(assets),
-    follower: many(follower),
+    followers: many(userNetworking, { relationName: "follower" }),
+    following: many(userNetworking, { relationName: "following" }),
     userFavorites: one(userFavorites),
-    following: many(following),
     socialsConnection: one(socialsConnections),
     userCollections: many(userCollections),
     passwordResetToken: one(passwordResetToken),
@@ -580,9 +588,8 @@ export type User = typeof users.$inferSelect
 export type EmailVerificationToken = typeof emailVerificationToken.$inferSelect
 export type PasswordResetToken = typeof passwordResetToken.$inferSelect
 export type Key = typeof keys.$inferSelect
+export type UserNetworking = typeof userNetworking.$inferSelect
 export type SocialsConnection = typeof socialsConnections.$inferSelect
-export type Following = typeof following.$inferSelect
-export type Follower = typeof follower.$inferSelect
 export type UserFavorites = typeof userFavorites.$inferSelect
 export type UserFavoritesAssets = typeof userFavoritesAssets.$inferSelect
 export type UserCollections = typeof userCollections.$inferSelect

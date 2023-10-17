@@ -1,6 +1,6 @@
 import { drizzle as drizzleORM } from "drizzle-orm/libsql"
 import { migrate } from "drizzle-orm/libsql/migrator"
-import { createClient } from "@libsql/client/web"
+import { createClient } from "@libsql/client"
 import "dotenv/config"
 
 const { TURSO_DATABASE_AUTH_TOKEN, TURSO_DATABASE_URL } = process.env
