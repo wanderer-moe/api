@@ -11,7 +11,7 @@
         "drizzle:generate": "drizzle-kit generate:sqlite",
         "drizzle:migrate": "ts-node ./src/scripts/migrate/migrate",
         "drizzle:push": "drizzle-kit push:sqlite",
-        "drizzle:studio": "drizzle-kit studio"
+        "drizzle:studio": "drizzle-kit studio --port 7331 --host 127.0.0.1 --verbose"
     },
     "devDependencies": {
         "@cloudflare/workers-types": "^4.20231016.0",

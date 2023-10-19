@@ -4,7 +4,7 @@
 
 ![Quality]
 
-Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — using **Cloudflare Workers** and **Hono** with **R2 Storage** for the CDN, **Turso** and **Drizzle** for the Database.
+Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — using **Cloudflare Workers** and **Hono** with **R2 Storage** for the CDN, **Turso** and **Drizzle** for the Database and **KV** for session storage.
 
 </div>
 
@@ -18,7 +18,7 @@ Configuration is in `wrangler.toml`.
 
 You will require either a workers paid plan **or to set your worker to unbound** for authentication and password hashing to work.
 
-You will need to setup environment variables for the Discord Bot Token for `/contributors` route: `DISCORD_TOKEN` and for your Turso DB, using `wrangler secret put`.
+Required environment variables are viewable in `./src/worker-configuration.d.ts`.
 
 -   Run `wrangler dev` to preview locally.
 -   Run `wrangler deploy` to publish to Cloudflare Workers.
@@ -29,6 +29,12 @@ You will need to setup environment variables for the Discord Bot Token for `/con
 
 -   If you're using Github Actions, you will have to setup a secret with a Cloudflare API token. You can generate the API token [here][Cloudflare API Token] — use the `Edit Cloudflare Workers` template.
 
+### Database
+
+-   When migrating, you wil need to install `ts-node` globally on your machine.
+
+-   It's not reccomended to use `drizzle:push` in production. However, there is `drizzle:generate` & `drizzle:migrate` available as scripts.
+
 ## Authors
 
 -   [@dromzeh][Dromzeh]
@@ -38,8 +44,6 @@ You will need to setup environment variables for the Discord Bot Token for `/con
 [api.wanderer.moe][api.wanderer.moe] is licensed under the [GNU Affero General Public License v3.0][License] - **You must state all significant changes made to the original software, make the source code available to the public with credit to the original author, original source, and use the same license.**
 
 [Banner]: https://files.catbox.moe/qa3eus.svg
-[API Status]: https://status.wanderer.moe/history/api
-[CDN Status]: https://status.wanderer.moe/history/cdn
 [Quality]: https://img.shields.io/codefactor/grade/github/wanderer-moe/api?label=quality&style=for-the-badge
 [Cloudflare API Token]: https://dash.cloudflare.com/profile/api-tokens
 [Dromzeh]: https://github.com/dromzeh
