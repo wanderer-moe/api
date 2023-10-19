@@ -7,14 +7,14 @@ import {
     // uniqueIndex,
     index,
 } from "drizzle-orm/sqlite-core"
-import { userNetworking } from "./userNetworking"
+import { userNetworking } from "./user-networking"
 import { assets } from "../asset/asset"
-import { userFavorite } from "./userFavorites"
-import { savedOcGenerators } from "../oc-generators/ocGenerators"
-import { socialsConnection } from "./userConnections"
-import { userCollection } from "./userCollections"
-import { passwordResetToken } from "./userAttributes"
-import { emailVerificationToken } from "./userAttributes"
+import { userFavorite } from "./user-favorites"
+import { savedOcGenerators } from "../oc-generators/oc-generators"
+import { socialsConnection } from "./user-connections"
+import { userCollection } from "./user-collections"
+import { passwordResetToken } from "./user-attributes"
+import { emailVerificationToken } from "./user-attributes"
 
 /*
 NOTE: Very basic user information

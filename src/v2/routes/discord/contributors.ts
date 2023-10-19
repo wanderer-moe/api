@@ -1,4 +1,4 @@
-import { responseHeaders } from "@/v2/lib/responseHeaders"
+import { responseHeaders } from "@/v2/lib/response-headers"
 import { roles, guildId } from "@/v2/lib/discord"
 import type { Contributor, GuildMember } from "@/v2/lib/types/discord"
 

@@ -8,7 +8,7 @@ import {
     index,
 } from "drizzle-orm/sqlite-core"
 import { assets } from "../asset/asset"
-import { gameAssetCategory } from "../asset/assetCategories"
+import { gameAssetCategory } from "../asset/asset-categories"
 
 /*
 NOTE: Game relation is easy to understand and self-explanatory.

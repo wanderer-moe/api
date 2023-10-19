@@ -8,9 +8,9 @@ import {
     index,
 } from "drizzle-orm/sqlite-core"
 import { users } from "../user/user"
-import { assetCategory } from "./assetCategories"
+import { assetCategory } from "./asset-categories"
 import { game } from "../game/game"
-import { assetTagAsset } from "./assetTags"
+import { assetTagAsset } from "./asset-tags"
 
 /*
 NOTE: Assets have a lot of relations, and can be quite complex in some cases.
