@@ -528,11 +528,31 @@ export const assetTagAssetRelations = relations(assetTagAsset, ({ one }) => ({
     }),
 }))
 
+export const passwordResetTokenRelations = relations(
+    passwordResetToken,
+    ({ one }) => ({
+        user: one(users, {
+            fields: [passwordResetToken.userId],
+            references: [users.id],
+        }),
+    })
+)
+
+export const emailVerificationTokenRelations = relations(
+    emailVerificationToken,
+    ({ one }) => ({
+        user: one(users, {
+            fields: [emailVerificationToken.userId],
+            references: [users.id],
+        }),
+    })
+)
+
 export const userNetworkingRelations = relations(userNetworking, ({ one }) => ({
     follower: one(users, {
         fields: [userNetworking.followerId],
         references: [users.id],
-        relationName: "followers",
+        relationName: "follower",
     }),
     following: one(users, {
         fields: [userNetworking.followingId],
@@ -540,6 +560,16 @@ export const userNetworkingRelations = relations(userNetworking, ({ one }) => ({
         relationName: "following",
     }),
 }))
+
+export const savedOcGeneratorsRelations = relations(
+    savedOcGenerators,
+    ({ one }) => ({
+        user: one(users, {
+            fields: [savedOcGenerators.userId],
+            references: [users.id],
+        }),
+    })
+)
 
 export const collectionRelations = relations(
     userCollection,
@@ -605,10 +635,14 @@ export const socialsConnectionRelations = relations(
 )
 
 export const usersRelations = relations(users, ({ one, many }) => ({
+    follower: many(userNetworking, {
+        relationName: "follower",
+    }),
+    following: many(userNetworking, {
+        relationName: "following",
+    }),
     key: many(keys),
     assets: many(assets),
-    follower: many(userNetworking, { relationName: "follower" }),
-    following: many(userNetworking, { relationName: "following" }),
     userFavorite: one(userFavorite),
     socialsConnection: one(socialsConnection),
     userCollection: many(userCollection),
