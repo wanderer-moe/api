@@ -10,7 +10,8 @@
         "typecheck": "tsc --noEmit",
         "drizzle:generate": "drizzle-kit generate:sqlite",
         "drizzle:migrate": "ts-node ./src/scripts/migrate/migrate",
-        "drizzle:push": "drizzle-kit push:sqlite"
+        "drizzle:push": "drizzle-kit push:sqlite",
+        "drizzle:studio": "drizzle-kit studio"
     },
     "devDependencies": {
         "@cloudflare/workers-types": "^4.20231016.0",

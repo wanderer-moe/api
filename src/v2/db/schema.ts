@@ -401,7 +401,7 @@ export const userCollection = sqliteTable(
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
-        dateCreated: integer("date_created").notNull(),
+        dateCreated: text("date_created").notNull(),
         isPublic: integer("is_public").default(0).notNull(),
     },
     (collection) => {
@@ -458,7 +458,7 @@ export const savedOcGenerators = sqliteTable(
             }),
         name: text("name").notNull(),
         game: text("game").notNull(),
-        dateCreated: integer("date_created").notNull(),
+        dateCreated: text("date_created").notNull(),
         isPublic: integer("is_public").default(0).notNull(),
         content: text("content").notNull(),
         savedColorPalette: text("saved_color_palette"), // array of 5 hex values, completely optional for the user to save

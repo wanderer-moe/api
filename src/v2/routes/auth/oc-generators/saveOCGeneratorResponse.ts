@@ -88,7 +88,7 @@ export async function saveOCGeneratorResponse(
         userId: session.user.userId,
         name: formData.data.name,
         game: formData.data.game,
-        dateCreated: new Date().getTime(),
+        dateCreated: new Date().toISOString(),
         isPublic: parseInt(formData.data.isPublic), // 1 = yes, 0 = no, default = 0
         content: formData.data.content, // this is stored as json, which can then be parsed
     }
