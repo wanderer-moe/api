@@ -1,4 +1,6 @@
 import { getConnection } from "@/v2/db/turso"
+import { assetTag } from "@/v2/db/schema"
+import { asc } from "drizzle-orm"
 
 export async function listAllassetTag(c: APIContext): Promise<Response> {
     const cacheKey = new Request(c.req.url.toString(), c.req)
@@ -9,15 +11,16 @@ export async function listAllassetTag(c: APIContext): Promise<Response> {
 
     const { drizzle } = getConnection(c.env)
 
-    const allassetTag = await drizzle.query.assetTag.findMany({
-        orderBy: (assetTag) => assetTag.name,
-    })
+    const result = await drizzle
+        .select()
+        .from(assetTag)
+        .orderBy(asc(assetTag.name))
 
     response = c.json(
         {
             success: true,
             status: "ok",
-            allassetTag,
+            result,
         },
         200
     )

@@ -1,4 +1,6 @@
 import { getConnection } from "@/v2/db/turso"
+import { eq } from "drizzle-orm"
+import { assetTag } from "@/v2/db/schema"
 
 export async function getTagByName(c: APIContext): Promise<Response> {
     const cacheKey = new Request(c.req.url.toString(), c.req)
@@ -9,20 +11,21 @@ export async function getTagByName(c: APIContext): Promise<Response> {
 
     const { drizzle } = getConnection(c.env)
 
-    const assetTag = await drizzle.query.assetTag.findFirst({
-        where: (assetTag, { eq }) => eq(assetTag.name, c.req.param("name")),
-    })
+    const result = await drizzle
+        .select()
+        .from(assetTag)
+        .where(eq(assetTag.name, c.req.param("name")))
 
     response = c.json(
         {
             success: true,
             status: "ok",
-            assetTag,
+            result,
         },
         200
     )
 
-    response.headers.set("Cache-Control", "s-maxage=604800")
+    response.headers.set("Cache-Control", "s-maxage=120")
     await cache.put(cacheKey, response.clone())
 
     return response

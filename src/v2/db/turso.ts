@@ -8,11 +8,7 @@ import { Logger } from "drizzle-orm/logger"
  * It logs the query and its parameters to the console.
  */
 class LoggerWrapper implements Logger {
-    /**
-     * Logs the query and its parameters to the console.
-     * @param query - The SQL query string.
-     * @param params - The parameters passed to the query.
-     */
+    // TODO(dromzeh): this is useful to log; should probably be logged elsewhere
     logQuery(query: string, params: unknown[]): void {
         console.log(`DRIZZLE: Query: ${query}, Paremeters: ${params ?? "none"}`)
     }
@@ -26,6 +22,7 @@ class LoggerWrapper implements Logger {
 export function getConnection(env: Bindings) {
     /**
      * The `turso` client is created using the `createClient` function from `@libsql/client/web`.
+     * When running in dev, you don't need to pass `authToken`.
      */
     const turso = createClient({
         url: env.TURSO_DATABASE_URL,
@@ -33,9 +30,8 @@ export function getConnection(env: Bindings) {
     })
 
     /**
-     * The `drizzle` instance is created using the `drizzleORM` function from `drizzle-orm/libsql`.
-     * It is initialized with the `turso` client and the `schema` object.
-     * A `LoggerWrapper` instance is also passed to the `logger` option to customize the logging behavior.
+     * Drizzle instance is initialized with the `turso` client and database `schema`.
+     * The `LoggerWrapper` is passed to the `logger` option to log queries to the console.
      */
     const drizzle = drizzleORM(turso, {
         schema,
