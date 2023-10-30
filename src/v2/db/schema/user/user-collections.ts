@@ -8,7 +8,7 @@ import {
     index,
 } from "drizzle-orm/sqlite-core"
 import { users } from "./user"
-import { assets } from "../asset/asset"
+import { asset } from "../asset/asset"
 
 /*
 NOTE: this file is where users store their collections of assets.
@@ -56,7 +56,7 @@ export const userCollectionAsset = sqliteTable(
             }),
         assetId: integer("asset_id")
             .notNull()
-            .references(() => assets.id, {
+            .references(() => asset.id, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
@@ -97,9 +97,9 @@ export const collectionAssetsRelations = relations(
             fields: [userCollectionAsset.collectionId],
             references: [userCollection.id],
         }),
-        asset: one(assets, {
+        asset: one(asset, {
             fields: [userCollectionAsset.assetId],
-            references: [assets.id],
+            references: [asset.id],
         }),
     })
 )

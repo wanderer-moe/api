@@ -1,25 +1,25 @@
 import { getConnection } from "@/v2/db/turso"
 import { eq } from "drizzle-orm"
-import { assets } from "@/v2/db/schema"
+import { asset } from "@/v2/db/schema"
 
 export async function downloadAsset(c: APIContext): Promise<Response> {
     const { assetId } = c.req.param()
 
     const { drizzle } = getConnection(c.env)
 
-    const asset = await drizzle.query.assets.findFirst({
-        where: (assets, { eq }) => eq(assets.id, parseInt(assetId)),
+    const foundAsset = await drizzle.query.asset.findFirst({
+        where: (asset, { eq }) => eq(asset.id, parseInt(assetId)),
     })
 
-    if (!asset) {
+    if (!foundAsset) {
         return c.json({ success: false, state: "asset not found" }, 200)
     }
 
     try {
         await drizzle
-            .update(assets)
-            .set({ downloadCount: asset.downloadCount + 1 })
-            .where(eq(assets.id, parseInt(assetId)))
+            .update(asset)
+            .set({ downloadCount: foundAsset.downloadCount + 1 })
+            .where(eq(asset.id, parseInt(assetId)))
             .execute()
     } catch (e) {
         return c.json(

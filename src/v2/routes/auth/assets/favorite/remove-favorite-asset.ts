@@ -39,11 +39,11 @@ export async function removeFavoriteAsset(c: APIContext): Promise<Response> {
     }
 
     // check if asset exists
-    const asset = await drizzle.query.assets.findFirst({
-        where: (assets, { eq }) => eq(assets.id, parseInt(assetToRemove)),
+    const foundAsset = await drizzle.query.asset.findFirst({
+        where: (asset, { eq }) => eq(asset.id, parseInt(assetToRemove)),
     })
 
-    if (!asset) {
+    if (!foundAsset) {
         return c.json({ success: false, state: "asset not found" }, 200)
     }
 

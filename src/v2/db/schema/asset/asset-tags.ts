@@ -7,7 +7,7 @@ import {
     // uniqueIndex,
     index,
 } from "drizzle-orm/sqlite-core"
-import { assets } from "./asset"
+import { asset } from "./asset"
 
 /*
 NOTE: Asset tags are not stored as ENUMs to allow for better UX, flexibility, and extensibility.
@@ -47,7 +47,7 @@ export const assetTagAsset = sqliteTable(
             }),
         assetId: integer("asset_id")
             .notNull()
-            .references(() => assets.id, {
+            .references(() => asset.id, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
@@ -75,8 +75,8 @@ export const assetTagAssetRelations = relations(assetTagAsset, ({ one }) => ({
         fields: [assetTagAsset.assetTagId],
         references: [assetTag.id],
     }),
-    asset: one(assets, {
+    asset: one(asset, {
         fields: [assetTagAsset.assetId],
-        references: [assets.id],
+        references: [asset.id],
     }),
 }))

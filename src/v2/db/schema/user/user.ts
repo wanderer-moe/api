@@ -8,7 +8,7 @@ import {
     index,
 } from "drizzle-orm/sqlite-core"
 import { userNetworking } from "./user-networking"
-import { assets } from "../asset/asset"
+import { asset } from "../asset/asset"
 import { userFavorite } from "./user-favorites"
 import { savedOcGenerators } from "../oc-generators/oc-generators"
 import { socialsConnection } from "./user-connections"
@@ -85,7 +85,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
         relationName: "following",
     }),
     key: many(keys),
-    assets: many(assets),
+    assets: many(asset),
     userFavorite: one(userFavorite),
     socialsConnection: one(socialsConnection),
     userCollection: many(userCollection),

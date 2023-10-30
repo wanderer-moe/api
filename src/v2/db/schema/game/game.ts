@@ -7,7 +7,7 @@ import {
     // uniqueIndex,
     index,
 } from "drizzle-orm/sqlite-core"
-import { assets } from "../asset/asset"
+import { asset } from "../asset/asset"
 import { gameAssetCategory } from "../asset/asset-categories"
 
 /*
@@ -39,6 +39,6 @@ export type Game = typeof game.$inferSelect
 export type NewGame = typeof game.$inferInsert
 
 export const gameRelations = relations(game, ({ many }) => ({
-    assets: many(assets),
+    assets: many(asset),
     gameAssetCategory: many(gameAssetCategory),
 }))

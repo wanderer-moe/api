@@ -26,11 +26,11 @@ export async function favoriteAsset(c: APIContext): Promise<Response> {
     }
 
     // check if asset exists, and status is 1 (approved)
-    const assetExists = await drizzle.query.assets.findFirst({
-        where: (assets, { eq, and }) =>
+    const assetExists = await drizzle.query.asset.findFirst({
+        where: (asset, { eq, and }) =>
             and(
-                eq(assets.id, parseInt(assetToFavorite)),
-                eq(assets.status, "approved")
+                eq(asset.id, parseInt(assetToFavorite)),
+                eq(asset.status, "approved")
             ),
     })
 

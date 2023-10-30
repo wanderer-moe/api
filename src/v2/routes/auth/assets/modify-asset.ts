@@ -1,6 +1,6 @@
 import { responseHeaders } from "@/v2/lib/response-headers"
 import { getConnection } from "@/v2/db/turso"
-import { assetTagAsset, assets } from "@/v2/db/schema"
+import { assetTagAsset, asset } from "@/v2/db/schema"
 import { eq } from "drizzle-orm"
 import { SplitQueryByCommas } from "@/v2/lib/helpers/split-query-by-commas"
 import { auth } from "@/v2/lib/auth/lucia"
@@ -26,8 +26,8 @@ export async function modifyAssetData(c: APIContext): Promise<Response> {
 
     const { drizzle } = getConnection(c.env)
 
-    const asset = await drizzle.query.assets.findFirst({
-        where: (assets, { eq }) => eq(assets.id, parseInt(assetIdToModify)),
+    const foundAsset = await drizzle.query.asset.findFirst({
+        where: (asset, { eq }) => eq(asset.id, parseInt(assetIdToModify)),
         with: {
             assetTagAsset: {
                 with: {
@@ -37,14 +37,14 @@ export async function modifyAssetData(c: APIContext): Promise<Response> {
         },
     })
 
-    if (!asset) {
+    if (!foundAsset) {
         return c.json({ success: false, state: "asset not found" }, 200)
     }
 
     const roleFlags = roleFlagsToArray(session.user.roleFlags)
 
     if (
-        asset.uploadedById !== session.user.userId ||
+        foundAsset.uploadedById !== session.user.userId ||
         !roleFlags.includes("CREATOR")
     ) {
         return c.json(
@@ -71,11 +71,11 @@ export async function modifyAssetData(c: APIContext): Promise<Response> {
     const tags = SplitQueryByCommas(formData.get("tags") as string | null)
 
     const updatedAsset = await drizzle
-        .update(assets)
+        .update(asset)
         .set({
             ...metadata,
         })
-        .where(eq(assets.id, parseInt(assetIdToModify)))
+        .where(eq(asset.id, parseInt(assetIdToModify)))
         .execute()
 
     const validTags = []

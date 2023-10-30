@@ -1,5 +1,5 @@
 import { getConnection } from "@/v2/db/turso"
-import { assets } from "@/v2/db/schema"
+import { asset } from "@/v2/db/schema"
 import { desc } from "drizzle-orm"
 
 export async function getAssetFromId(c: APIContext): Promise<Response> {
@@ -12,9 +12,9 @@ export async function getAssetFromId(c: APIContext): Promise<Response> {
 
     const { drizzle } = getConnection(c.env)
 
-    const asset = await drizzle.query.assets.findFirst({
-        where: (assets, { eq, and }) =>
-            and(eq(assets.status, "approved"), eq(assets.id, parseInt(id))),
+    const foundAsset = await drizzle.query.asset.findFirst({
+        where: (asset, { eq, and }) =>
+            and(eq(asset.status, "approved"), eq(asset.id, parseInt(id))),
         with: {
             assetTagAsset: {
                 with: {
@@ -30,7 +30,7 @@ export async function getAssetFromId(c: APIContext): Promise<Response> {
         },
     })
 
-    if (!asset) {
+    if (!foundAsset) {
         response = c.json(
             {
                 success: false,
@@ -42,24 +42,24 @@ export async function getAssetFromId(c: APIContext): Promise<Response> {
         return response
     }
 
-    await drizzle.update(assets).set({ viewCount: asset.viewCount + 1 })
+    await drizzle.update(asset).set({ viewCount: foundAsset.viewCount + 1 })
 
-    const similarAssets = await drizzle.query.assets.findMany({
-        where: (assets, { eq, and }) =>
+    const similarAssets = await drizzle.query.asset.findMany({
+        where: (asset, { eq, and }) =>
             and(
-                eq(assets.status, "approved"),
-                eq(assets.assetCategory, asset.assetCategory)
+                eq(asset.status, "approved"),
+                eq(asset.assetCategory, foundAsset.assetCategory)
             ),
         limit: 6,
-        orderBy: desc(assets.id),
+        orderBy: desc(asset.id),
     })
 
     response = c.json(
         {
             success: true,
             status: "ok",
-            asset,
-            similarAssets,
+            asset: foundAsset,
+            similarAssets: similarAssets ?? [],
         },
         200
     )

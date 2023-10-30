@@ -50,9 +50,9 @@ export async function searchAll(c: APIContext): Promise<Response> {
         limit: 25,
     })
 
-    const assetsResponse = await drizzle.query.assets.findMany({
-        where: (assets) => {
-            return like(assets.name, `%${query}%`)
+    const assetsResponse = await drizzle.query.asset.findMany({
+        where: (asset) => {
+            return like(asset.name, `%${query}%`)
         },
         limit: 25,
     })

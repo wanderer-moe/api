@@ -24,8 +24,8 @@ Then, they are also used as relations when adding to collections or favorites.
 
 export type AssetStatus = "pending" | "approved" | "rejected"
 
-export const assets = sqliteTable(
-    tableNames.assets,
+export const asset = sqliteTable(
+    tableNames.asset,
     {
         id: integer("id").primaryKey(), // primary key auto increments on sqlite
         name: text("name").notNull(),
@@ -84,21 +84,21 @@ export const assets = sqliteTable(
     }
 )
 
-export type Asset = typeof assets.$inferSelect
-export type NewAsset = typeof assets.$inferInsert
+export type Asset = typeof asset.$inferSelect
+export type NewAsset = typeof asset.$inferInsert
 
-export const assetRelations = relations(assets, ({ one, many }) => ({
+export const assetRelations = relations(asset, ({ one, many }) => ({
     uploadedBy: one(users, {
-        fields: [assets.uploadedById, assets.uploadedByName],
+        fields: [asset.uploadedById, asset.uploadedByName],
         references: [users.id, users.username],
     }),
     assetTagAsset: many(assetTagAsset),
     assetCategory: one(assetCategory, {
-        fields: [assets.assetCategory],
+        fields: [asset.assetCategory],
         references: [assetCategory.name],
     }),
     game: one(game, {
-        fields: [assets.game],
+        fields: [asset.game],
         references: [game.name],
     }),
 }))

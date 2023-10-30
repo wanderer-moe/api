@@ -68,12 +68,9 @@ export async function addAssetToCollection(c: APIContext): Promise<Response> {
     }
 
     // check if asset exists, and status is 1 (approved)
-    const assetExists = await drizzle.query.assets.findFirst({
-        where: (assets, { eq, and }) =>
-            and(
-                eq(assets.id, parseInt(assetId)),
-                eq(assets.status, "approved")
-            ),
+    const assetExists = await drizzle.query.asset.findFirst({
+        where: (asset, { eq, and }) =>
+            and(eq(asset.id, parseInt(assetId)), eq(asset.status, "approved")),
     })
 
     if (!assetExists) {

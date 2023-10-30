@@ -70,11 +70,11 @@ export async function deleteAssetFromCollection(
     }
 
     // check if asset exists
-    const assetExists = await drizzle.query.assets.findFirst({
-        where: (assets, { eq }) => eq(assets.id, parseInt(collectionId)),
+    const foundAsset = await drizzle.query.asset.findFirst({
+        where: (asset, { eq }) => eq(asset.id, parseInt(collectionId)),
     })
 
-    if (!assetExists) {
+    if (!foundAsset) {
         return c.json({ success: false, state: "asset not found" }, 200)
     }
 

@@ -24,8 +24,8 @@ export async function getUnapprovedAssets(c: APIContext): Promise<Response> {
     const { drizzle } = getConnection(c.env)
 
     const unApprovedAssets =
-        (await drizzle.query.assets.findMany({
-            where: (assets, { eq, not }) => not(eq(assets.status, "approved")),
+        (await drizzle.query.asset.findMany({
+            where: (asset, { eq, not }) => not(eq(asset.status, "approved")),
         })) ?? []
 
     return c.json(

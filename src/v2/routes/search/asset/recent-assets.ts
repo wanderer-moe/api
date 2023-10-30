@@ -2,7 +2,7 @@ import { responseHeaders } from "@/v2/lib/response-headers"
 import { getConnection } from "@/v2/db/turso"
 import { desc } from "drizzle-orm"
 
-import { assets } from "@/v2/db/schema"
+import { asset } from "@/v2/db/schema"
 
 // get 100 most recent assets, sorted by asset.uploadedDate
 export async function recentAssets(c: APIContext): Promise<Response> {
@@ -14,10 +14,10 @@ export async function recentAssets(c: APIContext): Promise<Response> {
 
     const { drizzle } = getConnection(c.env)
 
-    const assetResponse = await drizzle.query.assets.findMany({
-        orderBy: desc(assets.uploadedDate),
+    const assetResponse = await drizzle.query.asset.findMany({
+        orderBy: desc(asset.uploadedDate),
         limit: 100,
-        where: (assets, { eq }) => eq(assets.status, "approved"),
+        where: (asset, { eq }) => eq(asset.status, "approved"),
     })
 
     response = c.json(

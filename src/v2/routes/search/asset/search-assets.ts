@@ -1,6 +1,6 @@
 import { responseHeaders } from "@/v2/lib/response-headers"
 import { getConnection } from "@/v2/db/turso"
-import { assetTagAsset, assets, assetTag, users } from "@/v2/db/schema"
+import { assetTagAsset, asset, assetTag, users } from "@/v2/db/schema"
 import { desc, like, sql, eq, and, or } from "drizzle-orm"
 import { SplitQueryByCommas } from "@/v2/lib/helpers/split-query-by-commas"
 
@@ -48,24 +48,23 @@ export async function searchForAssets(c: APIContext): Promise<Response> {
     const result = await drizzle
         .with(assetTagResponse)
         .select()
-        .from(assets)
-        .innerJoin(assetTagResponse, eq(assetTagResponse.assetId, assets.id))
+        .from(asset)
+        .innerJoin(assetTagResponse, eq(assetTagResponse.assetId, asset.id))
         .where(
             and(
-                searchQuery && like(assets.name, `%${searchQuery}%`),
-                gameList &&
-                    or(...gameList.map((game) => eq(assets.game, game))),
+                searchQuery && like(asset.name, `%${searchQuery}%`),
+                gameList && or(...gameList.map((game) => eq(asset.game, game))),
                 assetCategoryList &&
                     or(
                         ...assetCategoryList.map((category) =>
-                            eq(assets.assetCategory, category)
+                            eq(asset.assetCategory, category)
                         )
                     ),
-                eq(assets.status, "approved")
+                eq(asset.status, "approved")
             )
         )
-        .leftJoin(users, eq(users.id, assets.uploadedById))
-        .orderBy(desc(assets.uploadedDate))
+        .leftJoin(users, eq(users.id, asset.uploadedById))
+        .orderBy(desc(asset.uploadedDate))
         .limit(500)
 
     response = c.json(

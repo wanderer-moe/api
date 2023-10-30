@@ -1,7 +1,7 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { getConnection } from "@/v2/db/turso"
 import {
-    assets,
+    asset,
     assetTagAsset,
     game as gameTable,
     assetCategory as assetCategoryTable,
@@ -136,10 +136,10 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
         await drizzle.transaction(async (trx) => {
             // inserting new asset
             const newAssetDB = await trx
-                .insert(assets)
+                .insert(asset)
                 .values(newAsset)
                 .returning({
-                    assetId: assets.id,
+                    assetId: asset.id,
                 })
 
             // checking if tags exist and setting relations
