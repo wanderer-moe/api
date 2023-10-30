@@ -7,7 +7,7 @@ import {
     // uniqueIndex,
     index,
 } from "drizzle-orm/sqlite-core"
-import { users } from "../user/user"
+import { authUser } from "../user/user"
 import { assetCategory } from "./asset-categories"
 import { game } from "../game/game"
 import { assetTagAsset } from "./asset-tags"
@@ -47,12 +47,12 @@ export const asset = sqliteTable(
             .$type<AssetStatus>()
             .default("pending")
             .notNull(),
-        uploadedById: text("uploaded_by").references(() => users.id, {
+        uploadedById: text("uploaded_by").references(() => authUser.id, {
             onUpdate: "cascade",
             onDelete: "cascade",
         }),
         uploadedByName: text("uploaded_by_name").references(
-            () => users.username,
+            () => authUser.username,
             {
                 onUpdate: "cascade",
                 onDelete: "cascade",
@@ -88,9 +88,9 @@ export type Asset = typeof asset.$inferSelect
 export type NewAsset = typeof asset.$inferInsert
 
 export const assetRelations = relations(asset, ({ one, many }) => ({
-    uploadedBy: one(users, {
+    uploadedBy: one(authUser, {
         fields: [asset.uploadedById, asset.uploadedByName],
-        references: [users.id, users.username],
+        references: [authUser.id, authUser.username],
     }),
     assetTagAsset: many(assetTagAsset),
     assetCategory: one(assetCategory, {

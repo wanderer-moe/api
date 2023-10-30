@@ -38,8 +38,8 @@ export async function followUser(c: APIContext): Promise<Response> {
     }
 
     // check if user exists
-    const user = await drizzle.query.users.findFirst({
-        where: (users, { eq }) => eq(users.id, userToFollow),
+    const user = await drizzle.query.authUser.findFirst({
+        where: (authUser, { eq }) => eq(authUser.id, userToFollow),
     })
 
     if (!user) {

@@ -1,6 +1,6 @@
 import { responseHeaders } from "@/v2/lib/response-headers"
 import { getConnection } from "@/v2/db/turso"
-import { assetTagAsset, asset, assetTag, users } from "@/v2/db/schema"
+import { assetTagAsset, asset, assetTag, authUser } from "@/v2/db/schema"
 import { desc, like, sql, eq, and, or } from "drizzle-orm"
 import { SplitQueryByCommas } from "@/v2/lib/helpers/split-query-by-commas"
 
@@ -63,7 +63,7 @@ export async function searchForAssets(c: APIContext): Promise<Response> {
                 eq(asset.status, "approved")
             )
         )
-        .leftJoin(users, eq(users.id, asset.uploadedById))
+        .leftJoin(authUser, eq(authUser.id, asset.uploadedById))
         .orderBy(desc(asset.uploadedDate))
         .limit(500)
 

@@ -1,7 +1,7 @@
 import { tableNames } from "@/v2/db/drizzle"
 import { relations } from "drizzle-orm"
 import { sqliteTable, text, index } from "drizzle-orm/sqlite-core"
-import { users } from "./user"
+import { authUser } from "./user"
 
 /*
 NOTE: This file will be expanded on in the future, but for now it's just for Discord.
@@ -14,7 +14,7 @@ export const socialsConnection = sqliteTable(
         id: text("id").primaryKey(),
         userId: text("user_id")
             .notNull()
-            .references(() => users.id, {
+            .references(() => authUser.id, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
@@ -38,9 +38,9 @@ export type NewSocialsConnection = typeof socialsConnection.$inferInsert
 export const socialsConnectionRelations = relations(
     socialsConnection,
     ({ one }) => ({
-        user: one(users, {
+        user: one(authUser, {
             fields: [socialsConnection.userId],
-            references: [users.id],
+            references: [authUser.id],
         }),
     })
 )

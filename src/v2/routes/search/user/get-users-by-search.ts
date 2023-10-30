@@ -10,9 +10,9 @@ export async function getUsersBySearch(c: APIContext): Promise<Response> {
     const { query } = c.req.param()
     const { drizzle } = getConnection(c.env)
 
-    const userList = await drizzle.query.users.findMany({
-        where: (users, { or }) => {
-            return or(like(users.username, `%${query}%`))
+    const userList = await drizzle.query.authUser.findMany({
+        where: (authUser, { or }) => {
+            return or(like(authUser.username, `%${query}%`))
         },
         columns: {
             email: false,

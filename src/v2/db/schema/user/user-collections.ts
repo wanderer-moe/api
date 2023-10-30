@@ -7,7 +7,7 @@ import {
     // uniqueIndex,
     index,
 } from "drizzle-orm/sqlite-core"
-import { users } from "./user"
+import { authUser } from "./user"
 import { asset } from "../asset/asset"
 
 /*
@@ -24,7 +24,7 @@ export const userCollection = sqliteTable(
         description: text("description").notNull(),
         userId: text("user_id")
             .notNull()
-            .references(() => users.id, {
+            .references(() => authUser.id, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
@@ -82,9 +82,9 @@ export type NewUserCollectionAsset = typeof userCollectionAsset.$inferInsert
 export const collectionRelations = relations(
     userCollection,
     ({ one, many }) => ({
-        user: one(users, {
+        user: one(authUser, {
             fields: [userCollection.userId],
-            references: [users.id],
+            references: [authUser.id],
         }),
         assets: many(userCollectionAsset),
     })

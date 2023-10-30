@@ -6,7 +6,7 @@ import {
     // uniqueIndex,
     index,
 } from "drizzle-orm/sqlite-core"
-import { users } from "./user"
+import { authUser } from "./user"
 
 /*
 NOTE: this file manages the "social" aspect of users.
@@ -18,10 +18,10 @@ export const userNetworking = sqliteTable(
     {
         followerId: text("followerId")
             .notNull()
-            .references(() => users.id),
+            .references(() => authUser.id),
         followingId: text("followingId")
             .notNull()
-            .references(() => users.id),
+            .references(() => authUser.id),
         createdAt: text("createdAt").notNull(),
         updatedAt: text("updatedAt").notNull(),
     },
@@ -41,14 +41,14 @@ export type UserNetworking = typeof userNetworking.$inferSelect
 export type NewUserNetworking = typeof userNetworking.$inferInsert
 
 export const userNetworkingRelations = relations(userNetworking, ({ one }) => ({
-    follower: one(users, {
+    follower: one(authUser, {
         fields: [userNetworking.followerId],
-        references: [users.id],
+        references: [authUser.id],
         relationName: "follower",
     }),
-    following: one(users, {
+    following: one(authUser, {
         fields: [userNetworking.followingId],
-        references: [users.id],
+        references: [authUser.id],
         relationName: "following",
     }),
 }))

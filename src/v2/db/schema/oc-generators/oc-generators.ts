@@ -7,7 +7,7 @@ import {
     // uniqueIndex,
     index,
 } from "drizzle-orm/sqlite-core"
-import { users } from "../user/user"
+import { authUser } from "../user/user"
 
 /*
 NOTE: OC generators are not stored in the database.
@@ -21,7 +21,7 @@ export const savedOcGenerators = sqliteTable(
         id: text("id").primaryKey(),
         userId: text("user_id")
             .notNull()
-            .references(() => users.id, {
+            .references(() => authUser.id, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
@@ -51,9 +51,9 @@ export type NewSavedOcGenerators = typeof savedOcGenerators.$inferInsert
 export const savedOcGeneratorsRelations = relations(
     savedOcGenerators,
     ({ one }) => ({
-        user: one(users, {
+        user: one(authUser, {
             fields: [savedOcGenerators.userId],
-            references: [users.id],
+            references: [authUser.id],
         }),
     })
 )

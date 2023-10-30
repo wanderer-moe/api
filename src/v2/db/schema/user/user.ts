@@ -22,7 +22,7 @@ NOTE: Very basic user information
 - Keys table is login methods (i.e Credentials, OAuth, etc.)
 */
 
-export const users = sqliteTable(
+export const authUser = sqliteTable(
     tableNames.authUser,
     {
         id: text("id").primaryKey(),
@@ -52,8 +52,8 @@ export const users = sqliteTable(
     }
 )
 
-export type Users = typeof users.$inferSelect
-export type NewUsers = typeof users.$inferInsert
+export type Users = typeof authUser.$inferSelect
+export type NewUsers = typeof authUser.$inferInsert
 
 export const keys = sqliteTable(
     tableNames.authKey,
@@ -61,7 +61,7 @@ export const keys = sqliteTable(
         id: text("id").primaryKey(),
         userId: text("user_id")
             .notNull()
-            .references(() => users.id, {
+            .references(() => authUser.id, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
@@ -77,7 +77,7 @@ export const keys = sqliteTable(
 export type Keys = typeof keys.$inferSelect
 export type NewKeys = typeof keys.$inferInsert
 
-export const usersRelations = relations(users, ({ one, many }) => ({
+export const usersRelations = relations(authUser, ({ one, many }) => ({
     follower: many(userNetworking, {
         relationName: "follower",
     }),
@@ -95,8 +95,8 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 }))
 
 export const keysRelations = relations(keys, ({ one }) => ({
-    user: one(users, {
+    user: one(authUser, {
         fields: [keys.userId],
-        references: [users.id],
+        references: [authUser.id],
     }),
 }))

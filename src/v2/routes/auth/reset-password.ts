@@ -1,6 +1,6 @@
 import { auth } from "@/v2/lib/auth/lucia"
 import { getConnection } from "@/v2/db/turso"
-import { passwordResetToken, users } from "@/v2/db/schema"
+import { passwordResetToken, authUser } from "@/v2/db/schema"
 import { eq } from "drizzle-orm"
 import { generateRandomString } from "lucia/utils"
 import { z } from "zod"
@@ -45,8 +45,8 @@ export async function generatePasswordResetToken(
 
     const user = await drizzle
         .select()
-        .from(users)
-        .where(eq(users.email, email))
+        .from(authUser)
+        .where(eq(authUser.email, email))
 
     if (!user) {
         return c.json({ success: false, state: "valid data" }, 200)

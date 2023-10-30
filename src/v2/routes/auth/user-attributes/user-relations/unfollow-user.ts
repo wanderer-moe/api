@@ -45,8 +45,8 @@ export async function unfollowUser(c: APIContext): Promise<Response> {
     }
 
     // check if user exists
-    const user = await drizzle.query.users.findFirst({
-        where: (users, { eq }) => eq(users.id, userToUnFollow),
+    const user = await drizzle.query.authUser.findFirst({
+        where: (authUser, { eq }) => eq(authUser.id, userToUnFollow),
     })
 
     if (!user) {

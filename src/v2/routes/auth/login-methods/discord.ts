@@ -61,8 +61,8 @@ export async function discordCallback(c: APIContext): Promise<Response> {
 
         const { drizzle } = getConnection(c.env)
 
-        const userWithEmail = await drizzle.query.users.findFirst({
-            where: (users, { eq }) => eq(users.email, discordUser.email),
+        const userWithEmail = await drizzle.query.authUser.findFirst({
+            where: (authUser, { eq }) => eq(authUser.email, discordUser.email),
         })
 
         // if user exists, we create a discord key for them and update their email_verified attribute

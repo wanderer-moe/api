@@ -7,7 +7,7 @@ import {
     // uniqueIndex,
     index,
 } from "drizzle-orm/sqlite-core"
-import { users } from "./user"
+import { authUser } from "./user"
 
 /*
 NOTE: This is mostly security related. 
@@ -21,7 +21,7 @@ export const emailVerificationToken = sqliteTable(
         id: text("id").primaryKey(),
         userId: text("user_id")
             .notNull()
-            .references(() => users.id, {
+            .references(() => authUser.id, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
@@ -50,7 +50,7 @@ export const passwordResetToken = sqliteTable(
         id: text("id").primaryKey(),
         userId: text("user_id")
             .notNull()
-            .references(() => users.id, {
+            .references(() => authUser.id, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
@@ -72,9 +72,9 @@ export const passwordResetToken = sqliteTable(
 export const emailVerificationTokenRelations = relations(
     emailVerificationToken,
     ({ one }) => ({
-        user: one(users, {
+        user: one(authUser, {
             fields: [emailVerificationToken.userId],
-            references: [users.id],
+            references: [authUser.id],
         }),
     })
 )
@@ -82,9 +82,9 @@ export const emailVerificationTokenRelations = relations(
 export const passwordResetTokenRelations = relations(
     passwordResetToken,
     ({ one }) => ({
-        user: one(users, {
+        user: one(authUser, {
             fields: [passwordResetToken.userId],
-            references: [users.id],
+            references: [authUser.id],
         }),
     })
 )

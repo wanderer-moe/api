@@ -25,9 +25,9 @@ export async function searchAll(c: APIContext): Promise<Response> {
 
     // this is a disaster
     // https://cdn.discordapp.com/attachments/1102306276832202813/1147291827699986572/F.gif
-    const usersResponse = await drizzle.query.users.findMany({
-        where: (users) => {
-            return like(users.username, `%${query}%`)
+    const usersResponse = await drizzle.query.authUser.findMany({
+        where: (authUser) => {
+            return like(authUser.username, `%${query}%`)
         },
         columns: {
             email: false,

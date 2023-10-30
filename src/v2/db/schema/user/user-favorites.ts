@@ -7,7 +7,7 @@ import {
     // uniqueIndex,
     index,
 } from "drizzle-orm/sqlite-core"
-import { users } from "./user"
+import { authUser } from "./user"
 import { asset } from "../asset/asset"
 
 /*
@@ -22,7 +22,7 @@ export const userFavorite = sqliteTable(
         id: text("id").primaryKey(),
         userId: text("user_id")
             .notNull()
-            .references(() => users.id, {
+            .references(() => authUser.id, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
@@ -79,9 +79,9 @@ export type UserFavoriteAsset = typeof userFavoriteAsset.$inferSelect
 export type NewUserFavoriteAsset = typeof userFavoriteAsset.$inferInsert
 
 export const userFavoriteRelations = relations(userFavorite, ({ one }) => ({
-    user: one(users, {
+    user: one(authUser, {
         fields: [userFavorite.userId],
-        references: [users.id],
+        references: [authUser.id],
     }),
 }))
 
