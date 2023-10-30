@@ -15,6 +15,7 @@ import { socialsConnection } from "./user-connections"
 import { userCollection } from "./user-collections"
 import { passwordResetToken } from "./user-attributes"
 import { emailVerificationToken } from "./user-attributes"
+import { atlas } from "../asset/asset-atlas"
 
 /*
 NOTE: Very basic user information
@@ -86,6 +87,7 @@ export const usersRelations = relations(authUser, ({ one, many }) => ({
     }),
     key: many(keys),
     assets: many(asset),
+    atlas: many(atlas),
     userFavorite: one(userFavorite),
     socialsConnection: one(socialsConnection),
     userCollection: many(userCollection),

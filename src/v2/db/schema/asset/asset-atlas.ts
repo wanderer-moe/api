@@ -10,6 +10,10 @@ import {
 import { asset } from "./asset"
 import { authUser } from "../user/user"
 
+/*
+NOTE: this allows for users down the line to link their uploaded assets to appropiate atlases for animation.
+*/
+
 export const atlas = sqliteTable(
     tableNames.atlas,
     {

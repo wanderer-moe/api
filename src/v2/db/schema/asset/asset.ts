@@ -11,6 +11,7 @@ import { authUser } from "../user/user"
 import { assetCategory } from "./asset-categories"
 import { game } from "../game/game"
 import { assetTagAsset } from "./asset-tags"
+import { atlas } from "./asset-atlas"
 
 /*
 NOTE: Assets have a lot of relations, and can be quite complex in some cases.
@@ -93,6 +94,7 @@ export const assetRelations = relations(asset, ({ one, many }) => ({
         references: [authUser.id, authUser.username],
     }),
     assetTagAsset: many(assetTagAsset),
+    atlas: many(atlas),
     assetCategory: one(assetCategory, {
         fields: [asset.assetCategory],
         references: [assetCategory.name],
