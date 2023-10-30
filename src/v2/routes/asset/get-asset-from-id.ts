@@ -14,7 +14,7 @@ export async function getAssetFromId(c: APIContext): Promise<Response> {
 
     const asset = await drizzle.query.assets.findFirst({
         where: (assets, { eq, and }) =>
-            and(eq(assets.status, 1), eq(assets.id, parseInt(id))),
+            and(eq(assets.status, "approved"), eq(assets.id, parseInt(id))),
         with: {
             assetTagAsset: {
                 with: {
@@ -47,7 +47,7 @@ export async function getAssetFromId(c: APIContext): Promise<Response> {
     const similarAssets = await drizzle.query.assets.findMany({
         where: (assets, { eq, and }) =>
             and(
-                eq(assets.status, 1),
+                eq(assets.status, "approved"),
                 eq(assets.assetCategory, asset.assetCategory)
             ),
         limit: 6,

@@ -5,6 +5,7 @@ import {
     assetTagAsset,
     game as gameTable,
     assetCategory as assetCategoryTable,
+    AssetStatus,
 } from "@/v2/db/schema"
 import { z } from "zod"
 import { eq } from "drizzle-orm"
@@ -90,7 +91,7 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
         assetCategory: formData.data.category,
         url: `/assets/${formData.data.game}/${formData.data.category}/${formData.data.name}.${formData.data.extension}`,
         uploadedById: session.user.userId,
-        status: bypassApproval ? 1 : 2,
+        status: bypassApproval ? "approved" : ("pending" as AssetStatus),
         uploadedDate: new Date().getTime(),
         fileSize: formData.data.size, // stored in bytes
         width: formData.data.width,

@@ -22,6 +22,8 @@ NOTE: Assets have a lot of relations, and can be quite complex in some cases.
 Then, they are also used as relations when adding to collections or favorites.
 */
 
+export type AssetStatus = "pending" | "approved" | "rejected"
+
 export const assets = sqliteTable(
     tableNames.assets,
     {
@@ -41,7 +43,10 @@ export const assets = sqliteTable(
                 onDelete: "cascade",
             }),
         url: text("url").notNull(),
-        status: integer("status").notNull(),
+        status: text("status")
+            .$type<AssetStatus>()
+            .default("pending")
+            .notNull(),
         uploadedById: text("uploaded_by").references(() => users.id, {
             onUpdate: "cascade",
             onDelete: "cascade",

@@ -61,7 +61,7 @@ export async function searchForAssets(c: APIContext): Promise<Response> {
                             eq(assets.assetCategory, category)
                         )
                     ),
-                eq(assets.status, 1)
+                eq(assets.status, "approved")
             )
         )
         .leftJoin(users, eq(users.id, assets.uploadedById))

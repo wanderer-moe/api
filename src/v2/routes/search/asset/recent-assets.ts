@@ -17,7 +17,7 @@ export async function recentAssets(c: APIContext): Promise<Response> {
     const assetResponse = await drizzle.query.assets.findMany({
         orderBy: desc(assets.uploadedDate),
         limit: 100,
-        where: (assets, { eq }) => eq(assets.status, 1),
+        where: (assets, { eq }) => eq(assets.status, "approved"),
     })
 
     response = c.json(

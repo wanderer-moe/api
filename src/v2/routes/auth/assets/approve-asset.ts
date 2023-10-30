@@ -1,6 +1,6 @@
 import { responseHeaders } from "@/v2/lib/response-headers"
 import { getConnection } from "@/v2/db/turso"
-import { assets } from "@/v2/db/schema"
+import { assets, AssetStatus } from "@/v2/db/schema"
 import { eq } from "drizzle-orm"
 
 import { auth } from "@/v2/lib/auth/lucia"
@@ -31,7 +31,7 @@ export async function approveAsset(c: APIContext): Promise<Response> {
         where: (assets, { eq }) => eq(assets.id, parseInt(assetIdToApprove)),
     })
 
-    if (!asset || asset.status === 1) {
+    if (!asset || asset.status === "approved") {
         c.json(
             { success: false, state: "asset not found or already approved" },
             200
@@ -41,7 +41,7 @@ export async function approveAsset(c: APIContext): Promise<Response> {
     const updatedAsset = await drizzle
         .update(assets)
         .set({
-            status: 1,
+            status: "approved" as AssetStatus,
         })
         .where(eq(assets.id, parseInt(assetIdToApprove)))
         .execute()
