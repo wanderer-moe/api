@@ -1,5 +1,5 @@
 export const tableNames = {
-    assets: "assets",
+    asset: "asset",
     authKey: "authKey",
     authSession: "authSession",
     authUser: "authUser",

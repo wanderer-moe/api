@@ -1,11 +1,11 @@
 import { Hono } from "hono"
-import assetRoute from "./v2/routes/asset/assetRoutes"
-import discordRoute from "./v2/routes/discord/discordRoutes"
-import ocGeneratorRoute from "./v2/routes/oc-generators/ocGeneratorRoutes"
-import gamesRoute from "./v2/routes/games/gamesRoutes"
-import authRoute from "./v2/routes/auth/authRoutes"
-import searchRoute from "./v2/routes/search/searchRoutes"
-import tagsRoute from "./v2/routes/tags/tagsRoutes"
+import assetRoute from "./v2/routes/asset/asset-routes"
+import discordRoute from "./v2/routes/discord/discord-routes"
+import ocGeneratorRoute from "./v2/routes/oc-generators/oc-generator-routes"
+import gamesRoute from "./v2/routes/games/games-routes"
+import authRoute from "./v2/routes/auth/auth-routes"
+import searchRoute from "./v2/routes/search/search-routes"
+import tagsRoute from "./v2/routes/tags/tags-routes"
 import { getRuntimeKey } from "hono/adapter"
 
 const app = new Hono<{ Bindings: Bindings }>()

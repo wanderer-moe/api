@@ -6,8 +6,8 @@ import "dotenv/config"
 const { TURSO_DATABASE_AUTH_TOKEN, TURSO_DATABASE_URL } = process.env
 
 const client = createClient({
-    url: TURSO_DATABASE_URL as string,
-    authToken: TURSO_DATABASE_AUTH_TOKEN as string,
+    url: TURSO_DATABASE_URL,
+    authToken: TURSO_DATABASE_AUTH_TOKEN,
 })
 
 const db = drizzleORM(client)
