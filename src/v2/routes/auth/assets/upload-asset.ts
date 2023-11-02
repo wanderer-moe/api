@@ -58,7 +58,12 @@ const UploadAssetSchema = z.object({
 })
 
 export async function uploadAsset(c: APIContext): Promise<Response> {
-    const formData = UploadAssetSchema.safeParse(await c.req.formData())
+    const formData = UploadAssetSchema.safeParse(
+        await c.req.formData().then((formData) => {
+            const data = Object.fromEntries(formData.entries())
+            return data
+        })
+    )
 
     if (!formData.success) {
         return c.json({ success: false, state: "invalid data" }, 400)
@@ -156,7 +161,7 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
                             .values({
                                 id: crypto.randomUUID(),
                                 assetId: newAssetDB[0].assetId,
-                                assetTagId: tagExists[0].assetTagId,
+                                assetTagId: tagExists.id,
                             })
                             .returning({
                                 assetTagId: assetTagAsset.assetTagId,
