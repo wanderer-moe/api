@@ -1,6 +1,6 @@
 {
-    "name": "wanderer-moe-api",
-    "version": "1.0.1b",
+    "name": "api",
+    "version": "1.1.0b",
     "scripts": {
         "prettier:fmt": "prettier --write .",
         "dev": "wrangler dev --remote",
@@ -9,7 +9,7 @@
         "prettier:check": "prettier --check .",
         "typecheck": "tsc --noEmit",
         "drizzle:generate": "drizzle-kit generate:sqlite",
-        "drizzle:migrate": "ts-node ./src/scripts/migrate/migrate",
+        "drizzle:migrate": "tsx ./src/scripts/migrate/migrate",
         "drizzle:push": "drizzle-kit push:sqlite",
         "drizzle:studio": "drizzle-kit studio --port 7331 --host 127.0.0.1 --verbose"
     },
