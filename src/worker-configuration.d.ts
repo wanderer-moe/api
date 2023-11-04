@@ -6,7 +6,7 @@ declare global {
         DISCORD_TOKEN: string
         FILES_BUCKET: R2Bucket
         KV_SESSION_STORAGE: KVNamespace
-        ENVIRONMENT: string // should be "DEV", "PROD"
+        ENVIRONMENT: "PROD" | "DEV"
         VERY_SECRET_SIGNUP_KEY: string
         TURSO_DATABASE_URL: string
         TURSO_DATABASE_AUTH_TOKEN: string
@@ -14,6 +14,7 @@ declare global {
         DISCORD_CLIENT_SECRET: string
         DISCORD_REDIRECT_URI: string
         RESEND_API_KEY: string
+        TURSO_DEV_DATABASE_URL: string | undefined
     }
 
     /**

@@ -21,12 +21,18 @@ class LoggerWrapper implements Logger {
  */
 export function getConnection(env: Bindings) {
     /**
-     * The `turso` client is created using the `createClient` function from `@libsql/client/web`.
-     * When running in dev, you don't need to pass `authToken`.
-     */
+     * The `createClient` function is used to create a Turso client.
+     * The `url` option is set to the `TURSO_DATABASE_URL` environment variable.
+     * The `authToken` option is set to the `TURSO_DATABASE_AUTH_TOKEN` environment variable.
+     * If the `ENVIRONMENT` environment variable is set to `DEV`, the `TURSO_DEV_DATABASE_URL` environment variable is used instead.
+     **/
+    const isDev = env.ENVIRONMENT === "DEV"
+
     const turso = createClient({
-        url: env.TURSO_DATABASE_URL,
-        authToken: env.TURSO_DATABASE_AUTH_TOKEN,
+        url: isDev
+            ? env.TURSO_DEV_DATABASE_URL ?? env.TURSO_DATABASE_URL
+            : env.TURSO_DATABASE_URL,
+        ...(isDev ? {} : { authToken: env.TURSO_DATABASE_AUTH_TOKEN }),
     })
 
     /**

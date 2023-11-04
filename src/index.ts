@@ -6,22 +6,11 @@ import gamesRoute from "./v2/routes/games/games-routes"
 import authRoute from "./v2/routes/auth/auth-routes"
 import searchRoute from "./v2/routes/search/search-routes"
 import tagsRoute from "./v2/routes/tags/tags-routes"
-import { getRuntimeKey } from "hono/adapter"
+import mainRoute from "./default/routes/main-routes"
 
 const app = new Hono<{ Bindings: Bindings }>()
 
-app.get("/status", (c) => {
-    return c.json(
-        {
-            status: "ok",
-            runtime: getRuntimeKey(),
-        },
-        200
-    )
-})
-app.get("/", (c) => {
-    return c.json({ success: "true", status: "ok", routes: app.routes }, 200)
-})
+app.route("/", mainRoute)
 app.route("/v2/asset", assetRoute)
 app.route("/v2/discord", discordRoute)
 app.route("/v2/oc-generators", ocGeneratorRoute)
