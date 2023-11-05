@@ -10,14 +10,15 @@ const TURSO_DEV_DATABASE_URL =
 const isDev = ENVIRONMENT === "DEV"
 
 async function main() {
-
     console.log("IS_DEV: ", isDev)
 
     isDev && console.log("TURSO_DEV_DATABASE_URL: ", TURSO_DEV_DATABASE_URL)
     !isDev && console.log("TURSO_DATABASE_URL: ", TURSO_DATABASE_URL)
 
-    console.log("Awaiting 5 seconds before migrating...")
-    await new Promise((resolve) => setTimeout(resolve, 5000))
+    const waitTime = isDev ? 3000 : 1000
+
+    console.log(`Waiting ${waitTime}ms until migration...`)
+    await new Promise((resolve) => setTimeout(resolve, waitTime))
 
     console.log("Connecting to database client...")
     const client = createClient({
@@ -27,7 +28,9 @@ async function main() {
         ...(isDev ? {} : { authToken: TURSO_DATABASE_AUTH_TOKEN }),
     })
     const db = drizzleORM(client)
-    console.log("Connected to database client & initialized drizzle-orm instance")
+    console.log(
+        "Connected to database client & initialized drizzle-orm instance"
+    )
 
     console.log("Migrating database...")
     await migrate(db, { migrationsFolder: "./src/v2/db/migrations" })
