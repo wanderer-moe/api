@@ -36,220 +36,245 @@ async function main() {
     console.log("Seeding database...\n")
 
     console.log("[authUser] Seeding users...")
-    const newUsers = await db.insert(authUser).values([
-        {
-            id: "userid1",
-            username: "testuser",
-            email: "hi@dromzeh.dev",
-            emailVerified: 1,
-            usernameColour: "#84E6F8",
-            bio: "test bio",
-            dateJoined: new Date().toISOString(),
-            roleFlags: 1,
-            isContributor: 0,
-            selfAssignableRoleFlags: 0,
-        },
-        {
-            id: "userid2",
-            username: "testuser2",
-            email: "hi2@dromzeh.dev",
-            emailVerified: 1,
-            bio: "test bio 2",
-            pronouns: "he/him/his",
-            dateJoined: new Date().toISOString(),
-            roleFlags: 1,
-            isContributor: 0,
-            selfAssignableRoleFlags: 0,
-        },
-        {
-            id: "userid3",
-            username: "testuser3",
-            email: "hi3@dromzeh.dev",
-            emailVerified: 1,
-            bio: "test bio 3",
-            dateJoined: new Date().toISOString(),
-            roleFlags: 1,
-            isContributor: 0,
-            selfAssignableRoleFlags: 0,
-        },
-    ]).returning()
+    const newUsers = await db
+        .insert(authUser)
+        .values([
+            {
+                id: "userid1",
+                username: "testuser",
+                email: "hi@dromzeh.dev",
+                emailVerified: 1,
+                usernameColour: "#84E6F8",
+                bio: "test bio",
+                dateJoined: new Date().toISOString(),
+                roleFlags: 1,
+                isContributor: 0,
+                selfAssignableRoleFlags: 0,
+            },
+            {
+                id: "userid2",
+                username: "testuser2",
+                email: "hi2@dromzeh.dev",
+                emailVerified: 1,
+                bio: "test bio 2",
+                pronouns: "he/him/his",
+                dateJoined: new Date().toISOString(),
+                roleFlags: 1,
+                isContributor: 0,
+                selfAssignableRoleFlags: 0,
+            },
+            {
+                id: "userid3",
+                username: "testuser3",
+                email: "hi3@dromzeh.dev",
+                emailVerified: 1,
+                bio: "test bio 3",
+                dateJoined: new Date().toISOString(),
+                roleFlags: 1,
+                isContributor: 0,
+                selfAssignableRoleFlags: 0,
+            },
+        ])
+        .returning()
     console.log(`[authUser] inserted ${newUsers.length} rows\n`)
 
     console.log("[userNetworking] Seeding user following...")
-    const newUserNetworking = await db.insert(userNetworking).values([
-        {
-            followerId: newUsers[0].id,
-            followingId: newUsers[1].id,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-        },
-        {
-            followerId: newUsers[1].id,
-            followingId: newUsers[0].id,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-        },
-        {
-            followerId: newUsers[0].id,
-            followingId: newUsers[2].id,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-        },
-    ]).returning()
+    const newUserNetworking = await db
+        .insert(userNetworking)
+        .values([
+            {
+                followerId: newUsers[0].id,
+                followingId: newUsers[1].id,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            },
+            {
+                followerId: newUsers[1].id,
+                followingId: newUsers[0].id,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            },
+            {
+                followerId: newUsers[0].id,
+                followingId: newUsers[2].id,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            },
+        ])
+        .returning()
     console.log(`[userNetworking] inserted ${newUserNetworking.length} rows\n`)
 
-
     console.log("[assetTag] Seeding asset tags...")
-    const newAssetTags = await db.insert(assetTag).values([
-        {
-            id: "official",
-            name: "official",
-            formattedName: "Official",
-            assetCount: 1,
-            lastUpdated: new Date().toISOString(),
-        },
-        {
-            id: "1.0",
-            name: "1.0",
-            formattedName: "1.0",
-            assetCount: 1,
-            lastUpdated: new Date().toISOString(),
-        },
-    ]).returning()
+    const newAssetTags = await db
+        .insert(assetTag)
+        .values([
+            {
+                id: "official",
+                name: "official",
+                formattedName: "Official",
+                assetCount: 1,
+                lastUpdated: new Date().toISOString(),
+            },
+            {
+                id: "1.0",
+                name: "1.0",
+                formattedName: "1.0",
+                assetCount: 1,
+                lastUpdated: new Date().toISOString(),
+            },
+        ])
+        .returning()
     console.log(`[assetTag] inserted ${newAssetTags.length} rows\n`)
-    
+
     console.log("[game] Seeding games...")
-    const newGames = await db.insert(game).values([
-        {
-            id: "genshin-impact",
-            name: "genshin-impact",
-            formattedName: "Genshin Impact",
-            assetCount: 1,
-            possibleSuggestiveContent: 0,
-            lastUpdated: new Date().toISOString(),
-        },
-        {
-            id: "honkai-impact-3rd",
-            name: "honkai-impact-3rd",
-            formattedName: "Honkai Impact: 3rd",
-            assetCount: 0,
-            possibleSuggestiveContent: 0,
-            lastUpdated: new Date().toISOString(),
-        },
-    ]).returning()
+    const newGames = await db
+        .insert(game)
+        .values([
+            {
+                id: "genshin-impact",
+                name: "genshin-impact",
+                formattedName: "Genshin Impact",
+                assetCount: 1,
+                possibleSuggestiveContent: 0,
+                lastUpdated: new Date().toISOString(),
+            },
+            {
+                id: "honkai-impact-3rd",
+                name: "honkai-impact-3rd",
+                formattedName: "Honkai Impact: 3rd",
+                assetCount: 0,
+                possibleSuggestiveContent: 0,
+                lastUpdated: new Date().toISOString(),
+            },
+        ])
+        .returning()
     console.log(`[game] inserted ${newGames.length} rows\n`)
 
     console.log("[assetCategory] Seeding asset categories...")
-    const newAssetCategories = await db.insert(assetCategory).values([
-        {
-            id: "character-sheets",
-            name: "character-sheets",
-            formattedName: "Character Sheets",
-            assetCount: 1,
-            lastUpdated: new Date().toISOString(),
-        },
-        {
-            id: "splash-art",
-            name: "splash-art",
-            formattedName: "Splash Art",
-            assetCount: 0,
-            lastUpdated: new Date().toISOString(),
-        },
-    ]).returning()
+    const newAssetCategories = await db
+        .insert(assetCategory)
+        .values([
+            {
+                id: "character-sheets",
+                name: "character-sheets",
+                formattedName: "Character Sheets",
+                assetCount: 1,
+                lastUpdated: new Date().toISOString(),
+            },
+            {
+                id: "splash-art",
+                name: "splash-art",
+                formattedName: "Splash Art",
+                assetCount: 0,
+                lastUpdated: new Date().toISOString(),
+            },
+        ])
+        .returning()
     console.log(`[assetCategory] inserted ${newAssetCategories.length} rows\n`)
 
     console.log("[gameAssetCategory] Linking games to asset categories...")
-    const newGameAssetCategory = await db.insert(gameAssetCategory).values([
-        {
-            gameId: "genshin-impact",
-            assetCategoryId: "character-sheets",
-        },
-        {
-            gameId: "genshin-impact",
-            assetCategoryId: "splash-art",
-        },
-        {
-            gameId: "honkai-impact-3rd",
-            assetCategoryId: "character-sheets",
-        },
-    ]).returning()
-    console.log(`[gameAssetCategory] inserted ${newGameAssetCategory.length} rows\n`)
+    const newGameAssetCategory = await db
+        .insert(gameAssetCategory)
+        .values([
+            {
+                gameId: "genshin-impact",
+                assetCategoryId: "character-sheets",
+            },
+            {
+                gameId: "genshin-impact",
+                assetCategoryId: "splash-art",
+            },
+            {
+                gameId: "honkai-impact-3rd",
+                assetCategoryId: "character-sheets",
+            },
+        ])
+        .returning()
+    console.log(
+        `[gameAssetCategory] inserted ${newGameAssetCategory.length} rows\n`
+    )
 
     console.log("[asset] Seeding assets...")
-    const newAssets = await db.insert(asset).values([
-        {
-            id: 1,
-            name: "test-asset",
-            extension: "image/png",
-            gameId: "genshin-impact",
-            assetCategoryId: "character-sheets",
-            url: "/test/image.png",
-            status: "approved",
-            uploadedById: "userid1",
-            uploadedDate: new Date().toISOString(),
-            assetIsOptimized: 0,
-            viewCount: 1337,
-            downloadCount: 1337,
-            fileSize: 40213,
-            width: 1920,
-            height: 1080,
-        },
-        {
-            id: 2,
-            name: "test-asset-2",
-            extension: "image/png",
-            gameId: "honkai-impact-3rd",
-            assetCategoryId: "character-sheets",
-            url: "/test/image.png",
-            status: "approved",
-            uploadedById: "userid2",
-            uploadedDate: new Date().toISOString(),
-            assetIsOptimized: 0,
-            viewCount: 1337,
-            downloadCount: 1337,
-            fileSize: 40213,
-            width: 1920,
-            height: 1080,
-        },
-        {
-            id: 3,
-            name: "test-asset-3",
-            extension: "image/png",
-            gameId: "genshin-impact",
-            assetCategoryId: "splash-art",
-            url: "/test/image.png",
-            status: "approved",
-            uploadedById: "userid2",
-            uploadedDate: new Date().toISOString(),
-            assetIsOptimized: 0,
-            viewCount: 1337,
-            downloadCount: 1337,
-            fileSize: 40213,
-            width: 1920,
-            height: 1080,
-        },
-    ]).returning()
+    const newAssets = await db
+        .insert(asset)
+        .values([
+            {
+                id: 1,
+                name: "test-asset",
+                extension: "image/png",
+                gameId: "genshin-impact",
+                assetCategoryId: "character-sheets",
+                url: "/test/image.png",
+                status: "approved",
+                uploadedById: "userid1",
+                uploadedDate: new Date().toISOString(),
+                assetIsOptimized: 0,
+                viewCount: 1337,
+                downloadCount: 1337,
+                fileSize: 40213,
+                width: 1920,
+                height: 1080,
+            },
+            {
+                id: 2,
+                name: "test-asset-2",
+                extension: "image/png",
+                gameId: "honkai-impact-3rd",
+                assetCategoryId: "character-sheets",
+                url: "/test/image.png",
+                status: "approved",
+                uploadedById: "userid2",
+                uploadedDate: new Date().toISOString(),
+                assetIsOptimized: 0,
+                viewCount: 1337,
+                downloadCount: 1337,
+                fileSize: 40213,
+                width: 1920,
+                height: 1080,
+            },
+            {
+                id: 3,
+                name: "test-asset-3",
+                extension: "image/png",
+                gameId: "genshin-impact",
+                assetCategoryId: "splash-art",
+                url: "/test/image.png",
+                status: "approved",
+                uploadedById: "userid2",
+                uploadedDate: new Date().toISOString(),
+                assetIsOptimized: 0,
+                viewCount: 1337,
+                downloadCount: 1337,
+                fileSize: 40213,
+                width: 1920,
+                height: 1080,
+            },
+        ])
+        .returning()
     console.log(`[asset] inserted ${newAssets.length} rows\n`)
 
     console.log("[assetTagAsset] Linking assets to asset tags...")
-    const newAssetTagAsset = await db.insert(assetTagAsset).values([
-        {
-            assetId: 1,
-            assetTagId: "official",
-        },
-        {
-            assetId: 1,
-            assetTagId: "1.0",
-        },
-        {
-            assetId: 2,
-            assetTagId: "official",
-        },
-        {
-            assetId: 3,
-            assetTagId: "official",
-        },
-    ]).returning()
+    const newAssetTagAsset = await db
+        .insert(assetTagAsset)
+        .values([
+            {
+                assetId: 1,
+                assetTagId: "official",
+            },
+            {
+                assetId: 1,
+                assetTagId: "1.0",
+            },
+            {
+                assetId: 2,
+                assetTagId: "official",
+            },
+            {
+                assetId: 3,
+                assetTagId: "official",
+            },
+        ])
+        .returning()
     console.log(`[assetTagAsset] inserted ${newAssetTagAsset.length} rows\n`)
 
     console.log("Seeded database successfully")

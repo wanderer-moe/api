@@ -53,7 +53,12 @@ export async function searchForAssets(c: APIContext): Promise<Response> {
         .where(
             and(
                 searchQuery && like(asset.name, `%${searchQuery}%`),
-                gameList && or(...gameList.map((game) => eq(asset.assetCategoryId, game))),
+                gameList &&
+                    or(
+                        ...gameList.map((game) =>
+                            eq(asset.assetCategoryId, game)
+                        )
+                    ),
                 assetCategoryList &&
                     or(
                         ...assetCategoryList.map((category) =>

@@ -35,16 +35,20 @@ export const asset = sqliteTable(
             .references(() => game.id, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
-            }).notNull(),
+            })
+            .notNull(),
         assetCategoryId: text("asset_category")
             .references(() => assetCategory.id, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
-            }).notNull(),
-        uploadedById: text("uploaded_by").references(() => authUser.id, {
-            onUpdate: "cascade",
-            onDelete: "cascade",
-        }).notNull(),
+            })
+            .notNull(),
+        uploadedById: text("uploaded_by")
+            .references(() => authUser.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            })
+            .notNull(),
         url: text("url").notNull(),
         status: text("status")
             .$type<AssetStatus>()
