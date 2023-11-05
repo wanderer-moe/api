@@ -17,7 +17,8 @@ export const socialsConnection = sqliteTable(
             .references(() => authUser.id, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
-            }),
+            })
+            .unique(),
         discordId: text("discord_id"),
     },
     (socialsConnection) => {

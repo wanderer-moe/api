@@ -37,7 +37,11 @@ export const authUser = sqliteTable(
         pronouns: text("pronouns"),
         verified: integer("verified").default(0).notNull(),
         bio: text("bio").default("No bio set").notNull(),
-        dateJoined: text("date_joined").notNull(),
+        dateJoined: text("date_joined")
+            .notNull()
+            .$defaultFn(() => {
+                return new Date().toISOString()
+            }),
         roleFlags: integer("role_flags").default(1).notNull(),
         isContributor: integer("is_contributor").default(0).notNull(),
         selfAssignableRoleFlags: integer("self_assignable_role_flags")

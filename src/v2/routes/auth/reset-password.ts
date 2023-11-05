@@ -59,7 +59,6 @@ export async function generatePasswordResetToken(
             id: token,
             userId: user[0].id,
             token,
-            expiresAt: Date.now() + 1000 * 60 * 30,
         })
     })
 
@@ -121,7 +120,7 @@ export async function resetPassword(c: APIContext): Promise<Response> {
         return c.json({ success: false, state: "invalid token entered" }, 200)
     }
 
-    if (relatedUser[0].expiresAt < Date.now()) {
+    if (new Date(relatedUser[0].expiresAt) < new Date()) {
         drizzle
             .delete(passwordResetToken)
             .where(eq(passwordResetToken.token, token))

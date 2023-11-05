@@ -28,7 +28,11 @@ export const userCollection = sqliteTable(
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
-        dateCreated: text("date_created").notNull(),
+        dateCreated: text("date_created")
+            .notNull()
+            .$defaultFn(() => {
+                return new Date().toISOString()
+            }),
         isPublic: integer("is_public").default(0).notNull(),
     },
     (collection) => {

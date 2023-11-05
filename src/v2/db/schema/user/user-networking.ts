@@ -22,7 +22,11 @@ export const userNetworking = sqliteTable(
         followingId: text("followingId")
             .notNull()
             .references(() => authUser.id),
-        createdAt: text("createdAt").notNull(),
+        createdAt: text("createdAt")
+            .notNull()
+            .$defaultFn(() => {
+                return new Date().toISOString()
+            }),
     },
     (userNetworking) => {
         return {

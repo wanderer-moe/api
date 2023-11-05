@@ -140,7 +140,6 @@ export async function signup(c: APIContext): Promise<Response> {
                 id: emailVerificationKey,
                 userId: user.userId,
                 token: emailVerificationKey,
-                expiresAt: Date.now() + 86400000,
             })
         })
 

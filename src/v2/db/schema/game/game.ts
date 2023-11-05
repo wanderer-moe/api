@@ -25,7 +25,11 @@ export const game = sqliteTable(
         possibleSuggestiveContent: integer("possible_suggestive_content")
             .default(0)
             .notNull(),
-        lastUpdated: text("last_updated").notNull(),
+        lastUpdated: text("last_updated")
+            .notNull()
+            .$defaultFn(() => {
+                return new Date().toISOString()
+            }),
     },
     (game) => {
         return {

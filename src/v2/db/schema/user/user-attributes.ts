@@ -3,7 +3,6 @@ import { relations } from "drizzle-orm"
 import {
     sqliteTable,
     text,
-    integer,
     // uniqueIndex,
     index,
 } from "drizzle-orm/sqlite-core"
@@ -26,7 +25,13 @@ export const emailVerificationToken = sqliteTable(
                 onDelete: "cascade",
             }),
         token: text("token").notNull(),
-        expiresAt: integer("expires_at").notNull(),
+        expiresAt: text("expires_at")
+            .notNull()
+            .$defaultFn(() => {
+                const now = new Date()
+                now.setHours(now.getHours() + 12)
+                return now.toISOString()
+            }),
     },
     (emailVerificationToken) => {
         return {
@@ -55,7 +60,13 @@ export const passwordResetToken = sqliteTable(
                 onDelete: "cascade",
             }),
         token: text("token").notNull(),
-        expiresAt: integer("expires_at").notNull(),
+        expiresAt: text("expires_at")
+            .notNull()
+            .$defaultFn(() => {
+                const now = new Date()
+                now.setHours(now.getHours() + 12)
+                return now.toISOString()
+            }),
     },
     (passwordResetToken) => {
         return {
