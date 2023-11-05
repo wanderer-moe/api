@@ -39,3 +39,6 @@ jobs:
 
             - name: Migrate Database
               run: pnpm drizzle:migrate
+
+            - name: Seed Database
+              run: pnpm drizzle:seed
