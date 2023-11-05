@@ -92,12 +92,12 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
     const newAsset = {
         name: formData.data.name,
         extension: formData.data.extension,
-        game: formData.data.game,
-        assetCategory: formData.data.category,
+        gameId: formData.data.game,
+        assetCategoryId: formData.data.category,
         url: `/assets/${formData.data.game}/${formData.data.category}/${formData.data.name}.${formData.data.extension}`,
         uploadedById: session.user.userId,
         status: bypassApproval ? "approved" : ("pending" as AssetStatus),
-        uploadedDate: new Date().getTime(),
+        uploadedDate: new Date().toISOString(),
         fileSize: formData.data.size, // stored in bytes
         width: formData.data.width,
         height: formData.data.height,
@@ -159,7 +159,6 @@ export async function uploadAsset(c: APIContext): Promise<Response> {
                         await trx
                             .insert(assetTagAsset)
                             .values({
-                                id: crypto.randomUUID(),
                                 assetId: newAssetDB[0].assetId,
                                 assetTagId: tagExists.id,
                             })

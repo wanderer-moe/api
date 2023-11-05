@@ -100,7 +100,6 @@ export async function modifyAssetData(c: APIContext): Promise<Response> {
                     await trx
                         .insert(assetTagAsset)
                         .values({
-                            id: crypto.randomUUID(),
                             assetId: parseInt(assetIdToModify),
                             assetTagId: tagExists[0].assetTagId,
                         })

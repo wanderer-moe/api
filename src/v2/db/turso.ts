@@ -50,3 +50,6 @@ export function getConnection(env: Bindings) {
         turso,
     }
 }
+
+export type DrizzleClient = ReturnType<typeof drizzleORM>
+export type TursoClient = ReturnType<typeof createClient>

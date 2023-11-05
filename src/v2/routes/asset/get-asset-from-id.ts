@@ -48,7 +48,7 @@ export async function getAssetFromId(c: APIContext): Promise<Response> {
         where: (asset, { eq, and }) =>
             and(
                 eq(asset.status, "approved"),
-                eq(asset.assetCategory, foundAsset.assetCategory)
+                eq(asset.assetCategoryId, foundAsset.assetCategoryId)
             ),
         limit: 6,
         orderBy: desc(asset.id),

@@ -18,7 +18,7 @@ NOTE: This is mostly security related.
 export const emailVerificationToken = sqliteTable(
     tableNames.emailVerificationToken,
     {
-        id: text("id").primaryKey(),
+        id: text("id").unique().notNull(),
         userId: text("user_id")
             .notNull()
             .references(() => authUser.id, {
@@ -47,7 +47,7 @@ export type NewEmailVerificationToken =
 export const passwordResetToken = sqliteTable(
     tableNames.passwordResetToken,
     {
-        id: text("id").primaryKey(),
+        id: text("id").unique().notNull(),
         userId: text("user_id")
             .notNull()
             .references(() => authUser.id, {

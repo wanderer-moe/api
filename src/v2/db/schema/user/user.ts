@@ -26,11 +26,11 @@ NOTE: Very basic user information
 export const authUser = sqliteTable(
     tableNames.authUser,
     {
-        id: text("id").primaryKey(),
+        id: text("id").unique().notNull(),
         avatarUrl: text("avatar_url"),
         bannerUrl: text("banner_url"),
         displayName: text("display_name"),
-        username: text("username").notNull(),
+        username: text("username").notNull().unique(),
         usernameColour: text("username_colour"),
         email: text("email").notNull(),
         emailVerified: integer("email_verified").default(0).notNull(),
@@ -59,7 +59,7 @@ export type NewUsers = typeof authUser.$inferInsert
 export const keys = sqliteTable(
     tableNames.authKey,
     {
-        id: text("id").primaryKey(),
+        id: text("id").unique().notNull(),
         userId: text("user_id")
             .notNull()
             .references(() => authUser.id, {
@@ -86,7 +86,7 @@ export const usersRelations = relations(authUser, ({ one, many }) => ({
         relationName: "following",
     }),
     key: many(keys),
-    assets: many(asset),
+    asset: many(asset),
     atlas: many(atlas),
     userFavorite: one(userFavorite),
     socialsConnection: one(socialsConnection),

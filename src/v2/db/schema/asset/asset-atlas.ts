@@ -17,7 +17,7 @@ NOTE: this allows for users down the line to link their uploaded assets to appro
 export const atlas = sqliteTable(
     tableNames.atlas,
     {
-        id: text("id").primaryKey(),
+        id: text("id").unique().notNull(),
         url: text("url").notNull(),
         uploadedById: text("uploaded_by").notNull(),
         uploadedByName: text("uploaded_by_name").notNull(),
@@ -43,7 +43,7 @@ export type NewAtlas = typeof atlas.$inferInsert
 export const atlasToAsset = sqliteTable(
     tableNames.atlasToAsset,
     {
-        id: text("id").primaryKey(),
+        id: text("id"),
         atlasId: text("atlas_id")
             .notNull()
             .references(() => atlas.id, {

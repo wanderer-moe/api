@@ -11,7 +11,7 @@ NOTE: This file will be expanded on in the future, but for now it's just for Dis
 export const socialsConnection = sqliteTable(
     tableNames.socialsConnection,
     {
-        id: text("id").primaryKey(),
+        id: text("id").unique().notNull(),
         userId: text("user_id")
             .notNull()
             .references(() => authUser.id, {

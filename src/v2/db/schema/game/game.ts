@@ -18,14 +18,14 @@ NOTE: Game relation is easy to understand and self-explanatory.
 export const game = sqliteTable(
     tableNames.game,
     {
-        id: text("id").primaryKey(),
-        name: text("name").notNull(), // e.g genshin-impact, honkai-impact-3rd
+        id: text("id").unique().notNull(),
+        name: text("name").notNull().unique(), // e.g genshin-impact, honkai-impact-3rd
         formattedName: text("formatted_name").notNull(), // e.g Genshin Impact, Honkai Impact 3rd
         assetCount: integer("asset_count").default(0),
         possibleSuggestiveContent: integer("possible_suggestive_content")
             .default(0)
             .notNull(),
-        lastUpdated: integer("last_updated").notNull(),
+        lastUpdated: text("last_updated").notNull(),
     },
     (game) => {
         return {
@@ -39,6 +39,6 @@ export type Game = typeof game.$inferSelect
 export type NewGame = typeof game.$inferInsert
 
 export const gameRelations = relations(game, ({ many }) => ({
-    assets: many(asset),
+    asset: many(asset),
     gameAssetCategory: many(gameAssetCategory),
 }))

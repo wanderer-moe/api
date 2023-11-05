@@ -31,35 +31,26 @@ export const asset = sqliteTable(
         id: integer("id").primaryKey(), // primary key auto increments on sqlite
         name: text("name").notNull(),
         extension: text("extension").notNull(),
-        game: text("game")
-            .notNull()
-            .references(() => game.name, {
+        gameId: text("game")
+            .references(() => game.id, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
-            }),
-        assetCategory: text("asset_category")
-            .notNull()
-            .references(() => assetCategory.name, {
+            }).notNull(),
+        assetCategoryId: text("asset_category")
+            .references(() => assetCategory.id, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
-            }),
+            }).notNull(),
+        uploadedById: text("uploaded_by").references(() => authUser.id, {
+            onUpdate: "cascade",
+            onDelete: "cascade",
+        }).notNull(),
         url: text("url").notNull(),
         status: text("status")
             .$type<AssetStatus>()
             .default("pending")
             .notNull(),
-        uploadedById: text("uploaded_by").references(() => authUser.id, {
-            onUpdate: "cascade",
-            onDelete: "cascade",
-        }),
-        uploadedByName: text("uploaded_by_name").references(
-            () => authUser.username,
-            {
-                onUpdate: "cascade",
-                onDelete: "cascade",
-            }
-        ),
-        uploadedDate: integer("uploaded_date").notNull(),
+        uploadedDate: text("uploaded_date").notNull(),
         assetIsOptimized: integer("asset_is_optimized").default(0).notNull(),
         viewCount: integer("view_count").default(0).notNull(),
         downloadCount: integer("download_count").default(0).notNull(),
@@ -71,15 +62,12 @@ export const asset = sqliteTable(
         return {
             idIdx: index("assets_id_idx").on(table.id),
             nameIdx: index("assets_name_idx").on(table.name),
-            gameIdx: index("assets_game_idx").on(table.game),
-            assetCategoryIdx: index("assets_asset_category_idx").on(
-                table.assetCategory
+            gameIdIdx: index("assets_game_name_idx").on(table.gameId),
+            assetCategoryIdIdx: index("assets_asset_category_name_idx").on(
+                table.assetCategoryId
             ),
-            uploadedByIdIdx: index("assets_uploaded_by_idx").on(
+            uploadedByIdIdx: index("assets_uploaded_by_id_idx").on(
                 table.uploadedById
-            ),
-            uploadedByNameIdx: index("assets_uploaded_by_name_idx").on(
-                table.uploadedByName
             ),
         }
     }
@@ -89,18 +77,18 @@ export type Asset = typeof asset.$inferSelect
 export type NewAsset = typeof asset.$inferInsert
 
 export const assetRelations = relations(asset, ({ one, many }) => ({
-    uploadedBy: one(authUser, {
-        fields: [asset.uploadedById, asset.uploadedByName],
-        references: [authUser.id, authUser.username],
-    }),
     assetTagAsset: many(assetTagAsset),
     atlas: many(atlasToAsset),
-    assetCategory: one(assetCategory, {
-        fields: [asset.assetCategory],
-        references: [assetCategory.name],
+    authUser: one(authUser, {
+        fields: [asset.uploadedById],
+        references: [authUser.id],
     }),
     game: one(game, {
-        fields: [asset.game],
-        references: [game.name],
+        fields: [asset.gameId],
+        references: [game.id],
+    }),
+    assetCategory: one(assetCategory, {
+        fields: [asset.gameId],
+        references: [assetCategory.id],
     }),
 }))

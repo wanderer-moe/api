@@ -10,8 +10,10 @@
         "prettier:format": "prettier --write .",
         "prettier:check": "prettier --check .",
         "drizzle:generate": "drizzle-kit generate:sqlite",
-        "drizzle:migrate": "tsx ./src/scripts/migrate/migrate.mts",
+        "drizzle:seed": "tsx src/scripts/seed/seed.ts",
+        "drizzle:migrate": "tsx src/scripts/migrate/migrate.mts",
         "drizzle:push": "drizzle-kit push:sqlite",
+        "drizzle:dev:init": "drizzle-kit generate:sqlite && tsx src/scripts/migrate/migrate.mts && tsx src/scripts/seed/seed.ts",
         "drizzle:studio": "drizzle-kit studio --port 7331 --host 127.0.0.1 --verbose"
     },
     "devDependencies": {
@@ -43,6 +45,7 @@
         "mysql2": "^3.6.2",
         "prettier": "^3.0.3",
         "unstorage": "^1.9.0",
+        "uuidv4": "^6.2.13",
         "zod": "^3.22.4"
     }
 }

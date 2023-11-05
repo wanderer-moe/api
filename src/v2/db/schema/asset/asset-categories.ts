@@ -19,11 +19,11 @@ NOTE: This setup can look kinda janky.
 export const assetCategory = sqliteTable(
     tableNames.assetCategory,
     {
-        id: text("id").primaryKey(),
-        name: text("name").notNull(), // e.g tcg-sheets, splash-art
+        id: text("id").unique().notNull(),
+        name: text("name").unique().notNull(), // e.g tcg-sheets, splash-art
         formattedName: text("formatted_name").notNull(), // e.g TCG Sheets, Splash Art
         assetCount: integer("asset_count").default(0).notNull(),
-        lastUpdated: integer("last_updated").notNull(),
+        lastUpdated: text("last_updated").notNull(),
     },
     (assetCategory) => {
         return {
@@ -41,7 +41,6 @@ export type NewAssetCategory = typeof assetCategory.$inferInsert
 export const gameAssetCategory = sqliteTable(
     tableNames.gameAssetCategory,
     {
-        id: text("id").primaryKey(),
         gameId: text("game_id")
             .notNull()
             .references(() => game.id, {
@@ -57,9 +56,6 @@ export const gameAssetCategory = sqliteTable(
     },
     (gameAssetCategory) => {
         return {
-            gameAssetCategoryIdx: index("game_asset_category_id_idx").on(
-                gameAssetCategory.id
-            ),
             gameAssetCategoryGameIdx: index(
                 "game_asset_category_game_id_idx"
             ).on(gameAssetCategory.gameId),
@@ -74,7 +70,7 @@ export type GameAssetCategory = typeof gameAssetCategory.$inferSelect
 export type NewGameAssetCategory = typeof gameAssetCategory.$inferInsert
 
 export const assetCategoryRelations = relations(assetCategory, ({ many }) => ({
-    assets: many(asset),
+    asset: many(asset),
     gameAssetCategory: many(gameAssetCategory),
 }))
 

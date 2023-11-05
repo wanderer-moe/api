@@ -53,7 +53,7 @@ export async function createTag(c: APIContext): Promise<Response> {
         name,
         formattedName,
         assetCount: 0,
-        lastUpdated: new Date().getTime(), // unix timestamp
+        lastUpdated: new Date().toISOString(),
     }
 
     // check if tag.name exists

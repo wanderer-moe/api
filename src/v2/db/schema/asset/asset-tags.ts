@@ -18,11 +18,11 @@ NOTE: Asset tags are not stored as ENUMs to allow for better UX, flexibility, an
 export const assetTag = sqliteTable(
     tableNames.assetTag,
     {
-        id: text("id").primaryKey(),
-        name: text("name").notNull(),
+        id: text("id").unique().notNull(),
+        name: text("name").notNull().unique(),
         formattedName: text("formatted_name").notNull(),
         assetCount: integer("asset_count").default(0).notNull(),
-        lastUpdated: integer("last_updated").notNull(),
+        lastUpdated: text("last_updated").notNull(),
     },
     (assetTag) => {
         return {
@@ -38,7 +38,6 @@ export type NewAssetTag = typeof assetTag.$inferInsert
 export const assetTagAsset = sqliteTable(
     tableNames.assetTagAsset,
     {
-        id: text("id").primaryKey(),
         assetTagId: text("asset_tag_id")
             .notNull()
             .references(() => assetTag.id, {
@@ -54,9 +53,6 @@ export const assetTagAsset = sqliteTable(
     },
     (assetTagAsset) => {
         return {
-            assetTagAssetIdx: index("asset_tags_assets_id_idx").on(
-                assetTagAsset.id
-            ),
             assetTagAssetAssetTagIdx: index(
                 "asset_tags_assets_asset_tag_id_idx"
             ).on(assetTagAsset.assetTagId),
@@ -69,6 +65,10 @@ export const assetTagAsset = sqliteTable(
 
 export type AssetTagAsset = typeof assetTagAsset.$inferSelect
 export type NewAssetTagAsset = typeof assetTagAsset.$inferInsert
+
+export const assetTagRelations = relations(assetTag, ({ many }) => ({
+    assetTagAsset: many(assetTagAsset),
+}))
 
 export const assetTagAssetRelations = relations(assetTagAsset, ({ one }) => ({
     assetTag: one(assetTag, {

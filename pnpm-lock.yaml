@@ -1,4 +1,4 @@
-lockfileVersion: "6.1"
+lockfileVersion: "6.0"
 
 settings:
     autoInstallPeers: true
@@ -47,6 +47,9 @@ dependencies:
     unstorage:
         specifier: ^1.9.0
         version: 1.9.0
+    uuidv4:
+        specifier: ^6.2.13
+        version: 6.2.13
     zod:
         specifier: ^3.22.4
         version: 3.22.4
@@ -1347,6 +1350,13 @@ packages:
         resolution:
             {
                 integrity: sha512-OxepLK9EuNEIPxWNME+C6WwbRAOOI2o2BaQEGzz5Lu2e4Z5eDnEo+/aVEDMIXywoJitJ7xWd641wrGLZdtwRyw==,
+            }
+        dev: false
+
+    /@types/uuid@8.3.4:
+        resolution:
+            {
+                integrity: sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==,
             }
         dev: false
 
@@ -4402,6 +4412,24 @@ packages:
             {
                 integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==,
             }
+        dev: false
+
+    /uuid@8.3.2:
+        resolution:
+            {
+                integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==,
+            }
+        hasBin: true
+        dev: false
+
+    /uuidv4@6.2.13:
+        resolution:
+            {
+                integrity: sha512-AXyzMjazYB3ovL3q051VLH06Ixj//Knx7QnUSi1T//Ie3io6CpsPu9nVMOx5MoLWh6xV0B9J0hIaxungxXUbPQ==,
+            }
+        dependencies:
+            "@types/uuid": 8.3.4
+            uuid: 8.3.2
         dev: false
 
     /vscode-json-languageservice@4.2.1:

@@ -19,7 +19,7 @@ NOTE: this file is where users store their collections of assets.
 export const userCollection = sqliteTable(
     tableNames.userCollection,
     {
-        id: text("id").primaryKey(),
+        id: text("id").unique().notNull(),
         name: text("name").notNull(),
         description: text("description").notNull(),
         userId: text("user_id")
@@ -47,7 +47,7 @@ export type NewUserCollection = typeof userCollection.$inferInsert
 export const userCollectionAsset = sqliteTable(
     tableNames.userCollectionAsset,
     {
-        id: text("id").primaryKey(),
+        id: text("id").unique().notNull(),
         collectionId: text("collection_id")
             .notNull()
             .references(() => userCollection.id, {

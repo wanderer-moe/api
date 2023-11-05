@@ -19,7 +19,7 @@ NOTE: this file is users favorite assets.
 export const userFavorite = sqliteTable(
     tableNames.userFavorite,
     {
-        id: text("id").primaryKey(),
+        id: text("id").unique().notNull(),
         userId: text("user_id")
             .notNull()
             .references(() => authUser.id, {
@@ -46,7 +46,7 @@ export type NewUserFavorite = typeof userFavorite.$inferInsert
 export const userFavoriteAsset = sqliteTable(
     tableNames.userFavoriteAsset,
     {
-        id: text("id").primaryKey(),
+        id: text("id").unique().notNull(),
         userFavoriteId: text("favorited_assets_id")
             .notNull()
             .references(() => userFavorite.id, {
