@@ -69,7 +69,6 @@ export async function followUser(c: APIContext): Promise<Response> {
             followerId: session.user.userId,
             followingId: user.id,
             createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
         })
     } catch (e) {
         return c.json({ success: false, state: "failed to follow user" }, 200)

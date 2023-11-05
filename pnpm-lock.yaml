@@ -29,6 +29,9 @@ dependencies:
     drizzle-orm:
         specifier: ^0.28.6
         version: 0.28.6(@cloudflare/workers-types@4.20231016.0)(@libsql/client@0.3.5)(better-sqlite3@9.0.0)(mysql2@3.6.2)
+    drizzle-zod:
+        specifier: ^0.5.1
+        version: 0.5.1(drizzle-orm@0.28.6)(zod@3.22.4)
     hono:
         specifier: ^3.8.0
         version: 3.8.0
@@ -47,9 +50,9 @@ dependencies:
     unstorage:
         specifier: ^1.9.0
         version: 1.9.0
-    uuidv4:
-        specifier: ^6.2.13
-        version: 6.2.13
+    uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
     zod:
         specifier: ^3.22.4
         version: 3.22.4
@@ -1353,13 +1356,6 @@ packages:
             }
         dev: false
 
-    /@types/uuid@8.3.4:
-        resolution:
-            {
-                integrity: sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==,
-            }
-        dev: false
-
     /@types/ws@8.5.7:
         resolution:
             {
@@ -2153,6 +2149,19 @@ packages:
             "@libsql/client": 0.3.5
             better-sqlite3: 9.0.0
             mysql2: 3.6.2
+        dev: false
+
+    /drizzle-zod@0.5.1(drizzle-orm@0.28.6)(zod@3.22.4):
+        resolution:
+            {
+                integrity: sha512-C/8bvzUH/zSnVfwdSibOgFjLhtDtbKYmkbPbUCq46QZyZCH6kODIMSOgZ8R7rVjoI+tCj3k06MRJMDqsIeoS4A==,
+            }
+        peerDependencies:
+            drizzle-orm: ">=0.23.13"
+            zod: "*"
+        dependencies:
+            drizzle-orm: 0.28.6(@cloudflare/workers-types@4.20231016.0)(@libsql/client@0.3.5)(better-sqlite3@9.0.0)(mysql2@3.6.2)
+            zod: 3.22.4
         dev: false
 
     /end-of-stream@1.4.4:
@@ -4414,22 +4423,12 @@ packages:
             }
         dev: false
 
-    /uuid@8.3.2:
+    /uuid@9.0.1:
         resolution:
             {
-                integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==,
+                integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==,
             }
         hasBin: true
-        dev: false
-
-    /uuidv4@6.2.13:
-        resolution:
-            {
-                integrity: sha512-AXyzMjazYB3ovL3q051VLH06Ixj//Knx7QnUSi1T//Ie3io6CpsPu9nVMOx5MoLWh6xV0B9J0hIaxungxXUbPQ==,
-            }
-        dependencies:
-            "@types/uuid": 8.3.4
-            uuid: 8.3.2
         dev: false
 
     /vscode-json-languageservice@4.2.1:

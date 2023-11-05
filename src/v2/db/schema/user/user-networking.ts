@@ -23,7 +23,6 @@ export const userNetworking = sqliteTable(
             .notNull()
             .references(() => authUser.id),
         createdAt: text("createdAt").notNull(),
-        updatedAt: text("updatedAt").notNull(),
     },
     (userNetworking) => {
         return {

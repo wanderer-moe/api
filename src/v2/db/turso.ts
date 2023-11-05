@@ -51,5 +51,9 @@ export function getConnection(env: Bindings) {
     }
 }
 
-export type DrizzleClient = ReturnType<typeof drizzleORM>
+export type DrizzleInstance = ReturnType<typeof getConnection>["drizzle"]
+export type TursoInstance = ReturnType<typeof getConnection>["turso"]
+
 export type TursoClient = ReturnType<typeof createClient>
+export type DrizzleClient = ReturnType<typeof drizzleORM>
+export type Connection = ReturnType<typeof getConnection>

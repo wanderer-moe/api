@@ -15,7 +15,7 @@ import {
     userFavoriteAsset,
     userFavorite,
 } from "@/v2/db/schema"
-import { uuid } from 'uuidv4'
+import { v4 } from "uuid"
 
 const { ENVIRONMENT } = process.env
 
@@ -91,19 +91,16 @@ async function main() {
                 followerId: newUsers[0].id,
                 followingId: newUsers[1].id,
                 createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
             },
             {
                 followerId: newUsers[1].id,
                 followingId: newUsers[0].id,
                 createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
             },
             {
                 followerId: newUsers[0].id,
                 followingId: newUsers[2].id,
                 createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
             },
         ])
         .returning()
@@ -286,7 +283,7 @@ async function main() {
     const newUserCollections = await db
         .insert(userCollection)
         .values({
-            id: uuid(),
+            id: v4(),
             name: "collection name",
             description: "collection description",
             userId: "userid1",
@@ -301,12 +298,12 @@ async function main() {
         .insert(userCollectionAsset)
         .values([
             {
-                id: uuid(),
+                id: v4(),
                 collectionId: newUserCollections[0].id,
                 assetId: 1,
             },
             {
-                id: uuid(),
+                id: v4(),
                 collectionId: newUserCollections[0].id,
                 assetId: 2,
             },
@@ -322,12 +319,12 @@ async function main() {
         .insert(userFavorite)
         .values([
             {
-                id: uuid(),
+                id: v4(),
                 userId: "userid1",
                 isPublic: 0, // default to private
             },
             {
-                id: uuid(),
+                id: v4(),
                 userId: "userid2",
                 isPublic: 1,
             },
@@ -340,17 +337,17 @@ async function main() {
         .insert(userFavoriteAsset)
         .values([
             {
-                id: uuid(),
+                id: v4(),
                 userFavoriteId: newUserFavorites[0].id,
                 assetId: 1,
             },
             {
-                id: uuid(),
+                id: v4(),
                 userFavoriteId: newUserFavorites[0].id,
                 assetId: 2,
             },
             {
-                id: uuid(),
+                id: v4(),
                 userFavoriteId: newUserFavorites[1].id,
                 assetId: 3,
             },
