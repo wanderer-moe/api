@@ -286,7 +286,7 @@ async function main() {
     const newUserCollections = await db
         .insert(userCollection)
         .values({
-            id: "collectionid1",
+            id: uuid(),
             name: "collection name",
             description: "collection description",
             userId: "userid1",
