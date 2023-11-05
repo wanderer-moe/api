@@ -18,7 +18,9 @@ We use Turso as our database. You will need to install the [Turso CLI](https://d
 
 The Turso CLI can be ran on Windows using WSL.
 
-The API will connect to the local database if the environment is set to `DEV`, else it will connect to your production database.
+The API will connect to the local database if the environment is set to `DEV`, else - it will connect to your production database.
+
+To generate seed data, generate and migrate, you can run `pnpm drizzle:init:dev`.
 
 ### Wrangler
 
@@ -40,7 +42,6 @@ Required environment variables are viewable in `./src/worker-configuration.d.ts`
 ### Database
 
 -   When migrating, you will need `tsx`.
-
 -   It's not reccomended to use `drizzle:push` in production. However, there is `drizzle:generate` & `drizzle:migrate` available as scripts.
 
 ## Authors

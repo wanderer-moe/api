@@ -173,7 +173,6 @@ CREATE TABLE `userNetworking` (
 	`followerId` text NOT NULL,
 	`followingId` text NOT NULL,
 	`createdAt` text NOT NULL,
-	`updatedAt` text NOT NULL,
 	FOREIGN KEY (`followerId`) REFERENCES `authUser`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`followingId`) REFERENCES `authUser`(`id`) ON UPDATE no action ON DELETE no action
 );

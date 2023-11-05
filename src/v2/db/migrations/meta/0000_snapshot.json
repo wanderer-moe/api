@@ -1,7 +1,7 @@
 {
     "version": "5",
     "dialect": "sqlite",
-    "id": "6b46f393-1ae5-40d7-ab31-1fd8c0d6a229",
+    "id": "5186a741-3874-416e-9e20-bc85d7f47d78",
     "prevId": "00000000-0000-0000-0000-000000000000",
     "tables": {
         "asset": {
@@ -1401,13 +1401,6 @@
                 },
                 "createdAt": {
                     "name": "createdAt",
-                    "type": "text",
-                    "primaryKey": false,
-                    "notNull": true,
-                    "autoincrement": false
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
                     "type": "text",
                     "primaryKey": false,
                     "notNull": true,
