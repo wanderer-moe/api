@@ -2,7 +2,9 @@ import "dotenv/config"
 import type { Config } from "drizzle-kit"
 const { TURSO_DATABASE_AUTH_TOKEN, TURSO_DATABASE_URL, ENVIRONMENT } =
     process.env
-const TURSO_DEV_DATABASE_URL = process.env.TURSO_DEV_DATABASE_URL ?? undefined
+
+const TURSO_DEV_DATABASE_URL =
+    process.env.TURSO_DEV_DATABASE_URL ?? "http://127.0.0.1:8080"
 
 const isDev = ENVIRONMENT === "DEV"
 

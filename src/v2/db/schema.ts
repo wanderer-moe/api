@@ -1,6 +1,7 @@
 export * from "./schema/asset/asset"
 export * from "./schema/asset/asset-categories"
 export * from "./schema/asset/asset-tags"
+export * from "./schema/asset/asset-atlas"
 
 export * from "./schema/game/game"
 

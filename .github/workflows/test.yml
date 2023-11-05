@@ -1,14 +1,24 @@
-name: Deploy to Cloudflare Workers
-
+name: Run Tests
 on:
     push:
         branches:
-            - main
+            - "*"
 
 jobs:
-    deploy:
+    tests:
+        name: Tests
         runs-on: ubuntu-latest
-        name: Deploy
+        timeout-minutes: 5
+        # local sqld instance for "turso dev"
+        services:
+            sqld:
+                image: ghcr.io/libsql/sqld:latest
+                ports:
+                    - 8080:8080
+
+        env:
+            ENVIRONMENT: "DEV"
+            TURSO_DEV_DATABASE_URL: http://127.0.0.1:8080
         steps:
             - name: Checkout repository
               uses: actions/checkout@v3
@@ -27,7 +37,5 @@ jobs:
             - name: Install dependencies
               run: pnpm install
 
-            - name: Deploy to Cloudflare Workers using Wrangler
-              uses: cloudflare/wrangler-action@2.0.0
-              with:
-                  apiToken: ${{ secrets.CF_API_TOKEN }}
+            - name: Migrate Database
+              run: pnpm drizzle:migrate

@@ -24,13 +24,14 @@ export function getConnection(env: Bindings) {
      * The `createClient` function is used to create a Turso client.
      * The `url` option is set to the `TURSO_DATABASE_URL` environment variable.
      * The `authToken` option is set to the `TURSO_DATABASE_AUTH_TOKEN` environment variable.
-     * If the `ENVIRONMENT` environment variable is set to `DEV`, the `TURSO_DEV_DATABASE_URL` environment variable is used instead.
      **/
     const isDev = env.ENVIRONMENT === "DEV"
+    const TURSO_DEV_DATABASE_URL =
+        env.TURSO_DEV_DATABASE_URL ?? "http://127.0.0.1:8080"
 
     const turso = createClient({
         url: isDev
-            ? env.TURSO_DEV_DATABASE_URL ?? env.TURSO_DATABASE_URL
+            ? TURSO_DEV_DATABASE_URL ?? env.TURSO_DATABASE_URL
             : env.TURSO_DATABASE_URL,
         ...(isDev ? {} : { authToken: env.TURSO_DATABASE_AUTH_TOKEN }),
     })
