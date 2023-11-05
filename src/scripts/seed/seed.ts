@@ -15,6 +15,7 @@ import {
     userFavoriteAsset,
     userFavorite,
 } from "@/v2/db/schema"
+import { uuid } from 'uuidv4'
 
 const { ENVIRONMENT } = process.env
 
@@ -285,7 +286,7 @@ async function main() {
     const newUserCollections = await db
         .insert(userCollection)
         .values({
-            id: crypto.randomUUID(),
+            id: "collectionid1",
             name: "collection name",
             description: "collection description",
             userId: "userid1",
@@ -300,12 +301,12 @@ async function main() {
         .insert(userCollectionAsset)
         .values([
             {
-                id: crypto.randomUUID(),
+                id: uuid(),
                 collectionId: newUserCollections[0].id,
                 assetId: 1,
             },
             {
-                id: crypto.randomUUID(),
+                id: uuid(),
                 collectionId: newUserCollections[0].id,
                 assetId: 2,
             },
@@ -321,12 +322,12 @@ async function main() {
         .insert(userFavorite)
         .values([
             {
-                id: crypto.randomUUID(),
+                id: uuid(),
                 userId: "userid1",
                 isPublic: 0, // default to private
             },
             {
-                id: crypto.randomUUID(),
+                id: uuid(),
                 userId: "userid2",
                 isPublic: 1,
             },
@@ -339,17 +340,17 @@ async function main() {
         .insert(userFavoriteAsset)
         .values([
             {
-                id: crypto.randomUUID(),
+                id: uuid(),
                 userFavoriteId: newUserFavorites[0].id,
                 assetId: 1,
             },
             {
-                id: crypto.randomUUID(),
+                id: uuid(),
                 userFavoriteId: newUserFavorites[0].id,
                 assetId: 2,
             },
             {
-                id: crypto.randomUUID(),
+                id: uuid(),
                 userFavoriteId: newUserFavorites[1].id,
                 assetId: 3,
             },
