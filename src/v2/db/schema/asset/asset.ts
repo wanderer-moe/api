@@ -54,7 +54,11 @@ export const asset = sqliteTable(
             .$type<AssetStatus>()
             .default("pending")
             .notNull(),
-        uploadedDate: text("uploaded_date").notNull(),
+        uploadedDate: text("uploaded_date")
+            .notNull()
+            .$defaultFn(() => {
+                return new Date().toISOString()
+            }),
         assetIsOptimized: integer("asset_is_optimized").default(0).notNull(),
         viewCount: integer("view_count").default(0).notNull(),
         downloadCount: integer("download_count").default(0).notNull(),

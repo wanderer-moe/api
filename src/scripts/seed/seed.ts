@@ -51,7 +51,6 @@ async function main() {
                 emailVerified: 1,
                 usernameColour: "#84E6F8",
                 bio: "test bio",
-                dateJoined: new Date().toISOString(),
                 roleFlags: 1,
                 isContributor: 0,
                 selfAssignableRoleFlags: 0,
@@ -63,7 +62,6 @@ async function main() {
                 emailVerified: 1,
                 bio: "test bio 2",
                 pronouns: "he/him/his",
-                dateJoined: new Date().toISOString(),
                 roleFlags: 1,
                 isContributor: 0,
                 selfAssignableRoleFlags: 0,
@@ -74,7 +72,6 @@ async function main() {
                 email: "hi3@dromzeh.dev",
                 emailVerified: 1,
                 bio: "test bio 3",
-                dateJoined: new Date().toISOString(),
                 roleFlags: 1,
                 isContributor: 0,
                 selfAssignableRoleFlags: 0,
@@ -90,17 +87,14 @@ async function main() {
             {
                 followerId: newUsers[0].id,
                 followingId: newUsers[1].id,
-                createdAt: new Date().toISOString(),
             },
             {
                 followerId: newUsers[1].id,
                 followingId: newUsers[0].id,
-                createdAt: new Date().toISOString(),
             },
             {
                 followerId: newUsers[0].id,
                 followingId: newUsers[2].id,
-                createdAt: new Date().toISOString(),
             },
         ])
         .returning()
@@ -209,7 +203,6 @@ async function main() {
                 url: "/test/image.png",
                 status: "approved",
                 uploadedById: "userid1",
-                uploadedDate: new Date().toISOString(),
                 assetIsOptimized: 0,
                 viewCount: 1337,
                 downloadCount: 1337,
@@ -226,7 +219,6 @@ async function main() {
                 url: "/test/image.png",
                 status: "approved",
                 uploadedById: "userid2",
-                uploadedDate: new Date().toISOString(),
                 assetIsOptimized: 0,
                 viewCount: 1337,
                 downloadCount: 1337,
@@ -243,7 +235,6 @@ async function main() {
                 url: "/test/image.png",
                 status: "approved",
                 uploadedById: "userid2",
-                uploadedDate: new Date().toISOString(),
                 assetIsOptimized: 0,
                 viewCount: 1337,
                 downloadCount: 1337,
@@ -287,7 +278,6 @@ async function main() {
             name: "collection name",
             description: "collection description",
             userId: "userid1",
-            dateCreated: new Date().toISOString(),
             isPublic: 0, // default to private
         })
         .returning()
