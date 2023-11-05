@@ -12,7 +12,15 @@ Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — us
 
 ## Usage
 
-#### Wrangler
+### Turso
+
+We use Turso as our database. You will need to install the [Turso CLI](https://docs.turso.tech/reference/turso-cli#installation) then run `turso dev` to start a local database. You can persist data by passing `--db-file <path>`.
+
+The Turso CLI can be ran on Windows using WSL.
+
+The API will connect to the local database if the environment is set to `DEV`, else it will connect to your production database.
+
+### Wrangler
 
 Configuration is in `wrangler.toml`.
 
@@ -23,7 +31,7 @@ Required environment variables are viewable in `./src/worker-configuration.d.ts`
 -   Run `wrangler dev` to preview locally.
 -   Run `wrangler deploy` to publish to Cloudflare Workers.
 
-#### Actions
+### Actions
 
 -   There is a GitHub Action that automatically deploys to Cloudflare Workers on every push to `main` — you can find it in `.github/workflows/deploy.yml`.
 
@@ -31,7 +39,7 @@ Required environment variables are viewable in `./src/worker-configuration.d.ts`
 
 ### Database
 
--   When migrating, you wil need to install `ts-node` globally on your machine.
+-   When migrating, you will need `tsx`.
 
 -   It's not reccomended to use `drizzle:push` in production. However, there is `drizzle:generate` & `drizzle:migrate` available as scripts.
 
