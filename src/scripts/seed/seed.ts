@@ -10,6 +10,10 @@ import {
     assetTagAsset,
     authUser,
     userNetworking,
+    userCollection,
+    userCollectionAsset,
+    userFavoriteAsset,
+    userFavorite,
 } from "@/v2/db/schema"
 
 const { ENVIRONMENT } = process.env
@@ -276,6 +280,84 @@ async function main() {
         ])
         .returning()
     console.log(`[assetTagAsset] inserted ${newAssetTagAsset.length} rows\n`)
+
+    console.log("[userCollection] Seeding user collections...")
+    const newUserCollections = await db
+        .insert(userCollection)
+        .values({
+            id: crypto.randomUUID(),
+            name: "collection name",
+            description: "collection description",
+            userId: "userid1",
+            dateCreated: new Date().toISOString(),
+            isPublic: 0, // default to private
+        })
+        .returning()
+    console.log(`[userCollection] inserted ${newUserCollections.length} rows\n`)
+
+    console.log("[userCollectionAsset] Linking user collections to assets...")
+    const newUserCollectionAssets = await db
+        .insert(userCollectionAsset)
+        .values([
+            {
+                id: crypto.randomUUID(),
+                collectionId: newUserCollections[0].id,
+                assetId: 1,
+            },
+            {
+                id: crypto.randomUUID(),
+                collectionId: newUserCollections[0].id,
+                assetId: 2,
+            },
+        ])
+        .returning()
+    console.log(
+        `[userCollectionAsset] inserted ${newUserCollectionAssets.length} rows\n`
+    )
+
+    // only one user favorite per user
+    console.log("[userFavorite] Seeding user favorites...")
+    const newUserFavorites = await db
+        .insert(userFavorite)
+        .values([
+            {
+                id: crypto.randomUUID(),
+                userId: "userid1",
+                isPublic: 0, // default to private
+            },
+            {
+                id: crypto.randomUUID(),
+                userId: "userid2",
+                isPublic: 1,
+            },
+        ])
+        .returning()
+    console.log(`[userFavorite] inserted ${newUserFavorites.length} rows\n`)
+
+    console.log("[userFavoriteAsset] Linking user favorites to assets...")
+    const newUserFavoriteAssets = await db
+        .insert(userFavoriteAsset)
+        .values([
+            {
+                id: crypto.randomUUID(),
+                userFavoriteId: newUserFavorites[0].id,
+                assetId: 1,
+            },
+            {
+                id: crypto.randomUUID(),
+                userFavoriteId: newUserFavorites[0].id,
+                assetId: 2,
+            },
+            {
+                id: crypto.randomUUID(),
+                userFavoriteId: newUserFavorites[1].id,
+                assetId: 3,
+            },
+        ])
+        .returning()
+    console.log(
+        `[userFavoriteAsset] inserted ${newUserFavoriteAssets.length} rows\n`
+    )
 
     console.log("Seeded database successfully")
     process.exit(0)
