@@ -117,7 +117,7 @@ CREATE TABLE `emailVerificationToken` (
 	`id` text NOT NULL,
 	`user_id` text NOT NULL,
 	`token` text NOT NULL,
-	`expires_at` integer NOT NULL,
+	`expires_at` text NOT NULL,
 	FOREIGN KEY (`user_id`) REFERENCES `authUser`(`id`) ON UPDATE cascade ON DELETE cascade
 );
 --> statement-breakpoint
@@ -125,7 +125,7 @@ CREATE TABLE `passwordResetToken` (
 	`id` text NOT NULL,
 	`user_id` text NOT NULL,
 	`token` text NOT NULL,
-	`expires_at` integer NOT NULL,
+	`expires_at` text NOT NULL,
 	FOREIGN KEY (`user_id`) REFERENCES `authUser`(`id`) ON UPDATE cascade ON DELETE cascade
 );
 --> statement-breakpoint
@@ -140,9 +140,9 @@ CREATE TABLE `userCollection` (
 );
 --> statement-breakpoint
 CREATE TABLE `assetCollectionAsset` (
-	`id` text NOT NULL,
 	`collection_id` text NOT NULL,
 	`asset_id` integer NOT NULL,
+	`date_added` text NOT NULL,
 	FOREIGN KEY (`collection_id`) REFERENCES `userCollection`(`id`) ON UPDATE cascade ON DELETE cascade,
 	FOREIGN KEY (`asset_id`) REFERENCES `asset`(`id`) ON UPDATE cascade ON DELETE cascade
 );
@@ -224,11 +224,10 @@ CREATE INDEX `password_reset_token_token_idx` ON `passwordResetToken` (`token`);
 CREATE UNIQUE INDEX `userCollection_id_unique` ON `userCollection` (`id`);--> statement-breakpoint
 CREATE INDEX `collection_id_idx` ON `userCollection` (`id`);--> statement-breakpoint
 CREATE INDEX `user_collection_id_idx` ON `userCollection` (`user_id`);--> statement-breakpoint
-CREATE UNIQUE INDEX `assetCollectionAsset_id_unique` ON `assetCollectionAsset` (`id`);--> statement-breakpoint
-CREATE INDEX `collection_assets_id_idx` ON `assetCollectionAsset` (`id`);--> statement-breakpoint
 CREATE INDEX `collection_assets_collection_id_idx` ON `assetCollectionAsset` (`collection_id`);--> statement-breakpoint
 CREATE INDEX `collection_assets_asset_id_idx` ON `assetCollectionAsset` (`asset_id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `socialsConnection_id_unique` ON `socialsConnection` (`id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `socialsConnection_user_id_unique` ON `socialsConnection` (`user_id`);--> statement-breakpoint
 CREATE INDEX `socials_connection_user_id_idx` ON `socialsConnection` (`user_id`);--> statement-breakpoint
 CREATE INDEX `socials_connection_discord_id_idx` ON `socialsConnection` (`discord_id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `userFavorite_id_unique` ON `userFavorite` (`id`);--> statement-breakpoint

@@ -9,6 +9,7 @@ import {
 } from "drizzle-orm/sqlite-core"
 import { authUser } from "./user"
 import { asset } from "../asset/asset"
+import { generateID } from "@/v2/lib/oslo"
 
 /*
 NOTE: this file is where users store their collections of assets.
@@ -19,7 +20,12 @@ NOTE: this file is where users store their collections of assets.
 export const userCollection = sqliteTable(
     tableNames.userCollection,
     {
-        id: text("id").unique().notNull(),
+        id: text("id")
+            .unique()
+            .notNull()
+            .$defaultFn(() => {
+                return generateID()
+            }),
         name: text("name").notNull(),
         description: text("description").notNull(),
         userId: text("user_id")
@@ -51,7 +57,6 @@ export type NewUserCollection = typeof userCollection.$inferInsert
 export const userCollectionAsset = sqliteTable(
     tableNames.userCollectionAsset,
     {
-        id: text("id").unique().notNull(),
         collectionId: text("collection_id")
             .notNull()
             .references(() => userCollection.id, {
@@ -64,12 +69,14 @@ export const userCollectionAsset = sqliteTable(
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
+        dateAdded: text("date_added")
+            .notNull()
+            .$defaultFn(() => {
+                return new Date().toISOString()
+            }),
     },
     (collectionAssets) => {
         return {
-            collectionAssetsIdx: index("collection_assets_id_idx").on(
-                collectionAssets.id
-            ),
             collectionAssetsCollectionIdx: index(
                 "collection_assets_collection_id_idx"
             ).on(collectionAssets.collectionId),

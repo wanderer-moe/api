@@ -5,6 +5,7 @@ import {
 import { setCookie, getCookie } from "hono/cookie"
 import { getConnection } from "@/v2/db/turso"
 import { socialsConnection } from "@/v2/db/schema"
+import { generateID } from "@/v2/lib/oslo"
 
 export async function loginWithDiscord(c: APIContext): Promise<Response> {
     const auth = await authAdapter(c.env)
@@ -97,6 +98,7 @@ export async function discordCallback(c: APIContext): Promise<Response> {
 
         // if user doesn't exist, create it based off their discord info
         const createdUser = await createUser({
+            userId: generateID(),
             attributes: {
                 username: discordUser.username,
                 display_name: discordUser.username,

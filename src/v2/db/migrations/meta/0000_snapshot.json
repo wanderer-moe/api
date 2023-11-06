@@ -1,7 +1,7 @@
 {
     "version": "5",
     "dialect": "sqlite",
-    "id": "5186a741-3874-416e-9e20-bc85d7f47d78",
+    "id": "f2ae8a0d-cb11-48b7-bcfd-52e82220539a",
     "prevId": "00000000-0000-0000-0000-000000000000",
     "tables": {
         "asset": {
@@ -951,7 +951,7 @@
                 },
                 "expires_at": {
                     "name": "expires_at",
-                    "type": "integer",
+                    "type": "text",
                     "primaryKey": false,
                     "notNull": true,
                     "autoincrement": false
@@ -1014,7 +1014,7 @@
                 },
                 "expires_at": {
                     "name": "expires_at",
-                    "type": "integer",
+                    "type": "text",
                     "primaryKey": false,
                     "notNull": true,
                     "autoincrement": false
@@ -1132,13 +1132,6 @@
         "assetCollectionAsset": {
             "name": "assetCollectionAsset",
             "columns": {
-                "id": {
-                    "name": "id",
-                    "type": "text",
-                    "primaryKey": false,
-                    "notNull": true,
-                    "autoincrement": false
-                },
                 "collection_id": {
                     "name": "collection_id",
                     "type": "text",
@@ -1152,19 +1145,16 @@
                     "primaryKey": false,
                     "notNull": true,
                     "autoincrement": false
+                },
+                "date_added": {
+                    "name": "date_added",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
                 }
             },
             "indexes": {
-                "assetCollectionAsset_id_unique": {
-                    "name": "assetCollectionAsset_id_unique",
-                    "columns": ["id"],
-                    "isUnique": true
-                },
-                "collection_assets_id_idx": {
-                    "name": "collection_assets_id_idx",
-                    "columns": ["id"],
-                    "isUnique": false
-                },
                 "collection_assets_collection_id_idx": {
                     "name": "collection_assets_collection_id_idx",
                     "columns": ["collection_id"],
@@ -1228,6 +1218,11 @@
                 "socialsConnection_id_unique": {
                     "name": "socialsConnection_id_unique",
                     "columns": ["id"],
+                    "isUnique": true
+                },
+                "socialsConnection_user_id_unique": {
+                    "name": "socialsConnection_user_id_unique",
+                    "columns": ["user_id"],
                     "isUnique": true
                 },
                 "socials_connection_user_id_idx": {

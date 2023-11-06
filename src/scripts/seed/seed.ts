@@ -15,7 +15,7 @@ import {
     userFavoriteAsset,
     userFavorite,
 } from "@/v2/db/schema"
-import { v4 } from "uuid"
+import { generateID } from "@/v2/lib/oslo"
 
 const { ENVIRONMENT } = process.env
 
@@ -45,7 +45,7 @@ async function main() {
         .insert(authUser)
         .values([
             {
-                id: "userid1",
+                id: generateID(),
                 username: "testuser",
                 email: "hi@dromzeh.dev",
                 emailVerified: 1,
@@ -56,7 +56,7 @@ async function main() {
                 selfAssignableRoleFlags: 0,
             },
             {
-                id: "userid2",
+                id: generateID(),
                 username: "testuser2",
                 email: "hi2@dromzeh.dev",
                 emailVerified: 1,
@@ -67,7 +67,7 @@ async function main() {
                 selfAssignableRoleFlags: 0,
             },
             {
-                id: "userid3",
+                id: generateID(),
                 username: "testuser3",
                 email: "hi3@dromzeh.dev",
                 emailVerified: 1,
@@ -131,7 +131,6 @@ async function main() {
                 name: "genshin-impact",
                 formattedName: "Genshin Impact",
                 assetCount: 1,
-                possibleSuggestiveContent: 0,
                 lastUpdated: new Date().toISOString(),
             },
             {
@@ -139,7 +138,6 @@ async function main() {
                 name: "honkai-impact-3rd",
                 formattedName: "Honkai Impact: 3rd",
                 assetCount: 0,
-                possibleSuggestiveContent: 0,
                 lastUpdated: new Date().toISOString(),
             },
         ])
@@ -202,7 +200,7 @@ async function main() {
                 assetCategoryId: "character-sheets",
                 url: "/test/image.png",
                 status: "approved",
-                uploadedById: "userid1",
+                uploadedById: newUsers[0].id,
                 assetIsOptimized: 0,
                 viewCount: 1337,
                 downloadCount: 1337,
@@ -218,7 +216,7 @@ async function main() {
                 assetCategoryId: "character-sheets",
                 url: "/test/image.png",
                 status: "approved",
-                uploadedById: "userid2",
+                uploadedById: newUsers[1].id,
                 assetIsOptimized: 0,
                 viewCount: 1337,
                 downloadCount: 1337,
@@ -234,7 +232,7 @@ async function main() {
                 assetCategoryId: "splash-art",
                 url: "/test/image.png",
                 status: "approved",
-                uploadedById: "userid2",
+                uploadedById: newUsers[1].id,
                 assetIsOptimized: 0,
                 viewCount: 1337,
                 downloadCount: 1337,
@@ -251,19 +249,19 @@ async function main() {
         .insert(assetTagAsset)
         .values([
             {
-                assetId: 1,
+                assetId: newAssets[0].id,
                 assetTagId: "official",
             },
             {
-                assetId: 1,
+                assetId: newAssets[0].id,
                 assetTagId: "1.0",
             },
             {
-                assetId: 2,
+                assetId: newAssets[1].id,
                 assetTagId: "official",
             },
             {
-                assetId: 3,
+                assetId: newAssets[2].id,
                 assetTagId: "official",
             },
         ])
@@ -274,10 +272,9 @@ async function main() {
     const newUserCollections = await db
         .insert(userCollection)
         .values({
-            id: v4(),
             name: "collection name",
             description: "collection description",
-            userId: "userid1",
+            userId: newUsers[0].id,
             isPublic: 0, // default to private
         })
         .returning()
@@ -288,14 +285,12 @@ async function main() {
         .insert(userCollectionAsset)
         .values([
             {
-                id: v4(),
                 collectionId: newUserCollections[0].id,
-                assetId: 1,
+                assetId: newAssets[0].id,
             },
             {
-                id: v4(),
                 collectionId: newUserCollections[0].id,
-                assetId: 2,
+                assetId: newAssets[1].id,
             },
         ])
         .returning()
@@ -309,13 +304,10 @@ async function main() {
         .insert(userFavorite)
         .values([
             {
-                id: v4(),
-                userId: "userid1",
-                isPublic: 0, // default to private
+                userId: newUsers[0].id,
             },
             {
-                id: v4(),
-                userId: "userid2",
+                userId: newUsers[1].id,
                 isPublic: 1,
             },
         ])
@@ -327,19 +319,16 @@ async function main() {
         .insert(userFavoriteAsset)
         .values([
             {
-                id: v4(),
                 userFavoriteId: newUserFavorites[0].id,
-                assetId: 1,
+                assetId: newAssets[0].id,
             },
             {
-                id: v4(),
                 userFavoriteId: newUserFavorites[0].id,
-                assetId: 2,
+                assetId: newAssets[1].id,
             },
             {
-                id: v4(),
                 userFavoriteId: newUserFavorites[1].id,
-                assetId: 3,
+                assetId: newAssets[2].id,
             },
         ])
         .returning()

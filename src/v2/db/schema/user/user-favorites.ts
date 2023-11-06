@@ -9,6 +9,7 @@ import {
 } from "drizzle-orm/sqlite-core"
 import { authUser } from "./user"
 import { asset } from "../asset/asset"
+import { generateID } from "@/v2/lib/oslo"
 
 /*
 NOTE: this file is users favorite assets.
@@ -19,7 +20,12 @@ NOTE: this file is users favorite assets.
 export const userFavorite = sqliteTable(
     tableNames.userFavorite,
     {
-        id: text("id").unique().notNull(),
+        id: text("id")
+            .unique()
+            .notNull()
+            .$defaultFn(() => {
+                return generateID()
+            }),
         userId: text("user_id")
             .notNull()
             .references(() => authUser.id, {
@@ -46,7 +52,12 @@ export type NewUserFavorite = typeof userFavorite.$inferInsert
 export const userFavoriteAsset = sqliteTable(
     tableNames.userFavoriteAsset,
     {
-        id: text("id").unique().notNull(),
+        id: text("id")
+            .unique()
+            .notNull()
+            .$defaultFn(() => {
+                return generateID()
+            }),
         userFavoriteId: text("favorited_assets_id")
             .notNull()
             .references(() => userFavorite.id, {

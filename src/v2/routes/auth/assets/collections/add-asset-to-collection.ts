@@ -102,7 +102,6 @@ export async function addAssetToCollection(c: APIContext): Promise<Response> {
         await drizzle
             .insert(userCollectionAsset)
             .values({
-                id: crypto.randomUUID(),
                 collectionId: collectionId,
                 assetId: parseInt(assetId),
             })

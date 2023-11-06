@@ -4,6 +4,7 @@ import { getConnection } from "@/v2/db/turso"
 import { generateRandomString } from "lucia/utils"
 import { emailVerificationToken } from "@/v2/db/schema"
 import { sendEmailConfirmationEmail } from "@/v2/lib/resend/email"
+import { generateID } from "@/v2/lib/oslo"
 
 const CreateAccountSchema = z
     .object({
@@ -100,6 +101,7 @@ export async function signup(c: APIContext): Promise<Response> {
                 providerUserId: username.toLowerCase(),
                 password,
             },
+            userId: generateID(),
             attributes: {
                 username,
                 display_name: username,

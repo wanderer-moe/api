@@ -17,6 +17,7 @@ type AssetSearchQuery = {
     game?: string
     category?: string
     tag?: string
+    limit?: number
 }
 
 const MAX_FILE_SIZE = 5000
@@ -105,8 +106,9 @@ export class AssetManager {
      * @returns A promise that resolves to an array of matching assets.
      */
     async searchAssets(query: AssetSearchQuery) {
-        const { name, game, category, tag } = query
+        const { name, game, category, tag, limit } = query
 
+        const assetLimit = limit ?? 500
         const gameList = game ? SplitQueryByCommas(game.toLowerCase()) : null
         const categoryList = category
             ? SplitQueryByCommas(category.toLowerCase())
@@ -153,7 +155,7 @@ export class AssetManager {
                 )
             )
             .groupBy(asset.id)
-            .limit(500)
+            .limit(assetLimit)
 
         return foundAssets
     }
@@ -188,7 +190,6 @@ export class AssetManager {
                     url: key,
                     uploadedById: userId,
                     status: "pending",
-                    uploadedDate: new Date().toISOString(),
                     fileSize: newAsset.size,
                     width: newAsset.width,
                     height: newAsset.height,

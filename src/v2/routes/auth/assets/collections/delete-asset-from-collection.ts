@@ -2,7 +2,7 @@ import { auth } from "@/v2/lib/auth/lucia"
 import { getConnection } from "@/v2/db/turso"
 import { z } from "zod"
 import { userCollectionAsset } from "@/v2/db/schema"
-import { eq } from "drizzle-orm"
+import { eq, and } from "drizzle-orm"
 
 const DeleteAssetFromCollectionSchema = z.object({
     collectionId: z.string({
@@ -98,7 +98,12 @@ export async function deleteAssetFromCollection(
     try {
         await drizzle
             .delete(userCollectionAsset)
-            .where(eq(userCollectionAsset.id, userCollectionAssetExists.id))
+            .where(
+                and(
+                    eq(userCollectionAsset.collectionId, collectionId),
+                    eq(userCollectionAsset.assetId, parseInt(assetId))
+                )
+            )
             .execute()
     } catch (e) {
         return c.json(

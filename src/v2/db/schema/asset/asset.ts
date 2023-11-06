@@ -86,7 +86,7 @@ export type NewAsset = typeof asset.$inferInsert
 
 export const assetRelations = relations(asset, ({ one, many }) => ({
     assetTagAsset: many(assetTagAsset),
-    atlas: many(atlasToAsset),
+    atlasToAsset: many(atlasToAsset),
     authUser: one(authUser, {
         fields: [asset.uploadedById],
         references: [authUser.id],
@@ -96,7 +96,7 @@ export const assetRelations = relations(asset, ({ one, many }) => ({
         references: [game.id],
     }),
     assetCategory: one(assetCategory, {
-        fields: [asset.gameId],
+        fields: [asset.assetCategoryId],
         references: [assetCategory.id],
     }),
 }))
