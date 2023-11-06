@@ -10,7 +10,7 @@ app.route("/v2", BaseRoutes)
 app.doc("/openapi", {
     openapi: "3.1.0",
     info: {
-        version: "1.0.0",
+        version: "2.0.0",
         title: "api.wanderer.moe",
     },
 })

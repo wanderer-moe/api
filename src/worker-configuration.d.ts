@@ -20,6 +20,7 @@ declare global {
     type Variables = {
         drizzle: import("@/v2/db/turso").DrizzleInstance
         turso: import("@/v2/db/turso").TursoInstance
+        lucia: import("@/v2/lib/auth/lucia").Auth
     }
 
     /**
