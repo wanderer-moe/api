@@ -1,9 +1,9 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
 import { swaggerUI } from "@hono/swagger-ui"
-import { prettyJSON } from 'hono/pretty-json'
-import BaseRoutes from '@/v2/routes/route'
+import { prettyJSON } from "hono/pretty-json"
+import BaseRoutes from "@/v2/routes/route"
 
-const app = new OpenAPIHono<{ Bindings: Bindings, Variables: Variables }>()
+const app = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
 app.route("/v2", BaseRoutes)
 

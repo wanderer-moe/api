@@ -2,7 +2,7 @@ import { OpenAPIHono } from "@hono/zod-openapi"
 import { getUserByNameRoute } from "./openapi"
 import { UserSearchManager } from "@/v2/lib/managers/user/user-search-manager"
 
-const handler = new OpenAPIHono<{ Bindings: Bindings, Variables: Variables }>()
+const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
 handler.openapi(getUserByNameRoute, async (ctx) => {
     const userId = ctx.req.valid("param").username
