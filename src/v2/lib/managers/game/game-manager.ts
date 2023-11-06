@@ -13,7 +13,7 @@ export class GameManager {
      * @param gameId - The unique ID of the game to retrieve.
      * @returns A promise that resolves to the retrieved game and its asset categories.
      */
-    async getGameById(gameId: string) {
+    public async getGameById(gameId: string) {
         const foundGame = await this.drizzle
             .select()
             .from(game)
@@ -32,11 +32,22 @@ export class GameManager {
      * @param gameName - The partial name to search for within game names.
      * @returns A promise that resolves to an array of matching games.
      */
-    async getGamesByPartialName(gameName: string) {
+    public async getGamesByPartialName(gameName: string) {
         const games = await this.drizzle
             .select()
             .from(game)
             .where(or(like(game.name, `%${gameName}%`)))
+
+        return games
+    }
+
+    /**
+     * Retrieves a list of all games.
+     * @returns A promise that resolves to an array of games.
+     */
+
+    public async listGames() {
+        const games = await this.drizzle.select().from(game)
 
         return games
     }

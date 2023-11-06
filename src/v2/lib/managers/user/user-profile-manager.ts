@@ -30,7 +30,7 @@ export class UserProfileManager {
      * @returns The updated user object.
      * @throws Error if the provided attributes are invalid.
      */
-    async updateUserAttributes(
+    public async updateUserAttributes(
         userId: string,
         attributes: z.infer<typeof UserAttributesSchema>
     ) {
@@ -55,7 +55,11 @@ export class UserProfileManager {
      * @param file - The new profile picture file.
      * @returns The URL of the updated profile picture.
      */
-    async updateProfilePicture(userId: string, bucket: R2Bucket, file: File) {
+    public async updateProfilePicture(
+        userId: string,
+        bucket: R2Bucket,
+        file: File
+    ) {
         const { key } = await bucket.put(`/avatars/${userId}.png`, file)
 
         const user = await this.drizzle
@@ -75,7 +79,7 @@ export class UserProfileManager {
      * @param file - The new banner image file.
      * @returns The URL of the updated banner image.
      */
-    async updateBanner(userId: string, bucket: R2Bucket, file: File) {
+    public async updateBanner(userId: string, bucket: R2Bucket, file: File) {
         const { key } = await bucket.put(`/banners/${userId}.png`, file)
 
         const user = await this.drizzle
@@ -94,7 +98,7 @@ export class UserProfileManager {
      * @param bucket - The R2Bucket where the picture is stored.
      * @returns The URL of the reset profile picture (null).
      */
-    async resetProfilePicture(userId: string, bucket: R2Bucket) {
+    public async resetProfilePicture(userId: string, bucket: R2Bucket) {
         await bucket.delete(`/avatars/${userId}.png`)
 
         const user = await this.drizzle
@@ -113,7 +117,7 @@ export class UserProfileManager {
      * @param bucket - The R2Bucket where the banner image is stored.
      * @returns The URL of the reset banner image (null).
      */
-    async resetBanner(userId: string, bucket: R2Bucket) {
+    public async resetBanner(userId: string, bucket: R2Bucket) {
         await bucket.delete(`/banners/${userId}.png`)
 
         const user = await this.drizzle

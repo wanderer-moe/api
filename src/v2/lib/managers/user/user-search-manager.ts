@@ -14,7 +14,7 @@ export class UserSearchManager {
      * @param userId - The ID of the user to retrieve.
      * @returns The user object or undefined if not found.
      */
-    async getUserById(userId: string) {
+    public async getUserById(userId: string) {
         const user = await this.drizzle
             .select()
             .from(authUser)
@@ -29,7 +29,7 @@ export class UserSearchManager {
      * @param username - The username of the user to retrieve.
      * @returns The user object or undefined if not found.
      */
-    async getUserByUsername(username: string) {
+    public async getUserByUsername(username: string) {
         const user = await this.drizzle
             .select()
             .from(authUser)
@@ -44,7 +44,7 @@ export class UserSearchManager {
      * @param username - The partial username to search for.
      * @returns An array of user objects matching the search criteria, limited to 25 results.
      */
-    async getUsersByUsername(username: string) {
+    public async getUsersByUsername(username: string) {
         const users = await this.drizzle
             .select()
             .from(authUser)

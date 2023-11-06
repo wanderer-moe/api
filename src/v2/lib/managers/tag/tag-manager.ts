@@ -22,7 +22,7 @@ export class TagManager {
      * @param tagId - The unique ID of the tag to retrieve.
      * @returns A promise that resolves to the retrieved asset tag.
      */
-    async getTagById(tagId: string) {
+    public async getTagById(tagId: string) {
         const foundTag = await this.drizzle
             .select()
             .from(assetTag)
@@ -37,7 +37,7 @@ export class TagManager {
      * Retrieves a list of all asset tags.
      * @returns A promise that resolves to an array of asset tags.
      */
-    async listTags() {
+    public async listTags() {
         const tags = await this.drizzle.select().from(assetTag)
 
         return tags
@@ -48,7 +48,7 @@ export class TagManager {
      * @param tagName - The partial name to search for within asset tags.
      * @returns A promise that resolves to an array of matching asset tags.
      */
-    async getTagsByPartialName(tagName: string) {
+    public async getTagsByPartialName(tagName: string) {
         const tags = await this.drizzle
             .select()
             .from(assetTag)
@@ -62,7 +62,7 @@ export class TagManager {
      * @param newTag - The new asset tag to create, adhering to the insertAssetTagSchema.
      * @returns A promise that resolves to the created asset tag.
      */
-    async createTag(newTag: z.infer<typeof insertAssetTagSchema>) {
+    public async createTag(newTag: z.infer<typeof insertAssetTagSchema>) {
         const createdTag = await this.drizzle.insert(assetTag).values({
             id: newTag.name,
             name: newTag.name,

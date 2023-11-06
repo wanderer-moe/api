@@ -14,7 +14,10 @@ export class GameAssetCategoryManager {
      * @param gameId - The ID of the game to which the asset category will be linked.
      * @returns A promise that resolves to the created game asset category.
      */
-    async linkAssetCategoryToGame(assetCategoryId: string, gameId: string) {
+    public async linkAssetCategoryToGame(
+        assetCategoryId: string,
+        gameId: string
+    ) {
         const createdGameAssetCategory = await this.drizzle
             .insert(gameAssetCategory)
             .values({
@@ -31,7 +34,10 @@ export class GameAssetCategoryManager {
      * @param gameId - The ID of the game from which the asset category will be unlinked.
      * @returns A promise that resolves to the deleted game asset category.
      */
-    async unlinkAssetCategoryFromGame(assetCategoryId: string, gameId: string) {
+    public async unlinkAssetCategoryFromGame(
+        assetCategoryId: string,
+        gameId: string
+    ) {
         const deletedGameAssetCategory = await this.drizzle
             .delete(gameAssetCategory)
             .where(

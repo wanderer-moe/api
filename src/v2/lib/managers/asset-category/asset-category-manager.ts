@@ -22,7 +22,7 @@ export class AssetCategoryManager {
      * @param assetCategoryId - The unique ID of the asset category to retrieve.
      * @returns A promise that resolves to the retrieved asset category.
      */
-    async getAssetCategoryById(assetCategoryId: string) {
+    public async getAssetCategoryById(assetCategoryId: string) {
         const foundAssetCategory = await this.drizzle
             .select()
             .from(assetCategory)
@@ -40,7 +40,7 @@ export class AssetCategoryManager {
      * Retrieves a list of all asset categories.
      * @returns A promise that resolves to an array of asset categories.
      */
-    async listAssetCategories() {
+    public async listAssetCategories() {
         const assetCategories = await this.drizzle.select().from(assetCategory)
 
         return assetCategories
@@ -51,7 +51,7 @@ export class AssetCategoryManager {
      * @param assetCategoryName - The partial name to search for within asset categories.
      * @returns A promise that resolves to an array of matching asset categories.
      */
-    async getAssetCategoriesByPartialName(assetCategoryName: string) {
+    public async getAssetCategoriesByPartialName(assetCategoryName: string) {
         const assetCategories = await this.drizzle
             .select()
             .from(assetCategory)
@@ -65,7 +65,7 @@ export class AssetCategoryManager {
      * @param newAssetCategory - The new asset category to create, adhering to the insertAssetCategorySchema.
      * @returns A promise that resolves to the created asset category.
      */
-    async createAssetCategory(
+    public async createAssetCategory(
         newAssetCategory: z.infer<typeof insertAssetCategorySchema>
     ) {
         const createdAssetCategory = await this.drizzle
@@ -86,7 +86,7 @@ export class AssetCategoryManager {
      * @param assetCategoryId - The ID of the asset category to delete.
      * @returns A promise that resolves to the deleted asset category.
      */
-    async deleteAssetCategory(assetCategoryId: string) {
+    public async deleteAssetCategory(assetCategoryId: string) {
         const deletedAssetCategory = await this.drizzle
             .delete(assetCategory)
             .where(eq(assetCategory.id, assetCategoryId))
@@ -101,7 +101,7 @@ export class AssetCategoryManager {
      * @param newAssetCategory - The updated asset category data, adhering to the insertAssetCategorySchema.
      * @returns A promise that resolves to the updated asset category.
      */
-    async updateAssetCategory(
+    public async updateAssetCategory(
         assetCategoryId: string,
         newAssetCategory: z.infer<typeof insertAssetCategorySchema>
     ) {

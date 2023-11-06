@@ -74,7 +74,7 @@ export class AssetManager {
      * @param assetId - The unique ID of the asset to retrieve.
      * @returns A promise that resolves to the retrieved asset, its game, category and tags.
      */
-    async getAssetById(assetId: number) {
+    public async getAssetById(assetId: number) {
         const foundAsset = await this.drizzle
             .select()
             .from(asset)
@@ -94,7 +94,7 @@ export class AssetManager {
      * Retrieves a list of all assets.
      * @returns A promise that resolves to an array of assets.
      */
-    async listAssets() {
+    public async listAssets() {
         const assets = await this.drizzle.select().from(asset)
 
         return assets
@@ -105,7 +105,7 @@ export class AssetManager {
      * @param query - An object containing optional search parameters.
      * @returns A promise that resolves to an array of matching assets.
      */
-    async searchAssets(query: AssetSearchQuery) {
+    public async searchAssets(query: AssetSearchQuery) {
         const { name, game, category, tag, limit } = query
 
         const assetLimit = limit ?? 500
@@ -168,7 +168,7 @@ export class AssetManager {
      * @param file - The File object representing the asset to be uploaded.
      * @returns A promise that resolves to the created asset.
      */
-    async createAsset(
+    public async createAsset(
         userId: string,
         newAsset: z.infer<typeof UploadAssetSchema>,
         bucket: R2Bucket,

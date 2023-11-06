@@ -15,7 +15,7 @@ export class UserFollowManager {
      * @param followingId - The ID of the user being followed.
      * @returns The user networking object representing the follow relationship.
      */
-    async followUser(followerId: string, followingId: string) {
+    public async followUser(followerId: string, followingId: string) {
         const networking = await this.drizzle
             .insert(userNetworking)
             .values({
@@ -35,7 +35,7 @@ export class UserFollowManager {
      * @param followingId - The ID of the user being unfollowed.
      * @returns The user networking object representing the removed follow relationship.
      */
-    async unfollowUser(followerId: string, followingId: string) {
+    public async unfollowUser(followerId: string, followingId: string) {
         const networking = await this.drizzle
             .delete(userNetworking)
             .where(
@@ -55,7 +55,7 @@ export class UserFollowManager {
      * @param userId - The ID of the user for whom to retrieve followers.
      * @returns An array of user networking objects representing followers.
      */
-    async getFollowers(userId: string) {
+    public async getFollowers(userId: string) {
         const followers = await this.drizzle
             .select()
             .from(userNetworking)
