@@ -2,7 +2,7 @@ import { createRoute } from "@hono/zod-openapi"
 import { getUserByNameSchema } from "./schema"
 
 export const getUserByNameRoute = createRoute({
-    path: "{username}",
+    path: "/{username}",
     method: "get",
     description: "Get a user by their username.",
     request: {
