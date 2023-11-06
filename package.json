@@ -31,6 +31,7 @@
     },
     "private": true,
     "dependencies": {
+        "@hono/swagger-ui": "^0.1.0",
         "@hono/zod-openapi": "^0.7.2",
         "@libsql/client": "0.3.5",
         "@lucia-auth/adapter-session-unstorage": "^2.1.0",

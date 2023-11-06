@@ -17,10 +17,15 @@ declare global {
         TURSO_DEV_DATABASE_URL: string | undefined
     }
 
+    type Variables = {
+        drizzle: import("@/v2/db/turso").DrizzleInstance
+        turso: import("@/v2/db/turso").TursoInstance
+    }
+
     /**
      * Provides access to the request context within routes that are separated into individual functions.
      */
-    type APIContext = import("hono").Context<{
+    type APIContext = import("@hono/zod-openapi").Context<{
         Bindings: Bindings
     }>
 }
