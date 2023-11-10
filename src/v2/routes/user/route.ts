@@ -1,8 +1,8 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
-import UserSearchRoute from "@/v2/routes/user/search/route"
+import UserGetRoute from "@/v2/routes/user/get/route"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
-handler.route("/search", UserSearchRoute)
+handler.route("/get", UserGetRoute)
 
 export default handler

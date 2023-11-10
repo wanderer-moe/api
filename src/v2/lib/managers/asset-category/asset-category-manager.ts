@@ -23,7 +23,7 @@ export class AssetCategoryManager {
      * @returns A promise that resolves to the retrieved asset category.
      */
     public async getAssetCategoryById(assetCategoryId: string) {
-        const foundAssetCategory = await this.drizzle
+        const [foundAssetCategory] = await this.drizzle
             .select()
             .from(assetCategory)
             .leftJoin(
@@ -33,7 +33,7 @@ export class AssetCategoryManager {
             .leftJoin(game, eq(game.id, gameAssetCategory.gameId))
             .where(eq(assetCategory.id, assetCategoryId))
 
-        return foundAssetCategory[0]
+        return foundAssetCategory
     }
 
     /**
@@ -87,12 +87,12 @@ export class AssetCategoryManager {
      * @returns A promise that resolves to the deleted asset category.
      */
     public async deleteAssetCategory(assetCategoryId: string) {
-        const deletedAssetCategory = await this.drizzle
+        const [deletedAssetCategory] = await this.drizzle
             .delete(assetCategory)
             .where(eq(assetCategory.id, assetCategoryId))
             .returning()
 
-        return deletedAssetCategory[0]
+        return deletedAssetCategory
     }
 
     /**
@@ -105,7 +105,7 @@ export class AssetCategoryManager {
         assetCategoryId: string,
         newAssetCategory: z.infer<typeof insertAssetCategorySchema>
     ) {
-        const updatedAssetCategory = await this.drizzle
+        const [updatedAssetCategory] = await this.drizzle
             .update(assetCategory)
             .set({
                 name: newAssetCategory.name,
@@ -115,6 +115,6 @@ export class AssetCategoryManager {
             .where(eq(assetCategory.id, assetCategoryId))
             .returning()
 
-        return updatedAssetCategory[0]
+        return updatedAssetCategory
     }
 }

@@ -75,7 +75,7 @@ export class AssetManager {
      * @returns A promise that resolves to the retrieved asset, its game, category and tags.
      */
     public async getAssetById(assetId: number) {
-        const foundAsset = await this.drizzle
+        const [foundAsset] = await this.drizzle
             .select()
             .from(asset)
             .leftJoin(assetTagAsset, eq(assetTagAsset.assetId, assetId))
@@ -87,7 +87,7 @@ export class AssetManager {
             )
             .where(eq(asset.id, assetId))
 
-        return foundAsset[0]
+        return foundAsset ?? null
     }
 
     /**
