@@ -15,19 +15,17 @@ export class GameManager {
      * @returns A promise that resolves to the retrieved game and its asset categories.
      */
     public async getGameById(gameId: string): Promise<Game | null> {
-        let foundGame: Game | null = null
-
         try {
-            ;[foundGame] = await this.drizzle
+            const [foundGame] = await this.drizzle
                 .select()
                 .from(game)
                 .where(eq(game.id, gameId))
+
+            return foundGame ?? null
         } catch (e) {
             console.error(`Error getting game by ID ${gameId}`, e)
             throw new Error(`Error getting game by ID ${gameId}`)
         }
-
-        return foundGame
     }
 
     /**
@@ -38,19 +36,17 @@ export class GameManager {
     public async getGamesByPartialName(
         gameName: string
     ): Promise<Game[] | Game | null> {
-        let games: Game[] | null = null
-
         try {
-            games = await this.drizzle
+            const games = await this.drizzle
                 .select()
                 .from(game)
                 .where(or(like(game.name, `%${gameName}%`)))
+
+            return games ?? null
         } catch (e) {
             console.error("Error getting games by partial name", e)
             throw new Error("Error getting games by partial name")
         }
-
-        return games ?? null
     }
 
     /**
@@ -58,16 +54,13 @@ export class GameManager {
      * @returns A promise that resolves to an array of games.
      */
 
-    public async listGames(): Promise<Game[]> {
-        let games: Game[] | null = null
-
+    public async listGames(): Promise<Game[] | Game | null> {
         try {
-            games = await this.drizzle.select().from(game)
+            const games = await this.drizzle.select().from(game)
+            return games ?? null
         } catch (e) {
             console.error("Error listing games", e)
             throw new Error("Error listing games")
         }
-
-        return games ?? []
     }
 }
