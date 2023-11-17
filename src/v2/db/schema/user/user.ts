@@ -43,7 +43,9 @@ export const authUser = sqliteTable(
                 return new Date().toISOString()
             }),
         roleFlags: integer("role_flags").default(1).notNull(),
-        isContributor: integer("is_contributor").default(0).notNull(),
+        isContributor: integer("is_contributor", { mode: "boolean" })
+            .default(false)
+            .notNull(),
         selfAssignableRoleFlags: integer("self_assignable_role_flags")
             .default(0)
             .notNull(),

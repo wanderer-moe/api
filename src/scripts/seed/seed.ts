@@ -52,7 +52,7 @@ async function main() {
                 usernameColour: "#84E6F8",
                 bio: "test bio",
                 roleFlags: 1,
-                isContributor: 0,
+                isContributor: true,
                 selfAssignableRoleFlags: 0,
             },
             {
@@ -63,7 +63,7 @@ async function main() {
                 bio: "test bio 2",
                 pronouns: "he/him/his",
                 roleFlags: 1,
-                isContributor: 0,
+                isContributor: false,
                 selfAssignableRoleFlags: 0,
             },
             {
@@ -73,7 +73,7 @@ async function main() {
                 emailVerified: 1,
                 bio: "test bio 3",
                 roleFlags: 1,
-                isContributor: 0,
+                isContributor: false,
                 selfAssignableRoleFlags: 0,
             },
         ])
@@ -201,7 +201,7 @@ async function main() {
                 url: "/test/image.png",
                 status: "approved",
                 uploadedById: newUsers[0].id,
-                assetIsOptimized: 0,
+                assetIsOptimized: true,
                 viewCount: 1337,
                 downloadCount: 1337,
                 fileSize: 40213,
@@ -217,7 +217,6 @@ async function main() {
                 url: "/test/image.png",
                 status: "approved",
                 uploadedById: newUsers[1].id,
-                assetIsOptimized: 0,
                 viewCount: 1337,
                 downloadCount: 1337,
                 fileSize: 40213,
@@ -233,7 +232,7 @@ async function main() {
                 url: "/test/image.png",
                 status: "approved",
                 uploadedById: newUsers[1].id,
-                assetIsOptimized: 0,
+                assetIsOptimized: true,
                 viewCount: 1337,
                 downloadCount: 1337,
                 fileSize: 40213,
@@ -275,7 +274,7 @@ async function main() {
             name: "collection name",
             description: "collection description",
             userId: newUsers[0].id,
-            isPublic: 0, // default to private
+            isPublic: true, // default to private
         })
         .returning()
     console.log(`[userCollection] inserted ${newUserCollections.length} rows\n`)
@@ -308,7 +307,7 @@ async function main() {
             },
             {
                 userId: newUsers[1].id,
-                isPublic: 1,
+                isPublic: false,
             },
         ])
         .returning()

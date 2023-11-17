@@ -59,7 +59,12 @@ export const asset = sqliteTable(
             .$defaultFn(() => {
                 return new Date().toISOString()
             }),
-        assetIsOptimized: integer("asset_is_optimized").default(0).notNull(),
+        assetIsOptimized: integer("asset_is_optimized", { mode: "boolean" })
+            .default(false)
+            .notNull(),
+        assetIsSuggestive: integer("asset_is_suggestive", { mode: "boolean" })
+            .default(false)
+            .notNull(),
         viewCount: integer("view_count").default(0).notNull(),
         downloadCount: integer("download_count").default(0).notNull(),
         fileSize: integer("file_size").default(0).notNull(),

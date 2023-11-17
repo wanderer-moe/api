@@ -38,7 +38,7 @@ export class CollectionManager {
                     and(
                         currentUserId
                             ? eq(userCollection.userId, currentUserId)
-                            : eq(userCollection.isPublic, 1),
+                            : eq(userCollection.isPublic, true),
                         eq(userCollection.id, collectionId)
                     )
                 )
@@ -69,7 +69,7 @@ export class CollectionManager {
                 .where(
                     currentUserId
                         ? eq(userCollection.userId, currentUserId)
-                        : eq(userCollection.isPublic, 1)
+                        : eq(userCollection.isPublic, true)
                 )
 
             return collections ?? null
@@ -101,7 +101,7 @@ export class CollectionManager {
                     and(
                         currentUserId
                             ? eq(userCollection.userId, currentUserId)
-                            : eq(userCollection.isPublic, 1),
+                            : eq(userCollection.isPublic, true),
                         like(userCollection.name, `%${collectionName}%`)
                     )
                 )
@@ -134,7 +134,7 @@ export class CollectionManager {
                     and(
                         currentUserId
                             ? eq(userCollection.userId, currentUserId)
-                            : eq(userCollection.isPublic, 1),
+                            : eq(userCollection.isPublic, true),
                         eq(userCollection.userId, userId)
                     )
                 )
@@ -255,7 +255,7 @@ export class CollectionManager {
                     userId: userId,
                     description: collectionSchema.description,
                     name: collectionSchema.name,
-                    isPublic: collectionSchema.isPublic ? 1 : 0,
+                    isPublic: collectionSchema.isPublic,
                 })
                 .returning()
 
@@ -288,7 +288,7 @@ export class CollectionManager {
                 .set({
                     description: collectionSchema.description,
                     name: collectionSchema.name,
-                    isPublic: collectionSchema.isPublic ? 1 : 0,
+                    isPublic: collectionSchema.isPublic,
                 })
                 .where(eq(userCollection.id, collectionId))
                 .returning()

@@ -32,7 +32,7 @@ export class FavoriteManager {
                     and(
                         currentUserId
                             ? eq(userFavorite.userId, currentUserId)
-                            : eq(userFavorite.isPublic, 1),
+                            : eq(userFavorite.isPublic, true),
                         eq(userFavorite.userId, userId)
                     )
                 )

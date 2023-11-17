@@ -32,7 +32,9 @@ export const savedOcGenerators = sqliteTable(
             .$defaultFn(() => {
                 return new Date().toISOString()
             }),
-        isPublic: integer("is_public").default(0).notNull(),
+        isPublic: integer("is_public", { mode: "boolean" })
+            .default(false)
+            .notNull(),
         content: text("content").notNull(),
         savedColorPalette: text("saved_color_palette"), // array of 5 hex values, completely optional for the user to save
         sakuraUrl: text("sakura_url"),

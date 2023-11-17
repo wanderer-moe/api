@@ -39,7 +39,9 @@ export const userCollection = sqliteTable(
             .$defaultFn(() => {
                 return new Date().toISOString()
             }),
-        isPublic: integer("is_public").default(0).notNull(),
+        isPublic: integer("is_public", { mode: "boolean" })
+            .default(false)
+            .notNull(),
     },
     (collection) => {
         return {

@@ -32,7 +32,9 @@ export const userFavorite = sqliteTable(
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
-        isPublic: integer("is_public").default(0).notNull(),
+        isPublic: integer("is_public", { mode: "boolean" })
+            .default(false)
+            .notNull(),
     },
     (userFavorite) => {
         return {
