@@ -1,13 +1,13 @@
 {
-    "version": "5",
-    "dialect": "sqlite",
-    "entries": [
-        {
-            "idx": 0,
-            "version": "5",
-            "when": 1699233278726,
-            "tag": "0000_silky_agent_zero",
-            "breakpoints": true
-        }
-    ]
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1700189550333,
+      "tag": "0000_busy_dreaming_celestial",
+      "breakpoints": true
+    }
+  ]
 }

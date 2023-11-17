@@ -8,7 +8,8 @@ CREATE TABLE `asset` (
 	`url` text NOT NULL,
 	`status` text DEFAULT 'pending' NOT NULL,
 	`uploaded_date` text NOT NULL,
-	`asset_is_optimized` integer DEFAULT 0 NOT NULL,
+	`asset_is_optimized` integer DEFAULT false NOT NULL,
+	`asset_is_suggestive` integer DEFAULT false NOT NULL,
 	`view_count` integer DEFAULT 0 NOT NULL,
 	`download_count` integer DEFAULT 0 NOT NULL,
 	`file_size` integer DEFAULT 0 NOT NULL,
@@ -81,7 +82,7 @@ CREATE TABLE `savedOcGenerators` (
 	`name` text NOT NULL,
 	`game` text NOT NULL,
 	`date_created` text NOT NULL,
-	`is_public` integer DEFAULT 0 NOT NULL,
+	`is_public` integer DEFAULT false NOT NULL,
 	`content` text NOT NULL,
 	`saved_color_palette` text,
 	`sakura_url` text,
@@ -102,7 +103,7 @@ CREATE TABLE `authUser` (
 	`bio` text DEFAULT 'No bio set' NOT NULL,
 	`date_joined` text NOT NULL,
 	`role_flags` integer DEFAULT 1 NOT NULL,
-	`is_contributor` integer DEFAULT 0 NOT NULL,
+	`is_contributor` integer DEFAULT false NOT NULL,
 	`self_assignable_role_flags` integer DEFAULT 0 NOT NULL
 );
 --> statement-breakpoint
@@ -135,7 +136,7 @@ CREATE TABLE `userCollection` (
 	`description` text NOT NULL,
 	`user_id` text NOT NULL,
 	`date_created` text NOT NULL,
-	`is_public` integer DEFAULT 0 NOT NULL,
+	`is_public` integer DEFAULT false NOT NULL,
 	FOREIGN KEY (`user_id`) REFERENCES `authUser`(`id`) ON UPDATE cascade ON DELETE cascade
 );
 --> statement-breakpoint
@@ -157,7 +158,7 @@ CREATE TABLE `socialsConnection` (
 CREATE TABLE `userFavorite` (
 	`id` text NOT NULL,
 	`user_id` text NOT NULL,
-	`is_public` integer DEFAULT 0 NOT NULL,
+	`is_public` integer DEFAULT false NOT NULL,
 	FOREIGN KEY (`user_id`) REFERENCES `authUser`(`id`) ON UPDATE cascade ON DELETE cascade
 );
 --> statement-breakpoint
