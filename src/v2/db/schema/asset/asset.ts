@@ -90,13 +90,16 @@ export const assetRelations = relations(asset, ({ one, many }) => ({
     authUser: one(authUser, {
         fields: [asset.uploadedById],
         references: [authUser.id],
+        relationName: "asset_auth_user",
     }),
     game: one(game, {
         fields: [asset.gameId],
         references: [game.id],
+        relationName: "asset_game",
     }),
     assetCategory: one(assetCategory, {
         fields: [asset.assetCategoryId],
         references: [assetCategory.id],
+        relationName: "asset_asset_category",
     }),
 }))

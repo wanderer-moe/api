@@ -80,10 +80,12 @@ export const gameAssetCategoryRelations = relations(
         game: one(game, {
             fields: [gameAssetCategory.gameId],
             references: [game.id],
+            relationName: "gameassetcategory_game",
         }),
         assetCategory: one(assetCategory, {
             fields: [gameAssetCategory.assetCategoryId],
             references: [assetCategory.id],
+            relationName: "gameassetcategory_assetcategory",
         }),
     })
 )

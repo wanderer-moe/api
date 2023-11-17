@@ -1,6 +1,7 @@
 import { DrizzleInstance } from "@/v2/db/turso"
-import { game, gameAssetCategory, assetCategory } from "@/v2/db/schema"
+import { game } from "@/v2/db/schema"
 import { eq, or, like } from "drizzle-orm"
+import type { Game } from "@/v2/db/schema"
 
 /**
  * Manages operations related to games.
@@ -13,18 +14,20 @@ export class GameManager {
      * @param gameId - The unique ID of the game to retrieve.
      * @returns A promise that resolves to the retrieved game and its asset categories.
      */
-    public async getGameById(gameId: string) {
-        const foundGame = await this.drizzle
-            .select()
-            .from(game)
-            .leftJoin(gameAssetCategory, eq(gameAssetCategory.gameId, gameId))
-            .leftJoin(
-                assetCategory,
-                eq(assetCategory.id, gameAssetCategory.assetCategoryId)
-            )
-            .where(eq(game.id, gameId))
+    public async getGameById(gameId: string): Promise<Game | null> {
+        let foundGame: Game | null = null
 
-        return foundGame[0]
+        try {
+            ;[foundGame] = await this.drizzle
+                .select()
+                .from(game)
+                .where(eq(game.id, gameId))
+        } catch (e) {
+            console.error(`Error getting game by ID ${gameId}`, e)
+            throw new Error(`Error getting game by ID ${gameId}`)
+        }
+
+        return foundGame
     }
 
     /**
@@ -32,13 +35,22 @@ export class GameManager {
      * @param gameName - The partial name to search for within game names.
      * @returns A promise that resolves to an array of matching games.
      */
-    public async getGamesByPartialName(gameName: string) {
-        const games = await this.drizzle
-            .select()
-            .from(game)
-            .where(or(like(game.name, `%${gameName}%`)))
+    public async getGamesByPartialName(
+        gameName: string
+    ): Promise<Game[] | Game | null> {
+        let games: Game[] | null = null
 
-        return games
+        try {
+            games = await this.drizzle
+                .select()
+                .from(game)
+                .where(or(like(game.name, `%${gameName}%`)))
+        } catch (e) {
+            console.error("Error getting games by partial name", e)
+            throw new Error("Error getting games by partial name")
+        }
+
+        return games ?? null
     }
 
     /**
@@ -46,9 +58,16 @@ export class GameManager {
      * @returns A promise that resolves to an array of games.
      */
 
-    public async listGames() {
-        const games = await this.drizzle.select().from(game)
+    public async listGames(): Promise<Game[]> {
+        let games: Game[] | null = null
 
-        return games
+        try {
+            games = await this.drizzle.select().from(game)
+        } catch (e) {
+            console.error("Error listing games", e)
+            throw new Error("Error listing games")
+        }
+
+        return games ?? []
     }
 }

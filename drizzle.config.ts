@@ -16,6 +16,6 @@ export default {
     verbose: true,
     dbCredentials: {
         url: isDev ? TURSO_DEV_DATABASE_URL : TURSO_DATABASE_URL!,
-        authToken: TURSO_DATABASE_AUTH_TOKEN ?? undefined,
+        authToken: isDev ? undefined : TURSO_DATABASE_AUTH_TOKEN!,
     },
 } satisfies Config

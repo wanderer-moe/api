@@ -42,6 +42,7 @@ export const socialsConnectionRelations = relations(
         user: one(authUser, {
             fields: [socialsConnection.userId],
             references: [authUser.id],
+            relationName: "socials_connection_user",
         }),
     })
 )

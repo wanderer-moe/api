@@ -74,9 +74,11 @@ export const assetTagAssetRelations = relations(assetTagAsset, ({ one }) => ({
     assetTag: one(assetTag, {
         fields: [assetTagAsset.assetTagId],
         references: [assetTag.id],
+        relationName: "assettagasset_assettag",
     }),
     asset: one(asset, {
         fields: [assetTagAsset.assetId],
         references: [asset.id],
+        relationName: "assettagasset_asset",
     }),
 }))

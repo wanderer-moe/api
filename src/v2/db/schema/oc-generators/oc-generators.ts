@@ -58,6 +58,7 @@ export const savedOcGeneratorsRelations = relations(
         user: one(authUser, {
             fields: [savedOcGenerators.userId],
             references: [authUser.id],
+            relationName: "saved_oc_generators_user",
         }),
     })
 )

@@ -80,6 +80,7 @@ export const atlasRelations = relations(atlas, ({ one }) => ({
     uploadedBy: one(authUser, {
         fields: [atlas.uploadedById, atlas.uploadedByName],
         references: [authUser.id, authUser.username],
+        relationName: "atlas_auth_user",
     }),
 }))
 
@@ -87,9 +88,11 @@ export const atlasToAssetRelations = relations(atlasToAsset, ({ one }) => ({
     atlas: one(atlas, {
         fields: [atlasToAsset.atlasId],
         references: [atlas.id],
+        relationName: "atlastoasset_atlas",
     }),
     asset: one(asset, {
         fields: [atlasToAsset.assetId],
         references: [asset.id],
+        relationName: "atlastoasset_asset",
     }),
 }))

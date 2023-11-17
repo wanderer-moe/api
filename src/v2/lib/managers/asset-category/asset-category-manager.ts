@@ -1,7 +1,8 @@
 import { DrizzleInstance } from "@/v2/db/turso"
-import { game, gameAssetCategory, assetCategory } from "@/v2/db/schema"
+import { assetCategory } from "@/v2/db/schema"
 import { eq, or, like } from "drizzle-orm"
 import { z } from "zod"
+import type { AssetCategory, NewAssetCategory } from "@/v2/db/schema"
 
 /**
  * Represents the schema for inserting a new asset category.
@@ -22,28 +23,42 @@ export class AssetCategoryManager {
      * @param assetCategoryId - The unique ID of the asset category to retrieve.
      * @returns A promise that resolves to the retrieved asset category.
      */
-    public async getAssetCategoryById(assetCategoryId: string) {
-        const [foundAssetCategory] = await this.drizzle
-            .select()
-            .from(assetCategory)
-            .leftJoin(
-                gameAssetCategory,
-                eq(gameAssetCategory.assetCategoryId, assetCategoryId)
-            )
-            .leftJoin(game, eq(game.id, gameAssetCategory.gameId))
-            .where(eq(assetCategory.id, assetCategoryId))
+    public async getAssetCategoryById(
+        assetCategoryId: string
+    ): Promise<AssetCategory | null> {
+        try {
+            const [foundAssetCategory] = await this.drizzle
+                .select()
+                .from(assetCategory)
+                .where(eq(assetCategory.id, assetCategoryId))
 
-        return foundAssetCategory
+            return foundAssetCategory ?? null
+        } catch (e) {
+            console.error(
+                `Error getting asset category by ID ${assetCategoryId}`,
+                e
+            )
+            throw new Error(
+                `Error getting asset category by ID ${assetCategoryId}`
+            )
+        }
     }
 
     /**
      * Retrieves a list of all asset categories.
      * @returns A promise that resolves to an array of asset categories.
      */
-    public async listAssetCategories() {
-        const assetCategories = await this.drizzle.select().from(assetCategory)
+    public async listAssetCategories(): Promise<AssetCategory[]> {
+        try {
+            const assetCategories = await this.drizzle
+                .select()
+                .from(assetCategory)
 
-        return assetCategories
+            return assetCategories
+        } catch (e) {
+            console.error("Error listing asset categories", e)
+            throw new Error("Error listing asset categories")
+        }
     }
 
     /**
@@ -51,13 +66,20 @@ export class AssetCategoryManager {
      * @param assetCategoryName - The partial name to search for within asset categories.
      * @returns A promise that resolves to an array of matching asset categories.
      */
-    public async getAssetCategoriesByPartialName(assetCategoryName: string) {
-        const assetCategories = await this.drizzle
-            .select()
-            .from(assetCategory)
-            .where(or(like(assetCategory.name, `%${assetCategoryName}%`)))
+    public async getAssetCategoriesByPartialName(
+        assetCategoryName: string
+    ): Promise<AssetCategory[] | AssetCategory | null> {
+        try {
+            const assetCategories = await this.drizzle
+                .select()
+                .from(assetCategory)
+                .where(or(like(assetCategory.name, `%${assetCategoryName}%`)))
 
-        return assetCategories
+            return assetCategories
+        } catch (e) {
+            console.error("Error getting asset categories by partial name", e)
+            throw new Error("Error getting asset categories by partial name")
+        }
     }
 
     /**
@@ -67,18 +89,24 @@ export class AssetCategoryManager {
      */
     public async createAssetCategory(
         newAssetCategory: z.infer<typeof insertAssetCategorySchema>
-    ) {
-        const createdAssetCategory = await this.drizzle
-            .insert(assetCategory)
-            .values({
-                id: newAssetCategory.name,
-                name: newAssetCategory.name,
-                formattedName: newAssetCategory.name,
-                assetCount: 0,
-                lastUpdated: new Date().toISOString(),
-            })
+    ): Promise<NewAssetCategory> {
+        try {
+            const [createdAssetCategory] = await this.drizzle
+                .insert(assetCategory)
+                .values({
+                    id: newAssetCategory.name,
+                    name: newAssetCategory.name,
+                    formattedName: newAssetCategory.name,
+                    assetCount: 0,
+                    lastUpdated: new Date().toISOString(),
+                })
+                .returning()
 
-        return createdAssetCategory
+            return createdAssetCategory
+        } catch (e) {
+            console.error("Error creating asset category", e)
+            throw new Error("Error creating asset category")
+        }
     }
 
     /**
@@ -86,13 +114,25 @@ export class AssetCategoryManager {
      * @param assetCategoryId - The ID of the asset category to delete.
      * @returns A promise that resolves to the deleted asset category.
      */
-    public async deleteAssetCategory(assetCategoryId: string) {
-        const [deletedAssetCategory] = await this.drizzle
-            .delete(assetCategory)
-            .where(eq(assetCategory.id, assetCategoryId))
-            .returning()
+    public async deleteAssetCategory(
+        assetCategoryId: string
+    ): Promise<AssetCategory> {
+        try {
+            const [deletedAssetCategory] = await this.drizzle
+                .delete(assetCategory)
+                .where(eq(assetCategory.id, assetCategoryId))
+                .returning()
 
-        return deletedAssetCategory
+            return deletedAssetCategory
+        } catch (e) {
+            console.error(
+                `Error deleting asset category by ID ${assetCategoryId}`,
+                e
+            )
+            throw new Error(
+                `Error deleting asset category by ID ${assetCategoryId}`
+            )
+        }
     }
 
     /**
@@ -104,17 +144,27 @@ export class AssetCategoryManager {
     public async updateAssetCategory(
         assetCategoryId: string,
         newAssetCategory: z.infer<typeof insertAssetCategorySchema>
-    ) {
-        const [updatedAssetCategory] = await this.drizzle
-            .update(assetCategory)
-            .set({
-                name: newAssetCategory.name,
-                formattedName: newAssetCategory.name,
-                lastUpdated: new Date().toISOString(),
-            })
-            .where(eq(assetCategory.id, assetCategoryId))
-            .returning()
+    ): Promise<AssetCategory> {
+        try {
+            const [updatedAssetCategory] = await this.drizzle
+                .update(assetCategory)
+                .set({
+                    name: newAssetCategory.name,
+                    formattedName: newAssetCategory.name,
+                    lastUpdated: new Date().toISOString(),
+                })
+                .where(eq(assetCategory.id, assetCategoryId))
+                .returning()
 
-        return updatedAssetCategory
+            return updatedAssetCategory
+        } catch (e) {
+            console.error(
+                `Error updating asset category by ID ${assetCategoryId}`,
+                e
+            )
+            throw new Error(
+                `Error updating asset category by ID ${assetCategoryId}`
+            )
+        }
     }
 }

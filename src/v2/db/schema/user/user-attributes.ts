@@ -86,6 +86,7 @@ export const emailVerificationTokenRelations = relations(
         user: one(authUser, {
             fields: [emailVerificationToken.userId],
             references: [authUser.id],
+            relationName: "emailverificationtoken_user",
         }),
     })
 )
@@ -96,6 +97,7 @@ export const passwordResetTokenRelations = relations(
         user: one(authUser, {
             fields: [passwordResetToken.userId],
             references: [authUser.id],
+            relationName: "passwordresettoken_user",
         }),
     })
 )

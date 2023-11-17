@@ -1,5 +1,6 @@
 import { DrizzleInstance } from "@/v2/db/turso"
 import { authUser } from "@/v2/db/schema"
+import type { User } from "@/v2/db/schema"
 import { R2Bucket } from "@cloudflare/workers-types"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
@@ -33,18 +34,23 @@ export class UserProfileManager {
     public async updateUserAttributes(
         userId: string,
         attributes: z.infer<typeof UserAttributesSchema>
-    ) {
-        const validAttributes = UserAttributesSchema.safeParse(attributes)
-        if (!validAttributes.success)
-            throw new Error(`Invalid attributes provided`)
+    ): Promise<User> {
+        try {
+            const validAttributes = UserAttributesSchema.safeParse(attributes)
+            if (!validAttributes.success)
+                throw new Error(`Invalid attributes provided`)
 
-        const user = await this.drizzle
-            .update(authUser)
-            .set(attributes)
-            .where(eq(authUser.id, userId))
-            .returning()
+            const [user] = await this.drizzle
+                .update(authUser)
+                .set(attributes)
+                .where(eq(authUser.id, userId))
+                .returning()
 
-        return user[0]
+            return user
+        } catch (e) {
+            console.error(`Error updating user attributes`, e)
+            throw new Error(`Error updating user attributes`)
+        }
     }
 
     /**
@@ -59,16 +65,21 @@ export class UserProfileManager {
         userId: string,
         bucket: R2Bucket,
         file: File
-    ) {
-        const { key } = await bucket.put(`/avatars/${userId}.png`, file)
+    ): Promise<string> {
+        try {
+            const { key } = await bucket.put(`/avatars/${userId}.png`, file)
 
-        const user = await this.drizzle
-            .update(authUser)
-            .set({ avatarUrl: key })
-            .where(eq(authUser.id, userId))
-            .returning()
+            const [user] = await this.drizzle
+                .update(authUser)
+                .set({ avatarUrl: key })
+                .where(eq(authUser.id, userId))
+                .returning()
 
-        return user[0].avatarUrl
+            return user.avatarUrl
+        } catch (e) {
+            console.error(`Error updating profile picture`, e)
+            throw new Error(`Error updating profile picture`)
+        }
     }
 
     /**
@@ -79,16 +90,25 @@ export class UserProfileManager {
      * @param file - The new banner image file.
      * @returns The URL of the updated banner image.
      */
-    public async updateBanner(userId: string, bucket: R2Bucket, file: File) {
-        const { key } = await bucket.put(`/banners/${userId}.png`, file)
+    public async updateBanner(
+        userId: string,
+        bucket: R2Bucket,
+        file: File
+    ): Promise<string> {
+        try {
+            const { key } = await bucket.put(`/banners/${userId}.png`, file)
 
-        const user = await this.drizzle
-            .update(authUser)
-            .set({ bannerUrl: key })
-            .where(eq(authUser.id, userId))
-            .returning()
+            const [user] = await this.drizzle
+                .update(authUser)
+                .set({ bannerUrl: key })
+                .where(eq(authUser.id, userId))
+                .returning()
 
-        return user[0].bannerUrl
+            return user.bannerUrl
+        } catch (e) {
+            console.error(`Error updating banner`, e)
+            throw new Error(`Error updating banner`)
+        }
     }
 
     /**
@@ -98,16 +118,24 @@ export class UserProfileManager {
      * @param bucket - The R2Bucket where the picture is stored.
      * @returns The URL of the reset profile picture (null).
      */
-    public async resetProfilePicture(userId: string, bucket: R2Bucket) {
-        await bucket.delete(`/avatars/${userId}.png`)
+    public async resetProfilePicture(
+        userId: string,
+        bucket: R2Bucket
+    ): Promise<string> {
+        try {
+            await bucket.delete(`/avatars/${userId}.png`)
 
-        const user = await this.drizzle
-            .update(authUser)
-            .set({ avatarUrl: null })
-            .where(eq(authUser.id, userId))
-            .returning()
+            const [user] = await this.drizzle
+                .update(authUser)
+                .set({ avatarUrl: null })
+                .where(eq(authUser.id, userId))
+                .returning()
 
-        return user[0].avatarUrl
+            return user.avatarUrl
+        } catch (e) {
+            console.error(`Error resetting profile picture`, e)
+            throw new Error(`Error resetting profile picture`)
+        }
     }
 
     /**
@@ -118,14 +146,19 @@ export class UserProfileManager {
      * @returns The URL of the reset banner image (null).
      */
     public async resetBanner(userId: string, bucket: R2Bucket) {
-        await bucket.delete(`/banners/${userId}.png`)
+        try {
+            await bucket.delete(`/banners/${userId}.png`)
 
-        const user = await this.drizzle
-            .update(authUser)
-            .set({ bannerUrl: null })
-            .where(eq(authUser.id, userId))
-            .returning()
+            const [user] = await this.drizzle
+                .update(authUser)
+                .set({ bannerUrl: null })
+                .where(eq(authUser.id, userId))
+                .returning()
 
-        return user[0].bannerUrl
+            return user.bannerUrl
+        } catch (e) {
+            console.error(`Error resetting banner`, e)
+            throw new Error(`Error resetting banner`)
+        }
     }
 }

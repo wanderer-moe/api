@@ -57,8 +57,8 @@ export const authUser = sqliteTable(
     }
 )
 
-export type Users = typeof authUser.$inferSelect
-export type NewUsers = typeof authUser.$inferInsert
+export type User = typeof authUser.$inferSelect
+export type NewUser = typeof authUser.$inferInsert
 
 export const keys = sqliteTable(
     tableNames.authKey,
@@ -104,5 +104,6 @@ export const keysRelations = relations(keys, ({ one }) => ({
     user: one(authUser, {
         fields: [keys.userId],
         references: [authUser.id],
+        relationName: "key_auth_user",
     }),
 }))

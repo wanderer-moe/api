@@ -6,7 +6,7 @@
     "rules": {
         "no-const-assign": "error",
         "camelcase": "off",
-        "no-extra-semi": "error"
+        "no-extra-semi": "off"
     },
     "parserOptions": {
         "allowImportExportEverywhere": true,

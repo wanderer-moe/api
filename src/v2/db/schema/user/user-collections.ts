@@ -96,6 +96,7 @@ export const collectionRelations = relations(
         user: one(authUser, {
             fields: [userCollection.userId],
             references: [authUser.id],
+            relationName: "collection_auth_user",
         }),
         assets: many(userCollectionAsset),
     })
@@ -107,10 +108,12 @@ export const collectionAssetsRelations = relations(
         collection: one(userCollection, {
             fields: [userCollectionAsset.collectionId],
             references: [userCollection.id],
+            relationName: "collectionassets_collection",
         }),
         asset: one(asset, {
             fields: [userCollectionAsset.assetId],
             references: [asset.id],
+            relationName: "collectionassets_asset",
         }),
     })
 )
