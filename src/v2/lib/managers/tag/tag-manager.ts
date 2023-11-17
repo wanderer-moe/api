@@ -24,36 +24,31 @@ export class TagManager {
      * @returns A promise that resolves to the retrieved asset tag.
      */
     public async getTagById(tagId: string): Promise<AssetTag | null> {
-        let foundTag: AssetTag | null = null
-
         try {
-            ;[foundTag] = await this.drizzle
+            const [foundTag] = await this.drizzle
                 .select()
                 .from(assetTag)
                 .where(eq(assetTag.id, tagId))
+
+            return foundTag ?? null
         } catch (e) {
             console.error(`Error getting tag by ID ${tagId}`, e)
             throw new Error(`Error getting tag by ID ${tagId}`)
         }
-
-        return foundTag
     }
 
     /**
      * Retrieves a list of all asset tags.
      * @returns A promise that resolves to an array of asset tags.
      */
-    public async listTags(): Promise<AssetTag[]> {
-        let tags: AssetTag[] | null = null
-
+    public async listTags(): Promise<AssetTag[] | null> {
         try {
-            tags = await this.drizzle.select().from(assetTag)
+            const tags = await this.drizzle.select().from(assetTag)
+            return tags ?? null
         } catch (e) {
             console.error("Error listing tags", e)
             throw new Error("Error listing tags")
         }
-
-        return tags ?? []
     }
 
     /**
@@ -64,19 +59,17 @@ export class TagManager {
     public async getTagsByPartialName(
         tagName: string
     ): Promise<AssetTag[] | AssetTag | null> {
-        let tags: AssetTag[] | AssetTag | null = null
-
         try {
-            tags = await this.drizzle
+            const tags = await this.drizzle
                 .select()
                 .from(assetTag)
                 .where(or(like(assetTag.name, `%${tagName}%`)))
+
+            return tags ?? null
         } catch (e) {
             console.error("Error getting tags by partial name", e)
             throw new Error("Error getting tags by partial name")
         }
-
-        return tags
     }
 
     /**
@@ -87,10 +80,8 @@ export class TagManager {
     public async createTag(
         newTag: z.infer<typeof insertAssetTagSchema>
     ): Promise<NewAssetTag> {
-        let createdTag: NewAssetTag | null = null
-
         try {
-            ;[createdTag] = await this.drizzle
+            const [createdTag] = await this.drizzle
                 .insert(assetTag)
                 .values({
                     id: newTag.name,
@@ -100,11 +91,11 @@ export class TagManager {
                     lastUpdated: new Date().toISOString(),
                 })
                 .returning()
+
+            return createdTag
         } catch (e) {
             console.error("Error creating tag", e)
             throw new Error("Error creating tag")
         }
-
-        return createdTag!
     }
 }

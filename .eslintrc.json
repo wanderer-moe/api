@@ -5,8 +5,8 @@
     "plugins": ["json"],
     "rules": {
         "no-const-assign": "error",
-        "camelcase": "off",
-        "no-extra-semi": "off"
+        "camelcase": "off", // it complains becuase of zod, idk how to fix it
+        "no-extra-semi": "error"
     },
     "parserOptions": {
         "allowImportExportEverywhere": true,
