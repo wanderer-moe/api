@@ -14,6 +14,7 @@ handler.openapi(getUserByIdRoute, async (ctx) => {
 
     return ctx.jsonT(
         {
+            success: true,
             user,
         },
         200

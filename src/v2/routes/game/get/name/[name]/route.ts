@@ -12,9 +12,23 @@ handler.openapi(getGameByNameRoute, async (ctx) => {
     const gameManager = new GameManager(drizzle)
     const game = await gameManager.getGameByName(name)
 
-    return ctx.jsonT({
-        game,
-    })
+    if (!game) {
+        return ctx.jsonT(
+            {
+                success: false,
+                error: "Game not found",
+            },
+            200
+        )
+    }
+
+    return ctx.jsonT(
+        {
+            success: true,
+            game,
+        },
+        200
+    )
 })
 
 export default handler

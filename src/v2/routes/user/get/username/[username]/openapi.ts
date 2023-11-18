@@ -12,9 +12,6 @@ export const getUserByNameRoute = createRoute({
         200: {
             description: "The user was found.",
         },
-        404: {
-            description: "The user was not found.",
-        },
         500: {
             description: "Internal server error.",
         },

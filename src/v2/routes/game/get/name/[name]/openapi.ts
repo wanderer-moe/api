@@ -12,9 +12,6 @@ export const getGameByNameRoute = createRoute({
         200: {
             description: "Game was found.",
         },
-        404: {
-            description: "Game was not found.",
-        },
         500: {
             description: "Internal server error.",
         },

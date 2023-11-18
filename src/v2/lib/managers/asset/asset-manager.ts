@@ -6,7 +6,7 @@ import {
     assetTagAsset,
     game,
 } from "@/v2/db/schema"
-import { eq, or, like, sql, and } from "drizzle-orm"
+import { eq, or, like, sql, and, not } from "drizzle-orm"
 import { R2Bucket } from "@cloudflare/workers-types"
 import { SplitQueryByCommas } from "../../helpers/split-query-by-commas"
 import { z } from "zod"
@@ -77,15 +77,89 @@ export class AssetManager {
      */
     public async getAssetById(assetId: number): Promise<Asset | null> {
         try {
-            const [foundAsset] = await this.drizzle
-                .select()
-                .from(asset)
-                .where(eq(asset.id, assetId))
+            const foundAsset = await this.drizzle.query.asset.findFirst({
+                where: (asset, { eq }) => eq(asset.id, assetId),
+                with: {
+                    assetTagAsset: {
+                        with: {
+                            assetTag: true,
+                        },
+                    },
+                    authUser: {
+                        columns: {
+                            email: false,
+                            emailVerified: false,
+                        },
+                    },
+                    game: true,
+                    assetCategory: true,
+                },
+            })
 
             return foundAsset ?? null
         } catch (e) {
             console.error(`Error getting asset by ID ${assetId}`, e)
             throw new Error(`Error getting asset by ID ${assetId}`)
+        }
+    }
+
+    /**
+     * Retrieves a list of assets by their IDs.
+     * @param assetIds - An array of asset IDs to retrieve.
+     * @returns A promise that resolves to an array of retrieved assets.
+     * @throws An error if any of the asset IDs are invalid.
+     */
+    public async getSimilarAssets(assetId: number): Promise<Asset[] | null> {
+        try {
+            const [foundAsset] = await this.drizzle
+                .select({
+                    id: asset.id,
+                    name: asset.name,
+                    assetCategoryId: asset.assetCategoryId,
+                    gameId: asset.gameId,
+                })
+                .from(asset)
+                .where(eq(asset.id, assetId))
+
+            if (!foundAsset) return null
+
+            // this is messy:
+            // we check if assets exist w/ the same game and category
+            // if not, we check if assets exist w / the same game but different category
+            // this means theres a higher chance of similar assets ALWAYS being returned, even if they're not "70%" similar
+            // who needs machine learning when you can just do this :^)
+
+            // TODO(dromzeh): check if there's a better way to do this, and prioritize assets with similar name, asset category, and game
+            const similarAssets = await this.drizzle.query.asset.findMany({
+                where: (asset, { and, eq }) =>
+                    and(
+                        not(eq(asset.id, foundAsset.id)),
+                        or(
+                            and(
+                                eq(asset.gameId, foundAsset.gameId),
+                                eq(
+                                    asset.assetCategoryId,
+                                    foundAsset.assetCategoryId
+                                )
+                            ),
+                            and(
+                                eq(asset.gameId, foundAsset.gameId),
+                                not(
+                                    eq(
+                                        asset.assetCategoryId,
+                                        foundAsset.assetCategoryId
+                                    )
+                                )
+                            )
+                        )
+                    ),
+                limit: 6,
+            })
+
+            return similarAssets ?? null
+        } catch (e) {
+            console.error(`Error getting similar assets by ID ${assetId}`, e)
+            throw new Error(`Error getting similar assets by ID ${assetId}`)
         }
     }
 

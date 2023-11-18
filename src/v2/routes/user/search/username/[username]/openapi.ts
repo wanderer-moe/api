@@ -12,9 +12,6 @@ export const searchUsersByUsernameRoute = createRoute({
         200: {
             description: "User(s) were found.",
         },
-        404: {
-            description: "User(s) were not found.",
-        },
         500: {
             description: "Internal server error.",
         },

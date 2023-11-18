@@ -13,6 +13,7 @@ handler.openapi(searchUsersByUsernameRoute, async (ctx) => {
     const users = await search.getUsersByUsername(userQuery)
 
     return ctx.jsonT({
+        success: true,
         users,
     })
 })

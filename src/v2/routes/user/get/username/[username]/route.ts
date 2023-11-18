@@ -12,9 +12,13 @@ handler.openapi(getUserByNameRoute, async (ctx) => {
     const search = new UserSearchManager(drizzle)
     const user = await search.getUserByUsername(userId)
 
-    return ctx.jsonT({
-        user,
-    })
+    return ctx.jsonT(
+        {
+            success: true,
+            user,
+        },
+        200
+    )
 })
 
 export default handler

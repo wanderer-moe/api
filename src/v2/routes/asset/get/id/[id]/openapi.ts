@@ -1,16 +1,16 @@
 import { createRoute } from "@hono/zod-openapi"
-import { getUserByIdSchema } from "./schema"
+import { getAssetByIdSchema } from "./schema"
 
-export const getUserByIdRoute = createRoute({
+export const getAssetByIdRoute = createRoute({
     path: "/{id}",
     method: "get",
-    description: "Get a user by their ID.",
+    description: "Get an asset by their ID.",
     request: {
-        params: getUserByIdSchema,
+        params: getAssetByIdSchema,
     },
     responses: {
         200: {
-            description: "The user was found.",
+            description: "The asset was found.",
         },
         500: {
             description: "Internal server error.",
