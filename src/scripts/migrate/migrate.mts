@@ -15,17 +15,15 @@ async function main() {
     isDev && console.log("TURSO_DEV_DATABASE_URL: ", TURSO_DEV_DATABASE_URL)
     !isDev && console.log("TURSO_DATABASE_URL: ", TURSO_DATABASE_URL)
 
-    const waitTime = isDev ? 3000 : 1000
+    const waitTime = isDev ? 1000 : 10000
 
     console.log(`Waiting ${waitTime}ms until migration...`)
     await new Promise((resolve) => setTimeout(resolve, waitTime))
 
     console.log("Connecting to database client...")
     const client = createClient({
-        url: (isDev
-            ? TURSO_DEV_DATABASE_URL ?? TURSO_DATABASE_URL
-            : TURSO_DATABASE_URL) as string,
-        ...(isDev ? {} : { authToken: TURSO_DATABASE_AUTH_TOKEN }),
+        url: isDev ? TURSO_DEV_DATABASE_URL : TURSO_DATABASE_URL!,
+        authToken: isDev ? undefined : TURSO_DATABASE_AUTH_TOKEN!,
     })
     const db = drizzleORM(client)
     console.log(

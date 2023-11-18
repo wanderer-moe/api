@@ -21,6 +21,7 @@ import { atlas } from "../asset/asset-atlas"
 NOTE: Very basic user information
 - Users table is user information
 - Keys table is login methods (i.e Credentials, OAuth, etc.)
+- We handle sessions w/ Cloudflare KV instead of a sessions table
 */
 
 export const authUser = sqliteTable(

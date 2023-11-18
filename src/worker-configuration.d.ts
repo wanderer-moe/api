@@ -14,13 +14,12 @@ declare global {
         DISCORD_CLIENT_SECRET: string
         DISCORD_REDIRECT_URI: string
         RESEND_API_KEY: string
-        TURSO_DEV_DATABASE_URL: string | undefined
     }
 
     type Variables = {
-        drizzle: import("@/v2/db/turso").DrizzleInstance
-        turso: import("@/v2/db/turso").TursoInstance
-        lucia: import("@/v2/lib/auth/lucia").Auth
+        //     drizzle: import("@/v2/db/turso").DrizzleInstance
+        //     turso: import("@/v2/db/turso").TursoInstance
+        //     lucia: import("@/v2/lib/auth/lucia").Auth
     }
 
     /**
@@ -28,6 +27,7 @@ declare global {
      */
     type APIContext = import("@hono/zod-openapi").Context<{
         Bindings: Bindings
+        Variables: Variables
     }>
 }
 

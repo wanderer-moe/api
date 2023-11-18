@@ -1,8 +1,8 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
-import UserGetRoute from "@/v2/routes/user/get/route"
+import GameGetRoute from "./get/handler"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
-handler.route("/get", UserGetRoute)
+handler.route("/get", GameGetRoute)
 
 export default handler

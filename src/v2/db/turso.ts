@@ -25,12 +25,12 @@ export function getConnection(env: Bindings) {
      * The `url` option is set to the `TURSO_DATABASE_URL` environment variable.
      * The `authToken` option is set to the `TURSO_DATABASE_AUTH_TOKEN` environment variable.
      **/
-    const isDev = env.ENVIRONMENT === "DEV"
-    const TURSO_DEV_DATABASE_URL =
-        env.TURSO_DEV_DATABASE_URL ?? "http://127.0.0.1:8080"
+    const isDev = env.ENVIRONMENT !== "PROD"
+
+    console.log(env)
 
     const turso = createClient({
-        url: isDev ? TURSO_DEV_DATABASE_URL : env.TURSO_DATABASE_URL!,
+        url: isDev ? "http://127.0.0.1:8080" : env.TURSO_DATABASE_URL!,
         authToken: isDev ? undefined : env.TURSO_DATABASE_AUTH_TOKEN!,
     })
 

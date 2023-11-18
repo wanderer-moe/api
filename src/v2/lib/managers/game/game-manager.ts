@@ -29,6 +29,25 @@ export class GameManager {
     }
 
     /**
+     * Retrieves a game by its name.
+     * @param gameName - The name of the game to retrieve.
+     * @returns A promise that resolves to the retrieved game and its asset categories.
+     */
+    public async getGameByName(gameName: string): Promise<Game | null> {
+        try {
+            const [foundGame] = await this.drizzle
+                .select()
+                .from(game)
+                .where(eq(game.name, gameName))
+
+            return foundGame ?? null
+        } catch (e) {
+            console.error(`Error getting game by name ${gameName}`, e)
+            throw new Error(`Error getting game by name ${gameName}`)
+        }
+    }
+
+    /**
      * Retrieves games with partial name matching.
      * @param gameName - The partial name to search for within game names.
      * @returns A promise that resolves to an array of matching games.

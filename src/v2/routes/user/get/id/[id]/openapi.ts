@@ -1,12 +1,12 @@
 import { createRoute } from "@hono/zod-openapi"
-import { getUserByNameSchema } from "./schema"
+import { getUserByIdSchema } from "./schema"
 
-export const getUserByNameRoute = createRoute({
-    path: "/{username}",
+export const getUserByIdRoute = createRoute({
+    path: "/{id}",
     method: "get",
-    description: "Get a user by their username.",
+    description: "Get a user by their ID.",
     request: {
-        params: getUserByNameSchema,
+        params: getUserByIdSchema,
     },
     responses: {
         200: {
@@ -14,6 +14,9 @@ export const getUserByNameRoute = createRoute({
         },
         404: {
             description: "The user was not found.",
+        },
+        500: {
+            description: "Internal server error.",
         },
     },
 })
