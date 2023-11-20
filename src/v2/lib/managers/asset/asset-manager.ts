@@ -6,7 +6,7 @@ import {
     assetTagAsset,
     game,
 } from "@/v2/db/schema"
-import { eq, or, like, sql, and, not } from "drizzle-orm"
+import { eq, or, like, sql, and, not, desc } from "drizzle-orm"
 import { R2Bucket } from "@cloudflare/workers-types"
 import { SplitQueryByCommas } from "../../helpers/split-query-by-commas"
 import { z } from "zod"
@@ -70,14 +70,9 @@ export const UploadAssetSchema = z.object({
 export class AssetManager {
     constructor(private drizzle: DrizzleInstance) {}
 
-    /**
-     * Retrieves an asset by its ID.
-     * @param assetId - The unique ID of the asset to retrieve.
-     * @returns A promise that resolves to the retrieved asset, its game, category and tags.
-     */
-    public async getAssetById(assetId: number): Promise<Asset | null> {
+    public async getAssetById(assetId: number) {
         try {
-            const foundAsset = await this.drizzle.query.asset.findFirst({
+            return await this.drizzle.query.asset.findFirst({
                 where: (asset, { eq }) => eq(asset.id, assetId),
                 with: {
                     assetTagAsset: {
@@ -95,8 +90,6 @@ export class AssetManager {
                     assetCategory: true,
                 },
             })
-
-            return foundAsset ?? null
         } catch (e) {
             console.error(`Error getting asset by ID ${assetId}`, e)
             throw new Error(`Error getting asset by ID ${assetId}`)
@@ -109,7 +102,7 @@ export class AssetManager {
      * @returns A promise that resolves to an array of retrieved assets.
      * @throws An error if any of the asset IDs are invalid.
      */
-    public async getSimilarAssets(assetId: number): Promise<Asset[] | null> {
+    public async getSimilarAssets(assetId: number) {
         try {
             const [foundAsset] = await this.drizzle
                 .select({
@@ -130,7 +123,7 @@ export class AssetManager {
             // who needs machine learning when you can just do this :^)
 
             // TODO(dromzeh): check if there's a better way to do this, and prioritize assets with similar name, asset category, and game
-            const similarAssets = await this.drizzle.query.asset.findMany({
+            return await this.drizzle.query.asset.findMany({
                 where: (asset, { and, eq }) =>
                     and(
                         not(eq(asset.id, foundAsset.id)),
@@ -155,8 +148,6 @@ export class AssetManager {
                     ),
                 limit: 6,
             })
-
-            return similarAssets ?? null
         } catch (e) {
             console.error(`Error getting similar assets by ID ${assetId}`, e)
             throw new Error(`Error getting similar assets by ID ${assetId}`)
@@ -169,9 +160,7 @@ export class AssetManager {
      */
     public async listAssets(): Promise<Asset[]> {
         try {
-            const assets = await this.drizzle.select().from(asset)
-
-            return assets
+            return await this.drizzle.select().from(asset)
         } catch (e) {
             console.error("Error listing assets", e)
             throw new Error("Error listing assets")
@@ -183,9 +172,7 @@ export class AssetManager {
      * @param query - An object containing optional search parameters.
      * @returns A promise that resolves to an array of matching assets.
      */
-    public async searchAssets(
-        query: AssetSearchQuery
-    ): Promise<Asset[] | Asset | null> {
+    public async searchAssets(query: AssetSearchQuery) {
         try {
             const { name, game, category, tag, limit } = query
 
@@ -218,7 +205,9 @@ export class AssetManager {
                     .groupBy(assetTagAsset.assetId)
             )
 
-            const foundAssets = await this.drizzle
+            // TODO(dromzeh): the incorrect type is occuring becuase of the inner join, idk how to fix it tbh
+
+            return await this.drizzle
                 .with(assetTagResponse)
                 .select()
                 .from(asset)
@@ -243,12 +232,8 @@ export class AssetManager {
                             )
                     )
                 )
-                .groupBy(asset.id)
                 .limit(assetLimit)
-
-            // TODO(dromzeh): the incorrect type is occuring becuase of the inner join, idk how to fix it tbh
-            // @ts-expect-error - i need to fix this
-            return foundAssets
+                .orderBy(desc(asset.uploadedDate))
         } catch (e) {
             console.error("Error searching assets", e)
             throw new Error("Error searching assets")
@@ -275,7 +260,7 @@ export class AssetManager {
                 file
             )
 
-            const returnedNewAsset: NewAsset = await this.drizzle.transaction(
+            const returnedNewAsset: Asset = await this.drizzle.transaction(
                 async (trx) => {
                     const [createdAsset] = await trx
                         .insert(asset)

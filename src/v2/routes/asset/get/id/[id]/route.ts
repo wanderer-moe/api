@@ -25,10 +25,10 @@ handler.openapi(getAssetByIdRoute, async (ctx) => {
     if (!asset) {
         return ctx.jsonT(
             {
-                success: false,
+                success: true,
                 error: "Asset not found",
             },
-            404
+            200
         )
     }
 

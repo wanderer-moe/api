@@ -2,6 +2,7 @@
     "name": "api",
     "version": "1.1.0b",
     "scripts": {
+        "dev": "wrangler dev",
         "wrangler:dev:local": "wrangler dev",
         "wrangler:dev:remote": "wrangler dev --remote",
         "wrangler:publish": "wrangler publish --minify",

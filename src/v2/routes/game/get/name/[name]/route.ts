@@ -15,7 +15,7 @@ handler.openapi(getGameByNameRoute, async (ctx) => {
     if (!game) {
         return ctx.jsonT(
             {
-                success: false,
+                success: true,
                 error: "Game not found",
             },
             200

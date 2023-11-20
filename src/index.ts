@@ -24,19 +24,13 @@ app.doc("/openapi", {
     },
 })
 
+// TODO(dromzeh): Serve static css content from API, inject into swaggerUI
 app.get(
     "/docs",
     swaggerUI({
         url: "/openapi",
     })
 )
-
-app.use("*", async (ctx, next) => {
-    const start = Date.now()
-    await next()
-    const ms = Date.now() - start
-    ctx.res.headers.set("X-Response-Time", `${ms}ms`)
-})
 
 app.use("*", prettyJSON())
 

@@ -32,7 +32,6 @@ export class TagManager {
 
             return foundTag ?? null
         } catch (e) {
-            console.error(`Error getting tag by ID ${tagId}`, e)
             throw new Error(`Error getting tag by ID ${tagId}`)
         }
     }
@@ -46,7 +45,6 @@ export class TagManager {
             const tags = await this.drizzle.select().from(assetTag)
             return tags ?? null
         } catch (e) {
-            console.error("Error listing tags", e)
             throw new Error("Error listing tags")
         }
     }
@@ -67,7 +65,6 @@ export class TagManager {
 
             return tags ?? null
         } catch (e) {
-            console.error("Error getting tags by partial name", e)
             throw new Error("Error getting tags by partial name")
         }
     }
@@ -94,7 +91,6 @@ export class TagManager {
 
             return createdTag
         } catch (e) {
-            console.error("Error creating tag", e)
             throw new Error("Error creating tag")
         }
     }
