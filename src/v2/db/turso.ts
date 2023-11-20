@@ -2,8 +2,6 @@ import { drizzle as drizzleORM } from "drizzle-orm/libsql"
 import { createClient } from "@libsql/client/web" // because we're in a worker
 import { Logger } from "drizzle-orm/logger"
 
-// oh god
-
 import * as schema from "@/v2/db/schema"
 
 /**
@@ -43,7 +41,6 @@ export function getConnection(env: Bindings) {
      */
     const drizzle = drizzleORM(turso, {
         schema: {
-            // this is the worst thing i've ever seen in my life
             ...schema,
         },
         logger: new LoggerWrapper(),
@@ -57,7 +54,3 @@ export function getConnection(env: Bindings) {
 
 export type DrizzleInstance = ReturnType<typeof getConnection>["drizzle"]
 export type TursoInstance = ReturnType<typeof getConnection>["turso"]
-
-// export type TursoClient = ReturnType<typeof createClient>
-// export type DrizzleClient = ReturnType<typeof drizzleORM>
-// export type Connection = ReturnType<typeof getConnection>
