@@ -4,21 +4,7 @@ import { Logger } from "drizzle-orm/logger"
 
 // oh god
 
-import * as asset from "./schema/asset/asset"
-import * as assetcategories from "./schema/asset/asset-categories"
-import * as assettags from "./schema/asset/asset-tags"
-import * as assetatlas from "./schema/asset/asset-atlas"
-
-import * as games from "./schema/game/game"
-
-import * as ocgenerators from "./schema/oc-generators/oc-generators"
-
-import * as user from "./schema/user/user"
-import * as userattributes from "./schema/user/user-attributes"
-import * as usercollections from "./schema/user/user-collections"
-import * as userconnections from "./schema/user/user-connections"
-import * as userfavorites from "./schema/user/user-favorites"
-import * as usernetworking from "./schema/user/user-networking"
+import * as schema from "@/v2/db/schema"
 
 /**
  * The `LoggerWrapper` class is used to wrap the `Logger` interface from `drizzle-orm` and provide a custom implementation of the `logQuery` method.
@@ -58,18 +44,7 @@ export function getConnection(env: Bindings) {
     const drizzle = drizzleORM(turso, {
         schema: {
             // this is the worst thing i've ever seen in my life
-            ...asset,
-            ...assetcategories,
-            ...assettags,
-            ...assetatlas,
-            ...games,
-            ...ocgenerators,
-            ...user,
-            ...userattributes,
-            ...usercollections,
-            ...userconnections,
-            ...userfavorites,
-            ...usernetworking,
+            ...schema,
         },
         logger: new LoggerWrapper(),
     })
