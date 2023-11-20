@@ -29,18 +29,18 @@ async function main() {
         process.exit(1)
     }
 
-    console.log("Connecting to database client...")
+    console.log("[SEED] Connecting to database client...")
     const client = createClient({
         url: TURSO_DEV_DATABASE_URL,
     })
     const db = drizzleORM(client)
     console.log(
-        "Connected to database client & initialized drizzle-orm instance"
+        "[SEED] Connected to database client & initialized drizzle-orm instance"
     )
 
-    console.log("Seeding database...\n")
+    console.log("[SEED] Seeding database...\n")
 
-    console.log("[authUser] Seeding users...")
+    console.log("[SEED] [authUser] Seeding users...")
     const newUsers = await db
         .insert(authUser)
         .values([
@@ -78,9 +78,9 @@ async function main() {
             },
         ])
         .returning()
-    console.log(`[authUser] inserted ${newUsers.length} rows\n`)
+    console.log(`[SEED] [authUser] inserted ${newUsers.length} rows\n`)
 
-    console.log("[userNetworking] Seeding user following...")
+    console.log("[SEED] [userNetworking] Seeding user following...")
     const newUserNetworking = await db
         .insert(userNetworking)
         .values([
@@ -98,9 +98,11 @@ async function main() {
             },
         ])
         .returning()
-    console.log(`[userNetworking] inserted ${newUserNetworking.length} rows\n`)
+    console.log(
+        `[SEED] [userNetworking] inserted ${newUserNetworking.length} rows\n`
+    )
 
-    console.log("[assetTag] Seeding asset tags...")
+    console.log("[SEED] [assetTag] Seeding asset tags...")
     const newAssetTags = await db
         .insert(assetTag)
         .values([
@@ -120,9 +122,9 @@ async function main() {
             },
         ])
         .returning()
-    console.log(`[assetTag] inserted ${newAssetTags.length} rows\n`)
+    console.log(`[SEED] [assetTag] inserted ${newAssetTags.length} rows\n`)
 
-    console.log("[game] Seeding games...")
+    console.log("[SEED] [game] Seeding games...")
     const newGames = await db
         .insert(game)
         .values([
@@ -142,9 +144,9 @@ async function main() {
             },
         ])
         .returning()
-    console.log(`[game] inserted ${newGames.length} rows\n`)
+    console.log(`[SEED] [game] inserted ${newGames.length} rows\n`)
 
-    console.log("[assetCategory] Seeding asset categories...")
+    console.log("[SEED] [assetCategory] Seeding asset categories...")
     const newAssetCategories = await db
         .insert(assetCategory)
         .values([
@@ -164,9 +166,13 @@ async function main() {
             },
         ])
         .returning()
-    console.log(`[assetCategory] inserted ${newAssetCategories.length} rows\n`)
+    console.log(
+        `[SEED] [assetCategory] inserted ${newAssetCategories.length} rows\n`
+    )
 
-    console.log("[gameAssetCategory] Linking games to asset categories...")
+    console.log(
+        "[SEED] [gameAssetCategory] Linking games to asset categories..."
+    )
     const newGameAssetCategory = await db
         .insert(gameAssetCategory)
         .values([
@@ -185,10 +191,10 @@ async function main() {
         ])
         .returning()
     console.log(
-        `[gameAssetCategory] inserted ${newGameAssetCategory.length} rows\n`
+        `[SEED] [gameAssetCategory] inserted ${newGameAssetCategory.length} rows\n`
     )
 
-    console.log("[asset] Seeding assets...")
+    console.log("[SEED] [asset] Seeding assets...")
     const newAssets = await db
         .insert(asset)
         .values([
@@ -241,9 +247,9 @@ async function main() {
             },
         ])
         .returning()
-    console.log(`[asset] inserted ${newAssets.length} rows\n`)
+    console.log(`[SEED] [asset] inserted ${newAssets.length} rows\n`)
 
-    console.log("[assetTagAsset] Linking assets to asset tags...")
+    console.log("[SEED] [assetTagAsset] Linking assets to asset tags...")
     const newAssetTagAsset = await db
         .insert(assetTagAsset)
         .values([
@@ -265,9 +271,11 @@ async function main() {
             },
         ])
         .returning()
-    console.log(`[assetTagAsset] inserted ${newAssetTagAsset.length} rows\n`)
+    console.log(
+        `[SEED] [assetTagAsset] inserted ${newAssetTagAsset.length} rows\n`
+    )
 
-    console.log("[userCollection] Seeding user collections...")
+    console.log("[SEED] [userCollection] Seeding user collections...")
     const newUserCollections = await db
         .insert(userCollection)
         .values({
@@ -277,9 +285,13 @@ async function main() {
             isPublic: true, // default to private
         })
         .returning()
-    console.log(`[userCollection] inserted ${newUserCollections.length} rows\n`)
+    console.log(
+        `[SEED] [userCollection] inserted ${newUserCollections.length} rows\n`
+    )
 
-    console.log("[userCollectionAsset] Linking user collections to assets...")
+    console.log(
+        "[SEED] [userCollectionAsset] Linking user collections to assets..."
+    )
     const newUserCollectionAssets = await db
         .insert(userCollectionAsset)
         .values([
@@ -294,11 +306,11 @@ async function main() {
         ])
         .returning()
     console.log(
-        `[userCollectionAsset] inserted ${newUserCollectionAssets.length} rows\n`
+        `[SEED] [userCollectionAsset] inserted ${newUserCollectionAssets.length} rows\n`
     )
 
     // only one user favorite per user
-    console.log("[userFavorite] Seeding user favorites...")
+    console.log("[SEED] [userFavorite] Seeding user favorites...")
     const newUserFavorites = await db
         .insert(userFavorite)
         .values([
@@ -311,9 +323,13 @@ async function main() {
             },
         ])
         .returning()
-    console.log(`[userFavorite] inserted ${newUserFavorites.length} rows\n`)
+    console.log(
+        `[SEED] [userFavorite] inserted ${newUserFavorites.length} rows\n`
+    )
 
-    console.log("[userFavoriteAsset] Linking user favorites to assets...")
+    console.log(
+        "[SEED] [userFavoriteAsset] Linking user favorites to assets..."
+    )
     const newUserFavoriteAssets = await db
         .insert(userFavoriteAsset)
         .values([
@@ -332,14 +348,14 @@ async function main() {
         ])
         .returning()
     console.log(
-        `[userFavoriteAsset] inserted ${newUserFavoriteAssets.length} rows\n`
+        `[SEED] [userFavoriteAsset] inserted ${newUserFavoriteAssets.length} rows\n`
     )
 
-    console.log("Seeded database successfully")
+    console.log("[SEED] Seeded database successfully")
     process.exit(0)
 }
 
 main().catch((err) => {
-    console.error(`Error: ${err}`)
+    console.error(`[SEED] Error: ${err}`)
     process.exit(1)
 })

@@ -158,7 +158,7 @@ export class AssetManager {
      * Retrieves a list of all assets.
      * @returns A promise that resolves to an array of assets.
      */
-    public async listAssets(): Promise<Asset[]> {
+    public async listAssets() {
         try {
             return await this.drizzle.select().from(asset)
         } catch (e) {
