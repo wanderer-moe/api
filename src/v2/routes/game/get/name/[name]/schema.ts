@@ -6,7 +6,8 @@ export const getGameByNameSchema = z.object({
             name: "name",
             in: "path",
             required: true,
+            description: "The name of the game to retrieve.",
+            example: "genshin-impact",
         },
-        description: "The name of the game to retrieve.",
     }),
 })

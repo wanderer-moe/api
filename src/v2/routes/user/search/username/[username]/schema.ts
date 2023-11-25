@@ -6,7 +6,7 @@ export const getUsersByNameSchema = z.object({
             name: "username",
             in: "path",
             required: true,
+            description: "The username of the user(s) to retrieve.",
         },
-        description: "The username of the user(s) to retrieve.",
     }),
 })

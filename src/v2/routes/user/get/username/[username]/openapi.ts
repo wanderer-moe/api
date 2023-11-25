@@ -4,7 +4,8 @@ import { getUserByNameSchema } from "./schema"
 export const getUserByNameRoute = createRoute({
     path: "/{username}",
     method: "get",
-    description: "Get a user by their username.",
+    description: "Get a user by their exact username.",
+    tags: ["User"],
     request: {
         params: getUserByNameSchema,
     },

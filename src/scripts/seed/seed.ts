@@ -120,6 +120,13 @@ async function main() {
                 assetCount: 1,
                 lastUpdated: new Date().toISOString(),
             },
+            {
+                id: "fanmade",
+                name: "fanmade",
+                formattedName: "Fanmade",
+                assetCount: 0,
+                lastUpdated: new Date().toISOString(),
+            },
         ])
         .returning()
     console.log(`[SEED] [assetTag] inserted ${newAssetTags.length} rows\n`)
@@ -211,8 +218,8 @@ async function main() {
                 viewCount: 1337,
                 downloadCount: 1337,
                 fileSize: 40213,
-                width: 1920,
-                height: 1080,
+                width: 512,
+                height: 512,
             },
             {
                 id: 2,
@@ -242,8 +249,50 @@ async function main() {
                 viewCount: 1337,
                 downloadCount: 1337,
                 fileSize: 40213,
+                width: 1080,
+                height: 1920,
+            },
+            {
+                id: 4,
+                name: "test-asset-4",
+                extension: "image/png",
+                gameId: "genshin-impact",
+                assetCategoryId: "splash-art",
+                url: "/test/image.png",
+                status: "approved",
+                uploadedById: newUsers[1].id,
+                assetIsOptimized: true,
+                viewCount: 1337,
+                downloadCount: 1337,
+                fileSize: 40213,
                 width: 1920,
                 height: 1080,
+            },
+            {
+                id: 5,
+                name: "test-asset-5",
+                extension: "image/png",
+                gameId: "genshin-impact",
+                assetCategoryId: "splash-art",
+                url: "/test/image.png",
+                status: "approved",
+                uploadedById: newUsers[2].id,
+                assetIsOptimized: true,
+                viewCount: 1337,
+                downloadCount: 1337,
+            },
+            {
+                id: 6,
+                name: "test-asset-6",
+                extension: "image/png",
+                gameId: "honkai-impact-3rd",
+                assetCategoryId: "character-sheets",
+                url: "/test/image.png",
+                status: "approved",
+                uploadedById: newUsers[2].id,
+                assetIsOptimized: true,
+                viewCount: 1337,
+                downloadCount: 1337,
             },
         ])
         .returning()
@@ -268,6 +317,26 @@ async function main() {
             {
                 assetId: newAssets[2].id,
                 assetTagId: "official",
+            },
+            {
+                assetId: newAssets[2].id,
+                assetTagId: "1.0",
+            },
+            {
+                assetId: newAssets[3].id,
+                assetTagId: "fanmade",
+            },
+            {
+                assetId: newAssets[4].id,
+                assetTagId: "fanmade",
+            },
+            {
+                assetId: newAssets[5].id,
+                assetTagId: "fanmade",
+            },
+            {
+                assetId: newAssets[5].id,
+                assetTagId: "1.0",
             },
         ])
         .returning()

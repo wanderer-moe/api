@@ -5,6 +5,7 @@ export const getGameByIdRoute = createRoute({
     path: "/{id}",
     method: "get",
     description: "Get a game by their ID.",
+    tags: ["Game"],
     request: {
         params: getGameByIdSchema,
     },

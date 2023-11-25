@@ -5,6 +5,7 @@ export const getAssetByIdRoute = createRoute({
     path: "/{id}",
     method: "get",
     description: "Get an asset by their ID.",
+    tags: ["Asset"],
     request: {
         params: getAssetByIdSchema,
     },

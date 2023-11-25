@@ -5,6 +5,7 @@ export const assetSearchAllFilterRoute = createRoute({
     path: "/",
     method: "get",
     description: "Filter all assets.",
+    tags: ["Asset"],
     request: {
         query: assetSearchAllFilterSchema,
     },

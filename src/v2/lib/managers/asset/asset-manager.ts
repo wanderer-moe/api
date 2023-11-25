@@ -11,15 +11,7 @@ import { R2Bucket } from "@cloudflare/workers-types"
 import { SplitQueryByCommas } from "../../helpers/split-query-by-commas"
 import { z } from "zod"
 import type { Asset, NewAsset } from "@/v2/db/schema"
-
-// these are all optional
-type AssetSearchQuery = {
-    name?: string
-    game?: string
-    category?: string
-    tags?: string
-    limit?: number
-}
+import type { assetSearchAllFilter } from "@/v2/routes/asset/search/all/schema"
 
 const MAX_FILE_SIZE = 5000
 const ACCEPTED_IMAGE_TYPES = ["image/png"]
@@ -172,11 +164,10 @@ export class AssetManager {
      * @param query - An object containing optional search parameters.
      * @returns A promise that resolves to an array of matching assets.
      */
-    public async searchAssets(query: AssetSearchQuery) {
+    public async searchAssets(query: assetSearchAllFilter) {
         try {
-            const { name, game, category, limit, tags } = query
+            const { name, game, category, tags, offset } = query
 
-            const assetLimit = limit ?? 500
             const gameList = game
                 ? SplitQueryByCommas(game.toLowerCase())
                 : null
@@ -216,7 +207,8 @@ export class AssetManager {
                             : undefined,
                         eq(asset.status, "approved")
                     ),
-                limit: assetLimit,
+                limit: 100,
+                offset: offset ? parseInt(offset) : 0,
                 with: {
                     assetTagAsset: {
                         with: {

@@ -5,6 +5,7 @@ export const searchUsersByUsernameRoute = createRoute({
     path: "/{username}",
     method: "get",
     description: "Search for users by their username.",
+    tags: ["User"],
     request: {
         params: getUsersByNameSchema,
     },

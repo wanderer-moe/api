@@ -5,6 +5,7 @@ export const getUserByIdRoute = createRoute({
     path: "/{id}",
     method: "get",
     description: "Get a user by their ID.",
+    tags: ["User"],
     request: {
         params: getUserByIdSchema,
     },

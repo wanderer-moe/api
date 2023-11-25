@@ -5,8 +5,8 @@ import AssetRoute from "@/v2/routes/asset/handler"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
-handler.route("/user", UserRoute)
 handler.route("/game", GameRoute)
 handler.route("/asset", AssetRoute)
+handler.route("/user", UserRoute)
 
 export default handler

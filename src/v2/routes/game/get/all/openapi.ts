@@ -4,6 +4,7 @@ export const getAllGamesRoute = createRoute({
     path: "/all",
     method: "get",
     description: "Get all games.",
+    tags: ["Game"],
     responses: {
         200: {
             description: "All games.",
