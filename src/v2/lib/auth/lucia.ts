@@ -2,46 +2,22 @@ import { lucia } from "lucia"
 import { hono } from "lucia/middleware"
 import { getConnection } from "@/v2/db/turso"
 import { tableNames } from "@/v2/db/drizzle"
-import { unstorage } from "@lucia-auth/adapter-session-unstorage"
-import { libsql } from "@lucia-auth/adapter-sqlite"
-import { createStorage } from "unstorage"
-import cloudflareKVBindingDriver from "unstorage/drivers/cloudflare-kv-binding"
+import { LuciaDBAdapter } from "./adapter/adapter"
 import { discord } from "@lucia-auth/oauth/providers"
-
-/**
- * Creates a KV session storage using the Cloudflare KV binding driver.
- * @param {Bindings} env - Hono environment bindings.
- * @returns The KV session storage.
- * @see https://unstorage.unjs.io/drivers/cloudflare-kv-binding
- */
-export function KVSessionStorage(env: Bindings) {
-    return createStorage({
-        driver: cloudflareKVBindingDriver({
-            binding: env.KV_SESSION_STORAGE,
-        }),
-    })
-}
 
 /** The `auth` function is used to create a `lucia` instance with authentication middleware and a `libsql` adapter.
  * @param {Bindings} env - The environment variables used to configure the authentication middleware and adapter.
  * @returns A `lucia` instance with authentication middleware and a `libsql` adapter.
  */
 export function auth(env: Bindings) {
-    const db = getConnection(env)
-
-    const storage = KVSessionStorage(env)
-    // as lucia doesn't have a adapter for drizzle, we instead create a direct connection to the database using libsql
-    const connection = db.turso
+    const { turso } = getConnection(env)
 
     return lucia({
-        adapter: {
-            user: libsql(connection, {
-                user: tableNames.authUser,
-                key: tableNames.authKey,
-                session: null, // we are handling sessions w/ CF KV
-            }),
-            session: unstorage(storage),
-        },
+        adapter: LuciaDBAdapter(turso, {
+            user: tableNames.authUser,
+            key: tableNames.authKey,
+            session: tableNames.authSession,
+        }),
         middleware: hono(),
         // sessionExpiresIn: {
         //     idlePeriod: 0,

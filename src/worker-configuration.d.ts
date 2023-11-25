@@ -5,7 +5,6 @@ declare global {
     type Bindings = {
         DISCORD_TOKEN: string
         FILES_BUCKET: R2Bucket
-        KV_SESSION_STORAGE: KVNamespace
         ENVIRONMENT: "PROD" | "DEV"
         VERY_SECRET_SIGNUP_KEY: string
         TURSO_DATABASE_URL: string
@@ -17,18 +16,20 @@ declare global {
     }
 
     type Variables = {
-        //     drizzle: import("@/v2/db/turso").DrizzleInstance
-        //     turso: import("@/v2/db/turso").TursoInstance
-        //     lucia: import("@/v2/lib/auth/lucia").Auth
+        // drizzle: import("@/v2/db/turso").DrizzleInstance
+        // turso: import("@/v2/db/turso").TursoInstance
+        // lucia: import("@/v2/lib/auth/lucia").Auth
+    }
+
+    type Settings = {
+        Bindings: Bindings
+        Variables: Variables
     }
 
     /**
      * Provides access to the request context within routes that are separated into individual functions.
      */
-    type APIContext = import("@hono/zod-openapi").Context<{
-        Bindings: Bindings
-        Variables: Variables
-    }>
+    type APIContext = import("@hono/zod-openapi").Context<Settings>
 }
 
 export default global

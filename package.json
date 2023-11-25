@@ -18,6 +18,7 @@
         "drizzle:studio": "drizzle-kit studio --port 7331 --host 127.0.0.1 --verbose"
     },
     "devDependencies": {
+        "@asteasolutions/zod-to-openapi": "^6.3.0",
         "@cloudflare/workers-types": "^4.20231025.0",
         "@types/node": "^20.9.1",
         "dotenv": "^16.3.1",
@@ -26,6 +27,7 @@
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-json": "^3.1.0",
         "husky": "^8.0.3",
+        "openapi-generator": "link:@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator",
         "tsx": "^4.1.2",
         "typescript": "^5.2.2",
         "wrangler": "3.16.0"

@@ -21,7 +21,6 @@ import { atlas } from "../asset/asset-atlas"
 NOTE: Very basic user information
 - Users table is user information
 - Keys table is login methods (i.e Credentials, OAuth, etc.)
-- We handle sessions w/ Cloudflare KV instead of a sessions table
 */
 
 export const authUser = sqliteTable(
@@ -63,7 +62,7 @@ export const authUser = sqliteTable(
 export type User = typeof authUser.$inferSelect
 export type NewUser = typeof authUser.$inferInsert
 
-export const keys = sqliteTable(
+export const authKey = sqliteTable(
     tableNames.authKey,
     {
         id: text("id").unique().notNull(),
@@ -82,8 +81,31 @@ export const keys = sqliteTable(
     }
 )
 
-export type Keys = typeof keys.$inferSelect
-export type NewKeys = typeof keys.$inferInsert
+export type Keys = typeof authKey.$inferSelect
+export type NewKeys = typeof authKey.$inferInsert
+
+export const userSession = sqliteTable(
+    tableNames.authSession,
+    {
+        id: text("id").unique().notNull(),
+        activeExpires: integer("active_expires").notNull(),
+        idleExpires: integer("idle_expires").notNull(),
+        userId: text("user_id")
+            .notNull()
+            .references(() => authUser.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
+    },
+    (session) => {
+        return {
+            userIdx: index("session_user_id_idx").on(session.userId),
+        }
+    }
+)
+
+export type Session = typeof userSession.$inferSelect
+export type NewSession = typeof userSession.$inferInsert
 
 export const usersRelations = relations(authUser, ({ one, many }) => ({
     follower: many(userNetworking, {
@@ -92,7 +114,8 @@ export const usersRelations = relations(authUser, ({ one, many }) => ({
     following: many(userNetworking, {
         relationName: "following",
     }),
-    key: many(keys),
+    authKey: many(authKey),
+    userSession: many(userSession),
     asset: many(asset),
     atlas: many(atlas),
     userFavorite: one(userFavorite),
@@ -103,10 +126,18 @@ export const usersRelations = relations(authUser, ({ one, many }) => ({
     savedOcGenerators: many(savedOcGenerators),
 }))
 
-export const keysRelations = relations(keys, ({ one }) => ({
+export const keysRelations = relations(authKey, ({ one }) => ({
     user: one(authUser, {
-        fields: [keys.userId],
+        fields: [authKey.userId],
         references: [authUser.id],
         relationName: "key_auth_user",
+    }),
+}))
+
+export const sessionRelations = relations(userSession, ({ one }) => ({
+    user: one(authUser, {
+        fields: [userSession.userId],
+        references: [authUser.id],
+        relationName: "session_auth_user",
     }),
 }))

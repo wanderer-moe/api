@@ -6,7 +6,7 @@ import {
     assetTagAsset,
     game,
 } from "@/v2/db/schema"
-import { eq, or, like, sql, and, not, desc } from "drizzle-orm"
+import { eq, or, sql, not } from "drizzle-orm"
 import { R2Bucket } from "@cloudflare/workers-types"
 import { SplitQueryByCommas } from "../../helpers/split-query-by-commas"
 import { z } from "zod"
@@ -17,7 +17,7 @@ type AssetSearchQuery = {
     name?: string
     game?: string
     category?: string
-    tag?: string
+    tags?: string
     limit?: number
 }
 
@@ -174,7 +174,7 @@ export class AssetManager {
      */
     public async searchAssets(query: AssetSearchQuery) {
         try {
-            const { name, game, category, tag, limit } = query
+            const { name, game, category, limit, tags } = query
 
             const assetLimit = limit ?? 500
             const gameList = game
@@ -183,57 +183,49 @@ export class AssetManager {
             const categoryList = category
                 ? SplitQueryByCommas(category.toLowerCase())
                 : null
-            const tagList = tag
-                ? SplitQueryByCommas(tag.toLowerCase())
-                : ["official"]
             const searchQuery = name ?? null
+            const tagList = tags ? SplitQueryByCommas(tags.toLowerCase()) : null
 
-            const assetTagResponse = this.drizzle.$with("sq").as(
-                this.drizzle
-                    .select({
-                        assetId: assetTagAsset.assetId,
-                        tags: sql<string[] | null>`array_agg(${assetTag})`.as(
-                            "tags"
-                        ),
-                    })
-                    .from(assetTagAsset)
-                    .leftJoin(
-                        assetTag,
-                        eq(assetTag.id, assetTagAsset.assetTagId)
-                    )
-                    .where(or(...tagList.map((tag) => eq(assetTag.name, tag))))
-                    .groupBy(assetTagAsset.assetId)
-            )
+            console.log(query)
+            console.log(categoryList, gameList, searchQuery)
 
-            // TODO(dromzeh): the incorrect type is occuring becuase of the inner join, idk how to fix it tbh
-
-            return await this.drizzle
-                .with(assetTagResponse)
-                .select()
-                .from(asset)
-                .innerJoin(
-                    assetTagResponse,
-                    eq(assetTagResponse.assetId, asset.id)
-                )
-                .where(
+            const assets = await this.drizzle.query.asset.findMany({
+                where: (asset, { and, or, like, eq, sql }) =>
                     and(
-                        searchQuery && like(asset.name, `%${searchQuery}%`),
-                        gameList &&
-                            or(
-                                ...gameList.map((game) =>
-                                    eq(asset.assetCategoryId, game)
-                                )
-                            ),
-                        categoryList &&
-                            or(
-                                ...categoryList.map((category) =>
-                                    eq(asset.assetCategoryId, category)
-                                )
-                            )
-                    )
-                )
-                .limit(assetLimit)
-                .orderBy(desc(asset.uploadedDate))
+                        tagList && tagList.length > 0
+                            ? // rawdog sql because i don't care anymore
+                              or(
+                                  ...tagList.map(
+                                      (t) =>
+                                          sql`EXISTS (SELECT 1 FROM assetTagAsset WHERE assetTagAsset.asset_id = ${asset.id} AND assetTagAsset.asset_tag_id = ${t})`
+                                  )
+                              )
+                            : undefined,
+                        searchQuery
+                            ? like(asset.name, `%${searchQuery}%`)
+                            : undefined,
+                        gameList
+                            ? or(...gameList.map((g) => eq(asset.gameId, g)))
+                            : undefined,
+                        categoryList
+                            ? or(
+                                  ...categoryList.map((c) =>
+                                      eq(asset.assetCategoryId, c)
+                                  )
+                              )
+                            : undefined,
+                        eq(asset.status, "approved")
+                    ),
+                limit: assetLimit,
+                with: {
+                    assetTagAsset: {
+                        with: {
+                            assetTag: true,
+                        },
+                    },
+                },
+            })
+            return assets
         } catch (e) {
             console.error("Error searching assets", e)
             throw new Error("Error searching assets")

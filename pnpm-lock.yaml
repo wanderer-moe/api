@@ -64,6 +64,9 @@ dependencies:
         version: 3.22.4
 
 devDependencies:
+    "@asteasolutions/zod-to-openapi":
+        specifier: ^6.3.0
+        version: 6.3.0(zod@3.22.4)
     "@cloudflare/workers-types":
         specifier: ^4.20231025.0
         version: 4.20231025.0
@@ -88,6 +91,9 @@ devDependencies:
     husky:
         specifier: ^8.0.3
         version: 8.0.3
+    openapi-generator:
+        specifier: link:@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator
+        version: link:@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator
     tsx:
         specifier: ^4.1.2
         version: 4.1.2
@@ -117,6 +123,18 @@ packages:
             openapi3-ts: 4.1.2
             zod: 3.22.4
         dev: false
+
+    /@asteasolutions/zod-to-openapi@6.3.0(zod@3.22.4):
+        resolution:
+            {
+                integrity: sha512-ca7Svz3BWkMaIP3M1YGsyxgp7AcKXlTmy19ozhY0DslhatXbnyxdvxlmiI0TmvkIfi6RpQfm+eK1neVLsh6Riw==,
+            }
+        peerDependencies:
+            zod: ^3.20.2
+        dependencies:
+            openapi3-ts: 4.1.2
+            zod: 3.22.4
+        dev: true
 
     /@cloudflare/kv-asset-handler@0.2.0:
         resolution:
@@ -3962,7 +3980,6 @@ packages:
             }
         dependencies:
             yaml: 2.3.4
-        dev: false
 
     /optionator@0.9.3:
         resolution:
@@ -4939,7 +4956,6 @@ packages:
                 integrity: sha512-8aAvwVUSHpfEqTQ4w/KMlf3HcRdt50E5ODIQJBw1fQ5RL34xabzxtUlzTXVqc4rkZsPbvrXKWnABCD7kWSmocA==,
             }
         engines: { node: ">= 14" }
-        dev: false
 
     /yocto-queue@0.1.0:
         resolution:
