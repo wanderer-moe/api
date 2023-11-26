@@ -1,7 +1,7 @@
 {
     "version": "5",
     "dialect": "sqlite",
-    "id": "a76d59ea-41c0-4e99-9480-f203e245fbff",
+    "id": "2d696f86-b652-410a-bfd1-fc6deda2f5f8",
     "prevId": "00000000-0000-0000-0000-000000000000",
     "tables": {
         "asset": {
@@ -563,18 +563,18 @@
             "compositePrimaryKeys": {},
             "uniqueConstraints": {}
         },
-        "assetNetworking": {
-            "name": "assetNetworking",
+        "assetLikes": {
+            "name": "assetLikes",
             "columns": {
-                "follower_id": {
-                    "name": "follower_id",
+                "asset_id": {
+                    "name": "asset_id",
                     "type": "text",
                     "primaryKey": false,
                     "notNull": true,
                     "autoincrement": false
                 },
-                "following_id": {
-                    "name": "following_id",
+                "liked_by_id": {
+                    "name": "liked_by_id",
                     "type": "text",
                     "primaryKey": false,
                     "notNull": true,
@@ -589,32 +589,32 @@
                 }
             },
             "indexes": {
-                "assetNetworking_likedAsset_idx": {
-                    "name": "assetNetworking_likedAsset_idx",
-                    "columns": ["follower_id"],
+                "assetlikes_asset_idx": {
+                    "name": "assetlikes_asset_idx",
+                    "columns": ["asset_id"],
                     "isUnique": false
                 },
-                "assetNetworking_likedBy_idx": {
-                    "name": "assetNetworking_likedBy_idx",
-                    "columns": ["following_id"],
+                "assetlikes_likedBy_idx": {
+                    "name": "assetlikes_likedBy_idx",
+                    "columns": ["liked_by_id"],
                     "isUnique": false
                 }
             },
             "foreignKeys": {
-                "assetNetworking_follower_id_authUser_id_fk": {
-                    "name": "assetNetworking_follower_id_authUser_id_fk",
-                    "tableFrom": "assetNetworking",
+                "assetLikes_asset_id_authUser_id_fk": {
+                    "name": "assetLikes_asset_id_authUser_id_fk",
+                    "tableFrom": "assetLikes",
                     "tableTo": "authUser",
-                    "columnsFrom": ["follower_id"],
+                    "columnsFrom": ["asset_id"],
                     "columnsTo": ["id"],
                     "onDelete": "no action",
                     "onUpdate": "no action"
                 },
-                "assetNetworking_following_id_authUser_id_fk": {
-                    "name": "assetNetworking_following_id_authUser_id_fk",
-                    "tableFrom": "assetNetworking",
+                "assetLikes_liked_by_id_authUser_id_fk": {
+                    "name": "assetLikes_liked_by_id_authUser_id_fk",
+                    "tableFrom": "assetLikes",
                     "tableTo": "authUser",
-                    "columnsFrom": ["following_id"],
+                    "columnsFrom": ["liked_by_id"],
                     "columnsTo": ["id"],
                     "onDelete": "no action",
                     "onUpdate": "no action"
@@ -1563,8 +1563,8 @@
             "compositePrimaryKeys": {},
             "uniqueConstraints": {}
         },
-        "collectionNetworking": {
-            "name": "collectionNetworking",
+        "userCollectionLikes": {
+            "name": "userCollectionLikes",
             "columns": {
                 "collection_id": {
                     "name": "collection_id",
@@ -1601,18 +1601,18 @@
                 }
             },
             "foreignKeys": {
-                "collectionNetworking_collection_id_userCollection_id_fk": {
-                    "name": "collectionNetworking_collection_id_userCollection_id_fk",
-                    "tableFrom": "collectionNetworking",
+                "userCollectionLikes_collection_id_userCollection_id_fk": {
+                    "name": "userCollectionLikes_collection_id_userCollection_id_fk",
+                    "tableFrom": "userCollectionLikes",
                     "tableTo": "userCollection",
                     "columnsFrom": ["collection_id"],
                     "columnsTo": ["id"],
                     "onDelete": "no action",
                     "onUpdate": "no action"
                 },
-                "collectionNetworking_liked_by_id_authUser_id_fk": {
-                    "name": "collectionNetworking_liked_by_id_authUser_id_fk",
-                    "tableFrom": "collectionNetworking",
+                "userCollectionLikes_liked_by_id_authUser_id_fk": {
+                    "name": "userCollectionLikes_liked_by_id_authUser_id_fk",
+                    "tableFrom": "userCollectionLikes",
                     "tableTo": "authUser",
                     "columnsFrom": ["liked_by_id"],
                     "columnsTo": ["id"],
