@@ -5,6 +5,8 @@ export const tableNames = {
     authUser: "authUser",
     userNetworking: "userNetworking",
     gameAssetCategory: "gameAssetCategory",
+    assetNetworking: "assetNetworking",
+    userCollectionNetworking: "collectionNetworking",
     game: "game",
     atlas: "atlas",
     atlasToAsset: "atlasToAsset",

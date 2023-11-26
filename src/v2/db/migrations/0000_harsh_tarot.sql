@@ -67,6 +67,14 @@ CREATE TABLE `atlasToAsset` (
 	FOREIGN KEY (`asset_id`) REFERENCES `asset`(`id`) ON UPDATE cascade ON DELETE cascade
 );
 --> statement-breakpoint
+CREATE TABLE `assetNetworking` (
+	`follower_id` text NOT NULL,
+	`following_id` text NOT NULL,
+	`created_at` text NOT NULL,
+	FOREIGN KEY (`follower_id`) REFERENCES `authUser`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`following_id`) REFERENCES `authUser`(`id`) ON UPDATE no action ON DELETE no action
+);
+--> statement-breakpoint
 CREATE TABLE `game` (
 	`id` text NOT NULL,
 	`name` text NOT NULL,
@@ -89,6 +97,13 @@ CREATE TABLE `savedOcGenerators` (
 	FOREIGN KEY (`user_id`) REFERENCES `authUser`(`id`) ON UPDATE cascade ON DELETE cascade
 );
 --> statement-breakpoint
+CREATE TABLE `authKey` (
+	`id` text NOT NULL,
+	`user_id` text NOT NULL,
+	`hashed_password` text,
+	FOREIGN KEY (`user_id`) REFERENCES `authUser`(`id`) ON UPDATE cascade ON DELETE cascade
+);
+--> statement-breakpoint
 CREATE TABLE `authUser` (
 	`id` text NOT NULL,
 	`avatar_url` text,
@@ -107,10 +122,11 @@ CREATE TABLE `authUser` (
 	`self_assignable_role_flags` integer DEFAULT 0 NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE `authKey` (
+CREATE TABLE `authSession` (
 	`id` text NOT NULL,
+	`active_expires` integer NOT NULL,
+	`idle_expires` integer NOT NULL,
 	`user_id` text NOT NULL,
-	`hashed_password` text,
 	FOREIGN KEY (`user_id`) REFERENCES `authUser`(`id`) ON UPDATE cascade ON DELETE cascade
 );
 --> statement-breakpoint
@@ -178,6 +194,14 @@ CREATE TABLE `userNetworking` (
 	FOREIGN KEY (`followingId`) REFERENCES `authUser`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
+CREATE TABLE `collectionNetworking` (
+	`collection_id` text NOT NULL,
+	`liked_by_id` text NOT NULL,
+	`createdAt` text NOT NULL,
+	FOREIGN KEY (`collection_id`) REFERENCES `userCollection`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`liked_by_id`) REFERENCES `authUser`(`id`) ON UPDATE no action ON DELETE no action
+);
+--> statement-breakpoint
 CREATE INDEX `assets_id_idx` ON `asset` (`id`);--> statement-breakpoint
 CREATE INDEX `assets_name_idx` ON `asset` (`name`);--> statement-breakpoint
 CREATE INDEX `assets_game_name_idx` ON `asset` (`game`);--> statement-breakpoint
@@ -202,6 +226,8 @@ CREATE INDEX `atlas_uploaded_by_name_idx` ON `atlas` (`uploaded_by_name`);--> st
 CREATE INDEX `atlas_to_assets_id_idx` ON `atlasToAsset` (`id`);--> statement-breakpoint
 CREATE INDEX `atlas_to_assets_atlas_id_idx` ON `atlasToAsset` (`atlas_id`);--> statement-breakpoint
 CREATE INDEX `atlas_to_assets_asset_id_idx` ON `atlasToAsset` (`asset_id`);--> statement-breakpoint
+CREATE INDEX `assetNetworking_likedAsset_idx` ON `assetNetworking` (`follower_id`);--> statement-breakpoint
+CREATE INDEX `assetNetworking_likedBy_idx` ON `assetNetworking` (`following_id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `game_id_unique` ON `game` (`id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `game_name_unique` ON `game` (`name`);--> statement-breakpoint
 CREATE INDEX `game_id_idx` ON `game` (`id`);--> statement-breakpoint
@@ -209,13 +235,15 @@ CREATE INDEX `game_name_idx` ON `game` (`name`);--> statement-breakpoint
 CREATE UNIQUE INDEX `savedOcGenerators_id_unique` ON `savedOcGenerators` (`id`);--> statement-breakpoint
 CREATE INDEX `saved_oc_generators_id_idx` ON `savedOcGenerators` (`id`);--> statement-breakpoint
 CREATE INDEX `saved_oc_generators_user_id_idx` ON `savedOcGenerators` (`user_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `authKey_id_unique` ON `authKey` (`id`);--> statement-breakpoint
+CREATE INDEX `key_user_id_idx` ON `authKey` (`user_id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `authUser_id_unique` ON `authUser` (`id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `authUser_username_unique` ON `authUser` (`username`);--> statement-breakpoint
 CREATE INDEX `user_id_idx` ON `authUser` (`id`);--> statement-breakpoint
 CREATE INDEX `user_username_idx` ON `authUser` (`username`);--> statement-breakpoint
 CREATE INDEX `user_email_idx` ON `authUser` (`email`);--> statement-breakpoint
-CREATE UNIQUE INDEX `authKey_id_unique` ON `authKey` (`id`);--> statement-breakpoint
-CREATE INDEX `key_user_id_idx` ON `authKey` (`user_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `authSession_id_unique` ON `authSession` (`id`);--> statement-breakpoint
+CREATE INDEX `session_user_id_idx` ON `authSession` (`user_id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `emailVerificationToken_id_unique` ON `emailVerificationToken` (`id`);--> statement-breakpoint
 CREATE INDEX `email_verification_token_user_id_idx` ON `emailVerificationToken` (`user_id`);--> statement-breakpoint
 CREATE INDEX `email_verification_token_token_idx` ON `emailVerificationToken` (`token`);--> statement-breakpoint
@@ -239,4 +267,6 @@ CREATE INDEX `favorited_assets_assets_id_idx` ON `userFavoriteAsset` (`id`);--> 
 CREATE INDEX `favorited_assets_assets_user_id_idx` ON `userFavoriteAsset` (`favorited_assets_id`);--> statement-breakpoint
 CREATE INDEX `favorited_assets_assets_asset_id_idx` ON `userFavoriteAsset` (`asset_id`);--> statement-breakpoint
 CREATE INDEX `userNetworking_follower_idx` ON `userNetworking` (`followerId`);--> statement-breakpoint
-CREATE INDEX `userNetworking_following_idx` ON `userNetworking` (`followingId`);
+CREATE INDEX `userNetworking_following_idx` ON `userNetworking` (`followingId`);--> statement-breakpoint
+CREATE INDEX `userCollectionNetworking_collection_idx` ON `collectionNetworking` (`collection_id`);--> statement-breakpoint
+CREATE INDEX `userCollectionNetworking_likedBy_idx` ON `collectionNetworking` (`liked_by_id`);

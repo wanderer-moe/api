@@ -1,7 +1,7 @@
 {
     "version": "5",
     "dialect": "sqlite",
-    "id": "f07490ab-84e2-4512-9bfa-2535e05274b7",
+    "id": "a76d59ea-41c0-4e99-9480-f203e245fbff",
     "prevId": "00000000-0000-0000-0000-000000000000",
     "tables": {
         "asset": {
@@ -563,6 +563,66 @@
             "compositePrimaryKeys": {},
             "uniqueConstraints": {}
         },
+        "assetNetworking": {
+            "name": "assetNetworking",
+            "columns": {
+                "follower_id": {
+                    "name": "follower_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "following_id": {
+                    "name": "following_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "assetNetworking_likedAsset_idx": {
+                    "name": "assetNetworking_likedAsset_idx",
+                    "columns": ["follower_id"],
+                    "isUnique": false
+                },
+                "assetNetworking_likedBy_idx": {
+                    "name": "assetNetworking_likedBy_idx",
+                    "columns": ["following_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "assetNetworking_follower_id_authUser_id_fk": {
+                    "name": "assetNetworking_follower_id_authUser_id_fk",
+                    "tableFrom": "assetNetworking",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["follower_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "assetNetworking_following_id_authUser_id_fk": {
+                    "name": "assetNetworking_following_id_authUser_id_fk",
+                    "tableFrom": "assetNetworking",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["following_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
         "game": {
             "name": "game",
             "columns": {
@@ -736,6 +796,57 @@
             "compositePrimaryKeys": {},
             "uniqueConstraints": {}
         },
+        "authKey": {
+            "name": "authKey",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "hashed_password": {
+                    "name": "hashed_password",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "authKey_id_unique": {
+                    "name": "authKey_id_unique",
+                    "columns": ["id"],
+                    "isUnique": true
+                },
+                "key_user_id_idx": {
+                    "name": "key_user_id_idx",
+                    "columns": ["user_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "authKey_user_id_authUser_id_fk": {
+                    "name": "authKey_user_id_authUser_id_fk",
+                    "tableFrom": "authKey",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["user_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
         "authUser": {
             "name": "authUser",
             "columns": {
@@ -882,12 +993,26 @@
             "compositePrimaryKeys": {},
             "uniqueConstraints": {}
         },
-        "authKey": {
-            "name": "authKey",
+        "authSession": {
+            "name": "authSession",
             "columns": {
                 "id": {
                     "name": "id",
                     "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "active_expires": {
+                    "name": "active_expires",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "idle_expires": {
+                    "name": "idle_expires",
+                    "type": "integer",
                     "primaryKey": false,
                     "notNull": true,
                     "autoincrement": false
@@ -898,31 +1023,24 @@
                     "primaryKey": false,
                     "notNull": true,
                     "autoincrement": false
-                },
-                "hashed_password": {
-                    "name": "hashed_password",
-                    "type": "text",
-                    "primaryKey": false,
-                    "notNull": false,
-                    "autoincrement": false
                 }
             },
             "indexes": {
-                "authKey_id_unique": {
-                    "name": "authKey_id_unique",
+                "authSession_id_unique": {
+                    "name": "authSession_id_unique",
                     "columns": ["id"],
                     "isUnique": true
                 },
-                "key_user_id_idx": {
-                    "name": "key_user_id_idx",
+                "session_user_id_idx": {
+                    "name": "session_user_id_idx",
                     "columns": ["user_id"],
                     "isUnique": false
                 }
             },
             "foreignKeys": {
-                "authKey_user_id_authUser_id_fk": {
-                    "name": "authKey_user_id_authUser_id_fk",
-                    "tableFrom": "authKey",
+                "authSession_user_id_authUser_id_fk": {
+                    "name": "authSession_user_id_authUser_id_fk",
+                    "tableFrom": "authSession",
                     "tableTo": "authUser",
                     "columnsFrom": ["user_id"],
                     "columnsTo": ["id"],
@@ -1437,6 +1555,66 @@
                     "tableFrom": "userNetworking",
                     "tableTo": "authUser",
                     "columnsFrom": ["followingId"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "collectionNetworking": {
+            "name": "collectionNetworking",
+            "columns": {
+                "collection_id": {
+                    "name": "collection_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "liked_by_id": {
+                    "name": "liked_by_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "userCollectionNetworking_collection_idx": {
+                    "name": "userCollectionNetworking_collection_idx",
+                    "columns": ["collection_id"],
+                    "isUnique": false
+                },
+                "userCollectionNetworking_likedBy_idx": {
+                    "name": "userCollectionNetworking_likedBy_idx",
+                    "columns": ["liked_by_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "collectionNetworking_collection_id_userCollection_id_fk": {
+                    "name": "collectionNetworking_collection_id_userCollection_id_fk",
+                    "tableFrom": "collectionNetworking",
+                    "tableTo": "userCollection",
+                    "columnsFrom": ["collection_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "collectionNetworking_liked_by_id_authUser_id_fk": {
+                    "name": "collectionNetworking_liked_by_id_authUser_id_fk",
+                    "tableFrom": "collectionNetworking",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["liked_by_id"],
                     "columnsTo": ["id"],
                     "onDelete": "no action",
                     "onUpdate": "no action"
