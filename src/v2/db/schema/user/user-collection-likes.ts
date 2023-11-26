@@ -6,11 +6,11 @@ import {
     // uniqueIndex,
     index,
 } from "drizzle-orm/sqlite-core"
-import { authUser } from "../user/user"
+import { authUser } from "./user"
 import { userCollection } from "./user-collections"
 
-export const userCollectionNetworking = sqliteTable(
-    tableNames.userCollectionNetworking,
+export const userCollectionLikes = sqliteTable(
+    tableNames.userCollectionLikes,
     {
         collectionId: text("collection_id")
             .notNull()
@@ -24,35 +24,33 @@ export const userCollectionNetworking = sqliteTable(
                 return new Date().toISOString()
             }),
     },
-    (userCollectionNetworking) => {
+    (userCollectionLikes) => {
         return {
             collectionIdx: index("userCollectionNetworking_collection_idx").on(
-                userCollectionNetworking.collectionId
+                userCollectionLikes.collectionId
             ),
             likedByIdx: index("userCollectionNetworking_likedBy_idx").on(
-                userCollectionNetworking.likedById
+                userCollectionLikes.likedById
             ),
         }
     }
 )
 
-export type UserCollectionNetworking =
-    typeof userCollectionNetworking.$inferSelect
-export type NewUserCollectionNetworking =
-    typeof userCollectionNetworking.$inferInsert
+export type UserCollectionLikes = typeof userCollectionLikes.$inferSelect
+export type NewUserCollectionLikes = typeof userCollectionLikes.$inferInsert
 
-export const userCollectionNetworkingRelations = relations(
-    userCollectionNetworking,
+export const userCollectionLikesRelations = relations(
+    userCollectionLikes,
     ({ one }) => ({
         collection: one(userCollection, {
-            fields: [userCollectionNetworking.collectionId],
+            fields: [userCollectionLikes.collectionId],
             references: [userCollection.id],
-            relationName: "usercollection_liked_collection",
+            relationName: "usercollectionlikes_liked_collection",
         }),
         likedBy: one(authUser, {
-            fields: [userCollectionNetworking.likedById],
+            fields: [userCollectionLikes.likedById],
             references: [authUser.id],
-            relationName: "usercollection_liked_by",
+            relationName: "usercollectionlikes_liked_by",
         }),
     })
 )

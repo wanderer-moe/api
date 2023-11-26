@@ -1,6 +1,7 @@
 {
     "name": "api",
     "version": "1.1.0b",
+    "type": "module",
     "scripts": {
         "dev": "wrangler dev",
         "wrangler:dev:local": "wrangler dev",
@@ -15,7 +16,8 @@
         "drizzle:migrate": "tsx src/scripts/migrate/migrate.mts",
         "drizzle:push": "drizzle-kit push:sqlite",
         "drizzle:dev:init": "drizzle-kit generate:sqlite && tsx src/scripts/migrate/migrate.mts && tsx src/scripts/seed/seed.ts",
-        "drizzle:studio": "drizzle-kit studio --port 7331 --host 127.0.0.1 --verbose"
+        "drizzle:studio": "drizzle-kit studio --port 7331 --host 127.0.0.1 --verbose",
+        "drizzle:dbml": "tsx ./src/scripts/test.mts"
     },
     "devDependencies": {
         "@asteasolutions/zod-to-openapi": "^6.3.0",

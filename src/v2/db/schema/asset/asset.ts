@@ -12,7 +12,7 @@ import { assetCategory } from "./asset-categories"
 import { game } from "../game/game"
 import { assetTagAsset } from "./asset-tags"
 import { atlasToAsset } from "./asset-atlas"
-import { assetNetworking } from "./asset-networking"
+import { assetLikes } from "./asset-likes"
 
 /*
 NOTE: Assets have a lot of relations, and can be quite complex in some cases.
@@ -93,7 +93,7 @@ export type NewAsset = typeof asset.$inferInsert
 export const assetRelations = relations(asset, ({ one, many }) => ({
     assetTagAsset: many(assetTagAsset),
     atlasToAsset: many(atlasToAsset),
-    assetNetworking: many(assetNetworking),
+    assetLikes: many(assetLikes),
     authUser: one(authUser, {
         fields: [asset.uploadedById],
         references: [authUser.id],
