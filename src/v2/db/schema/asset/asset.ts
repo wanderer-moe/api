@@ -44,8 +44,14 @@ export const asset = sqliteTable(
                 onDelete: "cascade",
             })
             .notNull(),
-        uploadedById: text("uploaded_by")
+        uploadedById: text("uploaded_by_id")
             .references(() => authUser.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            })
+            .notNull(),
+        uploadedByName: text("uploaded_by_name")
+            .references(() => authUser.username, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
             })
@@ -95,8 +101,8 @@ export const assetRelations = relations(asset, ({ one, many }) => ({
     atlasToAsset: many(atlasToAsset),
     assetLikes: many(assetLikes),
     authUser: one(authUser, {
-        fields: [asset.uploadedById],
-        references: [authUser.id],
+        fields: [asset.uploadedById, asset.uploadedByName],
+        references: [authUser.id, authUser.username],
         relationName: "asset_auth_user",
     }),
     game: one(game, {

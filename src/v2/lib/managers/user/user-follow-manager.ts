@@ -1,7 +1,7 @@
 import { DrizzleInstance } from "@/v2/db/turso"
 import { and, eq } from "drizzle-orm"
-import { userNetworking } from "@/v2/db/schema"
-import type { UserNetworking, NewUserNetworking } from "@/v2/db/schema"
+import { userFollowing } from "@/v2/db/schema"
+import type { NewUserFollowing, UserFollowing } from "@/v2/db/schema"
 
 /**
  * Manages user follow and unfollow operations.
@@ -14,15 +14,15 @@ export class UserFollowManager {
      *
      * @param followerId - The ID of the user who is following.
      * @param followingId - The ID of the user being followed.
-     * @returns The user networking object representing the follow relationship.
+     * @returns The user follow object representing the follow relationship.
      */
     public async followUser(
         followerId: string,
         followingId: string
-    ): Promise<NewUserNetworking> {
+    ): Promise<NewUserFollowing> {
         try {
-            const [networking] = await this.drizzle
-                .insert(userNetworking)
+            const [follow] = await this.drizzle
+                .insert(userFollowing)
                 .values({
                     followerId,
                     followingId,
@@ -30,7 +30,7 @@ export class UserFollowManager {
                 })
                 .returning()
 
-            return networking
+            return follow
         } catch (e) {
             console.error(
                 `Error following user ${followingId} from user ${followerId}`,
@@ -52,19 +52,19 @@ export class UserFollowManager {
     public async unfollowUser(
         followerId: string,
         followingId: string
-    ): Promise<UserNetworking> {
+    ): Promise<UserFollowing> {
         try {
-            const [networking] = await this.drizzle
-                .delete(userNetworking)
+            const [unfollow] = await this.drizzle
+                .delete(userFollowing)
                 .where(
                     and(
-                        eq(userNetworking.followerId, followerId),
-                        eq(userNetworking.followingId, followingId)
+                        eq(userFollowing.followerId, followerId),
+                        eq(userFollowing.followingId, followingId)
                     )
                 )
                 .returning()
 
-            return networking
+            return unfollow
         } catch (e) {
             console.error(
                 `Error unfollowing user ${followingId} from user ${followerId}`,
@@ -82,14 +82,12 @@ export class UserFollowManager {
      * @param userId - The ID of the user for whom to retrieve followers.
      * @returns An array of user networking objects representing followers.
      */
-    public async getFollowers(
-        userId: string
-    ): Promise<UserNetworking[] | null> {
+    public async getFollowers(userId: string): Promise<UserFollowing[] | null> {
         try {
             const followers = await this.drizzle
                 .select()
-                .from(userNetworking)
-                .where(eq(userNetworking.followingId, userId))
+                .from(userFollowing)
+                .where(eq(userFollowing.followingId, userId))
 
             return followers ?? null
         } catch (e) {

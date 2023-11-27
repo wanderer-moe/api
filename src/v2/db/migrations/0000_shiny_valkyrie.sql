@@ -4,7 +4,8 @@ CREATE TABLE `asset` (
 	`extension` text NOT NULL,
 	`game` text NOT NULL,
 	`asset_category` text NOT NULL,
-	`uploaded_by` text NOT NULL,
+	`uploaded_by_id` text NOT NULL,
+	`uploaded_by_name` text NOT NULL,
 	`url` text NOT NULL,
 	`status` text DEFAULT 'pending' NOT NULL,
 	`uploaded_date` text NOT NULL,
@@ -17,7 +18,8 @@ CREATE TABLE `asset` (
 	`height` integer DEFAULT 0 NOT NULL,
 	FOREIGN KEY (`game`) REFERENCES `game`(`id`) ON UPDATE cascade ON DELETE cascade,
 	FOREIGN KEY (`asset_category`) REFERENCES `assetCategory`(`id`) ON UPDATE cascade ON DELETE cascade,
-	FOREIGN KEY (`uploaded_by`) REFERENCES `authUser`(`id`) ON UPDATE cascade ON DELETE cascade
+	FOREIGN KEY (`uploaded_by_id`) REFERENCES `authUser`(`id`) ON UPDATE cascade ON DELETE cascade,
+	FOREIGN KEY (`uploaded_by_name`) REFERENCES `authUser`(`username`) ON UPDATE cascade ON DELETE cascade
 );
 --> statement-breakpoint
 CREATE TABLE `assetCategory` (
@@ -186,7 +188,7 @@ CREATE TABLE `userFavoriteAsset` (
 	FOREIGN KEY (`asset_id`) REFERENCES `asset`(`id`) ON UPDATE cascade ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE TABLE `userNetworking` (
+CREATE TABLE `userFollowing` (
 	`followerId` text NOT NULL,
 	`followingId` text NOT NULL,
 	`createdAt` text NOT NULL,
@@ -206,7 +208,7 @@ CREATE INDEX `assets_id_idx` ON `asset` (`id`);--> statement-breakpoint
 CREATE INDEX `assets_name_idx` ON `asset` (`name`);--> statement-breakpoint
 CREATE INDEX `assets_game_name_idx` ON `asset` (`game`);--> statement-breakpoint
 CREATE INDEX `assets_asset_category_name_idx` ON `asset` (`asset_category`);--> statement-breakpoint
-CREATE INDEX `assets_uploaded_by_id_idx` ON `asset` (`uploaded_by`);--> statement-breakpoint
+CREATE INDEX `assets_uploaded_by_id_idx` ON `asset` (`uploaded_by_id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `assetCategory_id_unique` ON `assetCategory` (`id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `assetCategory_name_unique` ON `assetCategory` (`name`);--> statement-breakpoint
 CREATE INDEX `asset_category_id_idx` ON `assetCategory` (`id`);--> statement-breakpoint
@@ -266,7 +268,7 @@ CREATE UNIQUE INDEX `userFavoriteAsset_id_unique` ON `userFavoriteAsset` (`id`);
 CREATE INDEX `favorited_assets_assets_id_idx` ON `userFavoriteAsset` (`id`);--> statement-breakpoint
 CREATE INDEX `favorited_assets_assets_user_id_idx` ON `userFavoriteAsset` (`favorited_assets_id`);--> statement-breakpoint
 CREATE INDEX `favorited_assets_assets_asset_id_idx` ON `userFavoriteAsset` (`asset_id`);--> statement-breakpoint
-CREATE INDEX `userNetworking_follower_idx` ON `userNetworking` (`followerId`);--> statement-breakpoint
-CREATE INDEX `userNetworking_following_idx` ON `userNetworking` (`followingId`);--> statement-breakpoint
+CREATE INDEX `userfollowing_follower_idx` ON `userFollowing` (`followerId`);--> statement-breakpoint
+CREATE INDEX `userfollowing_following_idx` ON `userFollowing` (`followingId`);--> statement-breakpoint
 CREATE INDEX `userCollectionNetworking_collection_idx` ON `userCollectionLikes` (`collection_id`);--> statement-breakpoint
 CREATE INDEX `userCollectionNetworking_likedBy_idx` ON `userCollectionLikes` (`liked_by_id`);

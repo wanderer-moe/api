@@ -234,6 +234,7 @@ export class AssetManager {
      */
     public async createAsset(
         userId: string,
+        userNickname: string,
         newAsset: z.infer<typeof UploadAssetSchema>,
         bucket: R2Bucket,
         file: File
@@ -254,6 +255,7 @@ export class AssetManager {
                             gameId: newAsset.gameId,
                             assetCategoryId: newAsset.assetCategoryId,
                             url: key,
+                            uploadedByName: userNickname,
                             uploadedById: userId,
                             status: "pending",
                             fileSize: newAsset.size,

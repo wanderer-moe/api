@@ -3,7 +3,7 @@ export const tableNames = {
     authKey: "authKey",
     authSession: "authSession",
     authUser: "authUser",
-    userNetworking: "userNetworking",
+    userFollowing: "userFollowing",
     gameAssetCategory: "gameAssetCategory",
     assetLikes: "assetLikes",
     userCollectionLikes: "userCollectionLikes",

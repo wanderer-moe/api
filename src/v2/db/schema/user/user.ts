@@ -7,7 +7,7 @@ import {
     // uniqueIndex,
     index,
 } from "drizzle-orm/sqlite-core"
-import { userNetworking } from "./user-networking"
+import { userFollowing } from "./user-following"
 import { asset } from "../asset/asset"
 import { userFavorite } from "./user-favorites"
 import { savedOcGenerators } from "../oc-generators/oc-generators"
@@ -110,10 +110,10 @@ export type Session = typeof userSession.$inferSelect
 export type NewSession = typeof userSession.$inferInsert
 
 export const usersRelations = relations(authUser, ({ one, many }) => ({
-    follower: many(userNetworking, {
+    follower: many(userFollowing, {
         relationName: "follower",
     }),
-    following: many(userNetworking, {
+    following: many(userFollowing, {
         relationName: "following",
     }),
     authKey: many(authKey),

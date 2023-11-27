@@ -9,7 +9,7 @@ import {
     assetTag,
     assetTagAsset,
     authUser,
-    userNetworking,
+    userFollowing,
     userCollection,
     userCollectionAsset,
     userFavoriteAsset,
@@ -80,9 +80,9 @@ async function main() {
         .returning()
     console.log(`[SEED] [authUser] inserted ${newUsers.length} rows\n`)
 
-    console.log("[SEED] [userNetworking] Seeding user following...")
-    const newUserNetworking = await db
-        .insert(userNetworking)
+    console.log("[SEED] [userFollowing] Seeding user following...")
+    const newuserFollowing = await db
+        .insert(userFollowing)
         .values([
             {
                 followerId: newUsers[0].id,
@@ -99,7 +99,7 @@ async function main() {
         ])
         .returning()
     console.log(
-        `[SEED] [userNetworking] inserted ${newUserNetworking.length} rows\n`
+        `[SEED] [userFollowing] inserted ${newuserFollowing.length} rows\n`
     )
 
     console.log("[SEED] [assetTag] Seeding asset tags...")
@@ -214,6 +214,7 @@ async function main() {
                 url: "/test/image.png",
                 status: "approved",
                 uploadedById: newUsers[0].id,
+                uploadedByName: newUsers[0].username,
                 assetIsOptimized: true,
                 viewCount: 1337,
                 downloadCount: 1337,
@@ -230,6 +231,7 @@ async function main() {
                 url: "/test/image.png",
                 status: "approved",
                 uploadedById: newUsers[1].id,
+                uploadedByName: newUsers[1].username,
                 viewCount: 1337,
                 downloadCount: 1337,
                 fileSize: 40213,
@@ -245,6 +247,7 @@ async function main() {
                 url: "/test/image.png",
                 status: "approved",
                 uploadedById: newUsers[1].id,
+                uploadedByName: newUsers[1].username,
                 assetIsOptimized: true,
                 viewCount: 1337,
                 downloadCount: 1337,
@@ -261,6 +264,7 @@ async function main() {
                 url: "/test/image.png",
                 status: "approved",
                 uploadedById: newUsers[1].id,
+                uploadedByName: newUsers[1].username,
                 assetIsOptimized: true,
                 viewCount: 1337,
                 downloadCount: 1337,
@@ -277,6 +281,7 @@ async function main() {
                 url: "/test/image.png",
                 status: "approved",
                 uploadedById: newUsers[2].id,
+                uploadedByName: newUsers[2].username,
                 assetIsOptimized: true,
                 viewCount: 1337,
                 downloadCount: 1337,
@@ -290,6 +295,7 @@ async function main() {
                 url: "/test/image.png",
                 status: "approved",
                 uploadedById: newUsers[2].id,
+                uploadedByName: newUsers[2].username,
                 assetIsOptimized: true,
                 viewCount: 1337,
                 downloadCount: 1337,
