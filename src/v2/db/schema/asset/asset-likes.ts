@@ -14,7 +14,7 @@ export const assetLikes = sqliteTable(
     {
         assetId: text("asset_id")
             .notNull()
-            .references(() => authUser.id),
+            .references(() => asset.id),
         likedById: text("liked_by_id")
             .notNull()
             .references(() => authUser.id),

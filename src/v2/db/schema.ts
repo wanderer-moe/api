@@ -1,10 +1,15 @@
 export * from "./schema/asset/asset"
-export * from "./schema/asset/asset-categories"
-export * from "./schema/asset/asset-tags"
 export * from "./schema/asset/asset-atlas"
 export * from "./schema/asset/asset-likes"
 
+export * from "./schema/categories/asset-categories"
+export * from "./schema/categories/asset-categories-likes"
+
 export * from "./schema/game/game"
+export * from "./schema/game/game-likes"
+
+export * from "./schema/tags/asset-tags"
+export * from "./schema/tags/asset-tags-likes"
 
 export * from "./schema/oc-generators/oc-generators"
 

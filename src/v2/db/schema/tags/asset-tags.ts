@@ -7,7 +7,8 @@ import {
     // uniqueIndex,
     index,
 } from "drizzle-orm/sqlite-core"
-import { asset } from "./asset"
+import { asset } from "../asset/asset"
+import { assetTagLikes } from "./asset-tags-likes"
 
 /*
 NOTE: Asset tags are not stored as ENUMs to allow for better UX, flexibility, and extensibility.
@@ -68,6 +69,7 @@ export type NewAssetTagAsset = typeof assetTagAsset.$inferInsert
 
 export const assetTagRelations = relations(assetTag, ({ many }) => ({
     assetTagAsset: many(assetTagAsset),
+    assetTagLikes: many(assetTagLikes),
 }))
 
 export const assetTagAssetRelations = relations(assetTagAsset, ({ one }) => ({

@@ -8,9 +8,9 @@ import {
     index,
 } from "drizzle-orm/sqlite-core"
 import { authUser } from "../user/user"
-import { assetCategory } from "./asset-categories"
+import { assetCategory } from "../categories/asset-categories"
 import { game } from "../game/game"
-import { assetTagAsset } from "./asset-tags"
+import { assetTagAsset } from "../tags/asset-tags"
 import { atlasToAsset } from "./asset-atlas"
 import { assetLikes } from "./asset-likes"
 

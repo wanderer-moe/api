@@ -184,8 +184,7 @@ export class AssetManager {
                 where: (asset, { and, or, like, eq, sql }) =>
                     and(
                         tagList && tagList.length > 0
-                            ? // rawdog sql because i don't care anymore
-                              or(
+                            ? or(
                                   ...tagList.map(
                                       (t) =>
                                           sql`EXISTS (SELECT 1 FROM assetTagAsset WHERE assetTagAsset.asset_id = ${asset.id} AND assetTagAsset.asset_tag_id = ${t})`

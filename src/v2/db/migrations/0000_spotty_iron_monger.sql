@@ -22,36 +22,6 @@ CREATE TABLE `asset` (
 	FOREIGN KEY (`uploaded_by_name`) REFERENCES `authUser`(`username`) ON UPDATE cascade ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE TABLE `assetCategory` (
-	`id` text NOT NULL,
-	`name` text NOT NULL,
-	`formatted_name` text NOT NULL,
-	`asset_count` integer DEFAULT 0 NOT NULL,
-	`last_updated` text NOT NULL
-);
---> statement-breakpoint
-CREATE TABLE `gameAssetCategory` (
-	`game_id` text NOT NULL,
-	`asset_category_id` text NOT NULL,
-	FOREIGN KEY (`game_id`) REFERENCES `game`(`id`) ON UPDATE cascade ON DELETE cascade,
-	FOREIGN KEY (`asset_category_id`) REFERENCES `assetCategory`(`id`) ON UPDATE cascade ON DELETE cascade
-);
---> statement-breakpoint
-CREATE TABLE `assetTag` (
-	`id` text NOT NULL,
-	`name` text NOT NULL,
-	`formatted_name` text NOT NULL,
-	`asset_count` integer DEFAULT 0 NOT NULL,
-	`last_updated` text NOT NULL
-);
---> statement-breakpoint
-CREATE TABLE `assetTagAsset` (
-	`asset_tag_id` text NOT NULL,
-	`asset_id` integer NOT NULL,
-	FOREIGN KEY (`asset_tag_id`) REFERENCES `assetTag`(`id`) ON UPDATE cascade ON DELETE cascade,
-	FOREIGN KEY (`asset_id`) REFERENCES `asset`(`id`) ON UPDATE cascade ON DELETE cascade
-);
---> statement-breakpoint
 CREATE TABLE `atlas` (
 	`id` text NOT NULL,
 	`url` text NOT NULL,
@@ -73,7 +43,30 @@ CREATE TABLE `assetLikes` (
 	`asset_id` text NOT NULL,
 	`liked_by_id` text NOT NULL,
 	`created_at` text NOT NULL,
-	FOREIGN KEY (`asset_id`) REFERENCES `authUser`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`asset_id`) REFERENCES `asset`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`liked_by_id`) REFERENCES `authUser`(`id`) ON UPDATE no action ON DELETE no action
+);
+--> statement-breakpoint
+CREATE TABLE `assetCategory` (
+	`id` text NOT NULL,
+	`name` text NOT NULL,
+	`formatted_name` text NOT NULL,
+	`asset_count` integer DEFAULT 0 NOT NULL,
+	`last_updated` text NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE `gameAssetCategory` (
+	`game_id` text NOT NULL,
+	`asset_category_id` text NOT NULL,
+	FOREIGN KEY (`game_id`) REFERENCES `game`(`id`) ON UPDATE cascade ON DELETE cascade,
+	FOREIGN KEY (`asset_category_id`) REFERENCES `assetCategory`(`id`) ON UPDATE cascade ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE TABLE `assetCategoryLikes` (
+	`asset_id` text NOT NULL,
+	`liked_by_id` text NOT NULL,
+	`created_at` text NOT NULL,
+	FOREIGN KEY (`asset_id`) REFERENCES `assetCategory`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`liked_by_id`) REFERENCES `authUser`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
@@ -84,6 +77,37 @@ CREATE TABLE `game` (
 	`asset_count` integer DEFAULT 0,
 	`possible_suggestive_content` integer DEFAULT 0 NOT NULL,
 	`last_updated` text NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE `gameLikes` (
+	`asset_id` text NOT NULL,
+	`liked_by_id` text NOT NULL,
+	`created_at` text NOT NULL,
+	FOREIGN KEY (`asset_id`) REFERENCES `game`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`liked_by_id`) REFERENCES `authUser`(`id`) ON UPDATE no action ON DELETE no action
+);
+--> statement-breakpoint
+CREATE TABLE `assetTag` (
+	`id` text NOT NULL,
+	`name` text NOT NULL,
+	`formatted_name` text NOT NULL,
+	`asset_count` integer DEFAULT 0 NOT NULL,
+	`last_updated` text NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE `assetTagAsset` (
+	`asset_tag_id` text NOT NULL,
+	`asset_id` integer NOT NULL,
+	FOREIGN KEY (`asset_tag_id`) REFERENCES `assetTag`(`id`) ON UPDATE cascade ON DELETE cascade,
+	FOREIGN KEY (`asset_id`) REFERENCES `asset`(`id`) ON UPDATE cascade ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE TABLE `assetTagLikes` (
+	`asset_id` text NOT NULL,
+	`liked_by_id` text NOT NULL,
+	`created_at` text NOT NULL,
+	FOREIGN KEY (`asset_id`) REFERENCES `assetTag`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`liked_by_id`) REFERENCES `authUser`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE TABLE `savedOcGenerators` (
@@ -209,18 +233,6 @@ CREATE INDEX `assets_name_idx` ON `asset` (`name`);--> statement-breakpoint
 CREATE INDEX `assets_game_name_idx` ON `asset` (`game`);--> statement-breakpoint
 CREATE INDEX `assets_asset_category_name_idx` ON `asset` (`asset_category`);--> statement-breakpoint
 CREATE INDEX `assets_uploaded_by_id_idx` ON `asset` (`uploaded_by_id`);--> statement-breakpoint
-CREATE UNIQUE INDEX `assetCategory_id_unique` ON `assetCategory` (`id`);--> statement-breakpoint
-CREATE UNIQUE INDEX `assetCategory_name_unique` ON `assetCategory` (`name`);--> statement-breakpoint
-CREATE INDEX `asset_category_id_idx` ON `assetCategory` (`id`);--> statement-breakpoint
-CREATE INDEX `asset_category_name_idx` ON `assetCategory` (`name`);--> statement-breakpoint
-CREATE INDEX `game_asset_category_game_id_idx` ON `gameAssetCategory` (`game_id`);--> statement-breakpoint
-CREATE INDEX `game_asset_category_asset_category_id_idx` ON `gameAssetCategory` (`asset_category_id`);--> statement-breakpoint
-CREATE UNIQUE INDEX `assetTag_id_unique` ON `assetTag` (`id`);--> statement-breakpoint
-CREATE UNIQUE INDEX `assetTag_name_unique` ON `assetTag` (`name`);--> statement-breakpoint
-CREATE INDEX `asset_tag_id_idx` ON `assetTag` (`id`);--> statement-breakpoint
-CREATE INDEX `asset_tag_name_idx` ON `assetTag` (`name`);--> statement-breakpoint
-CREATE INDEX `asset_tags_assets_asset_tag_id_idx` ON `assetTagAsset` (`asset_tag_id`);--> statement-breakpoint
-CREATE INDEX `asset_tags_assets_asset_id_idx` ON `assetTagAsset` (`asset_id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `atlas_id_unique` ON `atlas` (`id`);--> statement-breakpoint
 CREATE INDEX `atlas_id_idx` ON `atlas` (`id`);--> statement-breakpoint
 CREATE INDEX `atlas_uploaded_by_idx` ON `atlas` (`uploaded_by`);--> statement-breakpoint
@@ -230,10 +242,28 @@ CREATE INDEX `atlas_to_assets_atlas_id_idx` ON `atlasToAsset` (`atlas_id`);--> s
 CREATE INDEX `atlas_to_assets_asset_id_idx` ON `atlasToAsset` (`asset_id`);--> statement-breakpoint
 CREATE INDEX `assetlikes_asset_idx` ON `assetLikes` (`asset_id`);--> statement-breakpoint
 CREATE INDEX `assetlikes_likedBy_idx` ON `assetLikes` (`liked_by_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `assetCategory_id_unique` ON `assetCategory` (`id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `assetCategory_name_unique` ON `assetCategory` (`name`);--> statement-breakpoint
+CREATE INDEX `asset_category_id_idx` ON `assetCategory` (`id`);--> statement-breakpoint
+CREATE INDEX `asset_category_name_idx` ON `assetCategory` (`name`);--> statement-breakpoint
+CREATE INDEX `game_asset_category_game_id_idx` ON `gameAssetCategory` (`game_id`);--> statement-breakpoint
+CREATE INDEX `game_asset_category_asset_category_id_idx` ON `gameAssetCategory` (`asset_category_id`);--> statement-breakpoint
+CREATE INDEX `assetCategoryLikes_asset_idx` ON `assetCategoryLikes` (`asset_id`);--> statement-breakpoint
+CREATE INDEX `assetCategoryLikes_likedby_idx` ON `assetCategoryLikes` (`liked_by_id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `game_id_unique` ON `game` (`id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `game_name_unique` ON `game` (`name`);--> statement-breakpoint
 CREATE INDEX `game_id_idx` ON `game` (`id`);--> statement-breakpoint
 CREATE INDEX `game_name_idx` ON `game` (`name`);--> statement-breakpoint
+CREATE INDEX `gamelikes_game_idx` ON `gameLikes` (`asset_id`);--> statement-breakpoint
+CREATE INDEX `gamelikes_likedby_idx` ON `gameLikes` (`liked_by_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `assetTag_id_unique` ON `assetTag` (`id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `assetTag_name_unique` ON `assetTag` (`name`);--> statement-breakpoint
+CREATE INDEX `asset_tag_id_idx` ON `assetTag` (`id`);--> statement-breakpoint
+CREATE INDEX `asset_tag_name_idx` ON `assetTag` (`name`);--> statement-breakpoint
+CREATE INDEX `asset_tags_assets_asset_tag_id_idx` ON `assetTagAsset` (`asset_tag_id`);--> statement-breakpoint
+CREATE INDEX `asset_tags_assets_asset_id_idx` ON `assetTagAsset` (`asset_id`);--> statement-breakpoint
+CREATE INDEX `assetTagLikes_asset_idx` ON `assetTagLikes` (`asset_id`);--> statement-breakpoint
+CREATE INDEX `assetTagLikes_likedby_idx` ON `assetTagLikes` (`liked_by_id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `savedOcGenerators_id_unique` ON `savedOcGenerators` (`id`);--> statement-breakpoint
 CREATE INDEX `saved_oc_generators_id_idx` ON `savedOcGenerators` (`id`);--> statement-breakpoint
 CREATE INDEX `saved_oc_generators_user_id_idx` ON `savedOcGenerators` (`user_id`);--> statement-breakpoint

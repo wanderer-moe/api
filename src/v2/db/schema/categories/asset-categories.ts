@@ -8,13 +8,8 @@ import {
     index,
 } from "drizzle-orm/sqlite-core"
 import { game } from "../game/game"
-import { asset } from "./asset"
-
-/*
-NOTE: This setup can look kinda janky.
-- All asset categories have a game associated with them. This is for better UX so users know what asset categories exist for a game.
-- It's not a necessary join, but just nice to have.
-*/
+import { asset } from "../asset/asset"
+import { assetCategoryLikes } from "./asset-categories-likes"
 
 export const assetCategory = sqliteTable(
     tableNames.assetCategory,
@@ -37,6 +32,12 @@ export const assetCategory = sqliteTable(
 
 export type AssetCategory = typeof assetCategory.$inferSelect
 export type NewAssetCategory = typeof assetCategory.$inferInsert
+
+/*
+NOTE: This setup can look kinda janky.
+- All asset categories have a game associated with them. This is for better UX so users know what asset categories exist for a game.
+- It's not a necessary join, but just nice to have.
+*/
 
 export const gameAssetCategory = sqliteTable(
     tableNames.gameAssetCategory,
@@ -72,6 +73,7 @@ export type NewGameAssetCategory = typeof gameAssetCategory.$inferInsert
 export const assetCategoryRelations = relations(assetCategory, ({ many }) => ({
     asset: many(asset),
     gameAssetCategory: many(gameAssetCategory),
+    assetCategoryLikes: many(assetCategoryLikes),
 }))
 
 export const gameAssetCategoryRelations = relations(

@@ -18,6 +18,9 @@ import { emailVerificationToken } from "./user-attributes"
 import { atlas } from "../asset/asset-atlas"
 import { userCollectionLikes } from "./user-collection-likes"
 import { assetLikes } from "../asset/asset-likes"
+import { gameLikes } from "../game/game-likes"
+import { assetTagLikes } from "../tags/asset-tags-likes"
+import { assetCategoryLikes } from "../categories/asset-categories-likes"
 
 /*
 NOTE: Very basic user information
@@ -128,6 +131,9 @@ export const usersRelations = relations(authUser, ({ one, many }) => ({
     passwordResetToken: one(passwordResetToken),
     emailVerificationToken: one(emailVerificationToken),
     savedOcGenerators: many(savedOcGenerators),
+    gameLikes: many(gameLikes),
+    assetTagLikes: many(assetTagLikes),
+    assetCategoryLikes: many(assetCategoryLikes),
 }))
 
 export const keysRelations = relations(authKey, ({ one }) => ({
