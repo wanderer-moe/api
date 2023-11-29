@@ -1,13 +1,13 @@
 {
-  "version": "5",
-  "dialect": "sqlite",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "5",
-      "when": 1701248157083,
-      "tag": "0000_spotty_iron_monger",
-      "breakpoints": true
-    }
-  ]
+    "version": "5",
+    "dialect": "sqlite",
+    "entries": [
+        {
+            "idx": 0,
+            "version": "5",
+            "when": 1701248157083,
+            "tag": "0000_spotty_iron_monger",
+            "breakpoints": true
+        }
+    ]
 }

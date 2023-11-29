@@ -7,7 +7,7 @@ import {
     // uniqueIndex,
     index,
 } from "drizzle-orm/sqlite-core"
-import { authUser } from "./user"
+import { authUser } from "../user/user"
 import { asset } from "../asset/asset"
 import { generateID } from "@/v2/lib/oslo"
 import { userCollectionLikes } from "./user-collection-likes"

@@ -6,9 +6,9 @@ export class AssetLikesManager {
     constructor(private drizzle: DrizzleInstance) {}
 
     /**
-     * Favorites an asset for a user.
-     * @param assetId - The ID of the asset to favorite.
-     * @param userId - The ID of the user to favorite the asset for.
+     * Likes an asset for a user.
+     * @param assetId - The ID of the asset to like.
+     * @param userId - The ID of the user to like the asset for.
      */
     public async likeAsset(assetId: string, userId: string): Promise<void> {
         try {
@@ -23,9 +23,9 @@ export class AssetLikesManager {
     }
 
     /**
-     * Unfavorites an asset for a user.
-     * @param assetId - The ID of the asset to unfavorite.
-     * @param userId - The ID of the user to unfavorite the asset for.
+     * Unlikes an asset for a user.
+     * @param assetId - The ID of the asset to like.
+     * @param userId - The ID of the user to like the asset for.
      */
     public async unlikeAsset(assetId: string, userId: string): Promise<void> {
         try {

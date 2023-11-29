@@ -6,7 +6,7 @@ import {
     // uniqueIndex,
     index,
 } from "drizzle-orm/sqlite-core"
-import { authUser } from "./user"
+import { authUser } from "../user/user"
 import { userCollection } from "./user-collections"
 
 export const userCollectionLikes = sqliteTable(
