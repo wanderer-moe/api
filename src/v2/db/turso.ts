@@ -28,8 +28,6 @@ export function getConnection(env: Bindings) {
      **/
     const isDev = env.ENVIRONMENT !== "PROD"
 
-    console.log(env)
-
     const turso = createClient({
         url: isDev ? "http://127.0.0.1:8080" : env.TURSO_DATABASE_URL!,
         authToken: isDev ? undefined : env.TURSO_DATABASE_AUTH_TOKEN!,

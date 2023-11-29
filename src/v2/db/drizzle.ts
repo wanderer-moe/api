@@ -1,3 +1,4 @@
+// TODO(dromzeh): organize this, not a priority right now though
 export const tableNames = {
     asset: "asset",
     authKey: "authKey",
@@ -22,8 +23,6 @@ export const tableNames = {
     userFavorite: "userFavorite",
     userFavoriteAsset: "userFavoriteAsset",
     userCollection: "userCollection",
-    userCollectionAsset: "assetCollectionAsset",
+    userCollectionAsset: "userCollectionAsset",
     socialsConnection: "socialsConnection",
 }
-
-export * as schema from "@/v2/db/schema"
