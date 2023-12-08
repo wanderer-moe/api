@@ -1,7 +1,7 @@
 // TODO(dromzeh): organize this, not a priority right now though
 export const tableNames = {
     asset: "asset",
-    authKey: "authKey",
+    authCredentials: "authCredentials",
     authSession: "authSession",
     authUser: "authUser",
     userFollowing: "userFollowing",

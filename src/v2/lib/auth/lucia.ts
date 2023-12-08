@@ -3,7 +3,7 @@ import { getConnection } from "@/v2/db/turso"
 import { tableNames } from "@/v2/db/drizzle"
 import { LibSQLAdapter } from "@lucia-auth/adapter-sqlite"
 
-export function auth(env: Bindings) {
+export function luciaAuth(env: Bindings) {
     const { turso } = getConnection(env)
 
     // TODO(dromzeh): should probably utilize to the v3 drizzle adapter - it's okay for now though
@@ -50,4 +50,4 @@ export function auth(env: Bindings) {
     )
 }
 
-export type Auth = ReturnType<typeof auth>
+export type Auth = ReturnType<typeof luciaAuth>

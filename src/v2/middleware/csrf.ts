@@ -1,20 +1,26 @@
-import type { Context, Next } from "hono"
+import type { Next } from "hono"
 import { verifyRequestOrigin } from "oslo/request"
 
-export async function csrfValidation(c: Context, next: Next) {
-    if (c.req.method === "GET") {
+export async function csrfValidation(ctx: APIContext, next: Next) {
+    if (ctx.req.method === "GET") {
         return next()
     }
 
-    const originHeader = c.req.header("Origin")
-    const hostHeader = c.req.header("Host")
+    const originHeader = ctx.req.header("Origin")
+    const hostHeader = ctx.req.header("Host")
 
     if (
         !originHeader ||
         !hostHeader ||
         !verifyRequestOrigin(originHeader, [hostHeader])
     ) {
-        return c.body(null, 403)
+        return ctx.json(
+            {
+                success: false,
+                error: "Forbidden",
+            },
+            403
+        )
     }
 
     return next()

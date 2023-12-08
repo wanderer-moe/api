@@ -67,8 +67,8 @@ export const authUser = sqliteTable(
 export type User = typeof authUser.$inferSelect
 export type NewUser = typeof authUser.$inferInsert
 
-export const authKey = sqliteTable(
-    tableNames.authKey,
+export const authCredentials = sqliteTable(
+    tableNames.authCredentials,
     {
         id: text("id").unique().notNull(),
         userId: text("user_id")
@@ -86,8 +86,8 @@ export const authKey = sqliteTable(
     }
 )
 
-export type Keys = typeof authKey.$inferSelect
-export type NewKeys = typeof authKey.$inferInsert
+export type Keys = typeof authCredentials.$inferSelect
+export type NewKeys = typeof authCredentials.$inferInsert
 
 export const userSession = sqliteTable(
     tableNames.authSession,
@@ -119,7 +119,7 @@ export const usersRelations = relations(authUser, ({ one, many }) => ({
     following: many(userFollowing, {
         relationName: "following",
     }),
-    authKey: many(authKey),
+    authCredentials: many(authCredentials),
     userSession: many(userSession),
     asset: many(asset),
     atlas: many(atlas),
@@ -136,13 +136,16 @@ export const usersRelations = relations(authUser, ({ one, many }) => ({
     assetCategoryLikes: many(assetCategoryLikes),
 }))
 
-export const keysRelations = relations(authKey, ({ one }) => ({
-    user: one(authUser, {
-        fields: [authKey.userId],
-        references: [authUser.id],
-        relationName: "key_auth_user",
-    }),
-}))
+export const authCredentialsRelations = relations(
+    authCredentials,
+    ({ one }) => ({
+        user: one(authUser, {
+            fields: [authCredentials.userId],
+            references: [authUser.id],
+            relationName: "key_auth_user",
+        }),
+    })
+)
 
 export const sessionRelations = relations(userSession, ({ one }) => ({
     user: one(authUser, {

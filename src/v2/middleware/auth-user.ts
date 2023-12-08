@@ -1,23 +1,23 @@
-import type { Context, Next } from "hono"
-import { auth } from "@/v2/lib/auth/lucia"
+import type { Next } from "hono"
+import { luciaAuth } from "@/v2/lib/auth/lucia"
 import { getCookie } from "hono/cookie"
 
-export async function setUserVariable(c: Context, next: Next) {
-    const setAuth = auth(c.env)
+export async function setUserVariable(ctx: APIContext, next: Next) {
+    const lucia = luciaAuth(ctx.env)
 
-    const sessionId = getCookie(c, setAuth.sessionCookieName) ?? null
+    const sessionId = getCookie(ctx, lucia.sessionCookieName) ?? null
 
     if (!sessionId) {
-        c.set("user", null)
+        ctx.set("user", null)
         return next()
     }
 
-    const { session, user } = await setAuth.validateSession(sessionId)
+    const { session, user } = await lucia.validateSession(sessionId)
 
     if (session && session.fresh) {
-        c.header(
+        ctx.header(
             "Set-Cookie",
-            setAuth.createSessionCookie(session.id).serialize(),
+            lucia.createSessionCookie(session.id).serialize(),
             {
                 append: true,
             }
@@ -25,12 +25,12 @@ export async function setUserVariable(c: Context, next: Next) {
     }
 
     if (!session) {
-        c.header("Set-Cookie", setAuth.createBlankSessionCookie().serialize(), {
+        ctx.header("Set-Cookie", lucia.createBlankSessionCookie().serialize(), {
             append: true,
         })
     }
 
-    c.set("user", user)
+    ctx.set("user", user)
 
     return next()
 }
