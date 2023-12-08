@@ -1,8 +1,9 @@
 import { Resend, type EmailData } from "@/v2/lib/resend/wrapper"
+import type { Context } from "hono"
 
 const emailFrom = "Test <test@test.wanderer.moe>"
 
-const sendEmail = async (emailData: EmailData, c: APIContext) => {
+const sendEmail = async (emailData: EmailData, c: Context) => {
     try {
         const resend = new Resend(c)
         await resend.sendEmail(emailData)
@@ -28,7 +29,7 @@ export const sendPasswordResetEmail = async (
     email: string,
     link: string,
     username: string,
-    c: APIContext
+    c: Context
 ) => {
     const emailData = createEmailData(
         email,
@@ -41,7 +42,7 @@ export const sendPasswordResetEmail = async (
 export const sendPasswordChangeEmail = async (
     email: string,
     username: string,
-    c: APIContext
+    c: Context
 ) => {
     const emailData = createEmailData(
         email,
@@ -54,7 +55,7 @@ export const sendPasswordChangeEmail = async (
 export const sendEmailChangeEmail = async (
     email: string,
     username: string,
-    c: APIContext
+    c: Context
 ) => {
     const emailData = createEmailData(
         email,
@@ -68,7 +69,7 @@ export const sendEmailConfirmationEmail = async (
     email: string,
     link: string,
     username: string,
-    c: APIContext
+    c: Context
 ) => {
     const emailData = createEmailData(
         email,

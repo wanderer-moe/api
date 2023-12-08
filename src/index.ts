@@ -4,6 +4,9 @@ import { prettyJSON } from "hono/pretty-json"
 import BaseRoutes from "@/v2/routes/handler"
 import { OpenAPIConfig } from "./openapi/config"
 
+import { csrfValidation } from "./v2/middleware/csrf"
+import { setUserVariable } from "./v2/middleware/auth-user"
+
 const app = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
 app.route("/v2", BaseRoutes)
@@ -14,6 +17,9 @@ app.get(
         url: "/openapi",
     })
 )
+
+app.use("*", setUserVariable)
+app.use("*", csrfValidation)
 
 app.use("*", prettyJSON())
 

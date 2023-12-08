@@ -1,3 +1,5 @@
+import { User } from "lucia"
+
 declare global {
     /**
      * Environment variables that are required by the API.
@@ -16,20 +18,13 @@ declare global {
     }
 
     type Variables = {
-        // drizzle: import("@/v2/db/turso").DrizzleInstance
-        // turso: import("@/v2/db/turso").TursoInstance
-        // lucia: import("@/v2/lib/auth/lucia").Auth
+        user: User | null
     }
 
     type Settings = {
         Bindings: Bindings
         Variables: Variables
     }
-
-    /**
-     * Provides access to the request context within routes that are separated into individual functions.
-     */
-    type APIContext = import("@hono/zod-openapi").Context<Settings>
 }
 
 export default global

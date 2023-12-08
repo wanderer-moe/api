@@ -1,3 +1,5 @@
+import type { Context } from "hono"
+
 export type EmailData = {
     to: string
     from: string
@@ -6,9 +8,9 @@ export type EmailData = {
 }
 
 export class Resend {
-    private context: APIContext
+    private context: Context
 
-    constructor(context: APIContext) {
+    constructor(context: Context) {
         this.context = context
     }
 
