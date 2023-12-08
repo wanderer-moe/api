@@ -1,7 +1,7 @@
 {
     "version": "5",
     "dialect": "sqlite",
-    "id": "62d78f01-fa41-4210-9f30-93df02adfa75",
+    "id": "fefc70cd-e4e3-4829-a71a-bc6a0dcc7214",
     "prevId": "00000000-0000-0000-0000-000000000000",
     "tables": {
         "asset": {
@@ -1199,22 +1199,36 @@
                     "notNull": true,
                     "autoincrement": false
                 },
-                "active_expires": {
-                    "name": "active_expires",
-                    "type": "integer",
-                    "primaryKey": false,
-                    "notNull": true,
-                    "autoincrement": false
-                },
-                "idle_expires": {
-                    "name": "idle_expires",
-                    "type": "integer",
-                    "primaryKey": false,
-                    "notNull": true,
-                    "autoincrement": false
-                },
                 "user_id": {
                     "name": "user_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "expires_at": {
+                    "name": "expires_at",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "user_agent": {
+                    "name": "user_agent",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "country_code": {
+                    "name": "country_code",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "ip_address": {
+                    "name": "ip_address",
                     "type": "text",
                     "primaryKey": false,
                     "notNull": true,

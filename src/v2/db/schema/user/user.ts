@@ -89,18 +89,27 @@ export const authCredentials = sqliteTable(
 export type Keys = typeof authCredentials.$inferSelect
 export type NewKeys = typeof authCredentials.$inferInsert
 
+// interface Session extends SessionAttributes {
+// 	id: string;
+// 	userId: string;
+// 	expiresAt: Date;
+// 	fresh: boolean;
+// }
+
 export const userSession = sqliteTable(
     tableNames.authSession,
     {
         id: text("id").unique().notNull(),
-        activeExpires: integer("active_expires").notNull(),
-        idleExpires: integer("idle_expires").notNull(),
         userId: text("user_id")
             .notNull()
             .references(() => authUser.id, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
+        expiresAt: text("expires_at").notNull(),
+        userAgent: text("user_agent").notNull(),
+        countryCode: text("country_code").notNull(),
+        ipAddress: text("ip_address").notNull(),
     },
     (session) => {
         return {

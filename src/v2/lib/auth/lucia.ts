@@ -50,4 +50,4 @@ export function luciaAuth(env: Bindings) {
     )
 }
 
-export type Auth = ReturnType<typeof luciaAuth>
+export type LuciaAuth = ReturnType<typeof luciaAuth>

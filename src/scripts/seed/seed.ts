@@ -17,7 +17,7 @@ import {
     authCredentials,
 } from "@/v2/db/schema"
 import { generateID } from "@/v2/lib/oslo"
-import { Scrypt } from "oslo/password"
+import { Scrypt } from "lucia"
 
 const { ENVIRONMENT } = process.env
 
@@ -82,7 +82,7 @@ async function main() {
         .returning()
     console.log(`[SEED] [authUser] inserted ${newUsers.length} rows\n`)
 
-    const devAdminPassword = generateID(12)
+    const devAdminPassword = "password123"
 
     console.log(
         `[SEED] [userCredentials] Seeding user login for admin with password ${devAdminPassword}...`

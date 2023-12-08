@@ -1,4 +1,3 @@
-import { User } from "lucia"
 import { Context } from "hono"
 
 declare global {
@@ -19,15 +18,13 @@ declare global {
     }
 
     type Variables = {
-        user: User | null
+        //
     }
 
-    type Settings = {
+    export type APIContext = Context<{
         Bindings: Bindings
         Variables: Variables
-    }
-
-    export type APIContext = Context<Settings>
+    }>
 }
 
 export default global

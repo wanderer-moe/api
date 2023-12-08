@@ -5,7 +5,6 @@ import BaseRoutes from "@/v2/routes/handler"
 import { OpenAPIConfig } from "./openapi/config"
 
 import { csrfValidation } from "./v2/middleware/csrf"
-import { setUserVariable } from "./v2/middleware/auth-user"
 
 const app = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
@@ -18,7 +17,6 @@ app.get(
     })
 )
 
-app.use("*", setUserVariable)
 app.use("*", csrfValidation)
 
 app.use("*", prettyJSON())

@@ -1,8 +1,8 @@
-import { luciaAuth } from "../lucia"
+import type { LuciaAuth } from "../lucia"
 
 declare module "lucia" {
     interface Register {
-        Lucia: typeof luciaAuth
+        Lucia: LuciaAuth
         DatabaseUserAttributes: {
             avatar_url: string | null
             banner_url: string | null

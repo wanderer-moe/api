@@ -1,5 +1,5 @@
 import { luciaAuth } from "../../auth/lucia"
-import { Scrypt } from "oslo/password"
+import { Scrypt } from "lucia"
 import { getConnection } from "@/v2/db/turso"
 import { authCredentials, authUser } from "@/v2/db/schema"
 import { createInsertSchema } from "drizzle-zod"
@@ -13,10 +13,13 @@ const authUserInsertSchema = createInsertSchema(authUser).pick({
 })
 
 export class UserAuthenticationManager {
-    constructor(private ctx: APIContext) {}
-    private lucia = luciaAuth(this.ctx.env as Bindings)
-    private drizzle = getConnection(this.ctx.env).drizzle
+    private lucia: ReturnType<typeof luciaAuth>
+    private drizzle: ReturnType<typeof getConnection>["drizzle"]
 
+    constructor(private ctx: APIContext) {
+        this.lucia = luciaAuth(this.ctx.env)
+        this.drizzle = getConnection(this.ctx.env).drizzle
+    }
     public async createAccount(
         attributes: Required<z.infer<typeof authUserInsertSchema>>,
         password?: string
@@ -79,9 +82,20 @@ export class UserAuthenticationManager {
             .from(authCredentials)
             .where(eq(authCredentials.userId, foundUser.id))
 
-        if (
-            !(await new Scrypt().verify(password, credentials.hashedPassword))
-        ) {
+        if (!credentials) {
+            return null
+        }
+
+        console.log(credentials, password)
+
+        const validPassword = await new Scrypt().verify(
+            credentials.hashedPassword,
+            password
+        )
+
+        console.log(validPassword)
+
+        if (!validPassword) {
             return null
         }
 
