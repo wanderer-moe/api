@@ -13,7 +13,7 @@ handler.openapi(getGameByIdRoute, async (ctx) => {
     const game = await gameManager.getGameById(id)
 
     if (!game) {
-        return ctx.jsonT(
+        return ctx.json(
             {
                 success: false,
                 error: "Game not found",
@@ -22,7 +22,7 @@ handler.openapi(getGameByIdRoute, async (ctx) => {
         )
     }
 
-    return ctx.jsonT(
+    return ctx.json(
         {
             success: true,
             game,

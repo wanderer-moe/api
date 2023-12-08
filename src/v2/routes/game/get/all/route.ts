@@ -10,7 +10,7 @@ handler.openapi(getAllGamesRoute, async (ctx) => {
     const gameManager = new GameManager(drizzle)
     const games = await gameManager.listGames()
 
-    return ctx.jsonT({
+    return ctx.json({
         games,
     })
 })

@@ -9,7 +9,7 @@ handler.openapi(getAssetByIdRoute, async (ctx) => {
     const assetId = ctx.req.valid("param").id
 
     if (isNaN(parseInt(assetId))) {
-        return ctx.jsonT(
+        return ctx.json(
             {
                 success: false,
                 error: "Invalid asset ID",
@@ -23,7 +23,7 @@ handler.openapi(getAssetByIdRoute, async (ctx) => {
     const asset = await assetManager.getAssetById(parseInt(assetId))
 
     if (!asset) {
-        return ctx.jsonT(
+        return ctx.json(
             {
                 success: true,
                 error: "Asset not found",
@@ -34,7 +34,7 @@ handler.openapi(getAssetByIdRoute, async (ctx) => {
 
     const similarAssets = await assetManager.getSimilarAssets(asset.id)
 
-    return ctx.jsonT(
+    return ctx.json(
         {
             success: true,
             asset,

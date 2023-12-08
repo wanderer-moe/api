@@ -10,7 +10,7 @@ handler.openapi(assetSearchAllFilterRoute, async (ctx) => {
     const assetManager = new AssetManager(drizzle)
     const assets = await assetManager.searchAssets(ctx.req.valid("query"))
 
-    return ctx.jsonT(
+    return ctx.json(
         {
             success: true,
             assets,
