@@ -109,14 +109,10 @@ export class UserAuthenticationManager {
             return null
         }
 
-        console.log(credentials, password)
-
         const validPassword = await new Scrypt().verify(
             credentials.hashedPassword,
             password
         )
-
-        console.log(validPassword)
 
         if (!validPassword) {
             return null
