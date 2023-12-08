@@ -1,16 +1,16 @@
 import { createRoute } from "@hono/zod-openapi"
-import { loginSchema } from "./schema"
+import { createAccountSchema } from "./schema"
 
-export const userLoginRoute = createRoute({
+export const userCreateAccountRoute = createRoute({
     path: "/",
     method: "post",
-    description: "Login to a user with an email and password.",
+    description: "Create a new user account with an email and password.",
     tags: ["Auth"],
     request: {
         body: {
             content: {
                 "application/json": {
-                    schema: loginSchema,
+                    schema: createAccountSchema,
                 },
             },
         },

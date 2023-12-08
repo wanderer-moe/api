@@ -29,6 +29,20 @@ export class UserSearchManager {
         }
     }
 
+    public async getUserByEmail(email: string): Promise<User | null> {
+        try {
+            const [user] = await this.drizzle
+                .select()
+                .from(authUser)
+                .where(eq(authUser.email, email))
+
+            return user ?? null
+        } catch (e) {
+            console.error(`Error getting user by email ${email}`, e)
+            throw new Error(`Error getting user by email ${email}`)
+        }
+    }
+
     /**
      * Retrieves a user by their username.
      *

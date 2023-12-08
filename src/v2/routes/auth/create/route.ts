@@ -1,11 +1,11 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
-import { userLoginRoute } from "./openapi"
-import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
+import { userCreateAccountRoute } from "./openapi"
 import { UserAuthenticationManager } from "@/v2/lib/managers/auth/user-auth-manager"
+import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
-handler.openapi(userLoginRoute, async (ctx) => {
+handler.openapi(userCreateAccountRoute, async (ctx) => {
     const authSessionManager = new AuthSessionManager(ctx)
 
     const { user } = await authSessionManager.validateSession()
@@ -20,12 +20,27 @@ handler.openapi(userLoginRoute, async (ctx) => {
         )
     }
 
-    const { email, password } = ctx.req.valid("json")
+    const { email, password, username } = ctx.req.valid("json")
 
     const userAuthManager = new UserAuthenticationManager(ctx)
 
-    const newLoginCookie = await userAuthManager.loginViaPassword(
-        email,
+    const existingUser = false
+
+    if (existingUser) {
+        return ctx.json(
+            {
+                success: false,
+                error: "User already exists with that email",
+            },
+            400
+        )
+    }
+
+    const newLoginCookie = await userAuthManager.createAccount(
+        {
+            email,
+            username,
+        },
         password
     )
 
@@ -33,9 +48,9 @@ handler.openapi(userLoginRoute, async (ctx) => {
         return ctx.json(
             {
                 success: false,
-                error: "Invalid credentials",
+                error: "Failed to create account",
             },
-            401
+            500
         )
     }
 

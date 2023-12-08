@@ -1,40 +1,40 @@
 import { luciaAuth } from "../../auth/lucia"
 import { getConnection } from "@/v2/db/turso"
+import type { User, Session } from "lucia"
 import { getCookie } from "hono/cookie"
+
 export class AuthSessionManager {
     private lucia: ReturnType<typeof luciaAuth>
     private drizzle: ReturnType<typeof getConnection>["drizzle"]
+    private sessionCookie: string | undefined
 
     constructor(private ctx: APIContext) {
         this.lucia = luciaAuth(this.ctx.env)
         this.drizzle = getConnection(this.ctx.env).drizzle
+        this.sessionCookie = getCookie(this.ctx, this.lucia.sessionCookieName)
+    }
+
+    private async validateAndGetSession(): Promise<{
+        user: User | null
+        session: Session | null
+    }> {
+        if (!this.sessionCookie) {
+            return { user: null, session: null }
+        }
+
+        const { user, session } = await this.lucia.validateSession(
+            this.sessionCookie
+        )
+
+        return { user: user ? user : null, session: session ? session : null }
     }
 
     public async validateSession() {
-        const sessionCookie = getCookie(this.ctx, this.lucia.sessionCookieName)
-
-        if (!sessionCookie) {
-            return null
-        }
-
-        const { user, session } =
-            await this.lucia.validateSession(sessionCookie)
-
-        if (!session) {
-            return null
-        }
-
-        return { user, session }
+        return this.validateAndGetSession()
     }
 
     public async getAllSessions() {
-        const sessionCookie = getCookie(this.ctx, this.lucia.sessionCookieName)
-
-        if (!sessionCookie) {
-            return null
-        }
-
-        const { user } = await this.lucia.validateSession(sessionCookie)
+        const { user } = await this.validateAndGetSession()
 
         if (!user) {
             return null
@@ -44,13 +44,7 @@ export class AuthSessionManager {
     }
 
     public async invalidateCurrentSession() {
-        const sessionCookie = getCookie(this.ctx, this.lucia.sessionCookieName)
-
-        if (!sessionCookie) {
-            return null
-        }
-
-        const { session } = await this.lucia.validateSession(sessionCookie)
+        const { session } = await this.validateAndGetSession()
 
         if (!session) {
             return null
@@ -62,13 +56,7 @@ export class AuthSessionManager {
     }
 
     public async invalidateAllSessions() {
-        const sessionCookie = getCookie(this.ctx, this.lucia.sessionCookieName)
-
-        if (!sessionCookie) {
-            return null
-        }
-
-        const { user } = await this.lucia.validateSession(sessionCookie)
+        const { user } = await this.validateAndGetSession()
 
         if (!user) {
             return null

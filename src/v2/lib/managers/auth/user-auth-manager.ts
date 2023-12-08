@@ -5,7 +5,7 @@ import { authCredentials, authUser } from "@/v2/db/schema"
 import { createInsertSchema } from "drizzle-zod"
 import { z } from "zod"
 import { generateID } from "../../oslo"
-import { eq } from "drizzle-orm"
+import { eq, or } from "drizzle-orm"
 
 const authUserInsertSchema = createInsertSchema(authUser).pick({
     username: true,
@@ -20,10 +20,33 @@ export class UserAuthenticationManager {
         this.lucia = luciaAuth(this.ctx.env)
         this.drizzle = getConnection(this.ctx.env).drizzle
     }
+
+    private async checkForExistingUser(
+        attributes: Required<z.infer<typeof authUserInsertSchema>>
+    ) {
+        const [existingUser] = await this.drizzle
+            .select({ id: authUser.id })
+            .from(authUser)
+            .where(
+                or(
+                    eq(authUser.username, attributes.username),
+                    eq(authUser.email, attributes.email)
+                )
+            )
+
+        return existingUser ? true : false
+    }
+
     public async createAccount(
         attributes: Required<z.infer<typeof authUserInsertSchema>>,
         password?: string
     ) {
+        const existingUser = await this.checkForExistingUser(attributes)
+
+        if (existingUser) {
+            return null
+        }
+
         const createUserTransaction = await this.drizzle.transaction(
             async (db) => {
                 try {
