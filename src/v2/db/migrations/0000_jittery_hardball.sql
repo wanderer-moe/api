@@ -123,7 +123,7 @@ CREATE TABLE `savedOcGenerators` (
 	FOREIGN KEY (`user_id`) REFERENCES `authUser`(`id`) ON UPDATE cascade ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE TABLE `authKey` (
+CREATE TABLE `authCredentials` (
 	`id` text NOT NULL,
 	`user_id` text NOT NULL,
 	`hashed_password` text,
@@ -267,8 +267,8 @@ CREATE INDEX `assetTagLikes_likedby_idx` ON `assetTagLikes` (`liked_by_id`);--> 
 CREATE UNIQUE INDEX `savedOcGenerators_id_unique` ON `savedOcGenerators` (`id`);--> statement-breakpoint
 CREATE INDEX `saved_oc_generators_id_idx` ON `savedOcGenerators` (`id`);--> statement-breakpoint
 CREATE INDEX `saved_oc_generators_user_id_idx` ON `savedOcGenerators` (`user_id`);--> statement-breakpoint
-CREATE UNIQUE INDEX `authKey_id_unique` ON `authKey` (`id`);--> statement-breakpoint
-CREATE INDEX `key_user_id_idx` ON `authKey` (`user_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `authCredentials_id_unique` ON `authCredentials` (`id`);--> statement-breakpoint
+CREATE INDEX `key_user_id_idx` ON `authCredentials` (`user_id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `authUser_id_unique` ON `authUser` (`id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `authUser_username_unique` ON `authUser` (`username`);--> statement-breakpoint
 CREATE INDEX `user_id_idx` ON `authUser` (`id`);--> statement-breakpoint
