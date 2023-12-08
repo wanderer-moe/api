@@ -1,5 +1,11 @@
-// import { Context } from "hono"
-// import { Auth } from "../../auth/lucia"
-// import { verifyRequestOrigin } from "oslo/request"
+import { Context } from "hono"
+import { auth } from "../../auth/lucia"
 
-export class AuthManager {}
+export class AuthSessionManager {
+    constructor(private ctx: Context) {}
+    private auth = auth(this.ctx.env as Bindings)
+
+    async validateSession(sessionId: string) {
+        return await this.auth.validateSession(sessionId)
+    }
+}

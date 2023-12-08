@@ -31,5 +31,6 @@ export async function setUserVariable(c: Context, next: Next) {
     }
 
     c.set("user", user)
+
     return next()
 }
