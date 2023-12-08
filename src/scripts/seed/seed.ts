@@ -14,8 +14,10 @@ import {
     userCollectionAsset,
     userFavoriteAsset,
     userFavorite,
+    authCredentials,
 } from "@/v2/db/schema"
 import { generateID } from "@/v2/lib/oslo"
+import { Scrypt } from "oslo/password"
 
 const { ENVIRONMENT } = process.env
 
@@ -46,8 +48,8 @@ async function main() {
         .values([
             {
                 id: generateID(),
-                username: "testuser",
-                email: "hi@dromzeh.dev",
+                username: "adminuser",
+                email: "admin@wanderer.moe",
                 emailVerified: 1,
                 usernameColour: "#84E6F8",
                 bio: "test bio",
@@ -58,7 +60,7 @@ async function main() {
             {
                 id: generateID(),
                 username: "testuser2",
-                email: "hi2@dromzeh.dev",
+                email: "testuser2@dromzeh.dev",
                 emailVerified: 1,
                 bio: "test bio 2",
                 pronouns: "he/him/his",
@@ -69,7 +71,7 @@ async function main() {
             {
                 id: generateID(),
                 username: "testuser3",
-                email: "hi3@dromzeh.dev",
+                email: "testuser3@wanderer.moe",
                 emailVerified: 1,
                 bio: "test bio 3",
                 roleFlags: 1,
@@ -79,6 +81,25 @@ async function main() {
         ])
         .returning()
     console.log(`[SEED] [authUser] inserted ${newUsers.length} rows\n`)
+
+    const devAdminPassword = generateID(12)
+
+    console.log(
+        `[SEED] [userCredentials] Seeding user login for admin with password ${devAdminPassword}...`
+    )
+
+    const newCredentials = await db
+        .insert(authCredentials)
+        .values({
+            id: generateID(20),
+            userId: newUsers[0].id,
+            hashedPassword: await new Scrypt().hash(devAdminPassword),
+        })
+        .returning()
+
+    console.log(
+        `[SEED] [userCredentials] inserted ${newCredentials.length} rows\n`
+    )
 
     console.log("[SEED] [userFollowing] Seeding user following...")
     const newuserFollowing = await db

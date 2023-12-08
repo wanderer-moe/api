@@ -119,7 +119,7 @@ export const usersRelations = relations(authUser, ({ one, many }) => ({
     following: many(userFollowing, {
         relationName: "following",
     }),
-    authCredentials: many(authCredentials),
+    authCredentials: one(authCredentials),
     userSession: many(userSession),
     asset: many(asset),
     atlas: many(atlas),
