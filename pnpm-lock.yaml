@@ -14,15 +14,9 @@ dependencies:
     "@libsql/client":
         specifier: 0.4.0-pre.5
         version: 0.4.0-pre.5
-    "@lucia-auth/adapter-session-unstorage":
-        specifier: ^2.1.0
-        version: 2.1.0(lucia@2.7.4)(unstorage@1.10.1)
     "@lucia-auth/adapter-sqlite":
-        specifier: ^2.0.1
-        version: 2.0.1(@libsql/client@0.4.0-pre.5)(better-sqlite3@9.2.2)(lucia@2.7.4)
-    "@lucia-auth/oauth":
-        specifier: ^3.5.0
-        version: 3.5.0(lucia@2.7.4)
+        specifier: 3.0.0-beta.9
+        version: 3.0.0-beta.9(@libsql/client@0.4.0-pre.5)(better-sqlite3@9.2.2)(lucia@3.0.0-beta.11)
     "@typescript-eslint/eslint-plugin":
         specifier: ^6.13.2
         version: 6.13.2(@typescript-eslint/parser@6.13.2)(eslint@8.55.0)(typescript@5.3.3)
@@ -39,8 +33,8 @@ dependencies:
         specifier: ^3.11.3
         version: 3.11.3
     lucia:
-        specifier: ^2.7.4
-        version: 2.7.4
+        specifier: 3.0.0-beta.11
+        version: 3.0.0-beta.11
     miniflare:
         specifier: ^3.20231030.3
         version: 3.20231030.3
@@ -1309,28 +1303,15 @@ packages:
         dev: false
         optional: true
 
-    /@lucia-auth/adapter-session-unstorage@2.1.0(lucia@2.7.4)(unstorage@1.10.1):
+    /@lucia-auth/adapter-sqlite@3.0.0-beta.9(@libsql/client@0.4.0-pre.5)(better-sqlite3@9.2.2)(lucia@3.0.0-beta.11):
         resolution:
             {
-                integrity: sha512-ItK7urZhLZv7UO99BcODjRhSAv58UPc+KQAmnkSvri2WBc22vFEjnjd/oWp3CZPdbbrJkuTvsuhFXH1ySBfOLg==,
-            }
-        peerDependencies:
-            lucia: ^2.0.0
-            unstorage: ^1.9.0
-        dependencies:
-            lucia: 2.7.4
-            unstorage: 1.10.1
-        dev: false
-
-    /@lucia-auth/adapter-sqlite@2.0.1(@libsql/client@0.4.0-pre.5)(better-sqlite3@9.2.2)(lucia@2.7.4):
-        resolution:
-            {
-                integrity: sha512-yc7XQ4X3sWG1gyUGHqaXipJIkmvB4MOgJypnSMWy7Vjhn3AOCM2xw51xTs+dGpLOQIn2Laomg9xpmDM2/9tgqQ==,
+                integrity: sha512-Z6kW5ebeEDMlUcJu3bf4USbUuPa2rcCKWJxHdK0jqiPoJfNJrUpg/yBfoUZ7CJ/mucTAKV9EjcrVZSUTHvesGA==,
             }
         peerDependencies:
             "@libsql/client": ^0.3.0
             better-sqlite3: 8.x - 9.x
-            lucia: ^2.0.0
+            lucia: 3.0.0-beta.11
         peerDependenciesMeta:
             "@libsql/client":
                 optional: true
@@ -1339,18 +1320,7 @@ packages:
         dependencies:
             "@libsql/client": 0.4.0-pre.5
             better-sqlite3: 9.2.2
-            lucia: 2.7.4
-        dev: false
-
-    /@lucia-auth/oauth@3.5.0(lucia@2.7.4):
-        resolution:
-            {
-                integrity: sha512-JSwAMVwlDJtbvfcJV1nbkv41OD830pgICrx8zFT71SYd5I1MnEQ+GqMTXBGRyxzc5XlLatT8ZS1Jt0k81487xg==,
-            }
-        peerDependencies:
-            lucia: ^2.0.0
-        dependencies:
-            lucia: 2.7.4
+            lucia: 3.0.0-beta.11
         dev: false
 
     /@neon-rs/load@0.0.4:
@@ -3913,11 +3883,13 @@ packages:
             es5-ext: 0.10.62
         dev: true
 
-    /lucia@2.7.4:
+    /lucia@3.0.0-beta.11:
         resolution:
             {
-                integrity: sha512-do6Aah5kX2DUl7N0CvELWV1/b+qZGF0AUmUrkthYeNfXfgx4RAkWi4BkAlgGDBB/0c1WApb18mUD1pA5qTaWmw==,
+                integrity: sha512-OXZfnM4KifDjkTTG3ruihormyOcXBz6wjAWibAAlw42zWBXDsleFR34gwKBxxXBa+TodzuKy7rcg8FGOMwwSGA==,
             }
+        dependencies:
+            oslo: 0.23.5
         dev: false
 
     /magic-string@0.25.9:
