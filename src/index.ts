@@ -1,31 +1,40 @@
-import { Hono } from "hono"
-import assetRoute from "./v2/routes/asset/asset-routes"
-import discordRoute from "./v2/routes/discord/discord-routes"
-import ocGeneratorRoute from "./v2/routes/oc-generators/oc-generator-routes"
-import gamesRoute from "./v2/routes/games/games-routes"
-import authRoute from "./v2/routes/auth/auth-routes"
-import searchRoute from "./v2/routes/search/search-routes"
-import tagsRoute from "./v2/routes/tags/tags-routes"
-import mainRoute from "./default/routes/main-routes"
+import { OpenAPIHono } from "@hono/zod-openapi"
+import { swaggerUI } from "@hono/swagger-ui"
+import { prettyJSON } from "hono/pretty-json"
+import BaseRoutes from "@/v2/routes/handler"
+import { OpenAPIConfig } from "./openapi/config"
 
-const app = new Hono<{ Bindings: Bindings }>()
+import { csrfValidation } from "./v2/middleware/csrf"
+import { LogTime } from "./v2/middleware/time-taken"
 
-app.route("/", mainRoute)
-app.route("/v2/asset", assetRoute)
-app.route("/v2/discord", discordRoute)
-app.route("/v2/oc-generators", ocGeneratorRoute)
-app.route("/v2/search", searchRoute)
-app.route("/v2/games", gamesRoute)
-app.route("/v2/auth", authRoute)
-app.route("/v2/tags", tagsRoute)
-app.all("*", (c) => {
-    return c.json(
-        { success: false, status: "error", error: "route doesn't exist" },
-        404
+const app = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
+
+app.route("/v2", BaseRoutes)
+
+app.get(
+    "/docs",
+    swaggerUI({
+        url: "/openapi",
+    })
+)
+
+app.use("*", csrfValidation)
+app.use("*", LogTime)
+
+app.use("*", prettyJSON())
+
+app.doc("/openapi", OpenAPIConfig)
+
+app.onError((err, ctx) => {
+    console.error(err)
+    // TODO: error logging
+    return ctx.json(
+        {
+            success: false,
+            error: "Internal Server Error",
+        },
+        500
     )
 })
-
-// https://hono.dev/api/hono#showroutes
-app.showRoutes()
 
 export default app

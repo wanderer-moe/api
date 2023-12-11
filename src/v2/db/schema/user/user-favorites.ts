@@ -32,7 +32,9 @@ export const userFavorite = sqliteTable(
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
-        isPublic: integer("is_public").default(0).notNull(),
+        isPublic: integer("is_public", { mode: "boolean" })
+            .default(false)
+            .notNull(),
     },
     (userFavorite) => {
         return {
@@ -93,6 +95,7 @@ export const userFavoriteRelations = relations(userFavorite, ({ one }) => ({
     user: one(authUser, {
         fields: [userFavorite.userId],
         references: [authUser.id],
+        relationName: "userfavorite_auth_user",
     }),
 }))
 
@@ -102,10 +105,12 @@ export const userFavoriteAssetRelations = relations(
         favoritedAssets: one(userFavorite, {
             fields: [userFavoriteAsset.userFavoriteId],
             references: [userFavorite.id],
+            relationName: "favoritedassets_userfavorite",
         }),
         asset: one(asset, {
             fields: [userFavoriteAsset.assetId],
             references: [asset.id],
+            relationName: "favoritedassets_asset",
         }),
     })
 )

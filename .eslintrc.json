@@ -5,8 +5,9 @@
     "plugins": ["json"],
     "rules": {
         "no-const-assign": "error",
-        "camelcase": "off",
-        "no-extra-semi": "error"
+        "no-extra-semi": "error",
+        "no-unreachable": "error"
+        // "sort-imports": "error"
     },
     "parserOptions": {
         "allowImportExportEverywhere": true,

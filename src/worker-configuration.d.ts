@@ -1,3 +1,5 @@
+import { Context } from "hono"
+
 declare global {
     /**
      * Environment variables that are required by the API.
@@ -5,7 +7,6 @@ declare global {
     type Bindings = {
         DISCORD_TOKEN: string
         FILES_BUCKET: R2Bucket
-        KV_SESSION_STORAGE: KVNamespace
         ENVIRONMENT: "PROD" | "DEV"
         VERY_SECRET_SIGNUP_KEY: string
         TURSO_DATABASE_URL: string
@@ -14,14 +15,16 @@ declare global {
         DISCORD_CLIENT_SECRET: string
         DISCORD_REDIRECT_URI: string
         RESEND_API_KEY: string
-        TURSO_DEV_DATABASE_URL: string | undefined
+        AXIOM_TOKEN: string
     }
 
-    /**
-     * Provides access to the request context within routes that are separated into individual functions.
-     */
-    type APIContext = import("hono").Context<{
+    type Variables = {
+        //
+    }
+
+    export type APIContext = Context<{
         Bindings: Bindings
+        Variables: Variables
     }>
 }
 

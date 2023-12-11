@@ -1,24 +1,28 @@
+// TODO(dromzeh): organize this, not a priority right now though
 export const tableNames = {
     asset: "asset",
-    authKey: "authKey",
+    authCredentials: "authCredentials",
     authSession: "authSession",
     authUser: "authUser",
-    userNetworking: "userNetworking",
+    userFollowing: "userFollowing",
     gameAssetCategory: "gameAssetCategory",
+    assetLikes: "assetLikes",
+    userCollectionLikes: "userCollectionLikes",
     game: "game",
+    gameLikes: "gameLikes",
     atlas: "atlas",
     atlasToAsset: "atlasToAsset",
     assetTag: "assetTag",
+    assetTagLikes: "assetTagLikes",
     assetTagAsset: "assetTagAsset",
     emailVerificationToken: "emailVerificationToken",
     passwordResetToken: "passwordResetToken",
     assetCategory: "assetCategory",
+    assetCategoryLikes: "assetCategoryLikes",
     savedOcGenerators: "savedOcGenerators",
     userFavorite: "userFavorite",
     userFavoriteAsset: "userFavoriteAsset",
     userCollection: "userCollection",
-    userCollectionAsset: "assetCollectionAsset",
+    userCollectionAsset: "userCollectionAsset",
     socialsConnection: "socialsConnection",
 }
-
-export * as schema from "@/v2/db/schema"

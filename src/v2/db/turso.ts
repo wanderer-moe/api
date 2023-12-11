@@ -1,7 +1,8 @@
-import * as schema from "@/v2/db/schema"
 import { drizzle as drizzleORM } from "drizzle-orm/libsql"
 import { createClient } from "@libsql/client/web" // because we're in a worker
 import { Logger } from "drizzle-orm/logger"
+
+import * as schema from "@/v2/db/schema"
 
 /**
  * The `LoggerWrapper` class is used to wrap the `Logger` interface from `drizzle-orm` and provide a custom implementation of the `logQuery` method.
@@ -25,15 +26,11 @@ export function getConnection(env: Bindings) {
      * The `url` option is set to the `TURSO_DATABASE_URL` environment variable.
      * The `authToken` option is set to the `TURSO_DATABASE_AUTH_TOKEN` environment variable.
      **/
-    const isDev = env.ENVIRONMENT === "DEV"
-    const TURSO_DEV_DATABASE_URL =
-        env.TURSO_DEV_DATABASE_URL ?? "http://127.0.0.1:8080"
+    const isDev = env.ENVIRONMENT !== "PROD"
 
     const turso = createClient({
-        url: isDev
-            ? TURSO_DEV_DATABASE_URL ?? env.TURSO_DATABASE_URL
-            : env.TURSO_DATABASE_URL,
-        ...(isDev ? {} : { authToken: env.TURSO_DATABASE_AUTH_TOKEN }),
+        url: isDev ? "http://127.0.0.1:8080" : env.TURSO_DATABASE_URL!,
+        authToken: isDev ? undefined : env.TURSO_DATABASE_AUTH_TOKEN!,
     })
 
     /**
@@ -41,7 +38,9 @@ export function getConnection(env: Bindings) {
      * The `LoggerWrapper` is passed to the `logger` option to log queries to the console.
      */
     const drizzle = drizzleORM(turso, {
-        schema,
+        schema: {
+            ...schema,
+        },
         logger: new LoggerWrapper(),
     })
 
@@ -53,7 +52,3 @@ export function getConnection(env: Bindings) {
 
 export type DrizzleInstance = ReturnType<typeof getConnection>["drizzle"]
 export type TursoInstance = ReturnType<typeof getConnection>["turso"]
-
-export type TursoClient = ReturnType<typeof createClient>
-export type DrizzleClient = ReturnType<typeof drizzleORM>
-export type Connection = ReturnType<typeof getConnection>

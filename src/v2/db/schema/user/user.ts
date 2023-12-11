@@ -7,15 +7,20 @@ import {
     // uniqueIndex,
     index,
 } from "drizzle-orm/sqlite-core"
-import { userNetworking } from "./user-networking"
+import { userFollowing } from "./user-following"
 import { asset } from "../asset/asset"
 import { userFavorite } from "./user-favorites"
 import { savedOcGenerators } from "../oc-generators/oc-generators"
 import { socialsConnection } from "./user-connections"
-import { userCollection } from "./user-collections"
+import { userCollection } from "../collections/user-collections"
 import { passwordResetToken } from "./user-attributes"
 import { emailVerificationToken } from "./user-attributes"
 import { atlas } from "../asset/asset-atlas"
+import { userCollectionLikes } from "../collections/user-collection-likes"
+import { assetLikes } from "../asset/asset-likes"
+import { gameLikes } from "../game/game-likes"
+import { assetTagLikes } from "../tags/asset-tags-likes"
+import { assetCategoryLikes } from "../categories/asset-categories-likes"
 
 /*
 NOTE: Very basic user information
@@ -43,7 +48,9 @@ export const authUser = sqliteTable(
                 return new Date().toISOString()
             }),
         roleFlags: integer("role_flags").default(1).notNull(),
-        isContributor: integer("is_contributor").default(0).notNull(),
+        isContributor: integer("is_contributor", { mode: "boolean" })
+            .default(false)
+            .notNull(),
         selfAssignableRoleFlags: integer("self_assignable_role_flags")
             .default(0)
             .notNull(),
@@ -57,11 +64,11 @@ export const authUser = sqliteTable(
     }
 )
 
-export type Users = typeof authUser.$inferSelect
-export type NewUsers = typeof authUser.$inferInsert
+export type User = typeof authUser.$inferSelect
+export type NewUser = typeof authUser.$inferInsert
 
-export const keys = sqliteTable(
-    tableNames.authKey,
+export const authCredentials = sqliteTable(
+    tableNames.authCredentials,
     {
         id: text("id").unique().notNull(),
         userId: text("user_id")
@@ -79,30 +86,80 @@ export const keys = sqliteTable(
     }
 )
 
-export type Keys = typeof keys.$inferSelect
-export type NewKeys = typeof keys.$inferInsert
+export type Keys = typeof authCredentials.$inferSelect
+export type NewKeys = typeof authCredentials.$inferInsert
+
+// interface Session extends SessionAttributes {
+// 	id: string;
+// 	userId: string;
+// 	expiresAt: Date;
+// 	fresh: boolean;
+// }
+
+export const userSession = sqliteTable(
+    tableNames.authSession,
+    {
+        id: text("id").unique().notNull(),
+        userId: text("user_id")
+            .notNull()
+            .references(() => authUser.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
+        expiresAt: text("expires_at").notNull(),
+        userAgent: text("user_agent").notNull(),
+        countryCode: text("country_code").notNull(),
+        ipAddress: text("ip_address").notNull(),
+    },
+    (session) => {
+        return {
+            userIdx: index("session_user_id_idx").on(session.userId),
+        }
+    }
+)
+
+export type Session = typeof userSession.$inferSelect
+export type NewSession = typeof userSession.$inferInsert
 
 export const usersRelations = relations(authUser, ({ one, many }) => ({
-    follower: many(userNetworking, {
+    follower: many(userFollowing, {
         relationName: "follower",
     }),
-    following: many(userNetworking, {
+    following: many(userFollowing, {
         relationName: "following",
     }),
-    key: many(keys),
+    authCredentials: one(authCredentials),
+    userSession: many(userSession),
     asset: many(asset),
     atlas: many(atlas),
     userFavorite: one(userFavorite),
+    userCollectionLikes: many(userCollectionLikes),
+    assetLikes: many(assetLikes),
     socialsConnection: one(socialsConnection),
     userCollection: many(userCollection),
     passwordResetToken: one(passwordResetToken),
     emailVerificationToken: one(emailVerificationToken),
     savedOcGenerators: many(savedOcGenerators),
+    gameLikes: many(gameLikes),
+    assetTagLikes: many(assetTagLikes),
+    assetCategoryLikes: many(assetCategoryLikes),
 }))
 
-export const keysRelations = relations(keys, ({ one }) => ({
+export const authCredentialsRelations = relations(
+    authCredentials,
+    ({ one }) => ({
+        user: one(authUser, {
+            fields: [authCredentials.userId],
+            references: [authUser.id],
+            relationName: "key_auth_user",
+        }),
+    })
+)
+
+export const sessionRelations = relations(userSession, ({ one }) => ({
     user: one(authUser, {
-        fields: [keys.userId],
+        fields: [userSession.userId],
         references: [authUser.id],
+        relationName: "session_auth_user",
     }),
 }))

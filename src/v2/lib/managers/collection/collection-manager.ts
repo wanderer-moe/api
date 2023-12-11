@@ -1,7 +1,13 @@
 import { DrizzleInstance } from "@/v2/db/turso"
 import { userCollection, userCollectionAsset } from "@/v2/db/schema"
-import { eq, like, and } from "drizzle-orm"
+import { and, eq, like } from "drizzle-orm"
 import { z } from "zod"
+import type {
+    NewUserCollection,
+    NewUserCollectionAsset,
+    UserCollection,
+    UserCollectionAsset,
+} from "@/v2/db/schema"
 
 const insertCollectionSchema = z.object({
     name: z.string(),
@@ -23,41 +29,59 @@ export class CollectionManager {
     public async getCollectionById(
         collectionId: string,
         currentUserId?: string
-    ) {
-        const foundCollection = await this.drizzle
-            .select()
-            .from(userCollection)
-            .leftJoin(
-                userCollectionAsset,
-                eq(userCollectionAsset.collectionId, collectionId)
-            )
-            .where(
-                and(
-                    currentUserId
-                        ? eq(userCollection.userId, currentUserId)
-                        : eq(userCollection.isPublic, 1),
-                    eq(userCollection.id, collectionId)
+    ): Promise<UserCollection | null> {
+        try {
+            const [foundCollection] = await this.drizzle
+                .select()
+                .from(userCollection)
+                .where(
+                    and(
+                        currentUserId
+                            ? eq(userCollection.userId, currentUserId)
+                            : eq(userCollection.isPublic, true),
+                        eq(userCollection.id, collectionId)
+                    )
                 )
-            )
 
-        return foundCollection[0]
+            return foundCollection ?? null
+        } catch (e) {
+            console.error(
+                `Error in getCollectionById for collectionId ${collectionId} and currentUserId ${currentUserId}`,
+                e
+            )
+            throw new Error(
+                `Error in getCollectionById for collectionId ${collectionId} and currentUserId ${currentUserId}`
+            )
+        }
     }
 
     /**
      * Retrieves a list of all collections.
      * @returns A promise that resolves to an array of collections.
      */
-    public async listCollections(currentUserId?: string) {
-        const collections = await this.drizzle
-            .select()
-            .from(userCollection)
-            .where(
-                currentUserId
-                    ? eq(userCollection.userId, currentUserId)
-                    : eq(userCollection.isPublic, 1)
-            )
+    public async listCollections(
+        currentUserId?: string
+    ): Promise<UserCollection[] | null> {
+        try {
+            const collections = await this.drizzle
+                .select()
+                .from(userCollection)
+                .where(
+                    currentUserId
+                        ? eq(userCollection.userId, currentUserId)
+                        : eq(userCollection.isPublic, true)
+                )
 
-        return collections
+            return collections ?? null
+        } catch (e) {
+            console.error(
+                `Error in listCollections for currentUserId ${currentUserId}`,
+                e
+            )
+            throw new Error(
+                `Error in listCollections for currentUserId ${currentUserId}`
+            )
+        }
     }
 
     /**
@@ -68,22 +92,31 @@ export class CollectionManager {
     public async getCollectionsByPartialName(
         collectionName: string,
         currentUserId?: string
-    ) {
-        const collections = await this.drizzle
-            .select()
-            .from(userCollection)
-            .where(
-                and(
-                    currentUserId
-                        ? eq(userCollection.userId, currentUserId)
-                        : eq(userCollection.isPublic, 1),
-                    like(userCollection.name, `%${collectionName}%`)
+    ): Promise<UserCollection[] | null> {
+        try {
+            const collections = await this.drizzle
+                .select()
+                .from(userCollection)
+                .where(
+                    and(
+                        currentUserId
+                            ? eq(userCollection.userId, currentUserId)
+                            : eq(userCollection.isPublic, true),
+                        like(userCollection.name, `%${collectionName}%`)
+                    )
                 )
+
+            return collections ?? null
+        } catch (e) {
+            console.error(
+                `Error in getCollectionsByPartialName for collectionName ${collectionName} and currentUserId ${currentUserId}`,
+                e
             )
-
-        return collections
+            throw new Error(
+                `Error in getCollectionsByPartialName for collectionName ${collectionName} and currentUserId ${currentUserId}`
+            )
+        }
     }
-
     /**
      * Retrieves public collections for a specific user.
      * @param userId - The ID of the user.
@@ -92,20 +125,30 @@ export class CollectionManager {
     public async getCollectionsByUserId(
         userId: string,
         currentUserId?: string
-    ) {
-        const collections = await this.drizzle
-            .select()
-            .from(userCollection)
-            .where(
-                and(
-                    currentUserId
-                        ? eq(userCollection.userId, currentUserId)
-                        : eq(userCollection.isPublic, 1),
-                    eq(userCollection.userId, userId)
+    ): Promise<UserCollection[] | null> {
+        try {
+            const collections = await this.drizzle
+                .select()
+                .from(userCollection)
+                .where(
+                    and(
+                        currentUserId
+                            ? eq(userCollection.userId, currentUserId)
+                            : eq(userCollection.isPublic, true),
+                        eq(userCollection.userId, userId)
+                    )
                 )
-            )
 
-        return collections
+            return collections ?? null
+        } catch (e) {
+            console.error(
+                `Error in getCollectionsByUserId for userId ${userId} and currentUserId ${currentUserId}`,
+                e
+            )
+            throw new Error(
+                `Error in getCollectionsByUserId for userId ${userId} and currentUserId ${currentUserId}`
+            )
+        }
     }
 
     /**
@@ -116,25 +159,53 @@ export class CollectionManager {
     public async removeAssetFromCollection(
         collectionId: string,
         assetId: number
-    ) {
-        await this.drizzle
-            .delete(userCollectionAsset)
-            .where(
-                and(
-                    eq(userCollectionAsset.collectionId, collectionId),
-                    eq(userCollectionAsset.assetId, assetId)
+    ): Promise<UserCollectionAsset | null> {
+        try {
+            const [removedAsset] = await this.drizzle
+                .delete(userCollectionAsset)
+                .where(
+                    and(
+                        eq(userCollectionAsset.collectionId, collectionId),
+                        eq(userCollectionAsset.assetId, assetId)
+                    )
                 )
+                .returning()
+
+            return removedAsset ?? null
+        } catch (e) {
+            console.error(
+                `Error in removeAssetFromCollection for collectionId ${collectionId} and assetId ${assetId}`,
+                e
             )
+            throw new Error(
+                `Error in removeAssetFromCollection for collectionId ${collectionId} and assetId ${assetId}`
+            )
+        }
     }
 
     /**
      * Deletes a collection by its ID.
      * @param collectionId - The ID of the collection to delete.
      */
-    public async deleteCollection(collectionId: string) {
-        await this.drizzle
-            .delete(userCollection)
-            .where(eq(userCollection.id, collectionId))
+    public async deleteCollection(
+        collectionId: string
+    ): Promise<UserCollection> {
+        try {
+            const [deletedCollection] = await this.drizzle
+                .delete(userCollection)
+                .where(eq(userCollection.id, collectionId))
+                .returning()
+
+            return deletedCollection
+        } catch (e) {
+            console.error(
+                `Error in deleteCollection for collectionId ${collectionId}`,
+                e
+            )
+            throw new Error(
+                `Error in deleteCollection for collectionId ${collectionId}`
+            )
+        }
     }
 
     /**
@@ -142,11 +213,29 @@ export class CollectionManager {
      * @param collectionId - The ID of the collection.
      * @param assetId - The ID of the asset to add.
      */
-    public async addAssetToCollection(collectionId: string, assetId: number) {
-        await this.drizzle.insert(userCollectionAsset).values({
-            collectionId: collectionId,
-            assetId: assetId,
-        })
+    public async addAssetToCollection(
+        collectionId: string,
+        assetId: number
+    ): Promise<NewUserCollectionAsset> {
+        try {
+            const [addedAsset] = await this.drizzle
+                .insert(userCollectionAsset)
+                .values({
+                    collectionId: collectionId,
+                    assetId: assetId,
+                })
+                .returning()
+
+            return addedAsset
+        } catch (e) {
+            console.error(
+                `Error in addAssetToCollection for collectionId ${collectionId} and assetId ${assetId}`,
+                e
+            )
+            throw new Error(
+                `Error in addAssetToCollection for collectionId ${collectionId} and assetId ${assetId}`
+            )
+        }
     }
 
     /**
@@ -158,20 +247,28 @@ export class CollectionManager {
     public async createCollection(
         userId: string,
         collectionSchema: z.infer<typeof insertCollectionSchema>
-    ) {
-        const createdCollection = await this.drizzle
-            .insert(userCollection)
-            .values({
-                userId: userId,
-                description: collectionSchema.description,
-                name: collectionSchema.name,
-                isPublic: collectionSchema.isPublic ? 1 : 0,
-            })
-            .returning({
-                collectionId: userCollection.id,
-            })
+    ): Promise<NewUserCollection> {
+        try {
+            const [createdCollection] = await this.drizzle
+                .insert(userCollection)
+                .values({
+                    userId: userId,
+                    description: collectionSchema.description,
+                    name: collectionSchema.name,
+                    isPublic: collectionSchema.isPublic,
+                })
+                .returning()
 
-        return createdCollection
+            return createdCollection
+        } catch (e) {
+            console.error(
+                `Error in createCollection for userId ${userId} and collectionSchema ${collectionSchema}`,
+                e
+            )
+            throw new Error(
+                `Error in createCollection for userId ${userId} and collectionSchema ${collectionSchema}`
+            )
+        }
     }
 
     /**
@@ -184,19 +281,27 @@ export class CollectionManager {
     public async updateCollection(
         collectionId: string,
         collectionSchema: z.infer<typeof insertCollectionSchema>
-    ) {
-        const updatedCollection = await this.drizzle
-            .update(userCollection)
-            .set({
-                description: collectionSchema.description,
-                name: collectionSchema.name,
-                isPublic: collectionSchema.isPublic ? 1 : 0,
-            })
-            .where(eq(userCollection.id, collectionId))
-            .returning({
-                collectionId: userCollection.id,
-            })
+    ): Promise<UserCollection> {
+        try {
+            const [updatedCollection] = await this.drizzle
+                .update(userCollection)
+                .set({
+                    description: collectionSchema.description,
+                    name: collectionSchema.name,
+                    isPublic: collectionSchema.isPublic,
+                })
+                .where(eq(userCollection.id, collectionId))
+                .returning()
 
-        return updatedCollection
+            return updatedCollection
+        } catch (e) {
+            console.error(
+                `Error in updateCollection for collectionId ${collectionId} and collectionSchema ${collectionSchema}`,
+                e
+            )
+            throw new Error(
+                `Error in updateCollection for collectionId ${collectionId} and collectionSchema ${collectionSchema}`
+            )
+        }
     }
 }

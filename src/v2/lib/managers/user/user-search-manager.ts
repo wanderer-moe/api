@@ -1,6 +1,7 @@
 import { DrizzleInstance } from "@/v2/db/turso"
 import { authUser } from "@/v2/db/schema"
-import { eq, or, like } from "drizzle-orm"
+import { eq, like, or } from "drizzle-orm"
+import type { User } from "@/v2/db/schema"
 
 /**
  * Manages user search and retrieval operations.
@@ -14,13 +15,32 @@ export class UserSearchManager {
      * @param userId - The ID of the user to retrieve.
      * @returns The user object or undefined if not found.
      */
-    public async getUserById(userId: string) {
-        const user = await this.drizzle
-            .select()
-            .from(authUser)
-            .where(eq(authUser.id, userId))
+    public async getUserById(userId: string): Promise<User | null> {
+        try {
+            const [user] = await this.drizzle
+                .select()
+                .from(authUser)
+                .where(eq(authUser.id, userId))
 
-        return user[0]
+            return user ?? null
+        } catch (e) {
+            console.error(`Error getting user by ID ${userId}`, e)
+            throw new Error(`Error getting user by ID ${userId}`)
+        }
+    }
+
+    public async getUserByEmail(email: string): Promise<User | null> {
+        try {
+            const [user] = await this.drizzle
+                .select()
+                .from(authUser)
+                .where(eq(authUser.email, email))
+
+            return user ?? null
+        } catch (e) {
+            console.error(`Error getting user by email ${email}`, e)
+            throw new Error(`Error getting user by email ${email}`)
+        }
     }
 
     /**
@@ -29,13 +49,18 @@ export class UserSearchManager {
      * @param username - The username of the user to retrieve.
      * @returns The user object or undefined if not found.
      */
-    public async getUserByUsername(username: string) {
-        const user = await this.drizzle
-            .select()
-            .from(authUser)
-            .where(eq(authUser.username, username))
+    public async getUserByUsername(username: string): Promise<User | null> {
+        try {
+            const [user] = await this.drizzle
+                .select()
+                .from(authUser)
+                .where(eq(authUser.username, username))
 
-        return user[0]
+            return user ?? null
+        } catch (e) {
+            console.error(`Error getting user by username ${username}`, e)
+            throw new Error(`Error getting user by username ${username}`)
+        }
     }
 
     /**
@@ -44,13 +69,18 @@ export class UserSearchManager {
      * @param username - The partial username to search for.
      * @returns An array of user objects matching the search criteria, limited to 25 results.
      */
-    public async getUsersByUsername(username: string) {
-        const users = await this.drizzle
-            .select()
-            .from(authUser)
-            .where(or(like(authUser.username, `%${username}%`)))
-            .limit(25)
+    public async getUsersByUsername(username: string): Promise<User[] | User> {
+        try {
+            const users = await this.drizzle
+                .select()
+                .from(authUser)
+                .where(or(like(authUser.username, `%${username}%`)))
+                .limit(25)
 
-        return users
+            return users ?? null
+        } catch (e) {
+            console.error(`Error getting users by username ${username}`, e)
+            throw new Error(`Error getting users by username ${username}`)
+        }
     }
 }

@@ -6,19 +6,12 @@ import {
     assetTagAsset,
     game,
 } from "@/v2/db/schema"
-import { eq, or, like, sql, and } from "drizzle-orm"
+import { eq, not, or, sql } from "drizzle-orm"
 import { R2Bucket } from "@cloudflare/workers-types"
 import { SplitQueryByCommas } from "../../helpers/split-query-by-commas"
 import { z } from "zod"
-
-// these are all optional
-type AssetSearchQuery = {
-    name?: string
-    game?: string
-    category?: string
-    tag?: string
-    limit?: number
-}
+import type { Asset, NewAsset } from "@/v2/db/schema"
+import type { assetSearchAllFilter } from "@/v2/routes/asset/search/all/schema"
 
 const MAX_FILE_SIZE = 5000
 const ACCEPTED_IMAGE_TYPES = ["image/png"]
@@ -69,25 +62,88 @@ export const UploadAssetSchema = z.object({
 export class AssetManager {
     constructor(private drizzle: DrizzleInstance) {}
 
-    /**
-     * Retrieves an asset by its ID.
-     * @param assetId - The unique ID of the asset to retrieve.
-     * @returns A promise that resolves to the retrieved asset, its game, category and tags.
-     */
     public async getAssetById(assetId: number) {
-        const foundAsset = await this.drizzle
-            .select()
-            .from(asset)
-            .leftJoin(assetTagAsset, eq(assetTagAsset.assetId, assetId))
-            .leftJoin(assetTag, eq(assetTag.id, assetTagAsset.assetTagId))
-            .leftJoin(game, eq(game.id, asset.gameId))
-            .leftJoin(
-                assetCategory,
-                eq(assetCategory.id, asset.assetCategoryId)
-            )
-            .where(eq(asset.id, assetId))
+        try {
+            return await this.drizzle.query.asset.findFirst({
+                where: (asset, { eq }) => eq(asset.id, assetId),
+                with: {
+                    assetTagAsset: {
+                        with: {
+                            assetTag: true,
+                        },
+                    },
+                    authUser: {
+                        columns: {
+                            email: false,
+                            emailVerified: false,
+                        },
+                    },
+                    game: true,
+                    assetCategory: true,
+                },
+            })
+        } catch (e) {
+            console.error(`Error getting asset by ID ${assetId}`, e)
+            throw new Error(`Error getting asset by ID ${assetId}`)
+        }
+    }
 
-        return foundAsset[0]
+    /**
+     * Retrieves a list of assets by their IDs.
+     * @param assetIds - An array of asset IDs to retrieve.
+     * @returns A promise that resolves to an array of retrieved assets.
+     * @throws An error if any of the asset IDs are invalid.
+     */
+    public async getSimilarAssets(assetId: number) {
+        try {
+            const [foundAsset] = await this.drizzle
+                .select({
+                    id: asset.id,
+                    name: asset.name,
+                    assetCategoryId: asset.assetCategoryId,
+                    gameId: asset.gameId,
+                })
+                .from(asset)
+                .where(eq(asset.id, assetId))
+
+            if (!foundAsset) return null
+
+            // this is messy:
+            // we check if assets exist w/ the same game and category
+            // if not, we check if assets exist w / the same game but different category
+            // this means theres a higher chance of similar assets ALWAYS being returned, even if they're not "70%" similar
+            // who needs machine learning when you can just do this :^)
+
+            // TODO(dromzeh): check if there's a better way to do this, and prioritize assets with similar name, asset category, and game
+            return await this.drizzle.query.asset.findMany({
+                where: (asset, { and, eq }) =>
+                    and(
+                        not(eq(asset.id, foundAsset.id)),
+                        or(
+                            and(
+                                eq(asset.gameId, foundAsset.gameId),
+                                eq(
+                                    asset.assetCategoryId,
+                                    foundAsset.assetCategoryId
+                                )
+                            ),
+                            and(
+                                eq(asset.gameId, foundAsset.gameId),
+                                not(
+                                    eq(
+                                        asset.assetCategoryId,
+                                        foundAsset.assetCategoryId
+                                    )
+                                )
+                            )
+                        )
+                    ),
+                limit: 6,
+            })
+        } catch (e) {
+            console.error(`Error getting similar assets by ID ${assetId}`, e)
+            throw new Error(`Error getting similar assets by ID ${assetId}`)
+        }
     }
 
     /**
@@ -95,9 +151,12 @@ export class AssetManager {
      * @returns A promise that resolves to an array of assets.
      */
     public async listAssets() {
-        const assets = await this.drizzle.select().from(asset)
-
-        return assets
+        try {
+            return await this.drizzle.select().from(asset)
+        } catch (e) {
+            console.error("Error listing assets", e)
+            throw new Error("Error listing assets")
+        }
     }
 
     /**
@@ -105,59 +164,63 @@ export class AssetManager {
      * @param query - An object containing optional search parameters.
      * @returns A promise that resolves to an array of matching assets.
      */
-    public async searchAssets(query: AssetSearchQuery) {
-        const { name, game, category, tag, limit } = query
+    public async searchAssets(query: assetSearchAllFilter) {
+        try {
+            const { name, game, category, tags, offset } = query
 
-        const assetLimit = limit ?? 500
-        const gameList = game ? SplitQueryByCommas(game.toLowerCase()) : null
-        const categoryList = category
-            ? SplitQueryByCommas(category.toLowerCase())
-            : null
-        const tagList = tag
-            ? SplitQueryByCommas(tag.toLowerCase())
-            : ["official"]
-        const searchQuery = name ?? null
+            const gameList = game
+                ? SplitQueryByCommas(game.toLowerCase())
+                : null
+            const categoryList = category
+                ? SplitQueryByCommas(category.toLowerCase())
+                : null
+            const searchQuery = name ?? null
+            const tagList = tags ? SplitQueryByCommas(tags.toLowerCase()) : null
 
-        const assetTagResponse = this.drizzle.$with("sq").as(
-            this.drizzle
-                .select({
-                    assetId: assetTagAsset.assetId,
-                    tags: sql<string[] | null>`array_agg(${assetTag})`.as(
-                        "tags"
+            console.log(query)
+            console.log(categoryList, gameList, searchQuery)
+
+            const assets = await this.drizzle.query.asset.findMany({
+                where: (asset, { and, or, like, eq, sql }) =>
+                    and(
+                        tagList && tagList.length > 0
+                            ? or(
+                                  ...tagList.map(
+                                      (t) =>
+                                          sql`EXISTS (SELECT 1 FROM assetTagAsset WHERE assetTagAsset.asset_id = ${asset.id} AND assetTagAsset.asset_tag_id = ${t})`
+                                  )
+                              )
+                            : undefined,
+                        searchQuery
+                            ? like(asset.name, `%${searchQuery}%`)
+                            : undefined,
+                        gameList
+                            ? or(...gameList.map((g) => eq(asset.gameId, g)))
+                            : undefined,
+                        categoryList
+                            ? or(
+                                  ...categoryList.map((c) =>
+                                      eq(asset.assetCategoryId, c)
+                                  )
+                              )
+                            : undefined,
+                        eq(asset.status, "approved")
                     ),
-                })
-                .from(assetTagAsset)
-                .leftJoin(assetTag, eq(assetTag.id, assetTagAsset.assetTagId))
-                .where(or(...tagList.map((tag) => eq(assetTag.name, tag))))
-                .groupBy(assetTagAsset.assetId)
-        )
-
-        const foundAssets = await this.drizzle
-            .with(assetTagResponse)
-            .select()
-            .from(asset)
-            .innerJoin(assetTagResponse, eq(assetTagResponse.assetId, asset.id))
-            .where(
-                and(
-                    searchQuery && like(asset.name, `%${searchQuery}%`),
-                    gameList &&
-                        or(
-                            ...gameList.map((game) =>
-                                eq(asset.assetCategoryId, game)
-                            )
-                        ),
-                    categoryList &&
-                        or(
-                            ...categoryList.map((category) =>
-                                eq(asset.assetCategoryId, category)
-                            )
-                        )
-                )
-            )
-            .groupBy(asset.id)
-            .limit(assetLimit)
-
-        return foundAssets
+                limit: 100,
+                offset: offset ? parseInt(offset) : 0,
+                with: {
+                    assetTagAsset: {
+                        with: {
+                            assetTag: true,
+                        },
+                    },
+                },
+            })
+            return assets
+        } catch (e) {
+            console.error("Error searching assets", e)
+            throw new Error("Error searching assets")
+        }
     }
 
     /**
@@ -170,67 +233,78 @@ export class AssetManager {
      */
     public async createAsset(
         userId: string,
+        userNickname: string,
         newAsset: z.infer<typeof UploadAssetSchema>,
         bucket: R2Bucket,
         file: File
-    ) {
-        const { key } = await bucket.put(
-            `/assets/${newAsset.gameId}/${newAsset.assetCategoryId}/${newAsset.name}.${newAsset.extension}`,
-            file
-        )
+    ): Promise<NewAsset> {
+        try {
+            const { key } = await bucket.put(
+                `/assets/${newAsset.gameId}/${newAsset.assetCategoryId}/${newAsset.name}.${newAsset.extension}`,
+                file
+            )
 
-        await this.drizzle.transaction(async (trx) => {
-            const createdAsset = await trx
-                .insert(asset)
-                .values({
-                    name: newAsset.name,
-                    extension: newAsset.extension,
-                    gameId: newAsset.gameId,
-                    assetCategoryId: newAsset.assetCategoryId,
-                    url: key,
-                    uploadedById: userId,
-                    status: "pending",
-                    fileSize: newAsset.size,
-                    width: newAsset.width,
-                    height: newAsset.height,
-                })
-                .returning({
-                    assetId: asset.id,
-                })
+            const returnedNewAsset: Asset = await this.drizzle.transaction(
+                async (trx) => {
+                    const [createdAsset] = await trx
+                        .insert(asset)
+                        .values({
+                            name: newAsset.name,
+                            extension: newAsset.extension,
+                            gameId: newAsset.gameId,
+                            assetCategoryId: newAsset.assetCategoryId,
+                            url: key,
+                            uploadedByName: userNickname,
+                            uploadedById: userId,
+                            status: "pending",
+                            fileSize: newAsset.size,
+                            width: newAsset.width,
+                            height: newAsset.height,
+                        })
+                        .returning()
 
-            await trx
-                .update(game)
-                .set({
-                    assetCount: sql<number>`asset_count + 1`,
-                })
-                .where(eq(game.id, newAsset.gameId))
+                    await trx
+                        .update(game)
+                        .set({
+                            assetCount: sql<number>`asset_count + 1`,
+                        })
+                        .where(eq(game.id, newAsset.gameId))
 
-            await trx
-                .update(assetCategory)
-                .set({
-                    assetCount: sql<number>`asset_count + 1`,
-                })
-                .where(eq(assetCategory.id, newAsset.assetCategoryId))
+                    await trx
+                        .update(assetCategory)
+                        .set({
+                            assetCount: sql<number>`asset_count + 1`,
+                        })
+                        .where(eq(assetCategory.id, newAsset.assetCategoryId))
 
-            const tags = newAsset.tags ? SplitQueryByCommas(newAsset.tags) : []
+                    const tags = newAsset.tags
+                        ? SplitQueryByCommas(newAsset.tags)
+                        : []
 
-            if (tags.length === 0) return createdAsset
+                    if (tags.length === 0) return createdAsset
 
-            for (const tag of tags) {
-                const foundTag = await trx
-                    .select()
-                    .from(assetTag)
-                    .where(eq(assetTag.name, tag))
+                    for (const tag of tags) {
+                        const foundTag = await trx
+                            .select()
+                            .from(assetTag)
+                            .where(eq(assetTag.name, tag))
 
-                if (foundTag.length === 0) {
-                    await trx.insert(assetTagAsset).values({
-                        assetId: createdAsset[0].assetId,
-                        assetTagId: tag,
-                    })
+                        if (foundTag.length === 0) {
+                            await trx.insert(assetTagAsset).values({
+                                assetId: createdAsset[0].assetId,
+                                assetTagId: tag,
+                            })
+                        }
+                    }
+
+                    return createdAsset
                 }
-            }
+            )
 
-            return createdAsset
-        })
+            return returnedNewAsset
+        } catch (e) {
+            console.error("Error creating asset", e)
+            throw new Error("Error creating asset")
+        }
     }
 }

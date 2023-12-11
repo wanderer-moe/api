@@ -1,6 +1,7 @@
 import { DrizzleInstance } from "@/v2/db/turso"
 import { gameAssetCategory } from "@/v2/db/schema"
-import { eq, and } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
+import type { GameAssetCategory } from "@/v2/db/schema"
 
 /**
  * Manages operations related to game asset categories.
@@ -17,15 +18,26 @@ export class GameAssetCategoryManager {
     public async linkAssetCategoryToGame(
         assetCategoryId: string,
         gameId: string
-    ) {
-        const createdGameAssetCategory = await this.drizzle
-            .insert(gameAssetCategory)
-            .values({
-                assetCategoryId,
-                gameId,
-            })
+    ): Promise<GameAssetCategory> {
+        try {
+            const [createdGameAssetCategory] = await this.drizzle
+                .insert(gameAssetCategory)
+                .values({
+                    assetCategoryId,
+                    gameId,
+                })
+                .returning()
 
-        return createdGameAssetCategory
+            return createdGameAssetCategory
+        } catch (e) {
+            console.error(
+                `Error linking asset category ${assetCategoryId} to game ${gameId}`,
+                e
+            )
+            throw new Error(
+                `Error linking asset category ${assetCategoryId} to game ${gameId}`
+            )
+        }
     }
 
     /**
@@ -37,17 +49,27 @@ export class GameAssetCategoryManager {
     public async unlinkAssetCategoryFromGame(
         assetCategoryId: string,
         gameId: string
-    ) {
-        const deletedGameAssetCategory = await this.drizzle
-            .delete(gameAssetCategory)
-            .where(
-                and(
-                    eq(gameAssetCategory.assetCategoryId, assetCategoryId),
-                    eq(gameAssetCategory.gameId, gameId)
+    ): Promise<GameAssetCategory> {
+        try {
+            const [deletedGameAssetCategory] = await this.drizzle
+                .delete(gameAssetCategory)
+                .where(
+                    and(
+                        eq(gameAssetCategory.assetCategoryId, assetCategoryId),
+                        eq(gameAssetCategory.gameId, gameId)
+                    )
                 )
-            )
-            .returning()
+                .returning()
 
-        return deletedGameAssetCategory[0]
+            return deletedGameAssetCategory
+        } catch (e) {
+            console.error(
+                `Error unlinking asset category ${assetCategoryId} from game ${gameId}`,
+                e
+            )
+            throw new Error(
+                `Error unlinking asset category ${assetCategoryId} from game ${gameId}`
+            )
+        }
     }
 }

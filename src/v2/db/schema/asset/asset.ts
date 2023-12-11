@@ -8,10 +8,11 @@ import {
     index,
 } from "drizzle-orm/sqlite-core"
 import { authUser } from "../user/user"
-import { assetCategory } from "./asset-categories"
+import { assetCategory } from "../categories/asset-categories"
 import { game } from "../game/game"
-import { assetTagAsset } from "./asset-tags"
+import { assetTagAsset } from "../tags/asset-tags"
 import { atlasToAsset } from "./asset-atlas"
+import { assetLikes } from "./asset-likes"
 
 /*
 NOTE: Assets have a lot of relations, and can be quite complex in some cases.
@@ -43,8 +44,14 @@ export const asset = sqliteTable(
                 onDelete: "cascade",
             })
             .notNull(),
-        uploadedById: text("uploaded_by")
+        uploadedById: text("uploaded_by_id")
             .references(() => authUser.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            })
+            .notNull(),
+        uploadedByName: text("uploaded_by_name")
+            .references(() => authUser.username, {
                 onUpdate: "cascade",
                 onDelete: "cascade",
             })
@@ -59,7 +66,12 @@ export const asset = sqliteTable(
             .$defaultFn(() => {
                 return new Date().toISOString()
             }),
-        assetIsOptimized: integer("asset_is_optimized").default(0).notNull(),
+        assetIsOptimized: integer("asset_is_optimized", { mode: "boolean" })
+            .default(false)
+            .notNull(),
+        assetIsSuggestive: integer("asset_is_suggestive", { mode: "boolean" })
+            .default(false)
+            .notNull(),
         viewCount: integer("view_count").default(0).notNull(),
         downloadCount: integer("download_count").default(0).notNull(),
         fileSize: integer("file_size").default(0).notNull(),
@@ -87,16 +99,20 @@ export type NewAsset = typeof asset.$inferInsert
 export const assetRelations = relations(asset, ({ one, many }) => ({
     assetTagAsset: many(assetTagAsset),
     atlasToAsset: many(atlasToAsset),
+    assetLikes: many(assetLikes),
     authUser: one(authUser, {
-        fields: [asset.uploadedById],
-        references: [authUser.id],
+        fields: [asset.uploadedById, asset.uploadedByName],
+        references: [authUser.id, authUser.username],
+        relationName: "asset_auth_user",
     }),
     game: one(game, {
         fields: [asset.gameId],
         references: [game.id],
+        relationName: "asset_game",
     }),
     assetCategory: one(assetCategory, {
         fields: [asset.assetCategoryId],
         references: [assetCategory.id],
+        relationName: "asset_asset_category",
     }),
 }))
