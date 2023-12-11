@@ -5,6 +5,7 @@ import BaseRoutes from "@/v2/routes/handler"
 import { OpenAPIConfig } from "./openapi/config"
 
 import { csrfValidation } from "./v2/middleware/csrf"
+import { LogTime } from "./v2/middleware/time-taken"
 
 const app = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
@@ -18,9 +19,22 @@ app.get(
 )
 
 app.use("*", csrfValidation)
+app.use("*", LogTime)
 
 app.use("*", prettyJSON())
 
 app.doc("/openapi", OpenAPIConfig)
+
+app.onError((err, ctx) => {
+    console.error(err)
+    // TODO: error logging
+    return ctx.json(
+        {
+            success: false,
+            error: "Internal Server Error",
+        },
+        500
+    )
+})
 
 export default app

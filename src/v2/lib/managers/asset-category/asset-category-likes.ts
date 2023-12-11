@@ -1,5 +1,5 @@
 import { DrizzleInstance } from "@/v2/db/turso"
-import { eq, and } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 import { assetCategoryLikes } from "@/v2/db/schema/categories/asset-categories-likes"
 
 export class AssetCategoryLikesManager {

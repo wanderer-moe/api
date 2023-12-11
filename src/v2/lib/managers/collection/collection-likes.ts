@@ -1,5 +1,5 @@
 import { DrizzleInstance } from "@/v2/db/turso"
-import { eq, and } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 import { userCollectionLikes } from "@/v2/db/schema/collections/user-collection-likes"
 
 export class UserCollectionLikesManager {

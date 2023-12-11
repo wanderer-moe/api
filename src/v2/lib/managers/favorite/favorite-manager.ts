@@ -1,11 +1,11 @@
 import { userFavorite, userFavoriteAsset } from "@/v2/db/schema"
-import { eq, and } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 import { DrizzleInstance } from "@/v2/db/turso"
 import type {
-    UserFavorite,
-    UserFavoriteAsset,
     NewUserFavorite,
     NewUserFavoriteAsset,
+    UserFavorite,
+    UserFavoriteAsset,
 } from "@/v2/db/schema"
 
 /**

@@ -15,6 +15,7 @@ declare global {
         DISCORD_CLIENT_SECRET: string
         DISCORD_REDIRECT_URI: string
         RESEND_API_KEY: string
+        AXIOM_TOKEN: string
     }
 
     type Variables = {

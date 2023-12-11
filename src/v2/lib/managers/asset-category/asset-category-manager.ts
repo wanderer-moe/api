@@ -1,6 +1,6 @@
 import { DrizzleInstance } from "@/v2/db/turso"
 import { assetCategory } from "@/v2/db/schema"
-import { eq, or, like } from "drizzle-orm"
+import { eq, like, or } from "drizzle-orm"
 import { z } from "zod"
 import type { AssetCategory, NewAssetCategory } from "@/v2/db/schema"
 

@@ -1,6 +1,6 @@
 import { tableNames } from "@/v2/db/drizzle"
 import { relations } from "drizzle-orm"
-import { sqliteTable, text, index } from "drizzle-orm/sqlite-core"
+import { index, sqliteTable, text } from "drizzle-orm/sqlite-core"
 import { authUser } from "../user/user"
 import { assetTag } from "./asset-tags"
 

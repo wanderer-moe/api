@@ -3,18 +3,18 @@ import { createClient } from "@libsql/client"
 import "dotenv/config"
 import {
     asset,
-    game,
-    gameAssetCategory,
     assetCategory,
     assetTag,
     assetTagAsset,
+    authCredentials,
     authUser,
-    userFollowing,
+    game,
+    gameAssetCategory,
     userCollection,
     userCollectionAsset,
-    userFavoriteAsset,
     userFavorite,
-    authCredentials,
+    userFavoriteAsset,
+    userFollowing,
 } from "@/v2/db/schema"
 import { generateID } from "@/v2/lib/oslo"
 import { Scrypt } from "lucia"

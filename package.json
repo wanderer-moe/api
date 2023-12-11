@@ -7,6 +7,7 @@
         "wrangler:dev:remote": "wrangler dev --remote",
         "wrangler:publish": "wrangler publish --minify",
         "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
         "typecheck": "tsc --noEmit",
         "prettier:format": "prettier --write .",
         "prettier:check": "prettier --check .",

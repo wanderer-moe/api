@@ -1,6 +1,6 @@
 import { DrizzleInstance } from "@/v2/db/turso"
 import { gameAssetCategory } from "@/v2/db/schema"
-import { eq, and } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 import type { GameAssetCategory } from "@/v2/db/schema"
 
 /**

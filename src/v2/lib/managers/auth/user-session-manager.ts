@@ -1,6 +1,6 @@
 import { luciaAuth } from "../../auth/lucia"
 import { getConnection } from "@/v2/db/turso"
-import type { User, Session } from "lucia"
+import type { Session, User } from "lucia"
 import { getCookie } from "hono/cookie"
 
 export class AuthSessionManager {

@@ -1,4 +1,4 @@
-import { Resend, type EmailData } from "@/v2/lib/resend/wrapper"
+import { type EmailData, Resend } from "@/v2/lib/resend/wrapper"
 import type { Context } from "hono"
 
 const emailFrom = "Test <test@test.wanderer.moe>"

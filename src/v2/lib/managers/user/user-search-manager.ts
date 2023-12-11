@@ -1,6 +1,6 @@
 import { DrizzleInstance } from "@/v2/db/turso"
 import { authUser } from "@/v2/db/schema"
-import { eq, or, like } from "drizzle-orm"
+import { eq, like, or } from "drizzle-orm"
 import type { User } from "@/v2/db/schema"
 
 /**

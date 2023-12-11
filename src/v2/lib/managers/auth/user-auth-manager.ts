@@ -12,6 +12,10 @@ const authUserInsertSchema = createInsertSchema(authUser).pick({
     email: true,
 })
 
+const USER_AGENT = "user-agent"
+const CONNECTING_IP = "cf-connecting-ip"
+const IP_COUNTRY = "cf-ipcountry"
+
 export class UserAuthenticationManager {
     private lucia: ReturnType<typeof luciaAuth>
     private drizzle: ReturnType<typeof getConnection>["drizzle"]
@@ -37,6 +41,16 @@ export class UserAuthenticationManager {
         return existingUser ? true : false
     }
 
+    private async createSessionAndCookie(userId: string) {
+        const newSession = await this.lucia.createSession(userId, {
+            user_agent: this.ctx.req.header(USER_AGENT) || "",
+            ip_address: this.ctx.req.header(CONNECTING_IP) || "",
+            country_code: this.ctx.req.header(IP_COUNTRY) || "",
+        })
+
+        return this.lucia.createSessionCookie(newSession.id)
+    }
+
     public async createAccount(
         attributes: Required<z.infer<typeof authUserInsertSchema>>,
         password?: string
@@ -47,9 +61,10 @@ export class UserAuthenticationManager {
             return null
         }
 
-        const createUserTransaction = await this.drizzle.transaction(
-            async (db) => {
-                try {
+        let newUser: typeof authUser.$inferSelect
+        try {
+            const createUserTransaction = await this.drizzle.transaction(
+                async (db) => {
                     const [newUser] = await db
                         .insert(authUser)
                         .values({
@@ -68,26 +83,14 @@ export class UserAuthenticationManager {
                     }
 
                     return newUser
-                } catch (e) {
-                    await db.rollback()
                 }
-            }
-        )
+            )
+            newUser = createUserTransaction
+        } catch (e) {
+            throw new Error("Failed to create user")
+        }
 
-        const newSession = await this.lucia.createSession(
-            createUserTransaction.id,
-            {
-                user_agent: this.ctx.req.header("user-agent") || "",
-                ip_address: this.ctx.req.header("cf-connecting-ip") || "",
-                country_code: this.ctx.req.header("cf-ipcountry") || "",
-            }
-        )
-
-        const newSessionCookie = await this.lucia.createSessionCookie(
-            newSession.id
-        )
-
-        return newSessionCookie
+        return this.createSessionAndCookie(newUser.id)
     }
 
     public async loginViaPassword(email: string, password: string) {
@@ -118,16 +121,6 @@ export class UserAuthenticationManager {
             return null
         }
 
-        const newSession = await this.lucia.createSession(foundUser.id, {
-            user_agent: this.ctx.req.header("user-agent") || "",
-            ip_address: this.ctx.req.header("cf-connecting-ip") || "",
-            country_code: this.ctx.req.header("cf-ipcountry") || "",
-        })
-
-        const newSessionCookie = await this.lucia.createSessionCookie(
-            newSession.id
-        )
-
-        return newSessionCookie
+        return this.createSessionAndCookie(foundUser.id)
     }
 }

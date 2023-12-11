@@ -1,6 +1,6 @@
 import { DrizzleInstance } from "@/v2/db/turso"
 import { game } from "@/v2/db/schema"
-import { eq, or, like } from "drizzle-orm"
+import { eq, like, or } from "drizzle-orm"
 import type { Game } from "@/v2/db/schema"
 
 /**
