@@ -7,6 +7,7 @@ import {
     // uniqueIndex,
     index,
 } from "drizzle-orm/sqlite-core"
+import { generateID } from "@/v2/lib/oslo"
 import { userFollowing } from "./user-following"
 import { asset } from "../asset/asset"
 import { userFavorite } from "./user-favorites"
@@ -31,7 +32,12 @@ NOTE: Very basic user information
 export const authUser = sqliteTable(
     tableNames.authUser,
     {
-        id: text("id").unique().notNull(),
+        id: text("id")
+            .unique()
+            .notNull()
+            .$defaultFn(() => {
+                return generateID()
+            }),
         avatarUrl: text("avatar_url"),
         bannerUrl: text("banner_url"),
         displayName: text("display_name"),
@@ -77,7 +83,12 @@ export type NewUser = typeof authUser.$inferInsert
 export const authCredentials = sqliteTable(
     tableNames.authCredentials,
     {
-        id: text("id").unique().notNull(),
+        id: text("id")
+            .unique()
+            .notNull()
+            .$defaultFn(() => {
+                return generateID(20)
+            }),
         userId: text("user_id")
             .notNull()
             .references(() => authUser.id, {

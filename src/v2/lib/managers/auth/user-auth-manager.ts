@@ -4,7 +4,6 @@ import { getConnection } from "@/v2/db/turso"
 import { authCredentials, authUser } from "@/v2/db/schema"
 import { createInsertSchema } from "drizzle-zod"
 import { z } from "zod"
-import { generateID } from "../../oslo"
 import { eq, or } from "drizzle-orm"
 
 const authUserInsertSchema = createInsertSchema(authUser).pick({
@@ -68,7 +67,6 @@ export class UserAuthenticationManager {
                     const [newUser] = await db
                         .insert(authUser)
                         .values({
-                            id: generateID(),
                             username: attributes.username,
                             email: attributes.email,
                         })
@@ -76,7 +74,6 @@ export class UserAuthenticationManager {
 
                     if (password) {
                         await db.insert(authCredentials).values({
-                            id: generateID(20),
                             userId: newUser.id,
                             hashedPassword: await new Scrypt().hash(password),
                         })

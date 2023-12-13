@@ -16,7 +16,6 @@ import {
     userFavoriteAsset,
     userFollowing,
 } from "@/v2/db/schema"
-import { generateID } from "@/v2/lib/oslo"
 import { Scrypt } from "lucia"
 
 const { ENVIRONMENT } = process.env
@@ -47,7 +46,6 @@ async function main() {
         .insert(authUser)
         .values([
             {
-                id: generateID(),
                 username: "adminuser",
                 email: "admin@wanderer.moe",
                 emailVerified: 1,
@@ -58,7 +56,6 @@ async function main() {
                 selfAssignableRoleFlags: 0,
             },
             {
-                id: generateID(),
                 username: "testuser2",
                 email: "testuser2@dromzeh.dev",
                 emailVerified: 1,
@@ -69,7 +66,6 @@ async function main() {
                 selfAssignableRoleFlags: 0,
             },
             {
-                id: generateID(),
                 username: "testuser3",
                 email: "testuser3@wanderer.moe",
                 emailVerified: 1,
@@ -91,7 +87,6 @@ async function main() {
     const newCredentials = await db
         .insert(authCredentials)
         .values({
-            id: generateID(20),
             userId: newUsers[0].id,
             hashedPassword: await new Scrypt().hash(devAdminPassword),
         })
