@@ -47,10 +47,17 @@ export const authUser = sqliteTable(
             .$defaultFn(() => {
                 return new Date().toISOString()
             }),
-        roleFlags: integer("role_flags").default(1).notNull(),
+        isSupporter: integer("is_supporter", { mode: "boolean" })
+            .default(false)
+            .notNull(),
+        supporterExpiresAt: text("supporter_expires_at"),
+        isBanned: integer("is_banned", { mode: "boolean" })
+            .default(false)
+            .notNull(),
         isContributor: integer("is_contributor", { mode: "boolean" })
             .default(false)
             .notNull(),
+        roleFlags: integer("role_flags").default(1).notNull(),
         selfAssignableRoleFlags: integer("self_assignable_role_flags")
             .default(0)
             .notNull(),
