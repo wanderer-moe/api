@@ -10,9 +10,4 @@ binding = 'FILES_BUCKET'
 bucket_name = 'files'
 preview_bucket_name = 'files'
 
-[[kv_namespaces]]
-binding = "KV_SESSION_STORAGE"
-preview_id = "a5ee030621cf4dfda60e0ad81bfd2f3b"
-id = "a5ee030621cf4dfda60e0ad81bfd2f3b"
-
 [vars]

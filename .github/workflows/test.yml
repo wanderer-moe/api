@@ -37,8 +37,5 @@ jobs:
             - name: Install dependencies
               run: pnpm install
 
-            - name: Migrate Database
-              run: pnpm drizzle:migrate
-
-            - name: Seed Database
-              run: pnpm drizzle:seed
+            - name: Initialize Drizzle
+              run: pnpm drizzle:dev:init
