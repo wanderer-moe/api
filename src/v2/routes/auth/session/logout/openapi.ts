@@ -1,13 +1,13 @@
 import { createRoute } from "@hono/zod-openapi"
 
-export const authAllCurrentSessions = createRoute({
+export const authLogoutRoute = createRoute({
     path: "/",
     method: "get",
-    description: "Get all current sessions.",
+    description: "Logout current session.",
     tags: ["Auth"],
     responses: {
         200: {
-            description: "All current sessions are returned",
+            description: "Logout successful.",
         },
         401: {
             description: "Unauthorized",

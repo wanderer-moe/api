@@ -7,7 +7,10 @@ export const authValidationRoute = createRoute({
     tags: ["Auth"],
     responses: {
         200: {
-            description: "User information or null is returned.",
+            description: "User information is returned.",
+        },
+        401: {
+            description: "Unauthorized",
         },
         500: {
             description: "Internal server error.",

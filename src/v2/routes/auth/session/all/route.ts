@@ -7,6 +7,18 @@ const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 handler.openapi(authAllCurrentSessions, async (ctx) => {
     const authSessionManager = new AuthSessionManager(ctx)
 
+    const { user } = await authSessionManager.validateSession()
+
+    if (!user) {
+        return ctx.json(
+            {
+                success: false,
+                message: "Unauthorized",
+            },
+            401
+        )
+    }
+
     const sessions = await authSessionManager.getAllSessions()
 
     return ctx.json(
