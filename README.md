@@ -14,7 +14,7 @@ Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — us
 
 ### Turso
 
-We use Turso as our database. You will need to install the [Turso CLI](https://docs.turso.tech/reference/turso-cli#installation) then run `turso dev` to start a local database. You can persist data by passing `--db-file <path>`.
+We use Turso (libsql, fork of SQLite) as our database. You will need to install the [Turso CLI](https://docs.turso.tech/reference/turso-cli#installation) then run `turso dev` to start a local database. You can persist data by passing `--db-file <path>`.
 
 The Turso CLI can be ran on Windows using WSL.
 

@@ -18,6 +18,7 @@ import { passwordResetToken } from "./user-attributes"
 import { emailVerificationToken } from "./user-attributes"
 import { atlas } from "../asset/asset-atlas"
 import { userCollectionLikes } from "../collections/user-collection-likes"
+import { userCollectionCollaborators } from "../collections/user-collections-collaborators"
 import { assetLikes } from "../asset/asset-likes"
 import { gameLikes } from "../game/game-likes"
 import { assetTagLikes } from "../tags/asset-tags-likes"
@@ -161,6 +162,7 @@ export const usersRelations = relations(authUser, ({ one, many }) => ({
     gameLikes: many(gameLikes),
     assetTagLikes: many(assetTagLikes),
     assetCategoryLikes: many(assetCategoryLikes),
+    userCollectionCollaborators: many(userCollectionCollaborators),
 }))
 
 export const authCredentialsRelations = relations(

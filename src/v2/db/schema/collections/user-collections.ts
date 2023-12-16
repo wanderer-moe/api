@@ -11,6 +11,8 @@ import { authUser } from "../user/user"
 import { asset } from "../asset/asset"
 import { generateID } from "@/v2/lib/oslo"
 import { userCollectionLikes } from "./user-collection-likes"
+import { userCollectionCollaborators } from "./user-collections-collaborators"
+
 /*
 NOTE: this file is where users store their collections of assets.
 - UserCollection is the collection itself, which has a name, description, and whether it's public or not.
@@ -101,7 +103,8 @@ export const collectionRelations = relations(
             relationName: "collection_auth_user",
         }),
         assets: many(userCollectionAsset),
-        collectionNetworking: many(userCollectionLikes),
+        userCollectionLikes: many(userCollectionLikes),
+        userCollectionCollaborators: many(userCollectionCollaborators),
     })
 )
 
