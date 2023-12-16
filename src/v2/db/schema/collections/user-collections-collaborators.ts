@@ -15,7 +15,7 @@ export const userCollectionCollaborators = sqliteTable(
         collectionId: text("collection_id")
             .notNull()
             .references(() => userCollection.id),
-        collaboratorId: text("liked_by_id")
+        collaboratorId: text("collaborator_id")
             .notNull()
             .references(() => authUser.id),
         createdAt: text("createdAt")
