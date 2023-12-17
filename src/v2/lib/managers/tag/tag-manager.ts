@@ -84,7 +84,6 @@ export class TagManager {
                     id: newTag.name,
                     name: newTag.name,
                     formattedName: newTag.name,
-                    assetCount: 0,
                     lastUpdated: new Date().toISOString(),
                 })
                 .returning()

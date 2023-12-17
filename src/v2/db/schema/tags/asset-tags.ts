@@ -22,7 +22,6 @@ export const assetTag = sqliteTable(
         id: text("id").unique().notNull(),
         name: text("name").notNull().unique(),
         formattedName: text("formatted_name").notNull(),
-        assetCount: integer("asset_count").default(0).notNull(),
         lastUpdated: text("last_updated").notNull(),
     },
     (assetTag) => {

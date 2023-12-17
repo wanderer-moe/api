@@ -22,7 +22,6 @@ export const game = sqliteTable(
         id: text("id").unique().notNull(),
         name: text("name").notNull().unique(), // e.g genshin-impact, honkai-impact-3rd
         formattedName: text("formatted_name").notNull(), // e.g Genshin Impact, Honkai Impact 3rd
-        assetCount: integer("asset_count").default(0),
         possibleSuggestiveContent: integer("possible_suggestive_content")
             .default(0)
             .notNull(),

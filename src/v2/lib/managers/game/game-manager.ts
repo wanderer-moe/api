@@ -28,6 +28,20 @@ export class GameManager {
         }
     }
 
+    public async doesGameExist(gameId: string): Promise<boolean> {
+        try {
+            const [foundGame] = await this.drizzle
+                .select({ id: game.id })
+                .from(game)
+                .where(eq(game.id, gameId))
+
+            return foundGame ? true : false
+        } catch (e) {
+            console.error(`Error checking if game exists ${gameId}`, e)
+            throw new Error(`Error checking if game exists ${gameId}`)
+        }
+    }
+
     /**
      * Retrieves a game by its name.
      * @param gameName - The name of the game to retrieve.
@@ -80,6 +94,64 @@ export class GameManager {
         } catch (e) {
             console.error("Error listing games", e)
             throw new Error("Error listing games")
+        }
+    }
+
+    public async createGame(
+        name: string,
+        formattedName: string,
+        possibleSuggestiveContent: number
+    ): Promise<Game> {
+        try {
+            const [newGame] = await this.drizzle
+                .insert(game)
+                .values({
+                    id: name,
+                    formattedName,
+                    name,
+                    possibleSuggestiveContent,
+                    lastUpdated: new Date().toISOString(),
+                })
+                .returning()
+
+            return newGame
+        } catch (e) {
+            console.error("Error creating game", e)
+            throw new Error("Error creating game")
+        }
+    }
+
+    public async deleteGame(gameId: string): Promise<void> {
+        try {
+            await this.drizzle.delete(game).where(eq(game.id, gameId))
+        } catch (e) {
+            console.error(`Error deleting game ${gameId}`, e)
+            throw new Error(`Error deleting game ${gameId}`)
+        }
+    }
+
+    public async updateGame(
+        gameId: string,
+        name: string,
+        formattedName: string,
+        possibleSuggestiveContent: number
+    ): Promise<Game> {
+        try {
+            const [updatedGame] = await this.drizzle
+                .update(game)
+                .set({
+                    name,
+                    formattedName,
+                    possibleSuggestiveContent,
+                    lastUpdated: new Date().toISOString(),
+                })
+                .where(eq(game.id, gameId))
+                .returning()
+
+            return updatedGame
+        } catch (e) {
+            console.error(`Error updating game ${gameId}`, e)
+            throw new Error(`Error updating game ${gameId}`)
         }
     }
 }

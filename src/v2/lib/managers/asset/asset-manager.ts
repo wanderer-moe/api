@@ -1,12 +1,6 @@
 import { DrizzleInstance } from "@/v2/db/turso"
-import {
-    asset,
-    assetCategory,
-    assetTag,
-    assetTagAsset,
-    game,
-} from "@/v2/db/schema"
-import { eq, not, or, sql } from "drizzle-orm"
+import { asset, assetTag, assetTagAsset } from "@/v2/db/schema"
+import { eq, not, or } from "drizzle-orm"
 import { R2Bucket } from "@cloudflare/workers-types"
 import { SplitQueryByCommas } from "../../helpers/split-query-by-commas"
 import { z } from "zod"
@@ -262,20 +256,6 @@ export class AssetManager {
                             height: newAsset.height,
                         })
                         .returning()
-
-                    await trx
-                        .update(game)
-                        .set({
-                            assetCount: sql<number>`asset_count + 1`,
-                        })
-                        .where(eq(game.id, newAsset.gameId))
-
-                    await trx
-                        .update(assetCategory)
-                        .set({
-                            assetCount: sql<number>`asset_count + 1`,
-                        })
-                        .where(eq(assetCategory.id, newAsset.assetCategoryId))
 
                     const tags = newAsset.tags
                         ? SplitQueryByCommas(newAsset.tags)

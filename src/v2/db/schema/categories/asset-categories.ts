@@ -3,7 +3,6 @@ import { relations } from "drizzle-orm"
 import {
     sqliteTable,
     text,
-    integer,
     // uniqueIndex,
     index,
 } from "drizzle-orm/sqlite-core"
@@ -17,7 +16,6 @@ export const assetCategory = sqliteTable(
         id: text("id").unique().notNull(),
         name: text("name").unique().notNull(), // e.g tcg-sheets, splash-art
         formattedName: text("formatted_name").notNull(), // e.g TCG Sheets, Splash Art
-        assetCount: integer("asset_count").default(0).notNull(),
         lastUpdated: text("last_updated").notNull(),
     },
     (assetCategory) => {

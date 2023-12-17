@@ -126,21 +126,18 @@ async function main() {
                 id: "official",
                 name: "official",
                 formattedName: "Official",
-                assetCount: 1,
                 lastUpdated: new Date().toISOString(),
             },
             {
                 id: "1.0",
                 name: "1.0",
                 formattedName: "1.0",
-                assetCount: 1,
                 lastUpdated: new Date().toISOString(),
             },
             {
                 id: "fanmade",
                 name: "fanmade",
                 formattedName: "Fanmade",
-                assetCount: 0,
                 lastUpdated: new Date().toISOString(),
             },
         ])
@@ -155,14 +152,12 @@ async function main() {
                 id: "genshin-impact",
                 name: "genshin-impact",
                 formattedName: "Genshin Impact",
-                assetCount: 1,
                 lastUpdated: new Date().toISOString(),
             },
             {
                 id: "honkai-impact-3rd",
                 name: "honkai-impact-3rd",
                 formattedName: "Honkai Impact: 3rd",
-                assetCount: 0,
                 lastUpdated: new Date().toISOString(),
             },
         ])
@@ -177,14 +172,12 @@ async function main() {
                 id: "character-sheets",
                 name: "character-sheets",
                 formattedName: "Character Sheets",
-                assetCount: 1,
                 lastUpdated: new Date().toISOString(),
             },
             {
                 id: "splash-art",
                 name: "splash-art",
                 formattedName: "Splash Art",
-                assetCount: 0,
                 lastUpdated: new Date().toISOString(),
             },
         ])

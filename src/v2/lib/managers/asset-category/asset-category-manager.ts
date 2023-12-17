@@ -97,7 +97,6 @@ export class AssetCategoryManager {
                     id: newAssetCategory.name,
                     name: newAssetCategory.name,
                     formattedName: newAssetCategory.name,
-                    assetCount: 0,
                     lastUpdated: new Date().toISOString(),
                 })
                 .returning()
