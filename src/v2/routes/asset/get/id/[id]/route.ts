@@ -28,7 +28,7 @@ handler.openapi(getAssetByIdRoute, async (ctx) => {
                 success: true,
                 error: "Asset not found",
             },
-            200
+            400
         )
     }
 
