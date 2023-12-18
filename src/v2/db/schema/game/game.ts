@@ -10,7 +10,6 @@ import {
 import { asset } from "../asset/asset"
 import { gameAssetCategory } from "../categories/asset-categories"
 import { gameLikes } from "./game-likes"
-import { generateID } from "@/v2/lib/oslo"
 
 /*
 NOTE: Game relation is easy to understand and self-explanatory.
@@ -20,12 +19,7 @@ NOTE: Game relation is easy to understand and self-explanatory.
 export const game = sqliteTable(
     tableNames.game,
     {
-        id: text("id")
-            .unique()
-            .notNull()
-            .$defaultFn(() => {
-                return generateID()
-            }),
+        id: text("id").unique().notNull(),
         name: text("name").notNull().unique(), // e.g genshin-impact, honkai-impact-3rd
         formattedName: text("formatted_name").notNull(), // e.g Genshin Impact, Honkai Impact 3rd
         possibleSuggestiveContent: integer("possible_suggestive_content")

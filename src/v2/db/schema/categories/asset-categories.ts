@@ -13,7 +13,7 @@ import { assetCategoryLikes } from "./asset-categories-likes"
 export const assetCategory = sqliteTable(
     tableNames.assetCategory,
     {
-        id: text("id").unique().notNull(),
+        id: text("id").unique().notNull(), // e.g tcg-sheets, splash-art
         name: text("name").unique().notNull(), // e.g tcg-sheets, splash-art
         formattedName: text("formatted_name").notNull(), // e.g TCG Sheets, Splash Art
         lastUpdated: text("last_updated").notNull(),
