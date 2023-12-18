@@ -106,7 +106,6 @@ export class GameManager {
             const [newGame] = await this.drizzle
                 .insert(game)
                 .values({
-                    id: name,
                     formattedName,
                     name,
                     possibleSuggestiveContent,

@@ -6,52 +6,7 @@ import { SplitQueryByCommas } from "../../helpers/split-query-by-commas"
 import { z } from "zod"
 import type { Asset, NewAsset } from "@/v2/db/schema"
 import type { assetSearchAllFilter } from "@/v2/routes/asset/search/all/schema"
-
-const MAX_FILE_SIZE = 5000
-const ACCEPTED_IMAGE_TYPES = ["image/png"]
-
-export const UploadAssetSchema = z.object({
-    asset: z
-        .any()
-        .refine((files) => files?.length == 1, "Image is required.")
-        .refine(
-            (files) => files?.[0]?.size <= MAX_FILE_SIZE,
-            `Max file size is 5MB.`
-        )
-        .refine(
-            (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-            ".jpg, .jpeg, .png and .webp files are accepted."
-        ),
-    name: z.string({
-        required_error: "Name is required",
-        invalid_type_error: "Name must be a string",
-    }),
-    extension: z.string({
-        required_error: "Extension is required",
-        invalid_type_error: "Extension must be a string",
-    }),
-    tags: z.string().optional(),
-    assetCategoryId: z.string({
-        required_error: "Category is required",
-        invalid_type_error: "Category must be a string",
-    }),
-    gameId: z.string({
-        required_error: "Game is required",
-        invalid_type_error: "Game must be a string",
-    }),
-    size: z.number({
-        required_error: "Size is required",
-        invalid_type_error: "Size must be a number",
-    }),
-    width: z.number({
-        required_error: "Width is required",
-        invalid_type_error: "Width must be a number",
-    }),
-    height: z.number({
-        required_error: "Height is required",
-        invalid_type_error: "Height must be a number",
-    }),
-})
+import { uploadAssetSchema } from "@/v2/routes/asset/upload/schema"
 
 export class AssetManager {
     constructor(private drizzle: DrizzleInstance) {}
@@ -228,13 +183,13 @@ export class AssetManager {
     public async createAsset(
         userId: string,
         userNickname: string,
-        newAsset: z.infer<typeof UploadAssetSchema>,
+        newAsset: z.infer<typeof uploadAssetSchema>,
         bucket: R2Bucket,
         file: File
     ): Promise<NewAsset> {
         try {
             const { key } = await bucket.put(
-                `/assets/${newAsset.gameId}/${newAsset.assetCategoryId}/${newAsset.name}.${newAsset.extension}`,
+                `/assets/${newAsset.gameId}/${newAsset.assetCategoryId}/${newAsset.name}`,
                 file
             )
 
@@ -244,32 +199,32 @@ export class AssetManager {
                         .insert(asset)
                         .values({
                             name: newAsset.name,
-                            extension: newAsset.extension,
+                            extension: "png",
                             gameId: newAsset.gameId,
                             assetCategoryId: newAsset.assetCategoryId,
                             url: key,
                             uploadedByName: userNickname,
                             uploadedById: userId,
                             status: "pending",
-                            fileSize: newAsset.size,
-                            width: newAsset.width,
-                            height: newAsset.height,
+                            fileSize: 0,
+                            width: 0,
+                            height: 0,
                         })
                         .returning()
 
-                    const tags = newAsset.tags
-                        ? SplitQueryByCommas(newAsset.tags)
-                        : []
+                    const tags = SplitQueryByCommas(newAsset.tags) ?? []
 
                     if (tags.length === 0) return createdAsset
 
                     for (const tag of tags) {
                         const foundTag = await trx
-                            .select()
+                            .select({
+                                id: assetTag.id,
+                            })
                             .from(assetTag)
                             .where(eq(assetTag.name, tag))
 
-                        if (foundTag.length === 0) {
+                        if (foundTag) {
                             await trx.insert(assetTagAsset).values({
                                 assetId: createdAsset[0].assetId,
                                 assetTagId: tag,
