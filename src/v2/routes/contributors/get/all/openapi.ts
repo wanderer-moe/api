@@ -7,7 +7,7 @@ export const contributorsRoute = createRoute({
     tags: ["Contributors"],
     responses: {
         200: {
-            description: "All Contributors",
+            description: "All Contributors.",
         },
         500: {
             description: "Internal server error.",

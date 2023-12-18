@@ -74,6 +74,9 @@ export const authUser = sqliteTable(
             userIdx: index("user_id_idx").on(user.id),
             usernameIdx: index("user_username_idx").on(user.username),
             emailIdx: index("user_email_idx").on(user.email),
+            contributorIdx: index("user_contributor_idx").on(
+                user.isContributor
+            ),
         }
     }
 )

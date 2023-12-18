@@ -21,21 +21,21 @@ export const uploadAssetSchema = z.object({
         ),
     name: z.string().min(3).max(32).openapi({
         description: "The name of the asset.",
-        example: "asset",
+        example: "keqing-nobg.png",
     }),
     tags: z
         .string()
         .openapi({
             description: "Comma seperated list of tags for the asset.",
-            example: "tag1,tag2,tag3",
+            example: "official,1.0",
         })
         .optional(),
     assetCategoryId: z.string().openapi({
         description: "The asset category ID for the asset.",
-        example: "assetCategoryId",
+        example: "splash-art",
     }),
     gameId: z.string().openapi({
         description: "The game ID for the asset.",
-        example: "gameId",
+        example: "genshin-impact",
     }),
 })
