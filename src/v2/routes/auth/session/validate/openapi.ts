@@ -15,7 +15,7 @@ export const authValidationRoute = createRoute({
     tags: ["Auth"],
     responses: {
         200: {
-            description: "User information is returned.",
+            description: "All user information is returned.",
             content: {
                 "application/json": {
                     schema: authValidationSchema,

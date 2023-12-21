@@ -1,7 +1,6 @@
 import { DrizzleInstance } from "@/v2/db/turso"
 import { authUser } from "@/v2/db/schema"
 import { eq, like, or } from "drizzle-orm"
-import type { User } from "@/v2/db/schema"
 
 /**
  * Manages user search and retrieval operations.
@@ -15,10 +14,22 @@ export class UserSearchManager {
      * @param userId - The ID of the user to retrieve.
      * @returns The user object or undefined if not found.
      */
-    public async getUserById(userId: string): Promise<User | null> {
+    public async getUserById(userId: string) {
         try {
             const [user] = await this.drizzle
-                .select()
+                .select({
+                    id: authUser.id,
+                    avatarUrl: authUser.avatarUrl,
+                    displayName: authUser.displayName,
+                    username: authUser.username,
+                    usernameColour: authUser.usernameColour,
+                    pronouns: authUser.pronouns,
+                    verified: authUser.verified,
+                    bio: authUser.bio,
+                    dateJoined: authUser.dateJoined,
+                    isSupporter: authUser.isSupporter,
+                    roleFlags: authUser.roleFlags,
+                })
                 .from(authUser)
                 .where(eq(authUser.id, userId))
 
@@ -29,19 +40,19 @@ export class UserSearchManager {
         }
     }
 
-    public async getUserByEmail(email: string): Promise<User | null> {
-        try {
-            const [user] = await this.drizzle
-                .select()
-                .from(authUser)
-                .where(eq(authUser.email, email))
+    // public async getUserByEmail(email: string) {
+    //     try {
+    //         const [user] = await this.drizzle
+    //             .select()
+    //             .from(authUser)
+    //             .where(eq(authUser.email, email))
 
-            return user ?? null
-        } catch (e) {
-            console.error(`Error getting user by email ${email}`, e)
-            throw new Error(`Error getting user by email ${email}`)
-        }
-    }
+    //         return user ?? null
+    //     } catch (e) {
+    //         console.error(`Error getting user by email ${email}`, e)
+    //         throw new Error(`Error getting user by email ${email}`)
+    //     }
+    // }
 
     /**
      * Retrieves a user by their username.
@@ -49,10 +60,22 @@ export class UserSearchManager {
      * @param username - The username of the user to retrieve.
      * @returns The user object or undefined if not found.
      */
-    public async getUserByUsername(username: string): Promise<User | null> {
+    public async getUserByUsername(username: string) {
         try {
             const [user] = await this.drizzle
-                .select()
+                .select({
+                    id: authUser.id,
+                    avatarUrl: authUser.avatarUrl,
+                    displayName: authUser.displayName,
+                    username: authUser.username,
+                    usernameColour: authUser.usernameColour,
+                    pronouns: authUser.pronouns,
+                    verified: authUser.verified,
+                    bio: authUser.bio,
+                    dateJoined: authUser.dateJoined,
+                    isSupporter: authUser.isSupporter,
+                    roleFlags: authUser.roleFlags,
+                })
                 .from(authUser)
                 .where(eq(authUser.username, username))
 
@@ -69,10 +92,22 @@ export class UserSearchManager {
      * @param username - The partial username to search for.
      * @returns An array of user objects matching the search criteria, limited to 25 results.
      */
-    public async getUsersByUsername(username: string): Promise<User[] | User> {
+    public async getUsersByUsername(username: string) {
         try {
             const users = await this.drizzle
-                .select()
+                .select({
+                    id: authUser.id,
+                    avatarUrl: authUser.avatarUrl,
+                    displayName: authUser.displayName,
+                    username: authUser.username,
+                    usernameColour: authUser.usernameColour,
+                    pronouns: authUser.pronouns,
+                    verified: authUser.verified,
+                    bio: authUser.bio,
+                    dateJoined: authUser.dateJoined,
+                    isSupporter: authUser.isSupporter,
+                    roleFlags: authUser.roleFlags,
+                })
                 .from(authUser)
                 .where(or(like(authUser.username, `%${username}%`)))
                 .limit(25)

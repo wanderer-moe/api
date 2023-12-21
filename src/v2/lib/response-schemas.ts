@@ -48,6 +48,14 @@ export const GenericResponses = {
             },
         },
     },
+    403: {
+        description: "Forbidden",
+        content: {
+            "application/json": {
+                schema: ForbiddenSchema,
+            },
+        },
+    },
     500: {
         description: "Internal server error",
         content: {

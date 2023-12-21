@@ -42,8 +42,8 @@ export const game = sqliteTable(
 
 export type Game = typeof game.$inferSelect
 export type NewGame = typeof game.$inferInsert
-export const newGameSchema = createInsertSchema(game)
-export const gameSchema = createSelectSchema(game)
+export const insertGameSchema = createInsertSchema(game)
+export const selectGameSchema = createSelectSchema(game)
 
 export const gameRelations = relations(game, ({ many }) => ({
     asset: many(asset),
