@@ -20,7 +20,7 @@ NOTE: Game relation is easy to understand and self-explanatory.
 export const game = sqliteTable(
     tableNames.game,
     {
-        id: text("id").unique().notNull(),
+        id: text("id").primaryKey().notNull(), // e.g genshin-impact, honkai-impact-3rd
         name: text("name").notNull().unique(), // e.g genshin-impact, honkai-impact-3rd
         formattedName: text("formatted_name").notNull(), // e.g Genshin Impact, Honkai Impact 3rd
         possibleSuggestiveContent: integer("possible_suggestive_content")

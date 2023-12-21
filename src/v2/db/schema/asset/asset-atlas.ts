@@ -45,7 +45,7 @@ export const selectAtlasSchema = createSelectSchema(atlas)
 export const atlasToAsset = sqliteTable(
     tableNames.atlasToAsset,
     {
-        id: text("id"),
+        id: text("id").primaryKey().notNull(),
         atlasId: text("atlas_id")
             .notNull()
             .references(() => atlas.id, {

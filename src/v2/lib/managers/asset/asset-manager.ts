@@ -46,6 +46,22 @@ export class AssetManager {
         }
     }
 
+    public async updateAssetById(
+        assetId: number,
+        update: z.infer<typeof uploadAssetSchema>
+    ) {
+        try {
+            return await this.drizzle
+                .update(asset)
+                .set(update)
+                .where(eq(asset.id, assetId))
+                .returning()
+        } catch (e) {
+            console.error(`Error updating asset by ID ${assetId}`, e)
+            throw new Error(`Error updating asset by ID ${assetId}`)
+        }
+    }
+
     /**
      * Retrieves a list of assets by their IDs.
      * @param assetIds - An array of asset IDs to retrieve.

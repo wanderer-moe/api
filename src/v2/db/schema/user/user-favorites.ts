@@ -58,7 +58,7 @@ export const userFavoriteAsset = sqliteTable(
     tableNames.userFavoriteAsset,
     {
         id: text("id")
-            .unique()
+            .primaryKey()
             .notNull()
             .$defaultFn(() => {
                 return generateID()

@@ -19,7 +19,7 @@ NOTE: OC generators are not stored in the database.
 export const savedOcGenerators = sqliteTable(
     tableNames.savedOcGenerators,
     {
-        id: text("id").unique().notNull(),
+        id: text("id").primaryKey().notNull(),
         userId: text("user_id")
             .notNull()
             .references(() => authUser.id, {

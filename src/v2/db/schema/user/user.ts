@@ -35,7 +35,7 @@ export const authUser = sqliteTable(
     tableNames.authUser,
     {
         id: text("id")
-            .unique()
+            .primaryKey()
             .notNull()
             .$defaultFn(() => {
                 return generateID()
@@ -91,7 +91,7 @@ export const authCredentials = sqliteTable(
     tableNames.authCredentials,
     {
         id: text("id")
-            .unique()
+            .primaryKey()
             .notNull()
             .$defaultFn(() => {
                 return generateID(20)
@@ -126,7 +126,7 @@ export const selectAuthCredentialsSchema = createSelectSchema(authCredentials)
 export const userSession = sqliteTable(
     tableNames.authSession,
     {
-        id: text("id").unique().notNull(),
+        id: text("id").primaryKey().notNull(),
         userId: text("user_id")
             .notNull()
             .references(() => authUser.id, {

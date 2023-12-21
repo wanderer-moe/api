@@ -20,7 +20,7 @@ NOTE: Asset tags are not stored as ENUMs to allow for better UX, flexibility, an
 export const assetTag = sqliteTable(
     tableNames.assetTag,
     {
-        id: text("id").unique().notNull(),
+        id: text("id").primaryKey().notNull(),
         name: text("name").notNull().unique(),
         formattedName: text("formatted_name").notNull(),
         lastUpdated: text("last_updated").notNull(),

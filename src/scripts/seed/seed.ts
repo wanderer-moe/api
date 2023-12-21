@@ -51,7 +51,7 @@ async function main() {
                 emailVerified: 1,
                 usernameColour: "#84E6F8",
                 bio: "test bio",
-                roleFlags: 1,
+                roleFlags: 127,
                 isContributor: true,
                 selfAssignableRoleFlags: 0,
             },

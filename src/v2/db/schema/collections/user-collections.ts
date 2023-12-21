@@ -24,7 +24,7 @@ export const userCollection = sqliteTable(
     tableNames.userCollection,
     {
         id: text("id")
-            .unique()
+            .primaryKey()
             .notNull()
             .$defaultFn(() => {
                 return generateID()
