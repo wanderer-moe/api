@@ -1,11 +1,6 @@
 import { createRoute } from "@hono/zod-openapi"
-import { createAccountSchema } from "./schema"
+import { createAccountSchema, createAccountResponseSchema } from "./schema"
 import { GenericResponses } from "@/v2/lib/response-schemas"
-import { z } from "zod"
-
-const createAccountResponseSchema = z.object({
-    success: z.literal(true),
-})
 
 export const userCreateAccountRoute = createRoute({
     path: "/",

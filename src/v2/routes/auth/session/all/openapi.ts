@@ -1,17 +1,6 @@
 import { createRoute } from "@hono/zod-openapi"
-import { selectSessionSchema } from "@/v2/db/schema"
-import { z } from "zod"
+import { sessionListSchema } from "./schema"
 import { GenericResponses } from "@/v2/lib/response-schemas"
-
-const sessionListSchema = z.object({
-    success: z.literal(true),
-    currentSessions: selectSessionSchema
-        .pick({
-            id: true,
-            expiresAt: true,
-        })
-        .array(),
-})
 
 export const authAllCurrentSessions = createRoute({
     path: "/",

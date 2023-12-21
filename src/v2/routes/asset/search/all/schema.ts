@@ -1,4 +1,23 @@
 import { z } from "@hono/zod-openapi"
+import {
+    selectAssetSchema,
+    selectAssetTagAssetSchema,
+    selectAssetTagSchema,
+} from "@/v2/db/schema"
+
+export const assetSearchAllFilterResponseSchema = z.object({
+    success: z.literal(true),
+    // mmm nested schemas
+    assets: z.array(
+        selectAssetSchema.extend({
+            assetTagAsset: z.array(
+                selectAssetTagAssetSchema.extend({
+                    assetTag: selectAssetTagSchema,
+                })
+            ),
+        })
+    ),
+})
 
 export const assetSearchAllFilterSchema = z
     .object({

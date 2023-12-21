@@ -14,3 +14,7 @@ export const loginSchema = z.object({
         example: "password1234",
     }),
 })
+
+export const loginResponseSchema = z.object({
+    success: z.literal(true),
+})

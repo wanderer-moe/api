@@ -1,12 +1,6 @@
 import { createRoute } from "@hono/zod-openapi"
-import { selectUserSchema } from "@/v2/db/schema"
-import { z } from "zod"
+import { authValidationSchema } from "./schema"
 import { GenericResponses } from "@/v2/lib/response-schemas"
-
-const authValidationSchema = z.object({
-    success: z.literal(true),
-    user: selectUserSchema,
-})
 
 export const authValidationRoute = createRoute({
     path: "/",

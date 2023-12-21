@@ -18,3 +18,7 @@ export const createAccountSchema = z.object({
         example: "password1234",
     }),
 })
+
+export const createAccountResponseSchema = z.object({
+    success: z.literal(true),
+})

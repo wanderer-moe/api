@@ -1,25 +1,7 @@
 import { createRoute } from "@hono/zod-openapi"
 import { getUserByNameSchema } from "./schema"
-import { z } from "zod"
 import { GenericResponses } from "@/v2/lib/response-schemas"
-import { selectUserSchema } from "@/v2/db/schema"
-
-const getUserByNameResponseSchema = z.object({
-    success: z.literal(true),
-    user: selectUserSchema.pick({
-        id: true,
-        avatarUrl: true,
-        displayName: true,
-        username: true,
-        usernameColour: true,
-        pronouns: true,
-        verified: true,
-        bio: true,
-        dateJoined: true,
-        isSupporter: true,
-        roleFlags: true,
-    }),
-})
+import { getUserByNameResponseSchema } from "./schema"
 
 export const getUserByNameRoute = createRoute({
     path: "/{username}",
