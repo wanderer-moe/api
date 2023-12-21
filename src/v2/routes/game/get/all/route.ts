@@ -8,11 +8,15 @@ const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 handler.openapi(getAllGamesRoute, async (ctx) => {
     const { drizzle } = await getConnection(ctx.env)
     const gameManager = new GameManager(drizzle)
-    const games = await gameManager.listGames()
+    const allGames = await gameManager.listGames()
 
-    return ctx.json({
-        games,
-    })
+    return ctx.json(
+        {
+            success: true,
+            games: allGames,
+        },
+        200
+    )
 })
 
 export default handler

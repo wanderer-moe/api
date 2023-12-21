@@ -1,5 +1,6 @@
 import { createRoute } from "@hono/zod-openapi"
-import { getGameByNameSchema } from "./schema"
+import { getGameByNameSchema, getGameByNameResponse } from "./schema"
+import { GenericResponses } from "@/v2/lib/response-schemas"
 
 export const getGameByNameRoute = createRoute({
     path: "/{name}",
@@ -12,9 +13,12 @@ export const getGameByNameRoute = createRoute({
     responses: {
         200: {
             description: "Game was found.",
+            content: {
+                "application/json": {
+                    schema: getGameByNameResponse,
+                },
+            },
         },
-        500: {
-            description: "Internal server error.",
-        },
+        ...GenericResponses,
     },
 })

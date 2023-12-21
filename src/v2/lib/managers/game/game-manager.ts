@@ -87,7 +87,7 @@ export class GameManager {
      * @returns A promise that resolves to an array of games.
      */
 
-    public async listGames(): Promise<Game[] | Game | null> {
+    public async listGames() {
         try {
             const games = await this.drizzle.select().from(game)
             return games ?? null

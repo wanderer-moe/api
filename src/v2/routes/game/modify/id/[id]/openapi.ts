@@ -1,5 +1,6 @@
 import { createRoute } from "@hono/zod-openapi"
-import { modifyGameSchema } from "./schema"
+import { modifyGameSchema, modifyGameResponseSchema } from "./schema"
+import { GenericResponses } from "@/v2/lib/response-schemas"
 
 export const modifyGameRoute = createRoute({
     path: "/",
@@ -17,16 +18,13 @@ export const modifyGameRoute = createRoute({
     },
     responses: {
         200: {
-            description: "Returns the game's modified attributes.",
+            description: "Returns the game's attributes",
+            content: {
+                "application/json": {
+                    schema: modifyGameResponseSchema,
+                },
+            },
         },
-        400: {
-            description: "Bad request.",
-        },
-        401: {
-            description: "Unauthorized",
-        },
-        500: {
-            description: "Internal server error.",
-        },
+        ...GenericResponses,
     },
 })

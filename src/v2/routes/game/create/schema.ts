@@ -1,4 +1,5 @@
 import { z } from "@hono/zod-openapi"
+import { selectGameSchema } from "@/v2/db/schema"
 
 export const createGameSchema = z.object({
     name: z.string().min(3).max(32).openapi({
@@ -14,4 +15,9 @@ export const createGameSchema = z.object({
             "If the game contains suggestive content. 1 = Yes, 0 = No.",
         example: "1",
     }),
+})
+
+export const createGameResponse = z.object({
+    success: z.literal(true),
+    game: selectGameSchema,
 })

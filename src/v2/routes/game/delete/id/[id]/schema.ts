@@ -11,3 +11,7 @@ export const deleteGameSchema = z.object({
         },
     }),
 })
+
+export const deleteGameResponse = z.object({
+    success: z.literal(true),
+})

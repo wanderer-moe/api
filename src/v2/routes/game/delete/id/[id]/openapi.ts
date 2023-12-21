@@ -1,5 +1,6 @@
 import { createRoute } from "@hono/zod-openapi"
-import { deleteGameSchema } from "./schema"
+import { deleteGameSchema, deleteGameResponse } from "./schema"
+import { GenericResponses } from "@/v2/lib/response-schemas"
 
 export const deleteGameRoute = createRoute({
     path: "/",
@@ -11,13 +12,13 @@ export const deleteGameRoute = createRoute({
     },
     responses: {
         200: {
-            description: "Returns true or false.",
+            description: "Returns boolean indicating success.",
+            content: {
+                "application/json": {
+                    schema: deleteGameResponse,
+                },
+            },
         },
-        401: {
-            description: "Unauthorized",
-        },
-        500: {
-            description: "Internal server error.",
-        },
+        ...GenericResponses,
     },
 })
