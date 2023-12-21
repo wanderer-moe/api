@@ -5,7 +5,7 @@ export const OpenAPIConfig: OpenAPIObjectConfig = {
     info: {
         version: "2.0.0",
         title: "api.wanderer.moe",
-        description: "Public Zod OpenAPI documentation for wanderer.moe's API.",
+        description: `Public Zod OpenAPI documentation for wanderer.moe's API. This API is used to power the website & all routes are documented.`,
         license: {
             name: "GNU General Public License v3.0",
             url: "https://www.gnu.org/licenses/gpl-3.0.en.html",

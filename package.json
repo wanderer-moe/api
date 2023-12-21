@@ -39,6 +39,7 @@
         "@hono/zod-openapi": "^0.9.3",
         "@libsql/client": "0.4.0-pre.5",
         "@lucia-auth/adapter-sqlite": "3.0.0-beta.9",
+        "@scalar/hono-api-reference": "^0.3.3",
         "@typescript-eslint/eslint-plugin": "^6.13.2",
         "better-sqlite3": "^9.2.2",
         "drizzle-orm": "^0.29.1",

@@ -33,7 +33,7 @@ export const SelfAssignableRoleFlags = {
     CONTENT_CREATOR: 1 << 0,
     ARTIST: 1 << 1,
     WRITER: 1 << 2,
-    DEVELOPER: 1 << 3,
+    PROGRAMMER: 1 << 3,
     DESIGNER: 1 << 4,
 }
 

@@ -7,8 +7,8 @@ export class AssetCategoryLikesManager {
 
     /**
      * Likes a category for a user.
-     * @param assetCategoryId - The ID of the collection to like.
-     * @param userId - The ID of the user to like the collection for.
+     * @param assetCategoryId - The ID of the category to like.
+     * @param userId - The ID of the user to like the category for.
      */
     public async likeAssetCategory(
         assetCategoryId: string,
