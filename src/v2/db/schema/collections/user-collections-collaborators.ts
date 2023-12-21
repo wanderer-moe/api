@@ -8,6 +8,7 @@ import {
 } from "drizzle-orm/sqlite-core"
 import { authUser } from "../user/user"
 import { userCollection } from "./user-collections"
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 
 export const userCollectionCollaborators = sqliteTable(
     tableNames.userCollectionCollaborators,
@@ -40,6 +41,12 @@ export type UserCollectionCollaborators =
     typeof userCollectionCollaborators.$inferSelect
 export type NewUserCollectionCollaborators =
     typeof userCollectionCollaborators.$inferInsert
+export const insertUserCollectionCollaboratorsSchema = createInsertSchema(
+    userCollectionCollaborators
+)
+export const selectUserCollectionCollaboratorsSchema = createSelectSchema(
+    userCollectionCollaborators
+)
 
 export const userCollectionCollaboratorsRelations = relations(
     userCollectionCollaborators,

@@ -27,7 +27,6 @@ handler.openapi(authLogoutRoute, async (ctx) => {
     return ctx.json(
         {
             success: true,
-            message: "Logout successful.",
         },
         200
     )

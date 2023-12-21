@@ -3,7 +3,7 @@ import { relations } from "drizzle-orm"
 import { index, sqliteTable, text } from "drizzle-orm/sqlite-core"
 import { authUser } from "../user/user"
 import { assetTag } from "./asset-tags"
-
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 export const assetTagLikes = sqliteTable(
     tableNames.assetTagLikes,
     {
@@ -33,6 +33,8 @@ export const assetTagLikes = sqliteTable(
 
 export type AssetTagLikes = typeof assetTagLikes.$inferSelect
 export type NewAssetTagLikes = typeof assetTagLikes.$inferInsert
+export const insertAssetTagLikesSchema = createInsertSchema(assetTagLikes)
+export const selectAssetTagLikesSchema = createSelectSchema(assetTagLikes)
 
 export const assetTagLikesRelations = relations(assetTagLikes, ({ one }) => ({
     assetTag: one(assetTag, {

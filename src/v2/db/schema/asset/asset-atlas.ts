@@ -9,7 +9,7 @@ import {
 } from "drizzle-orm/sqlite-core"
 import { asset } from "./asset"
 import { authUser } from "../user/user"
-
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 /*
 NOTE: this allows for users down the line to link their uploaded assets to appropiate atlases for animation.
 */
@@ -39,6 +39,8 @@ export const atlas = sqliteTable(
 
 export type Atlas = typeof atlas.$inferSelect
 export type NewAtlas = typeof atlas.$inferInsert
+export const insertAtlasSchema = createInsertSchema(atlas)
+export const selectAtlasSchema = createSelectSchema(atlas)
 
 export const atlasToAsset = sqliteTable(
     tableNames.atlasToAsset,
@@ -74,6 +76,8 @@ export const atlasToAsset = sqliteTable(
 
 export type AtlasToAsset = typeof atlasToAsset.$inferSelect
 export type NewAtlasToAsset = typeof atlasToAsset.$inferInsert
+export const insertAtlasToAssetSchema = createInsertSchema(atlasToAsset)
+export const selectAtlasToAssetSchema = createSelectSchema(atlasToAsset)
 
 export const atlasRelations = relations(atlas, ({ one }) => ({
     atlasToAsset: one(atlasToAsset),

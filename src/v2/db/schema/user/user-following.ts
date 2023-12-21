@@ -7,6 +7,7 @@ import {
     index,
 } from "drizzle-orm/sqlite-core"
 import { authUser } from "./user"
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 
 /*
 NOTE: this file manages the "social" aspect of users.
@@ -42,6 +43,8 @@ export const userFollowing = sqliteTable(
 
 export type UserFollowing = typeof userFollowing.$inferSelect
 export type NewUserFollowing = typeof userFollowing.$inferInsert
+export const insertUserFollowingSchema = createInsertSchema(userFollowing)
+export const selectUserFollowingSchema = createSelectSchema(userFollowing)
 
 export const userFollowingRelations = relations(userFollowing, ({ one }) => ({
     follower: one(authUser, {

@@ -7,6 +7,7 @@ import {
     index,
 } from "drizzle-orm/sqlite-core"
 import { authUser } from "./user"
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 
 /*
 NOTE: This is mostly security related. 
@@ -48,6 +49,12 @@ export const emailVerificationToken = sqliteTable(
 export type EmailVerificationToken = typeof emailVerificationToken.$inferSelect
 export type NewEmailVerificationToken =
     typeof emailVerificationToken.$inferInsert
+export const insertEmailVerificationTokenSchema = createInsertSchema(
+    emailVerificationToken
+)
+export const selectEmailVerificationTokenSchema = createSelectSchema(
+    emailVerificationToken
+)
 
 export const passwordResetToken = sqliteTable(
     tableNames.passwordResetToken,
@@ -79,6 +86,13 @@ export const passwordResetToken = sqliteTable(
         }
     }
 )
+
+export type PasswordResetToken = typeof passwordResetToken.$inferSelect
+export type NewPasswordResetToken = typeof passwordResetToken.$inferInsert
+export const insertPasswordResetTokenSchema =
+    createInsertSchema(passwordResetToken)
+export const selectPasswordResetTokenSchema =
+    createSelectSchema(passwordResetToken)
 
 export const emailVerificationTokenRelations = relations(
     emailVerificationToken,

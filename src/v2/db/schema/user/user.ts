@@ -7,6 +7,7 @@ import {
     // uniqueIndex,
     index,
 } from "drizzle-orm/sqlite-core"
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { generateID } from "@/v2/lib/oslo"
 import { userFollowing } from "./user-following"
 import { asset } from "../asset/asset"
@@ -83,6 +84,8 @@ export const authUser = sqliteTable(
 
 export type User = typeof authUser.$inferSelect
 export type NewUser = typeof authUser.$inferInsert
+export const insertUserSchema = createInsertSchema(authUser)
+export const selectUserSchema = createSelectSchema(authUser)
 
 export const authCredentials = sqliteTable(
     tableNames.authCredentials,
@@ -108,8 +111,10 @@ export const authCredentials = sqliteTable(
     }
 )
 
-export type Keys = typeof authCredentials.$inferSelect
-export type NewKeys = typeof authCredentials.$inferInsert
+export type AuthCredentials = typeof authCredentials.$inferSelect
+export type NewAuthCredentials = typeof authCredentials.$inferInsert
+export const insertAuthCredentialsSchema = createInsertSchema(authCredentials)
+export const selectAuthCredentialsSchema = createSelectSchema(authCredentials)
 
 // interface Session extends SessionAttributes {
 // 	id: string;
@@ -142,6 +147,8 @@ export const userSession = sqliteTable(
 
 export type Session = typeof userSession.$inferSelect
 export type NewSession = typeof userSession.$inferInsert
+export const insertSessionSchema = createInsertSchema(userSession)
+export const selectSessionSchema = createSelectSchema(userSession)
 
 export const usersRelations = relations(authUser, ({ one, many }) => ({
     follower: many(userFollowing, {

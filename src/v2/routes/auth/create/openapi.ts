@@ -1,5 +1,10 @@
 import { createRoute } from "@hono/zod-openapi"
 import { createAccountSchema } from "./schema"
+import { z } from "zod"
+
+const createAccountResponseSchema = z.object({
+    success: z.literal(true),
+})
 
 export const userCreateAccountRoute = createRoute({
     path: "/",
@@ -17,7 +22,12 @@ export const userCreateAccountRoute = createRoute({
     },
     responses: {
         200: {
-            description: "Returns the user object or null.",
+            description: "Returns true.",
+            content: {
+                "application/json": {
+                    schema: createAccountResponseSchema,
+                },
+            },
         },
         500: {
             description: "Internal server error.",

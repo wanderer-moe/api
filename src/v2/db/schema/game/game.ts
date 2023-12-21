@@ -10,6 +10,7 @@ import {
 import { asset } from "../asset/asset"
 import { gameAssetCategory } from "../categories/asset-categories"
 import { gameLikes } from "./game-likes"
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 
 /*
 NOTE: Game relation is easy to understand and self-explanatory.
@@ -41,6 +42,8 @@ export const game = sqliteTable(
 
 export type Game = typeof game.$inferSelect
 export type NewGame = typeof game.$inferInsert
+export const newGameSchema = createInsertSchema(game)
+export const gameSchema = createSelectSchema(game)
 
 export const gameRelations = relations(game, ({ many }) => ({
     asset: many(asset),

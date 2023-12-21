@@ -8,6 +8,7 @@ import {
 } from "drizzle-orm/sqlite-core"
 import { authUser } from "../user/user"
 import { userCollection } from "./user-collections"
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 
 export const userCollectionLikes = sqliteTable(
     tableNames.userCollectionLikes,
@@ -38,6 +39,10 @@ export const userCollectionLikes = sqliteTable(
 
 export type UserCollectionLikes = typeof userCollectionLikes.$inferSelect
 export type NewUserCollectionLikes = typeof userCollectionLikes.$inferInsert
+export const insertUserCollectionLikesSchema =
+    createInsertSchema(userCollectionLikes)
+export const selectUserCollectionLikesSchema =
+    createSelectSchema(userCollectionLikes)
 
 export const userCollectionLikesRelations = relations(
     userCollectionLikes,

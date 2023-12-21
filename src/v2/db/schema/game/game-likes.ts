@@ -3,6 +3,7 @@ import { relations } from "drizzle-orm"
 import { index, sqliteTable, text } from "drizzle-orm/sqlite-core"
 import { authUser } from "../user/user"
 import { game } from "./game"
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 
 export const gameLikes = sqliteTable(
     tableNames.gameLikes,
@@ -29,6 +30,8 @@ export const gameLikes = sqliteTable(
 
 export type GameLikes = typeof gameLikes.$inferSelect
 export type NewGameLikes = typeof gameLikes.$inferInsert
+export const insertGameLikesSchema = createInsertSchema(gameLikes)
+export const selectGameLikesSchema = createSelectSchema(gameLikes)
 
 export const gameLikesRelations = relations(gameLikes, ({ one }) => ({
     game: one(game, {

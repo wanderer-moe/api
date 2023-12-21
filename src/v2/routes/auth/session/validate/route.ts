@@ -22,7 +22,7 @@ handler.openapi(authValidationRoute, async (ctx) => {
     return ctx.json(
         {
             success: true,
-            user: user ? user : null,
+            user,
         },
         200
     )

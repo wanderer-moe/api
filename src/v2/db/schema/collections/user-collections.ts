@@ -10,6 +10,7 @@ import {
 import { authUser } from "../user/user"
 import { asset } from "../asset/asset"
 import { generateID } from "@/v2/lib/oslo"
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { userCollectionLikes } from "./user-collection-likes"
 import { userCollectionCollaborators } from "./user-collections-collaborators"
 
@@ -57,6 +58,8 @@ export const userCollection = sqliteTable(
 
 export type UserCollection = typeof userCollection.$inferSelect
 export type NewUserCollection = typeof userCollection.$inferInsert
+export const insertUserCollectionSchema = createInsertSchema(userCollection)
+export const selectUserCollectionSchema = createSelectSchema(userCollection)
 
 export const userCollectionAsset = sqliteTable(
     tableNames.userCollectionAsset,
@@ -93,6 +96,10 @@ export const userCollectionAsset = sqliteTable(
 
 export type UserCollectionAsset = typeof userCollectionAsset.$inferSelect
 export type NewUserCollectionAsset = typeof userCollectionAsset.$inferInsert
+export const insertUserCollectionAssetSchema =
+    createInsertSchema(userCollectionAsset)
+export const selectUserCollectionAssetSchema =
+    createSelectSchema(userCollectionAsset)
 
 export const collectionRelations = relations(
     userCollection,

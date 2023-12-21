@@ -8,7 +8,7 @@ import {
 } from "drizzle-orm/sqlite-core"
 import { authUser } from "../user/user"
 import { asset } from "./asset"
-
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 export const assetLikes = sqliteTable(
     tableNames.assetLikes,
     {
@@ -36,6 +36,8 @@ export const assetLikes = sqliteTable(
 
 export type AssetLikes = typeof assetLikes.$inferSelect
 export type NewAssetLikes = typeof assetLikes.$inferInsert
+export const insertAssetLikesSchema = createInsertSchema(assetLikes)
+export const selectAssetLikesSchema = createSelectSchema(assetLikes)
 
 export const assetNetworkingRelations = relations(assetLikes, ({ one }) => ({
     asset: one(asset, {

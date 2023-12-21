@@ -1,4 +1,9 @@
 import { createRoute } from "@hono/zod-openapi"
+import { z } from "zod"
+
+const logoutResponseSchema = z.object({
+    success: z.literal(true),
+})
 
 export const authLogoutRoute = createRoute({
     path: "/",
@@ -8,6 +13,11 @@ export const authLogoutRoute = createRoute({
     responses: {
         200: {
             description: "Logout successful.",
+            content: {
+                "application/json": {
+                    schema: logoutResponseSchema,
+                },
+            },
         },
         401: {
             description: "Unauthorized",

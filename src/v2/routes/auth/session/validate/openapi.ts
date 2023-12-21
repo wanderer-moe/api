@@ -1,4 +1,11 @@
 import { createRoute } from "@hono/zod-openapi"
+import { selectUserSchema } from "@/v2/db/schema"
+import { z } from "zod"
+
+const authValidationSchema = z.object({
+    success: z.literal(true),
+    user: selectUserSchema,
+})
 
 export const authValidationRoute = createRoute({
     path: "/",
@@ -8,6 +15,11 @@ export const authValidationRoute = createRoute({
     responses: {
         200: {
             description: "User information is returned.",
+            content: {
+                "application/json": {
+                    schema: authValidationSchema,
+                },
+            },
         },
         401: {
             description: "Unauthorized",

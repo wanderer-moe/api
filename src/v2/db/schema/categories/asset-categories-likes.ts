@@ -2,6 +2,7 @@ import { tableNames } from "@/v2/db/drizzle"
 import { relations } from "drizzle-orm"
 import { index, sqliteTable, text } from "drizzle-orm/sqlite-core"
 import { authUser } from "../user/user"
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { assetCategory } from "./asset-categories"
 
 export const assetCategoryLikes = sqliteTable(
@@ -33,6 +34,10 @@ export const assetCategoryLikes = sqliteTable(
 
 export type AssetCategoryLikes = typeof assetCategoryLikes.$inferSelect
 export type NewAssetCategoryLikes = typeof assetCategoryLikes.$inferInsert
+export const insertAssetCategoryLikesSchema =
+    createInsertSchema(assetCategoryLikes)
+export const selectAssetCategoryLikesSchema =
+    createSelectSchema(assetCategoryLikes)
 
 export const assetCategoryLikesRelations = relations(
     assetCategoryLikes,

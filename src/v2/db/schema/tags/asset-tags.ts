@@ -9,6 +9,7 @@ import {
 } from "drizzle-orm/sqlite-core"
 import { asset } from "../asset/asset"
 import { assetTagLikes } from "./asset-tags-likes"
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 
 /*
 NOTE: Asset tags are not stored as ENUMs to allow for better UX, flexibility, and extensibility.
@@ -34,6 +35,8 @@ export const assetTag = sqliteTable(
 
 export type AssetTag = typeof assetTag.$inferSelect
 export type NewAssetTag = typeof assetTag.$inferInsert
+export const insertAssetTagSchema = createInsertSchema(assetTag)
+export const selectAssetTagSchema = createSelectSchema(assetTag)
 
 export const assetTagAsset = sqliteTable(
     tableNames.assetTagAsset,
@@ -65,6 +68,8 @@ export const assetTagAsset = sqliteTable(
 
 export type AssetTagAsset = typeof assetTagAsset.$inferSelect
 export type NewAssetTagAsset = typeof assetTagAsset.$inferInsert
+export const insertAssetTagAssetSchema = createInsertSchema(assetTagAsset)
+export const selectAssetTagAssetSchema = createSelectSchema(assetTagAsset)
 
 export const assetTagRelations = relations(assetTag, ({ many }) => ({
     assetTagAsset: many(assetTagAsset),

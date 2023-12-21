@@ -8,6 +8,7 @@ import {
 } from "drizzle-orm/sqlite-core"
 import { game } from "../game/game"
 import { asset } from "../asset/asset"
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { assetCategoryLikes } from "./asset-categories-likes"
 
 export const assetCategory = sqliteTable(
@@ -30,6 +31,8 @@ export const assetCategory = sqliteTable(
 
 export type AssetCategory = typeof assetCategory.$inferSelect
 export type NewAssetCategory = typeof assetCategory.$inferInsert
+export const insertAssetCategorySchema = createInsertSchema(assetCategory)
+export const selectAssetCategorySchema = createSelectSchema(assetCategory)
 
 /*
 NOTE: This setup can look kinda janky.
@@ -67,6 +70,10 @@ export const gameAssetCategory = sqliteTable(
 
 export type GameAssetCategory = typeof gameAssetCategory.$inferSelect
 export type NewGameAssetCategory = typeof gameAssetCategory.$inferInsert
+export const insertGameAssetCategorySchema =
+    createInsertSchema(gameAssetCategory)
+export const selectGameAssetCategorySchema =
+    createSelectSchema(gameAssetCategory)
 
 export const assetCategoryRelations = relations(assetCategory, ({ many }) => ({
     asset: many(asset),

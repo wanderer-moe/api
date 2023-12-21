@@ -8,6 +8,7 @@ import {
     index,
 } from "drizzle-orm/sqlite-core"
 import { authUser } from "../user/user"
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 
 /*
 NOTE: OC generators are not stored in the database.
@@ -53,6 +54,10 @@ export const savedOcGenerators = sqliteTable(
 
 export type SavedOcGenerators = typeof savedOcGenerators.$inferSelect
 export type NewSavedOcGenerators = typeof savedOcGenerators.$inferInsert
+export const insertSavedOcGeneratorsSchema =
+    createInsertSchema(savedOcGenerators)
+export const selectSavedOcGeneratorsSchema =
+    createSelectSchema(savedOcGenerators)
 
 export const savedOcGeneratorsRelations = relations(
     savedOcGenerators,

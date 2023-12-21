@@ -12,6 +12,7 @@ import { assetCategory } from "../categories/asset-categories"
 import { game } from "../game/game"
 import { assetTagAsset } from "../tags/asset-tags"
 import { atlasToAsset } from "./asset-atlas"
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { assetLikes } from "./asset-likes"
 
 /*
@@ -95,6 +96,8 @@ export const asset = sqliteTable(
 
 export type Asset = typeof asset.$inferSelect
 export type NewAsset = typeof asset.$inferInsert
+export const insertAssetSchema = createInsertSchema(asset)
+export const selectAssetSchema = createSelectSchema(asset)
 
 export const assetRelations = relations(asset, ({ one, many }) => ({
     assetTagAsset: many(assetTagAsset),

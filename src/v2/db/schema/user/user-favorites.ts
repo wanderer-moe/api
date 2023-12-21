@@ -9,6 +9,7 @@ import {
 } from "drizzle-orm/sqlite-core"
 import { authUser } from "./user"
 import { asset } from "../asset/asset"
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { generateID } from "@/v2/lib/oslo"
 
 /*
@@ -50,6 +51,8 @@ export const userFavorite = sqliteTable(
 
 export type UserFavorite = typeof userFavorite.$inferSelect
 export type NewUserFavorite = typeof userFavorite.$inferInsert
+export const insertUserFavoriteSchema = createInsertSchema(userFavorite)
+export const selectUserFavoriteSchema = createSelectSchema(userFavorite)
 
 export const userFavoriteAsset = sqliteTable(
     tableNames.userFavoriteAsset,
@@ -90,6 +93,10 @@ export const userFavoriteAsset = sqliteTable(
 
 export type UserFavoriteAsset = typeof userFavoriteAsset.$inferSelect
 export type NewUserFavoriteAsset = typeof userFavoriteAsset.$inferInsert
+export const insertUserFavoriteAssetSchema =
+    createInsertSchema(userFavoriteAsset)
+export const selectUserFavoriteAssetSchema =
+    createSelectSchema(userFavoriteAsset)
 
 export const userFavoriteRelations = relations(userFavorite, ({ one }) => ({
     user: one(authUser, {
