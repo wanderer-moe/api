@@ -16,7 +16,7 @@ handler.openapi(getGameByIdRoute, async (ctx) => {
         return ctx.json(
             {
                 success: false,
-                error: "Game not found",
+                message: "Game not found",
             },
             400
         )

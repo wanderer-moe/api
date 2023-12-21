@@ -17,7 +17,7 @@ export async function csrfValidation(ctx: APIContext, next: Next) {
         return ctx.json(
             {
                 success: false,
-                error: "Forbidden",
+                message: "Forbidden",
             },
             403
         )

@@ -16,7 +16,7 @@ handler.openapi(modifyGameRoute, async (ctx) => {
         return ctx.json(
             {
                 success: false,
-                error: "Unauthorized",
+                message: "Unauthorized",
             },
             401
         )
@@ -32,7 +32,7 @@ handler.openapi(modifyGameRoute, async (ctx) => {
         return ctx.json(
             {
                 success: false,
-                error: "Invalid suggestive content value, must be 0 or 1",
+                message: "Invalid suggestive content value, must be 0 or 1",
             },
             400
         )
@@ -48,7 +48,7 @@ handler.openapi(modifyGameRoute, async (ctx) => {
         return ctx.json(
             {
                 success: false,
-                error: "Game with ID not found",
+                message: "Game with ID not found",
             },
             400
         )

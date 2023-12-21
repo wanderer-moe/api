@@ -14,7 +14,7 @@ handler.openapi(userCreateAccountRoute, async (ctx) => {
         return ctx.json(
             {
                 success: false,
-                error: "Already logged in",
+                message: "Already logged in",
             },
             401
         )
@@ -30,7 +30,7 @@ handler.openapi(userCreateAccountRoute, async (ctx) => {
         return ctx.json(
             {
                 success: false,
-                error: "User already exists with that email",
+                message: "User already exists with that email",
             },
             400
         )
@@ -48,7 +48,7 @@ handler.openapi(userCreateAccountRoute, async (ctx) => {
         return ctx.json(
             {
                 success: false,
-                error: "Failed to create account",
+                message: "Failed to create account",
             },
             500
         )

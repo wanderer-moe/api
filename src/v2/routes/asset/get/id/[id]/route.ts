@@ -12,7 +12,7 @@ handler.openapi(getAssetByIdRoute, async (ctx) => {
         return ctx.json(
             {
                 success: false,
-                error: "Invalid asset ID",
+                message: "Invalid asset ID",
             },
             400
         )
@@ -26,7 +26,7 @@ handler.openapi(getAssetByIdRoute, async (ctx) => {
         return ctx.json(
             {
                 success: true,
-                error: "Asset not found",
+                message: "Asset not found",
             },
             400
         )

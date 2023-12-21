@@ -158,7 +158,7 @@ app.onError((err, ctx) => {
     return ctx.json(
         {
             success: false,
-            error: "Internal Server Error",
+            message: "Internal Server Error",
         },
         500
     )

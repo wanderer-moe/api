@@ -14,7 +14,7 @@ handler.openapi(userLoginRoute, async (ctx) => {
         return ctx.json(
             {
                 success: false,
-                error: "Already logged in",
+                message: "Already logged in",
             },
             401
         )
@@ -33,7 +33,7 @@ handler.openapi(userLoginRoute, async (ctx) => {
         return ctx.json(
             {
                 success: false,
-                error: "Invalid credentials",
+                message: "Invalid credentials",
             },
             401
         )

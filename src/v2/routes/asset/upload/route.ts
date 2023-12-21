@@ -15,7 +15,7 @@ handler.openapi(uploadAssetRoute, async (ctx) => {
         return ctx.json(
             {
                 success: false,
-                error: "Unauthorized",
+                message: "Unauthorized",
             },
             401
         )
