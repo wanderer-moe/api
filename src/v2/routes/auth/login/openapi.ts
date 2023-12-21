@@ -1,6 +1,7 @@
 import { createRoute } from "@hono/zod-openapi"
 import { loginSchema } from "./schema"
 import { z } from "zod"
+import { GenericResponses } from "@/v2/lib/response-schemas"
 
 const loginResponseSchema = z.object({
     success: z.literal(true),
@@ -29,8 +30,6 @@ export const userLoginRoute = createRoute({
                 },
             },
         },
-        500: {
-            description: "Internal server error.",
-        },
+        ...GenericResponses,
     },
 })

@@ -1,5 +1,6 @@
 import { createRoute } from "@hono/zod-openapi"
 import { z } from "zod"
+import { GenericResponses } from "@/v2/lib/response-schemas"
 
 const logoutResponseSchema = z.object({
     success: z.literal(true),
@@ -19,11 +20,6 @@ export const authLogoutRoute = createRoute({
                 },
             },
         },
-        401: {
-            description: "Unauthorized",
-        },
-        500: {
-            description: "Internal server error.",
-        },
+        ...GenericResponses,
     },
 })
