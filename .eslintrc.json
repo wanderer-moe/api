@@ -2,7 +2,7 @@
     "root": true,
     "extends": ["plugin:@typescript-eslint/recommended"],
     "parser": "@typescript-eslint/parser",
-    "plugins": ["json"],
+    "plugins": [],
     "rules": {
         "no-const-assign": "error",
         "no-extra-semi": "error",
