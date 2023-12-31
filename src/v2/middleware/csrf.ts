@@ -9,15 +9,13 @@ export async function csrfValidation(ctx: APIContext, next: Next) {
     const originHeader = ctx.req.header("Origin")
     const hostHeader = ctx.req.header("Host")
 
-    if (
-        !originHeader ||
-        !hostHeader ||
-        !verifyRequestOrigin(originHeader, [hostHeader])
-    ) {
+    const requestOriginValid = verifyRequestOrigin(originHeader, [hostHeader])
+
+    if (!originHeader || !hostHeader || !requestOriginValid) {
         return ctx.json(
             {
                 success: false,
-                message: "Forbidden",
+                message: "Forbidden (CSRF)",
             },
             403
         )
