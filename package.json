@@ -43,7 +43,7 @@
         "better-sqlite3": "^9.2.2",
         "drizzle-orm": "^0.29.2",
         "drizzle-zod": "^0.5.1",
-        "hono": "^3.11.11",
+        "hono": "^3.12.0",
         "lucia": "3.0.0-beta.14",
         "oslo": "^0.26.2",
         "prettier": "^3.1.1",

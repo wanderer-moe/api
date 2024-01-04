@@ -16,7 +16,7 @@ Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — us
 
 We use Turso (libsql, fork of SQLite) as our database. You will need to install the [Turso CLI](https://docs.turso.tech/reference/turso-cli#installation) then run `turso dev` to start a local database. You can persist data by passing `--db-file <path>`.
 
-The Turso CLI can be ran on Windows using WSL.
+The Turso CLI can be run on Windows using WSL.
 
 The API will connect to the local database if the environment is set to `DEV`, else - it will connect to your production database.
 
@@ -37,7 +37,7 @@ Required environment variables are viewable in `./src/worker-configuration.d.ts`
 
 -   There is a GitHub Action that automatically deploys to Cloudflare Workers on every push to `main` — you can find it in `.github/workflows/deploy.yml`.
 
--   If you're using Github Actions, you will have to setup a secret with a Cloudflare API token. You can generate the API token [here][Cloudflare API Token] — use the `Edit Cloudflare Workers` template.
+-   If you're using GitHub Actions, you will have to set up a secret with a Cloudflare API token. You can generate the API token [here][Cloudflare API Token] — use the `Edit Cloudflare Workers` template.
 
 ### Database
 

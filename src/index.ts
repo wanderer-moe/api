@@ -4,7 +4,7 @@ import { prettyJSON } from "hono/pretty-json"
 import BaseRoutes from "@/v2/routes/handler"
 import { CustomCSS, OpenAPIConfig } from "./openapi/config"
 import { cors } from "hono/cors"
-import { csrfValidation } from "./v2/middleware/csrf"
+import { csrf } from "hono/csrf"
 import { LogTime } from "./v2/middleware/time-taken"
 
 const app = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
@@ -26,8 +26,11 @@ app.get(
 // openapi config
 app.doc("/openapi", OpenAPIConfig)
 
-//  middleware
-app.use("*", csrfValidation)
+// middleware
+// interface CSRFOptions {
+//     origin?: string | string[] | IsAllowedOriginHandler;
+// }
+app.use("*", csrf())
 app.use("*", LogTime)
 
 app.use(

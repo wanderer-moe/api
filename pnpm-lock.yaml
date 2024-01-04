@@ -10,10 +10,10 @@ dependencies:
         version: 1.0.0-rc.1
     "@hono/swagger-ui":
         specifier: ^0.2.1
-        version: 0.2.1(hono@3.11.11)
+        version: 0.2.1(hono@3.12.0)
     "@hono/zod-openapi":
         specifier: ^0.9.5
-        version: 0.9.5(hono@3.11.11)(zod@3.22.4)
+        version: 0.9.5(hono@3.12.0)(zod@3.22.4)
     "@libsql/client":
         specifier: 0.4.0-pre.5
         version: 0.4.0-pre.5
@@ -22,7 +22,7 @@ dependencies:
         version: 3.0.0-beta.12(@libsql/client@0.4.0-pre.5)(better-sqlite3@9.2.2)(lucia@3.0.0-beta.14)
     "@scalar/hono-api-reference":
         specifier: ^0.3.9
-        version: 0.3.9(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(hono@3.11.11)(nanoid@5.0.4)(postcss@8.4.32)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.4)
+        version: 0.3.9(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(hono@3.12.0)(nanoid@5.0.4)(postcss@8.4.32)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.5)
     "@typescript-eslint/eslint-plugin":
         specifier: ^6.16.0
         version: 6.16.0(@typescript-eslint/parser@6.17.0)(eslint@8.56.0)(typescript@5.3.3)
@@ -36,8 +36,8 @@ dependencies:
         specifier: ^0.5.1
         version: 0.5.1(drizzle-orm@0.29.2)(zod@3.22.4)
     hono:
-        specifier: ^3.11.11
-        version: 3.11.11
+        specifier: ^3.12.0
+        version: 3.12.0
     lucia:
         specifier: 3.0.0-beta.14
         version: 3.0.0-beta.14
@@ -2164,7 +2164,7 @@ packages:
             "@codemirror/state": 6.4.0
             "@codemirror/view": 6.23.0
             "@lezer/common": 1.2.0
-            "@lezer/javascript": 1.4.11
+            "@lezer/javascript": 1.4.12
         dev: false
 
     /@codemirror/lang-json@6.0.1:
@@ -3628,14 +3628,14 @@ packages:
             }
         dev: false
 
-    /@floating-ui/vue@1.0.2(vue@3.4.4):
+    /@floating-ui/vue@1.0.2(vue@3.4.5):
         resolution:
             {
                 integrity: sha512-sImlAl9mAoCKZLNlwWz2P2ZMJIDlOEDXrRD6aD2sIHAka1LPC+nWtB+D3lPe7IE7FGWSbwBPTnlSdlABa3Fr0A==,
             }
         dependencies:
             "@floating-ui/dom": 1.5.3
-            vue-demi: 0.14.6(vue@3.4.4)
+            vue-demi: 0.14.6(vue@3.4.5)
         transitivePeerDependencies:
             - "@vue/composition-api"
             - vue
@@ -3671,7 +3671,7 @@ packages:
             vue: 3.4.3(typescript@5.3.3)
         dev: false
 
-    /@headlessui/vue@1.7.16(vue@3.4.4):
+    /@headlessui/vue@1.7.16(vue@3.4.5):
         resolution:
             {
                 integrity: sha512-nKT+nf/q6x198SsyK54mSszaQl/z+QxtASmgMEJtpxSX2Q0OPJX0upS/9daDyiECpeAsvjkoOrm2O/6PyBQ+Qg==,
@@ -3680,10 +3680,10 @@ packages:
         peerDependencies:
             vue: ^3.2.0
         dependencies:
-            vue: 3.4.4(typescript@5.3.3)
+            vue: 3.4.5(typescript@5.3.3)
         dev: false
 
-    /@hono/swagger-ui@0.2.1(hono@3.11.11):
+    /@hono/swagger-ui@0.2.1(hono@3.12.0):
         resolution:
             {
                 integrity: sha512-wBxVMRe3/v8xH4o6icmwztiIq0DG0s7+jHVMHVUAoFFCWEQNL2iskMmQtrhSDtsFmBZUeUFQUaaJ6Ir6DOmHLA==,
@@ -3691,10 +3691,10 @@ packages:
         peerDependencies:
             hono: "*"
         dependencies:
-            hono: 3.11.11
+            hono: 3.12.0
         dev: false
 
-    /@hono/zod-openapi@0.9.5(hono@3.11.11)(zod@3.22.4):
+    /@hono/zod-openapi@0.9.5(hono@3.12.0)(zod@3.22.4):
         resolution:
             {
                 integrity: sha512-Px8QEIr5RyDeHQn51Ihnwtl//foFvd/F6yBq6o/3pVMUpoV6X4JZ+srgUrOX2VRrInpLVEP/NaroXlfvarwIxA==,
@@ -3705,12 +3705,12 @@ packages:
             zod: 3.*
         dependencies:
             "@asteasolutions/zod-to-openapi": 5.5.0(zod@3.22.4)
-            "@hono/zod-validator": 0.1.11(hono@3.11.11)(zod@3.22.4)
-            hono: 3.11.11
+            "@hono/zod-validator": 0.1.11(hono@3.12.0)(zod@3.22.4)
+            hono: 3.12.0
             zod: 3.22.4
         dev: false
 
-    /@hono/zod-validator@0.1.11(hono@3.11.11)(zod@3.22.4):
+    /@hono/zod-validator@0.1.11(hono@3.12.0)(zod@3.22.4):
         resolution:
             {
                 integrity: sha512-PQXeHUP0+36qpRt8yfeD7N2jbK3ETlGvSN6dMof/HwUC/APRokQRjpXZm4rrlG71Ft0aWE01+Bm4XejqPie5Uw==,
@@ -3719,7 +3719,7 @@ packages:
             hono: ">=3.9.0"
             zod: ^3.19.1
         dependencies:
-            hono: 3.11.11
+            hono: 3.12.0
             zod: 3.22.4
         dev: false
 
@@ -3887,10 +3887,10 @@ packages:
             "@lezer/lr": 1.3.14
         dev: false
 
-    /@lezer/javascript@1.4.11:
+    /@lezer/javascript@1.4.12:
         resolution:
             {
-                integrity: sha512-B5Y9EJF4BWiMgj4ufxUo2hrORnmMBDrMtR+L7dwIO5pocuSAahG6QBwXR6PbKJOjRywJczU2r2LJPg79ER91TQ==,
+                integrity: sha512-kwO5MftUiyfKBcECMEDc4HYnc10JME9kTJNPVoCXqJj/Y+ASWF0rgstORi3BThlQI6SoPSshrK5TjuiLFnr29A==,
             }
         dependencies:
             "@lezer/highlight": 1.2.0
@@ -4903,7 +4903,7 @@ packages:
             }
         dev: false
 
-    /@scalar/api-client@0.8.6(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(vue@3.4.4):
+    /@scalar/api-client@0.8.6(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(vue@3.4.5):
         resolution:
             {
                 integrity: sha512-qAlb0nqOnhqsrmEL8Cbjdi/TPGSyyXTmoVLMV73DqnAMe+yC4PvbEkJjIN0zQLV2jTtcG7O9LQeqo2PgRIgrDQ==,
@@ -4912,19 +4912,19 @@ packages:
         peerDependencies:
             vue: ^3.3.0
         dependencies:
-            "@headlessui/vue": 1.7.16(vue@3.4.4)
-            "@scalar/themes": 0.5.1(vue@3.4.4)
-            "@scalar/use-codemirror": 0.7.16(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(vue@3.4.4)
-            "@scalar/use-keyboard-event": 0.5.6(vue@3.4.4)
-            "@scalar/use-modal": 0.2.1(@headlessui/vue@1.7.16)(vue@3.4.4)
-            "@vueuse/core": 10.7.1(vue@3.4.4)
+            "@headlessui/vue": 1.7.16(vue@3.4.5)
+            "@scalar/themes": 0.5.1(vue@3.4.5)
+            "@scalar/use-codemirror": 0.7.16(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(vue@3.4.5)
+            "@scalar/use-keyboard-event": 0.5.6(vue@3.4.5)
+            "@scalar/use-modal": 0.2.1(@headlessui/vue@1.7.16)(vue@3.4.5)
+            "@vueuse/core": 10.7.1(vue@3.4.5)
             axios: 1.6.3
             content-type: 1.0.5
             javascript-time-ago: 2.5.9
             nanoid: 5.0.4
             pretty-bytes: 6.1.1
             pretty-ms: 8.0.0
-            vue: 3.4.4(typescript@5.3.3)
+            vue: 3.4.5(typescript@5.3.3)
         transitivePeerDependencies:
             - "@codemirror/lang-html"
             - "@codemirror/lang-java"
@@ -4944,7 +4944,7 @@ packages:
             - debug
         dev: false
 
-    /@scalar/api-reference@1.12.7(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(nanoid@5.0.4)(postcss@8.4.32)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.4):
+    /@scalar/api-reference@1.12.7(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(nanoid@5.0.4)(postcss@8.4.32)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.5):
         resolution:
             {
                 integrity: sha512-Ok00vJx8ko9UZ0eCE2HFUtGd/GONJhYF7Nn5jp7XmxzLb+d8wywfwHm9Vkp3d/ieCkc5ORNHTf54+g/6HPwG8w==,
@@ -4954,23 +4954,23 @@ packages:
             unified: ^11.0.0
             vue: ^3.3.0
         dependencies:
-            "@floating-ui/vue": 1.0.2(vue@3.4.4)
-            "@headlessui/vue": 1.7.16(vue@3.4.4)
-            "@scalar/api-client": 0.8.6(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(vue@3.4.4)
+            "@floating-ui/vue": 1.0.2(vue@3.4.5)
+            "@headlessui/vue": 1.7.16(vue@3.4.5)
+            "@scalar/api-client": 0.8.6(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(vue@3.4.5)
             "@scalar/components": 0.2.0(typescript@5.3.3)
             "@scalar/snippetz": 0.1.4
-            "@scalar/swagger-editor": 0.9.2(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/view@6.23.0)(@headlessui/vue@1.7.16)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.4)
+            "@scalar/swagger-editor": 0.9.2(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/view@6.23.0)(@headlessui/vue@1.7.16)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.5)
             "@scalar/swagger-parser": 0.5.13(openapi-types@12.1.3)
-            "@scalar/themes": 0.5.1(vue@3.4.4)
+            "@scalar/themes": 0.5.1(vue@3.4.5)
             "@scalar/use-clipboard": 0.5.11(@scalar/use-toasts@0.5.11)(nanoid@5.0.4)
-            "@scalar/use-codemirror": 0.7.16(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(vue@3.4.4)
-            "@scalar/use-keyboard-event": 0.5.6(vue@3.4.4)
-            "@scalar/use-modal": 0.2.1(@headlessui/vue@1.7.16)(vue@3.4.4)
-            "@scalar/use-toasts": 0.5.11(nanoid@5.0.4)(vue@3.4.4)
-            "@scalar/use-tooltip": 0.5.7(vue@3.4.4)
+            "@scalar/use-codemirror": 0.7.16(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(vue@3.4.5)
+            "@scalar/use-keyboard-event": 0.5.6(vue@3.4.5)
+            "@scalar/use-modal": 0.2.1(@headlessui/vue@1.7.16)(vue@3.4.5)
+            "@scalar/use-toasts": 0.5.11(nanoid@5.0.4)(vue@3.4.5)
+            "@scalar/use-tooltip": 0.5.7(vue@3.4.5)
             "@unhead/schema": 1.8.9
             "@vcarl/remark-headings": 0.1.0
-            "@vueuse/core": 10.7.1(vue@3.4.4)
+            "@vueuse/core": 10.7.1(vue@3.4.5)
             "@xmldom/xmldom": 0.8.10
             axios: 1.6.3
             fuse.js: 6.6.2
@@ -4991,7 +4991,7 @@ packages:
             remark-stringify: 11.0.0
             unhead: 1.8.9
             unified: 11.0.4
-            vue: 3.4.4(typescript@5.3.3)
+            vue: 3.4.5(typescript@5.3.3)
         transitivePeerDependencies:
             - "@codemirror/lang-html"
             - "@codemirror/lang-java"
@@ -5035,7 +5035,7 @@ packages:
             - typescript
         dev: false
 
-    /@scalar/hono-api-reference@0.3.9(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(hono@3.11.11)(nanoid@5.0.4)(postcss@8.4.32)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.4):
+    /@scalar/hono-api-reference@0.3.9(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(hono@3.12.0)(nanoid@5.0.4)(postcss@8.4.32)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.5):
         resolution:
             {
                 integrity: sha512-F52PqTkAmdeCP84wjlcZxcYJz06Bqgk/gTmBW60wd9hP70JjlMsP31DriIHyx3R5x1SlYvpEwf2kpH3b13IxBQ==,
@@ -5044,8 +5044,8 @@ packages:
         peerDependencies:
             hono: ^3.0.0
         dependencies:
-            "@scalar/api-reference": 1.12.7(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(nanoid@5.0.4)(postcss@8.4.32)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.4)
-            hono: 3.11.11
+            "@scalar/api-reference": 1.12.7(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(nanoid@5.0.4)(postcss@8.4.32)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.5)
+            hono: 3.12.0
         transitivePeerDependencies:
             - "@codemirror/lang-html"
             - "@codemirror/lang-java"
@@ -5109,7 +5109,7 @@ packages:
             "@scalar/snippetz-plugin-node-undici": 0.1.4
         dev: false
 
-    /@scalar/swagger-editor@0.9.2(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/view@6.23.0)(@headlessui/vue@1.7.16)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.4):
+    /@scalar/swagger-editor@0.9.2(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/view@6.23.0)(@headlessui/vue@1.7.16)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.5):
         resolution:
             {
                 integrity: sha512-h176YaLpjofDJZXG+aZM28yKweBtV/yh7lGSsK+y0FO3kKxCpXC0ONEgG0vtFBzV/tXjAXIKNBpd3mRpwDQzfA==,
@@ -5121,10 +5121,10 @@ packages:
         dependencies:
             "@codemirror/state": 6.4.0
             "@scalar/components": 0.2.0(typescript@5.3.3)
-            "@scalar/themes": 0.5.1(vue@3.4.4)
-            "@scalar/use-codemirror": 0.7.16(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(vue@3.4.4)
-            "@scalar/use-modal": 0.2.1(@headlessui/vue@1.7.16)(vue@3.4.4)
-            "@vueuse/core": 10.7.1(vue@3.4.4)
+            "@scalar/themes": 0.5.1(vue@3.4.5)
+            "@scalar/use-codemirror": 0.7.16(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(vue@3.4.5)
+            "@scalar/use-modal": 0.2.1(@headlessui/vue@1.7.16)(vue@3.4.5)
+            "@vueuse/core": 10.7.1(vue@3.4.5)
             nanoid: 5.0.4
             rehype-external-links: 3.0.0
             rehype-format: 5.0.0
@@ -5136,7 +5136,7 @@ packages:
             remark-parse: 11.0.0
             remark-rehype: 11.0.0
             unified: 11.0.4
-            vue: 3.4.4(typescript@5.3.3)
+            vue: 3.4.5(typescript@5.3.3)
         transitivePeerDependencies:
             - "@codemirror/lang-html"
             - "@codemirror/lang-java"
@@ -5170,7 +5170,7 @@ packages:
             - openapi-types
         dev: false
 
-    /@scalar/themes@0.5.1(vue@3.4.4):
+    /@scalar/themes@0.5.1(vue@3.4.5):
         resolution:
             {
                 integrity: sha512-iaX9H1P/KukzuzkgRlbE4QWxYRHWQajf4AGQVI9Na9KeIQ4NgpkWWsIfcDKekP6P7QrlLvFpgkLcjJf5mnnF4A==,
@@ -5179,7 +5179,7 @@ packages:
         peerDependencies:
             vue: ^3.3.0
         dependencies:
-            vue: 3.4.4(typescript@5.3.3)
+            vue: 3.4.5(typescript@5.3.3)
         dev: false
 
     /@scalar/use-clipboard@0.5.11(@scalar/use-toasts@0.5.11)(nanoid@5.0.4):
@@ -5192,11 +5192,11 @@ packages:
             "@scalar/use-toasts": 0.5.11
             nanoid: ^5.0.1
         dependencies:
-            "@scalar/use-toasts": 0.5.11(nanoid@5.0.4)(vue@3.4.4)
+            "@scalar/use-toasts": 0.5.11(nanoid@5.0.4)(vue@3.4.5)
             nanoid: 5.0.4
         dev: false
 
-    /@scalar/use-codemirror@0.7.16(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(vue@3.4.4):
+    /@scalar/use-codemirror@0.7.16(@codemirror/lang-html@6.4.7)(@codemirror/lang-java@6.0.1)(@codemirror/lang-javascript@6.2.1)(@codemirror/lang-json@6.0.1)(@codemirror/lang-python@6.1.3)(@codemirror/language@6.10.0)(@codemirror/legacy-modes@6.3.3)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.0)(@lezer/highlight@1.2.0)(@lezer/lr@1.3.14)(@uiw/codemirror-themes@4.21.21)(codemirror@6.0.1)(vue@3.4.5):
         resolution:
             {
                 integrity: sha512-TQXplKCVDheuR/w7q9q0HzyQ9rJmy3P0tAFw2jPLwfAq3Q6YVpltuu3UrKzAOtxV3FcKMc7lzYZLaGY0DHcTVw==,
@@ -5233,10 +5233,10 @@ packages:
             "@lezer/lr": 1.3.14
             "@uiw/codemirror-themes": 4.21.21(@codemirror/language@6.10.0)(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)
             codemirror: 6.0.1(@lezer/common@1.2.0)
-            vue: 3.4.4(typescript@5.3.3)
+            vue: 3.4.5(typescript@5.3.3)
         dev: false
 
-    /@scalar/use-keyboard-event@0.5.6(vue@3.4.4):
+    /@scalar/use-keyboard-event@0.5.6(vue@3.4.5):
         resolution:
             {
                 integrity: sha512-/sKl0LDr2RoTVuQIUaeeOkEbUtl2z+cqEHHF4CNenqOra/Sz/u/eexDHbMc7ZTaaIo9snMHSceLo2k9ThQUz3g==,
@@ -5245,10 +5245,10 @@ packages:
         peerDependencies:
             vue: ^3.3.0
         dependencies:
-            vue: 3.4.4(typescript@5.3.3)
+            vue: 3.4.5(typescript@5.3.3)
         dev: false
 
-    /@scalar/use-modal@0.2.1(@headlessui/vue@1.7.16)(vue@3.4.4):
+    /@scalar/use-modal@0.2.1(@headlessui/vue@1.7.16)(vue@3.4.5):
         resolution:
             {
                 integrity: sha512-OAf7nIoKAbt53GGbbsDbIoAF+/RRQIjnBJhgfk4eI1ACyAOVXwVWrjJ1eYmGbv86gzEX9neb/qpwkc9kcnz1FQ==,
@@ -5258,11 +5258,11 @@ packages:
             "@headlessui/vue": ^1.7.0
             vue: ^3.3.0
         dependencies:
-            "@headlessui/vue": 1.7.16(vue@3.4.4)
-            vue: 3.4.4(typescript@5.3.3)
+            "@headlessui/vue": 1.7.16(vue@3.4.5)
+            vue: 3.4.5(typescript@5.3.3)
         dev: false
 
-    /@scalar/use-toasts@0.5.11(nanoid@5.0.4)(vue@3.4.4):
+    /@scalar/use-toasts@0.5.11(nanoid@5.0.4)(vue@3.4.5):
         resolution:
             {
                 integrity: sha512-5uaxV+944rkrYl3mQaQn+AruBCcDjN03jODko2K618unSf3JQixIi6ptoOcXCL6QAGM4FaHtMjRjX/7LJWOtOQ==,
@@ -5273,10 +5273,10 @@ packages:
             vue: ^3.3.0
         dependencies:
             nanoid: 5.0.4
-            vue: 3.4.4(typescript@5.3.3)
+            vue: 3.4.5(typescript@5.3.3)
         dev: false
 
-    /@scalar/use-tooltip@0.5.7(vue@3.4.4):
+    /@scalar/use-tooltip@0.5.7(vue@3.4.5):
         resolution:
             {
                 integrity: sha512-WmTleZDjR1Yerw1GLoh9li/3d9dFDWm1Vb39xrehtXx8bGB8+IkRyg8ZCfGzEKNySbf263QAaRmZkKUMVOGdAA==,
@@ -5286,7 +5286,7 @@ packages:
             vue: ^3.3.0
         dependencies:
             tippy.js: 6.3.7
-            vue: 3.4.4(typescript@5.3.3)
+            vue: 3.4.5(typescript@5.3.3)
         dev: false
 
     /@segment/loosely-validate-event@2.0.0:
@@ -5805,14 +5805,14 @@ packages:
             source-map-js: 1.0.2
         dev: false
 
-    /@vue/compiler-core@3.4.4:
+    /@vue/compiler-core@3.4.5:
         resolution:
             {
-                integrity: sha512-U5AdCN+6skzh2bSJrkMj2KZsVkUpgK8/XlxjSRYQZhNPcvt9/kmgIMpFEiTyK+Dz5E1J+8o8//BEIX+bakgVSw==,
+                integrity: sha512-Daka7P1z2AgKjzuueWXhwzIsKu0NkLB6vGbNVEV2iJ8GJTrzraZo/Sk4GWCMRtd/qVi3zwnk+Owbd/xSZbwHtQ==,
             }
         dependencies:
             "@babel/parser": 7.23.6
-            "@vue/shared": 3.4.4
+            "@vue/shared": 3.4.5
             entities: 4.5.0
             estree-walker: 2.0.2
             source-map-js: 1.0.2
@@ -5828,14 +5828,14 @@ packages:
             "@vue/shared": 3.4.3
         dev: false
 
-    /@vue/compiler-dom@3.4.4:
+    /@vue/compiler-dom@3.4.5:
         resolution:
             {
-                integrity: sha512-iSwkdDULCN+Vr8z6uwdlL044GJ/nUmECxP9vu7MzEs4Qma0FwDLYvnvRcyO0ZITuu3Os4FptGUDnhi1kOLSaGw==,
+                integrity: sha512-J8YlxknJVd90SXFJ4HwGANSAXsx5I0lK30sO/zvYV7s5gXf7gZR7r/1BmZ2ju7RGH1lnc6bpBc6nL61yW+PsAQ==,
             }
         dependencies:
-            "@vue/compiler-core": 3.4.4
-            "@vue/shared": 3.4.4
+            "@vue/compiler-core": 3.4.5
+            "@vue/shared": 3.4.5
         dev: false
 
     /@vue/compiler-sfc@3.4.3:
@@ -5855,17 +5855,17 @@ packages:
             source-map-js: 1.0.2
         dev: false
 
-    /@vue/compiler-sfc@3.4.4:
+    /@vue/compiler-sfc@3.4.5:
         resolution:
             {
-                integrity: sha512-OTFcU6vUxUNHBcarzkp4g6d25nvcmDvFDzPRvSrIsByFFPRYN+y3b+j9HxYwt6nlWvGyFCe0roeJdJlfYxbCBg==,
+                integrity: sha512-jauvkDuSSUbP0ebhfNqljhShA90YEfX/0wZ+w40oZF43IjGyWYjqYaJbvMJwGOd+9+vODW6eSvnk28f0SGV7OQ==,
             }
         dependencies:
             "@babel/parser": 7.23.6
-            "@vue/compiler-core": 3.4.4
-            "@vue/compiler-dom": 3.4.4
-            "@vue/compiler-ssr": 3.4.4
-            "@vue/shared": 3.4.4
+            "@vue/compiler-core": 3.4.5
+            "@vue/compiler-dom": 3.4.5
+            "@vue/compiler-ssr": 3.4.5
+            "@vue/shared": 3.4.5
             estree-walker: 2.0.2
             magic-string: 0.30.5
             postcss: 8.4.32
@@ -5882,14 +5882,14 @@ packages:
             "@vue/shared": 3.4.3
         dev: false
 
-    /@vue/compiler-ssr@3.4.4:
+    /@vue/compiler-ssr@3.4.5:
         resolution:
             {
-                integrity: sha512-1DU9DflSSQlx/M61GEBN+NbT/anUki2ooDo9IXfTckCeKA/2IKNhY8KbG3x6zkd3KGrxzteC7de6QL88vEb41Q==,
+                integrity: sha512-DDdEcDzj2lWTMfUMMtEpLDhURai9LhM0zSZ219jCt7b2Vyl0/jy3keFgCPMitG0V1S1YG4Cmws3lWHWdxHQOpg==,
             }
         dependencies:
-            "@vue/compiler-dom": 3.4.4
-            "@vue/shared": 3.4.4
+            "@vue/compiler-dom": 3.4.5
+            "@vue/shared": 3.4.5
         dev: false
 
     /@vue/reactivity@3.4.3:
@@ -5901,13 +5901,13 @@ packages:
             "@vue/shared": 3.4.3
         dev: false
 
-    /@vue/reactivity@3.4.4:
+    /@vue/reactivity@3.4.5:
         resolution:
             {
-                integrity: sha512-DFsuJBf6sfhd5SYzJmcBTUG9+EKqjF31Gsk1NJtnpJm9liSZ806XwGJUeNBVQIanax7ODV7Lmk/k17BgxXNuTg==,
+                integrity: sha512-BcWkKvjdvqJwb7BhhFkXPLDCecX4d4a6GATvCduJQDLv21PkPowAE5GKuIE5p6RC07/Lp9FMkkq4AYCTVF5KlQ==,
             }
         dependencies:
-            "@vue/shared": 3.4.4
+            "@vue/shared": 3.4.5
         dev: false
 
     /@vue/runtime-core@3.4.3:
@@ -5920,14 +5920,14 @@ packages:
             "@vue/shared": 3.4.3
         dev: false
 
-    /@vue/runtime-core@3.4.4:
+    /@vue/runtime-core@3.4.5:
         resolution:
             {
-                integrity: sha512-zWWwNQAj5JdxrmOA1xegJm+c4VtyIbDEKgQjSb4va5v7gGTCh0ZjvLI+htGFdVXaO9bs2J3C81p5p+6jrPK8Bw==,
+                integrity: sha512-wh9ELIOQKeWT9SaUPdLrsxRkZv14jp+SJm9aiQGWio+/MWNM3Lib0wE6CoKEqQ9+SCYyGjDBhTOTtO47kCgbkg==,
             }
         dependencies:
-            "@vue/reactivity": 3.4.4
-            "@vue/shared": 3.4.4
+            "@vue/reactivity": 3.4.5
+            "@vue/shared": 3.4.5
         dev: false
 
     /@vue/runtime-dom@3.4.3:
@@ -5941,14 +5941,14 @@ packages:
             csstype: 3.1.3
         dev: false
 
-    /@vue/runtime-dom@3.4.4:
+    /@vue/runtime-dom@3.4.5:
         resolution:
             {
-                integrity: sha512-Nlh2ap1J/eJQ6R0g+AIRyGNwpTJQACN0dk8I8FRLH8Ev11DSvfcPOpn4+Kbg5xAMcuq0cHB8zFYxVrOgETrrvg==,
+                integrity: sha512-n5ewvOjyG3IEpqGBahdPXODFSpVlSz3H4LF76Sx0XAqpIOqyJ5bIb2PrdYuH2ogBMAQPh+o5tnoH4nJpBr8U0Q==,
             }
         dependencies:
-            "@vue/runtime-core": 3.4.4
-            "@vue/shared": 3.4.4
+            "@vue/runtime-core": 3.4.5
+            "@vue/shared": 3.4.5
             csstype: 3.1.3
         dev: false
 
@@ -5965,17 +5965,17 @@ packages:
             vue: 3.4.3(typescript@5.3.3)
         dev: false
 
-    /@vue/server-renderer@3.4.4(vue@3.4.4):
+    /@vue/server-renderer@3.4.5(vue@3.4.5):
         resolution:
             {
-                integrity: sha512-+AjoiKcC41k7SMJBYkDO9xs79/Of8DiThS9mH5l2MK+EY0to3psI0k+sElvVqQvsoZTjHMEuMz0AEgvm2T+CwA==,
+                integrity: sha512-jOFc/VE87yvifQpNju12VcqimH8pBLxdcT+t3xMeiED1K6DfH9SORyhFEoZlW5TG2Vwfn3Ul5KE+1aC99xnSBg==,
             }
         peerDependencies:
-            vue: 3.4.4
+            vue: 3.4.5
         dependencies:
-            "@vue/compiler-ssr": 3.4.4
-            "@vue/shared": 3.4.4
-            vue: 3.4.4(typescript@5.3.3)
+            "@vue/compiler-ssr": 3.4.5
+            "@vue/shared": 3.4.5
+            vue: 3.4.5(typescript@5.3.3)
         dev: false
 
     /@vue/shared@3.4.3:
@@ -5985,10 +5985,10 @@ packages:
             }
         dev: false
 
-    /@vue/shared@3.4.4:
+    /@vue/shared@3.4.5:
         resolution:
             {
-                integrity: sha512-abSgiVRhfjfl3JALR/cSuBl74hGJ3SePgf1mKzodf1eMWLwHZbfEGxT2cNJSsNiw44jEgrO7bNkhchaWA7RwNw==,
+                integrity: sha512-6XptuzlMvN4l4cDnDw36pdGEV+9njYkQ1ZE0Q6iZLwrKefKaOJyiFmcP3/KBDHbt72cJZGtllAc1GaHe6XGAyg==,
             }
         dev: false
 
@@ -6007,7 +6007,7 @@ packages:
             - vue
         dev: false
 
-    /@vueuse/core@10.7.1(vue@3.4.4):
+    /@vueuse/core@10.7.1(vue@3.4.5):
         resolution:
             {
                 integrity: sha512-74mWHlaesJSWGp1ihg76vAnfVq9NTv1YT0SYhAQ6zwFNdBkkP+CKKJmVOEHcdSnLXCXYiL5e7MaewblfiYLP7g==,
@@ -6015,8 +6015,8 @@ packages:
         dependencies:
             "@types/web-bluetooth": 0.0.20
             "@vueuse/metadata": 10.7.1
-            "@vueuse/shared": 10.7.1(vue@3.4.4)
-            vue-demi: 0.14.6(vue@3.4.4)
+            "@vueuse/shared": 10.7.1(vue@3.4.5)
+            vue-demi: 0.14.6(vue@3.4.5)
         transitivePeerDependencies:
             - "@vue/composition-api"
             - vue
@@ -6041,13 +6041,13 @@ packages:
             - vue
         dev: false
 
-    /@vueuse/shared@10.7.1(vue@3.4.4):
+    /@vueuse/shared@10.7.1(vue@3.4.5):
         resolution:
             {
                 integrity: sha512-v0jbRR31LSgRY/C5i5X279A/WQjD6/JsMzGa+eqt658oJ75IvQXAeONmwvEMrvJQKnRElq/frzBR7fhmWY5uLw==,
             }
         dependencies:
-            vue-demi: 0.14.6(vue@3.4.4)
+            vue-demi: 0.14.6(vue@3.4.5)
         transitivePeerDependencies:
             - "@vue/composition-api"
             - vue
@@ -9153,10 +9153,10 @@ packages:
         engines: { node: ">=12.0.0" }
         dev: false
 
-    /hono@3.11.11:
+    /hono@3.12.0:
         resolution:
             {
-                integrity: sha512-E3Xv7LnOjg7VXiu+t+YplDEYXvkxpcTCzZ3RUFQlcNXclSME8aiQAYwWpJPT6MQRRpa4TG5RlOolqeYEDEK3wg==,
+                integrity: sha512-UPEtZuLY7Wo7g0mqKWSOjLFdT8t7wJ60IYEcxKl3AQNU4u+R2QqU2fJMPmSu24C+/ag20Z8mOTQOErZzK4DMvA==,
             }
         engines: { node: ">=16.0.0" }
         dev: false
@@ -13627,7 +13627,7 @@ packages:
             vue: 3.4.3(typescript@5.3.3)
         dev: false
 
-    /vue-demi@0.14.6(vue@3.4.4):
+    /vue-demi@0.14.6(vue@3.4.5):
         resolution:
             {
                 integrity: sha512-8QA7wrYSHKaYgUxDA5ZC24w+eHm3sYCbp0EzcDwKqN3p6HqtTCGR/GVsPyZW92unff4UlcSh++lmqDWN3ZIq4w==,
@@ -13642,7 +13642,7 @@ packages:
             "@vue/composition-api":
                 optional: true
         dependencies:
-            vue: 3.4.4(typescript@5.3.3)
+            vue: 3.4.5(typescript@5.3.3)
         dev: false
 
     /vue@3.4.3(typescript@5.3.3):
@@ -13664,10 +13664,10 @@ packages:
             typescript: 5.3.3
         dev: false
 
-    /vue@3.4.4(typescript@5.3.3):
+    /vue@3.4.5(typescript@5.3.3):
         resolution:
             {
-                integrity: sha512-suZXgDVT8lRNhKmxdkwOsR0oyUi8is7mtqI18qW97JLoyorEbE9B2Sb4Ws/mR/+0AgA/JUtsv1ytlRSH3/pDIA==,
+                integrity: sha512-VH6nHFhLPjgu2oh5vEBXoNZxsGHuZNr3qf4PHClwJWw6IDqw6B3x+4J+ABdoZ0aJuT8Zi0zf3GpGlLQCrGWHrw==,
             }
         peerDependencies:
             typescript: "*"
@@ -13675,11 +13675,11 @@ packages:
             typescript:
                 optional: true
         dependencies:
-            "@vue/compiler-dom": 3.4.4
-            "@vue/compiler-sfc": 3.4.4
-            "@vue/runtime-dom": 3.4.4
-            "@vue/server-renderer": 3.4.4(vue@3.4.4)
-            "@vue/shared": 3.4.4
+            "@vue/compiler-dom": 3.4.5
+            "@vue/compiler-sfc": 3.4.5
+            "@vue/runtime-dom": 3.4.5
+            "@vue/server-renderer": 3.4.5(vue@3.4.5)
+            "@vue/shared": 3.4.5
             typescript: 5.3.3
         dev: false
 
