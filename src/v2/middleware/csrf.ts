@@ -1,6 +1,8 @@
 import type { Next } from "hono"
 import { verifyRequestOrigin } from "oslo/request"
 
+// TODO(dromzeh): i will probably go back and generate a csrf token for every request
+// but for now, i'm just gonna use the request origin header to verify the request
 export async function csrfValidation(ctx: APIContext, next: Next) {
     if (ctx.req.method === "GET") {
         return next()

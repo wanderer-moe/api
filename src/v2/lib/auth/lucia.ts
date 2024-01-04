@@ -6,8 +6,10 @@ import { LibSQLAdapter } from "@lucia-auth/adapter-sqlite"
 export function luciaAuth(env: Bindings) {
     const { turso } = getConnection(env)
 
-    // TODO(dromzeh): should probably utilize to the v3 drizzle adapter - it's okay for now though
     return new Lucia(
+        // i can't get the drizzle adapter working at all (works fine with SQLite3)
+        // and i don't really have time to write my own rn , so i'm just gonna use the sqlite adapter
+        // it is what it is :3
         new LibSQLAdapter(turso, {
             user: tableNames.authUser,
             session: tableNames.authSession,
@@ -39,6 +41,11 @@ export function luciaAuth(env: Bindings) {
             },
             sessionCookie: {
                 name: "user_auth_session",
+                // i don't really see too much of a security concern with making the session cookie indefinite.
+                // it's very unlikely that someone will be able to steal a session cookie, and if they do, it's
+                // already handled with comparing IP/UA/Country Code. it expires the session
+                // and it can just state that the session was logged out due to a security concern(and the user can just log back in)
+                // plus i feel this is better user experience in general lol
                 expires: false,
                 attributes: {
                     secure: env.ENVIRONMENT === "PROD",
