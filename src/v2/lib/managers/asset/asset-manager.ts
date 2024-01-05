@@ -53,7 +53,13 @@ export class AssetManager {
         try {
             return await this.drizzle
                 .update(asset)
-                .set(update)
+                .set({
+                    name: update.name,
+                    assetCategoryId: update.assetCategoryId,
+                    gameId: update.gameId,
+                    assetIsSuggestive:
+                        update.assetIsSuggestive == 1 ? true : false,
+                })
                 .where(eq(asset.id, assetId))
                 .returning()
         } catch (e) {
@@ -234,7 +240,8 @@ export class AssetManager {
                             fileSize: 0,
                             width: 0,
                             height: 0,
-                            assetIsSuggestive: newAsset.assetIsSuggestive == 1 ? true : false,
+                            assetIsSuggestive:
+                                newAsset.assetIsSuggestive == 1 ? true : false,
                         })
                         .returning()
 
