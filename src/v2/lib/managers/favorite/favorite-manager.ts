@@ -25,6 +25,12 @@ export class FavoriteManager {
         currentUserId?: string
     ): Promise<UserFavorite | null> {
         try {
+            const favouriteExists = this.checkIfUserFavoriteExists(userId)
+
+            if (!favouriteExists) {
+                await this.createInitialFavorite(userId)
+            }
+
             const [favorite] = await this.drizzle
                 .select()
                 .from(userFavorite)
@@ -45,6 +51,27 @@ export class FavoriteManager {
             )
             throw new Error(
                 `Error in getUserFavorite for userId ${userId} and currentUserId ${currentUserId}`
+            )
+        }
+    }
+
+    public async checkIfUserFavoriteExists(userId: string): Promise<boolean> {
+        try {
+            const [favorite] = await this.drizzle
+                .select({
+                    id: userFavorite.id,
+                })
+                .from(userFavorite)
+                .where(and(eq(userFavorite.userId, userId)))
+
+            return favorite ? true : false
+        } catch (e) {
+            console.error(
+                `Error in checkIfUserFavoriteExists for userId ${userId}`,
+                e
+            )
+            throw new Error(
+                `Error in checkIfUserFavoriteExists for userId ${userId}`
             )
         }
     }
@@ -83,9 +110,16 @@ export class FavoriteManager {
      */
     public async addAssetToFavorites(
         assetId: number,
+        userId: string,
         userFavoriteId: string
     ): Promise<NewUserFavoriteAsset> {
         try {
+            const favouriteExists = this.checkIfUserFavoriteExists(userId)
+
+            if (!favouriteExists) {
+                await this.createInitialFavorite(userId)
+            }
+
             const [favorite] = await this.drizzle
                 .insert(userFavoriteAsset)
                 .values({
@@ -113,9 +147,16 @@ export class FavoriteManager {
      */
     public async removeAssetFromFavorites(
         assetId: number,
+        userId: string,
         userFavoriteId: string
     ): Promise<UserFavoriteAsset | null> {
         try {
+            const favouriteExists = this.checkIfUserFavoriteExists(userId)
+
+            if (!favouriteExists) {
+                await this.createInitialFavorite(userId)
+            }
+
             const [favorite] = await this.drizzle
                 .delete(userFavoriteAsset)
                 .where(

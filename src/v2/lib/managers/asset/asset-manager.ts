@@ -157,9 +157,6 @@ export class AssetManager {
             const searchQuery = name ?? null
             const tagList = tags ? SplitQueryByCommas(tags.toLowerCase()) : null
 
-            console.log(query)
-            console.log(categoryList, gameList, searchQuery)
-
             const assets = await this.drizzle.query.asset.findMany({
                 where: (asset, { and, or, like, eq, sql }) =>
                     and(
@@ -215,7 +212,7 @@ export class AssetManager {
         userId: string,
         userNickname: string,
         newAsset: z.infer<typeof uploadAssetSchema>,
-        bucket: R2Bucket,
+        bucket: R2Bucket, // TODO(dromzeh): come back to this later :^)
         file: File
     ): Promise<NewAsset> {
         try {
