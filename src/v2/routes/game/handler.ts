@@ -8,7 +8,7 @@ const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
 handler.route("/get", GameGetRoute)
 handler.route("/create", GameCreateRoute)
-handler.route("/modify/id/{id}", ModifyGameRoute)
-handler.route("/delete/id/{id}", DeleteGameRoute)
+handler.route("/modify", ModifyGameRoute)
+handler.route("/delete", DeleteGameRoute)
 
 export default handler

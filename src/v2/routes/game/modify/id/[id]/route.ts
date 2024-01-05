@@ -42,7 +42,7 @@ handler.openapi(modifyGameRoute, async (ctx) => {
 
     const gameManager = new GameManager(drizzle)
 
-    const gameExists = await gameManager.doesGameExist(name)
+    const gameExists = await gameManager.doesGameExist(id)
 
     if (!gameExists) {
         return ctx.json(
