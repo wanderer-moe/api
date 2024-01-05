@@ -15,15 +15,32 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 NOTE: this allows for users down the line to link files to assets
 */
 
+type AllowedFileTypes = "atlas" | "skel" | "png" | "jpg" | "jpeg" // this is just temporary
+
 export const assetExternalFile = sqliteTable(
     tableNames.assetExternalFile,
     {
         id: text("id").primaryKey().notNull(),
         url: text("url").notNull(),
-        uploadedById: text("uploaded_by").notNull(),
-        uploadedByName: text("uploaded_by_name").notNull(),
-        uploadedDate: integer("uploaded_date").notNull(),
+        uploadedById: text("uploaded_by")
+            .notNull()
+            .references(() => authUser.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
+        uploadedByName: text("uploaded_by_name")
+            .notNull()
+            .references(() => authUser.username, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
+        uploadedDate: text("uploaded_date")
+            .notNull()
+            .$defaultFn(() => {
+                return new Date().toISOString()
+            }),
         fileSize: integer("file_size").default(0).notNull(),
+        fileType: text("file_type").notNull().$type<AllowedFileTypes>(),
     },
     (table) => {
         return {

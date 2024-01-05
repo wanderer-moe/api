@@ -14,11 +14,13 @@ Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — us
 
 ### Turso
 
-We use Turso (libsql, fork of SQLite) as our database. You will need to install the [Turso CLI](https://docs.turso.tech/reference/turso-cli#installation) then run `turso dev` to start a local database. You can persist data by passing `--db-file <path>`.
+We use Turso (libsql, very lightweight fork of SQLite) as our database. You will need to install the [Turso CLI](https://docs.turso.tech/reference/turso-cli#installation) then run `turso dev` to start a local database. You can persist data by passing `--db-file <path>`.
 
-The Turso CLI can be run on Windows using WSL.
+The Turso CLI can be run on Windows using WSL and the `--headless` flag.
 
-The API will connect to the local database if the environment is set to `DEV`, else - it will connect to your production database.
+To install `sqld` for dev db `wget https://github.com/libsql/sqld/releases/download/v0.21.9/sqld-installer.sh` or whatever the newest version is, then `sh sqld-installer.sh`.
+
+The API will connect to the local database if the environment is set to `DEV` in `.env`, else - it will connect to your production database.
 
 To generate seed data, generate and migrate, you can run `pnpm drizzle:init:dev`.
 
@@ -26,7 +28,7 @@ To generate seed data, generate and migrate, you can run `pnpm drizzle:init:dev`
 
 Configuration is in `wrangler.toml`.
 
-You will require either a workers paid plan **or to set your worker to unbound** for authentication and password hashing to work.
+You will most likely require a workers paid plan for authentication and password hashing to work.
 
 Required environment variables are viewable in `./src/worker-configuration.d.ts`.
 
@@ -46,7 +48,7 @@ Required environment variables are viewable in `./src/worker-configuration.d.ts`
 
 ## Authors
 
--   [@dromzeh][Dromzeh]
+-   [@dromzeh][dromzeh]
 
 ## License
 
@@ -55,6 +57,6 @@ Required environment variables are viewable in `./src/worker-configuration.d.ts`
 [Banner]: https://files.catbox.moe/qa3eus.svg
 [Quality]: https://img.shields.io/codefactor/grade/github/wanderer-moe/api?label=quality&style=for-the-badge
 [Cloudflare API Token]: https://dash.cloudflare.com/profile/api-tokens
-[Dromzeh]: https://github.com/dromzeh
+[dromzeh]: https://github.com/dromzeh
 [api.wanderer.moe]: https://api.wanderer.moe
 [License]: LICENSE
