@@ -14,11 +14,17 @@ export const modifyGameSchema = z.object({
         description: "The new formatted name of the game.",
         example: "Honkai: Star Rail",
     }),
-    possibleSuggestiveContent: z.string().min(1).max(1).openapi({
-        description:
-            "If the game contains suggestive content. 1 = Yes, 0 = No.",
-        example: "1",
-    }),
+    possibleSuggestiveContent: z
+        .string()
+        .min(1)
+        .max(1)
+        .openapi({
+            description:
+                "If the game contains suggestive content. 1 = Yes, 0 = No.",
+            example: "1",
+        })
+        .transform((value) => parseInt(value))
+        .refine((value) => value === 1 || value === 0),
 })
 
 export const modifyGameResponseSchema = z.object({

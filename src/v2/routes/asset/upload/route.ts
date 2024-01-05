@@ -21,7 +21,7 @@ handler.openapi(uploadAssetRoute, async (ctx) => {
         )
     }
 
-    const { asset, name, tags, assetCategoryId, gameId } = ctx.req.valid("form")
+    const { asset, name, tags, assetCategoryId, gameId, assetIsSuggestive } = ctx.req.valid("form")
 
     const { drizzle } = getConnection(ctx.env)
     const assetManager = new AssetManager(drizzle)
@@ -34,6 +34,7 @@ handler.openapi(uploadAssetRoute, async (ctx) => {
             tags,
             assetCategoryId,
             gameId,
+            assetIsSuggestive,
         },
         ctx.env.FILES_BUCKET,
         asset as File

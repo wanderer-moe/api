@@ -1,7 +1,7 @@
 import { z } from "@hono/zod-openapi"
 
-const ACCEPTED_IMAGE_TYPES = ["image/png"]
-const MAX_FILE_SIZE = 5 * 1024 * 1024
+const AcceptedImageType = "image/png"
+const MaxFileSize = 5 * 1024 * 1024
 
 export const uploadAssetSchema = z.object({
     asset: z
@@ -10,14 +10,14 @@ export const uploadAssetSchema = z.object({
             description: "The image of the asset to upload.",
             example: "asset",
         })
-        .refine((files) => files?.length == 1, "Image is required.")
+        .refine((files) => files?.length == 1, "An image is required.")
         .refine(
-            (files) => files?.[0]?.size <= MAX_FILE_SIZE,
-            `Max file size is 5MB.`
+            (files) => files?.[0]?.size <= MaxFileSize,
+            `Max file size is 5MB)`
         )
         .refine(
-            (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-            ".jpg, .jpeg, .png and .webp files are accepted."
+            (files) => files?.[0]?.type === AcceptedImageType,
+            `Only ${AcceptedImageType} is accepted.`
         ),
     name: z.string().min(3).max(32).openapi({
         description: "The name of the asset.",
@@ -38,4 +38,14 @@ export const uploadAssetSchema = z.object({
         description: "The game ID for the asset.",
         example: "genshin-impact",
     }),
+    assetIsSuggestive: z
+        .string()
+        .min(1)
+        .max(1)
+        .openapi({
+            description: "If the asset contains suggestive content 0 or 1.",
+            example: "1",
+        })
+        .transform((value) => parseInt(value))
+        .refine((value) => value === 1 || value === 0),
 })

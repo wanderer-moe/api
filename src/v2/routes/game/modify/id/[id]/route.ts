@@ -25,19 +25,6 @@ handler.openapi(modifyGameRoute, async (ctx) => {
     const { id, name, formattedName, possibleSuggestiveContent } =
         ctx.req.valid("json")
 
-    if (
-        possibleSuggestiveContent !== "1" &&
-        possibleSuggestiveContent !== "0"
-    ) {
-        return ctx.json(
-            {
-                success: false,
-                message: "Invalid suggestive content value, must be 0 or 1",
-            },
-            400
-        )
-    }
-
     const { drizzle } = getConnection(ctx.env)
 
     const gameManager = new GameManager(drizzle)
@@ -58,7 +45,7 @@ handler.openapi(modifyGameRoute, async (ctx) => {
         id,
         name,
         formattedName,
-        parseInt(possibleSuggestiveContent)
+        possibleSuggestiveContent
     )
 
     return ctx.json(

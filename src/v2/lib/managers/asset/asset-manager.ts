@@ -234,6 +234,7 @@ export class AssetManager {
                             fileSize: 0,
                             width: 0,
                             height: 0,
+                            assetIsSuggestive: newAsset.assetIsSuggestive == 1 ? true : false,
                         })
                         .returning()
 
