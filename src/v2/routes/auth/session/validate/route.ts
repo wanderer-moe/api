@@ -4,7 +4,6 @@ import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
-// @ts-expect-error: this is going to complain lmfao - hacky workaround for now; there's probably a built in method for this somewhere? - read ./schema.ts
 handler.openapi(authValidationRoute, async (ctx) => {
     const authSessionManager = new AuthSessionManager(ctx)
 

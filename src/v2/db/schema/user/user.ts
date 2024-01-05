@@ -17,7 +17,7 @@ import { socialsConnection } from "./user-connections"
 import { userCollection } from "../collections/user-collections"
 import { passwordResetToken } from "./user-attributes"
 import { emailVerificationToken } from "./user-attributes"
-import { atlas } from "../asset/asset-atlas"
+import { assetExternalFile } from "../asset/asset-external-files"
 import { userCollectionLikes } from "../collections/user-collection-likes"
 import { userCollectionCollaborators } from "../collections/user-collections-collaborators"
 import { assetLikes } from "../asset/asset-likes"
@@ -160,7 +160,7 @@ export const usersRelations = relations(authUser, ({ one, many }) => ({
     authCredentials: one(authCredentials),
     userSession: many(userSession),
     asset: many(asset),
-    atlas: many(atlas),
+    assetExternalFile: many(assetExternalFile),
     userFavorite: one(userFavorite),
     userCollectionLikes: many(userCollectionLikes),
     assetLikes: many(assetLikes),

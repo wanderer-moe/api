@@ -1,5 +1,5 @@
 export * from "./schema/asset/asset"
-export * from "./schema/asset/asset-atlas"
+export * from "./schema/asset/asset-external-files"
 export * from "./schema/asset/asset-likes"
 
 export * from "./schema/categories/asset-categories"
