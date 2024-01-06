@@ -157,6 +157,10 @@ export class AssetManager {
             const searchQuery = name ?? null
             const tagList = tags ? SplitQueryByCommas(tags.toLowerCase()) : null
 
+            // TODO(dromzeh): this is really ugly imo, worried about performance a little
+            // when writing with raw sql, it makes joins really annoying
+            // i've seen people seperate this into two queries (one for the tags, one for the assets) then merge them together
+            // but i don't really want to do that lol - fine for now but should come back to this later :^)
             const assets = await this.drizzle.query.asset.findMany({
                 where: (asset, { and, or, like, eq, sql }) =>
                     and(
@@ -172,12 +176,16 @@ export class AssetManager {
                             ? like(asset.name, `%${searchQuery}%`)
                             : undefined,
                         gameList
-                            ? or(...gameList.map((g) => eq(asset.gameId, g)))
+                            ? or(
+                                  ...gameList.map((game) =>
+                                      eq(asset.gameId, game)
+                                  )
+                              )
                             : undefined,
                         categoryList
                             ? or(
-                                  ...categoryList.map((c) =>
-                                      eq(asset.assetCategoryId, c)
+                                  ...categoryList.map((category) =>
+                                      eq(asset.assetCategoryId, category)
                                   )
                               )
                             : undefined,
@@ -217,9 +225,10 @@ export class AssetManager {
     ): Promise<NewAsset> {
         try {
             const { key } = await bucket.put(
-                `/assets/${newAsset.gameId}/${newAsset.assetCategoryId}/${newAsset.name}`,
+                `/assets/${newAsset.gameId}/${newAsset.assetCategoryId}/${newAsset.name}.png`,
                 file
             )
+            // TODO(dromzeh): correct file size, width, and height
 
             const returnedNewAsset: Asset = await this.drizzle.transaction(
                 async (trx) => {
@@ -256,7 +265,7 @@ export class AssetManager {
 
                         if (foundTag) {
                             await trx.insert(assetTagAsset).values({
-                                assetId: createdAsset[0].assetId,
+                                assetId: createdAsset.id,
                                 assetTagId: tag,
                             })
                         }
