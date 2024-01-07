@@ -42,6 +42,7 @@ export class AuthSessionManager {
                 session.countryCode !== this.ctx.req.header(IP_COUNTRY) ||
                 session.expiresAt < new Date()
             ) {
+                this.lucia.invalidateSession(session.id)
                 return null
             }
 
