@@ -2,6 +2,10 @@ import { luciaAuth } from "../../auth/lucia"
 import type { Session, User } from "lucia"
 import { getCookie } from "hono/cookie"
 
+const USER_AGENT = "user-agent"
+const CONNECTING_IP = "cf-connecting-ip"
+const IP_COUNTRY = "cf-ipcountry"
+
 export class AuthSessionManager {
     private lucia: ReturnType<typeof luciaAuth>
     private sessionCookie: string | undefined
@@ -27,9 +31,21 @@ export class AuthSessionManager {
     }
 
     public async validateSession() {
-        return this.validateAndGetSession().then(({ user }) => {
-            // ignore
-            return { user }
+        return this.validateAndGetSession().then(({ user, session }) => {
+            if (!user || !session) {
+                return null
+            }
+
+            if (
+                session.userAgent !== this.ctx.req.header(USER_AGENT) ||
+                session.ipAddress !== this.ctx.req.header(CONNECTING_IP) ||
+                session.countryCode !== this.ctx.req.header(IP_COUNTRY) ||
+                session.expiresAt < new Date()
+            ) {
+                return null
+            }
+
+            return { user, session }
         })
     }
 
