@@ -57,8 +57,7 @@ export class AssetManager {
                     name: update.name,
                     assetCategoryId: update.assetCategoryId,
                     gameId: update.gameId,
-                    assetIsSuggestive:
-                        update.assetIsSuggestive == 1 ? true : false,
+                    assetIsSuggestive: Boolean(update.assetIsSuggestive),
                 })
                 .where(eq(asset.id, assetId))
                 .returning()
@@ -118,7 +117,7 @@ export class AssetManager {
                             )
                         )
                     ),
-                limit: 6,
+                limit: 12,
             })
         } catch (e) {
             console.error(`Error getting similar assets by ID ${assetId}`, e)
@@ -246,8 +245,9 @@ export class AssetManager {
                             fileSize: 0,
                             width: 0,
                             height: 0,
-                            assetIsSuggestive:
-                                newAsset.assetIsSuggestive == 1 ? true : false,
+                            assetIsSuggestive: Boolean(
+                                newAsset.assetIsSuggestive
+                            ),
                         })
                         .returning()
 

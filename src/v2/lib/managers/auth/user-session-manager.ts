@@ -1,16 +1,13 @@
 import { luciaAuth } from "../../auth/lucia"
-import { getConnection } from "@/v2/db/turso"
 import type { Session, User } from "lucia"
 import { getCookie } from "hono/cookie"
 
 export class AuthSessionManager {
     private lucia: ReturnType<typeof luciaAuth>
-    private drizzle: ReturnType<typeof getConnection>["drizzle"]
     private sessionCookie: string | undefined
 
     constructor(private ctx: APIContext) {
         this.lucia = luciaAuth(this.ctx.env)
-        this.drizzle = getConnection(this.ctx.env).drizzle
         this.sessionCookie = getCookie(this.ctx, this.lucia.sessionCookieName)
     }
 
@@ -30,7 +27,10 @@ export class AuthSessionManager {
     }
 
     public async validateSession() {
-        return this.validateAndGetSession()
+        return this.validateAndGetSession().then(({ user }) => {
+            // ignore
+            return { user }
+        })
     }
 
     public async getAllSessions() {

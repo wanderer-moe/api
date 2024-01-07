@@ -11,6 +11,7 @@ declare module "lucia" {
         DatabaseUserAttributes: {
             avatar_url: string | null
             banner_url: string | null
+            display_name: string | null
             username: string
             username_colour: string | null
             email: string
@@ -19,6 +20,9 @@ declare module "lucia" {
             verified: boolean
             bio: string | null
             date_joined: string
+            is_supporter: boolean
+            supporter_expires_at: string | null
+            is_banned: boolean
             role_flags: number
             is_contributor: boolean
             self_assignable_role_flags: number | null
