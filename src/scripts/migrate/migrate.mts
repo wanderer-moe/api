@@ -2,6 +2,9 @@ import { drizzle as drizzleORM } from "drizzle-orm/libsql"
 import { migrate } from "drizzle-orm/libsql/migrator"
 import { createClient } from "@libsql/client"
 import "dotenv/config"
+import dotenv from "dotenv"
+
+dotenv.config({ path: ".dev.vars" })
 
 const {
     TURSO_DATABASE_AUTH_TOKEN,

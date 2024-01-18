@@ -20,7 +20,7 @@ The Turso CLI can be run on Windows using WSL and the `--headless` flag.
 
 To install `sqld` for dev db `wget https://github.com/libsql/sqld/releases/download/v0.21.9/sqld-installer.sh` or whatever the newest version is, then `sh sqld-installer.sh`.
 
-The API will connect to the local database if the environment is set to `DEV` in `.env`, else - it will connect to your production database.
+The API will connect to the local database if the environment is set to `DEV` in `.dev.vars`, else - it will connect to your production database.
 
 To generate seed data, generate and migrate, you can run `pnpm drizzle:init:dev`.
 

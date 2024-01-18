@@ -1,6 +1,5 @@
 import { drizzle as drizzleORM } from "drizzle-orm/libsql"
 import { createClient } from "@libsql/client"
-import "dotenv/config"
 import {
     asset,
     assetCategory,
@@ -17,15 +16,16 @@ import {
     userFollowing,
 } from "@/v2/db/schema"
 import { Scrypt } from "lucia"
+import "dotenv/config"
+import * as dotenv from "dotenv"
 
-const { ENVIRONMENT } = process.env
+dotenv.config({ path: ".dev.vars" })
 
-const TURSO_DEV_DATABASE_URL =
-    process.env.TURSO_DEV_DATABASE_URL ?? "http://127.0.0.1:8080"
-const isDev = ENVIRONMENT === "DEV"
+const { ENVIRONMENT, TURSO_DEV_DATABASE_URL = "http://127.0.0.1:8080" } =
+    process.env
 
 async function main() {
-    if (!isDev) {
+    if (ENVIRONMENT !== "DEV") {
         console.log("This script can only be run in development mode.")
         process.exit(1)
     }
