@@ -34,7 +34,7 @@ async function main() {
 
     const client = createClient({
         url: isDev ? TURSO_DEV_DATABASE_URL : TURSO_DATABASE_URL!,
-        authToken: isDev ? undefined : TURSO_DATABASE_AUTH_TOKEN!,
+        authToken: isDev ? undefined : TURSO_DATABASE_AUTH_TOKEN,
     })
 
     const db = drizzleORM(client)
