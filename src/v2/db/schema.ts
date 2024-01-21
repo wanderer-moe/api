@@ -11,8 +11,6 @@ export * from "./schema/game/game-likes"
 export * from "./schema/tags/asset-tags"
 export * from "./schema/tags/asset-tags-likes"
 
-export * from "./schema/oc-generators/oc-generators"
-
 export * from "./schema/user/user"
 export * from "./schema/user/user-attributes"
 export * from "./schema/collections/user-collections"

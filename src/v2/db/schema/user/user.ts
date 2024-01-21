@@ -12,7 +12,6 @@ import { generateID } from "@/v2/lib/oslo"
 import { userFollowing } from "./user-following"
 import { asset } from "../asset/asset"
 import { userFavorite } from "./user-favorites"
-import { savedOcGenerators } from "../oc-generators/oc-generators"
 import { socialsConnection } from "./user-connections"
 import { userCollection } from "../collections/user-collections"
 import { passwordResetToken } from "./user-attributes"
@@ -168,7 +167,6 @@ export const usersRelations = relations(authUser, ({ one, many }) => ({
     userCollection: many(userCollection),
     passwordResetToken: one(passwordResetToken),
     emailVerificationToken: one(emailVerificationToken),
-    savedOcGenerators: many(savedOcGenerators),
     gameLikes: many(gameLikes),
     assetTagLikes: many(assetTagLikes),
     assetCategoryLikes: many(assetCategoryLikes),

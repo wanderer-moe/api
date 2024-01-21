@@ -11,7 +11,7 @@ import * as schema from "@/v2/db/schema"
 class LoggerWrapper implements Logger {
     // TODO(dromzeh): this is useful to log; should probably be logged elsewhere
     logQuery(query: string, params: unknown[]): void {
-        console.log(`DRIZZLE: Query: ${query}, Paremeters: ${params ?? "none"}`)
+        console.log(`DRIZZLE: Query: ${query}, Parameters: ${params ?? "none"}`)
     }
 }
 

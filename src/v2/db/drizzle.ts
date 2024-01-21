@@ -22,7 +22,6 @@ export const tableNames = {
     passwordResetToken: "passwordResetToken",
     assetCategory: "assetCategory",
     assetCategoryLikes: "assetCategoryLikes",
-    savedOcGenerators: "savedOcGenerators",
     userFavorite: "userFavorite",
     userFavoriteAsset: "userFavoriteAsset",
     userCollection: "userCollection",
