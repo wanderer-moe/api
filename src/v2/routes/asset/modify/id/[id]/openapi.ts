@@ -1,13 +1,14 @@
 import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
-import { modifyAssetSchema, modifyAssetResponseSchema } from "./schema"
+import { modifyAssetSchema, modifyAssetResponseSchema, modifyAssetPathSchema } from "./schema"
 
 export const modifyAssetRoute = createRoute({
-    path: "/",
-    method: "post",
+    path: "/{id}",
+    method: "patch",
     description: "Modify an existing asset.",
     tags: ["Asset"],
     request: {
+        params: modifyAssetPathSchema,
         body: {
             content: {
                 "application/json": {

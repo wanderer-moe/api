@@ -22,8 +22,9 @@ handler.openapi(modifyGameRoute, async (ctx) => {
         )
     }
 
-    const { id, name, formattedName, possibleSuggestiveContent } =
+    const { name, formattedName, possibleSuggestiveContent } =
         ctx.req.valid("json")
+    const { id } = ctx.req.valid("param")
 
     const { drizzle } = getConnection(ctx.env)
 

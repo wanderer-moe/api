@@ -1,13 +1,18 @@
 import { createRoute } from "@hono/zod-openapi"
-import { modifyGameSchema, modifyGameResponseSchema } from "./schema"
+import {
+    modifyGameSchema,
+    modifyGameResponseSchema,
+    modifyGamePathSchema,
+} from "./schema"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 
 export const modifyGameRoute = createRoute({
-    path: "/",
-    method: "post",
+    path: "/{id}",
+    method: "patch",
     description: "Modify an existing game.",
     tags: ["Game"],
     request: {
+        params: modifyGamePathSchema,
         body: {
             content: {
                 "application/json": {

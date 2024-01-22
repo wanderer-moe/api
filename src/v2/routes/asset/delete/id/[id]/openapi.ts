@@ -3,7 +3,7 @@ import { deleteAssetByIdResponseSchema, deleteAssetByIdSchema } from "./schema"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 
 export const deleteAssetByIdRoute = createRoute({
-    path: "/",
+    path: "/{id}",
     method: "delete",
     description:
         "Delete an asset from their ID. Must be the owner of the asset or an admin.",

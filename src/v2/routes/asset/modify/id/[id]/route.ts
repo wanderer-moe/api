@@ -10,7 +10,8 @@ import { eq } from "drizzle-orm"
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
 handler.openapi(modifyAssetRoute, async (ctx) => {
-    const { id, name, tags, assetCategoryId, gameId } = ctx.req.valid("json")
+    const { name, tags, assetCategoryId, gameId } = ctx.req.valid("json")
+    const { id } = ctx.req.valid("param")
 
     if (isNaN(parseInt(id))) {
         return ctx.json(

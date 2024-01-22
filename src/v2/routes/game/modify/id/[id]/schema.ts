@@ -1,11 +1,19 @@
 import { z } from "@hono/zod-openapi"
 import { selectGameSchema } from "@/v2/db/schema"
 
-export const modifyGameSchema = z.object({
+export const modifyGamePathSchema = z.object({
     id: z.string().openapi({
-        description: "The id of the game to modify.",
-        example: "honkai-star-rail",
+        param: {
+            name: "id",
+            description: "The id of the game to modify.",
+            example: "honkai-star-rail",
+            in: "path",
+            required: true,
+        }
     }),
+})
+
+export const modifyGameSchema = z.object({
     name: z.string().min(3).max(32).openapi({
         description: "The new name of the game.",
         example: "honkai-star-rail",

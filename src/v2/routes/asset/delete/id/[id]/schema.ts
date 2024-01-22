@@ -6,6 +6,7 @@ export const deleteAssetByIdSchema = z.object({
             name: "id",
             in: "path",
             description: "The ID of the asset to delete.",
+            example: "1",
             required: true,
         },
     }),

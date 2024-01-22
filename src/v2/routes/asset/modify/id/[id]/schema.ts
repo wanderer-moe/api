@@ -1,11 +1,18 @@
 import { z } from "zod"
 import { selectAssetSchema } from "@/v2/db/schema"
 
-export const modifyAssetSchema = z.object({
+export const modifyAssetPathSchema = z.object({
     id: z.string().openapi({
-        description: "The id of the asset to modify.",
-        example: "1",
+        param: {
+            description: "The id of the asset to modify.",
+            example: "1",
+            in: "path",
+            required: true,
+        }
     }),
+})
+
+export const modifyAssetSchema = z.object({
     name: z
         .string()
         .min(3)
