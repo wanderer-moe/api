@@ -3,10 +3,14 @@ import { uploadAssetRoute } from "./openapi"
 import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
 import { AssetManager } from "@/v2/lib/managers/asset/asset-manager"
 import { getConnection } from "@/v2/db/turso"
+import { roleFlagsToArray } from "@/v2/lib/helpers/role-flags"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
 handler.openapi(uploadAssetRoute, async (ctx) => {
+    const { asset, name, tags, assetCategoryId, gameId, assetIsSuggestive } =
+        ctx.req.valid("form")
+
     const authSessionManager = new AuthSessionManager(ctx)
 
     const { user } = await authSessionManager.validateSession()
@@ -21,8 +25,15 @@ handler.openapi(uploadAssetRoute, async (ctx) => {
         )
     }
 
-    const { asset, name, tags, assetCategoryId, gameId, assetIsSuggestive } =
-        ctx.req.valid("form")
+    if (!roleFlagsToArray(user.roleFlags).includes("CONTRIBUTOR")) {
+        return ctx.json(
+            {
+                success: false,
+                message: "Unauthorized",
+            },
+            401
+        )
+    }
 
     const { drizzle } = getConnection(ctx.env)
     const assetManager = new AssetManager(drizzle)

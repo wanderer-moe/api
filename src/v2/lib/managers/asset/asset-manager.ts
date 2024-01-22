@@ -46,6 +46,18 @@ export class AssetManager {
         }
     }
 
+    public async deleteAssetById(assetId: number) {
+        try {
+            return await this.drizzle
+                .delete(asset)
+                .where(eq(asset.id, assetId))
+                .returning()
+        } catch (e) {
+            console.error(`Error deleting asset by ID ${assetId}`, e)
+            throw new Error(`Error deleting asset by ID ${assetId}`)
+        }
+    }
+
     public async updateAssetById(
         assetId: number,
         update: z.infer<typeof uploadAssetSchema>
