@@ -3,12 +3,18 @@ import { likeAssetByIdSchema, likeAssetByIdResponseSchema } from "./schema"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 
 export const likeAssetByIdRoute = createRoute({
-    path: "/{id}",
-    method: "get",
+    path: "/",
+    method: "post",
     description: "Like an asset from their ID.",
     tags: ["Asset"],
     request: {
-        params: likeAssetByIdSchema,
+        body: {
+            content: {
+                "application/json": {
+                    schema: likeAssetByIdSchema,
+                },
+            },
+        },
     },
     responses: {
         200: {

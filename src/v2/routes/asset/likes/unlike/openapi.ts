@@ -3,12 +3,18 @@ import { unlikeAssetByIdSchema, unlikeAssetByIdResponseSchema } from "./schema"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 
 export const unlikeAssetByIdRoute = createRoute({
-    path: "/{id}",
-    method: "get",
+    path: "/",
+    method: "post",
     description: "Unlike an asset from their ID.",
     tags: ["Asset"],
     request: {
-        params: unlikeAssetByIdSchema,
+        body: {
+            content: {
+                "application/json": {
+                    schema: unlikeAssetByIdSchema,
+                },
+            },
+        },
     },
     responses: {
         200: {
