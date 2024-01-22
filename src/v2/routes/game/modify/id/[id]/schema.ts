@@ -9,7 +9,7 @@ export const modifyGamePathSchema = z.object({
             example: "honkai-star-rail",
             in: "path",
             required: true,
-        }
+        },
     }),
 })
 
@@ -24,7 +24,7 @@ export const modifyGameSchema = z.object({
     }),
     possibleSuggestiveContent: z
         .string()
-        .min(1)
+        .min(0)
         .max(1)
         .openapi({
             description:

@@ -8,7 +8,7 @@ export const modifyAssetPathSchema = z.object({
             example: "1",
             in: "path",
             required: true,
-        }
+        },
     }),
 })
 

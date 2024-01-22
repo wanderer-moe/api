@@ -8,7 +8,7 @@ import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
 handler.openapi(likeAssetByIdRoute, async (ctx) => {
-    const assetId = ctx.req.valid("json").id
+    const assetId = ctx.req.valid("param").id
 
     if (isNaN(parseInt(assetId))) {
         return ctx.json(
