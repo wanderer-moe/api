@@ -5,14 +5,16 @@ import {
     text,
     // uniqueIndex,
     index,
+    integer,
 } from "drizzle-orm/sqlite-core"
 import { authUser } from "../user/user"
 import { asset } from "./asset"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
+
 export const assetLikes = sqliteTable(
     tableNames.assetLikes,
     {
-        assetId: text("asset_id")
+        assetId: integer("asset_id")
             .notNull()
             .references(() => asset.id),
         likedById: text("liked_by_id")

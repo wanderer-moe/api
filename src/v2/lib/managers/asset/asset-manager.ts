@@ -11,6 +11,18 @@ import { uploadAssetSchema } from "@/v2/routes/asset/upload/schema"
 export class AssetManager {
     constructor(private drizzle: DrizzleInstance) {}
 
+    public async getBarebonesAssetById(assetId: number) {
+        try {
+            return await this.drizzle
+                .select()
+                .from(asset)
+                .where(eq(asset.id, assetId))
+        } catch (e) {
+            console.error(`Error getting asset by ID ${assetId}`, e)
+            throw new Error(`Error getting asset by ID ${assetId}`)
+        }
+    }
+
     public async getAssetById(assetId: number) {
         try {
             return await this.drizzle.query.asset.findFirst({

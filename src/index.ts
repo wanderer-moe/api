@@ -46,6 +46,7 @@ app.use(
 app.use("*", prettyJSON())
 
 app.onError((err, ctx) => {
+    console.error(err)
     return ctx.json(
         {
             success: false,
