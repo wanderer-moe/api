@@ -9,6 +9,7 @@ import { LogTime } from "./v2/middleware/time-taken"
 
 const app = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
+// v2 API routes
 app.route("/v2", BaseRoutes)
 
 // scalar API reference, very nice and lightweight
@@ -26,11 +27,11 @@ app.get(
 // openapi config
 app.doc("/openapi", OpenAPIConfig)
 
-// middleware
 // interface CSRFOptions {
 //     origin?: string | string[] | IsAllowedOriginHandler;
 // }
 app.use("*", csrf())
+
 app.use("*", LogTime)
 
 app.use(
@@ -45,8 +46,6 @@ app.use(
 app.use("*", prettyJSON())
 
 app.onError((err, ctx) => {
-    console.error(err)
-    // TODO: error logging with Axiom (Axiom Middleware)
     return ctx.json(
         {
             success: false,

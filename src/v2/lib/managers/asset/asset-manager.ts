@@ -1,6 +1,6 @@
 import { DrizzleInstance } from "@/v2/db/turso"
 import { asset, assetTag, assetTagAsset } from "@/v2/db/schema"
-import { eq, not, or } from "drizzle-orm"
+import { eq } from "drizzle-orm"
 import { R2Bucket } from "@cloudflare/workers-types"
 import { SplitQueryByCommas } from "../../helpers/split-query-by-commas"
 import { z } from "zod"
@@ -64,64 +64,6 @@ export class AssetManager {
         } catch (e) {
             console.error(`Error updating asset by ID ${assetId}`, e)
             throw new Error(`Error updating asset by ID ${assetId}`)
-        }
-    }
-
-    /**
-     * Retrieves a list of assets by their IDs.
-     * @param assetIds - An array of asset IDs to retrieve.
-     * @returns A promise that resolves to an array of retrieved assets.
-     * @throws An error if any of the asset IDs are invalid.
-     */
-    public async getSimilarAssets(assetId: number) {
-        try {
-            const [foundAsset] = await this.drizzle
-                .select({
-                    id: asset.id,
-                    name: asset.name,
-                    assetCategoryId: asset.assetCategoryId,
-                    gameId: asset.gameId,
-                })
-                .from(asset)
-                .where(eq(asset.id, assetId))
-
-            if (!foundAsset) return null
-
-            // this is messy:
-            // we check if assets exist w/ the same game and category
-            // if not, we check if assets exist w / the same game but different category
-            // this means theres a higher chance of similar assets ALWAYS being returned, even if they're not "70%" similar
-            // who needs machine learning when you can just do this :^)
-
-            // TODO(dromzeh): check if there's a better way to do this, and prioritize assets with similar name, asset category, and game
-            return await this.drizzle.query.asset.findMany({
-                where: (asset, { and, eq }) =>
-                    and(
-                        not(eq(asset.id, foundAsset.id)),
-                        or(
-                            and(
-                                eq(asset.gameId, foundAsset.gameId),
-                                eq(
-                                    asset.assetCategoryId,
-                                    foundAsset.assetCategoryId
-                                )
-                            ),
-                            and(
-                                eq(asset.gameId, foundAsset.gameId),
-                                not(
-                                    eq(
-                                        asset.assetCategoryId,
-                                        foundAsset.assetCategoryId
-                                    )
-                                )
-                            )
-                        )
-                    ),
-                limit: 12,
-            })
-        } catch (e) {
-            console.error(`Error getting similar assets by ID ${assetId}`, e)
-            throw new Error(`Error getting similar assets by ID ${assetId}`)
         }
     }
 

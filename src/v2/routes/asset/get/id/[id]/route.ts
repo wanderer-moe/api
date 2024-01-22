@@ -32,13 +32,10 @@ handler.openapi(getAssetByIdRoute, async (ctx) => {
         )
     }
 
-    const similarAssets = await assetManager.getSimilarAssets(asset.id)
-
     return ctx.json(
         {
             success: true,
             asset,
-            similarAssets,
         },
         200
     )

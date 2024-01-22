@@ -21,6 +21,17 @@ export const CustomCSS: string = `
         :root {
             --theme-font: 'Inter', var(--system-fonts);
         }
+
+        ::moz-selection {
+            background: var(--theme-color-accent);
+            color: #fff;
+        }
+
+        ::selection {
+            background: var(--theme-color-accent);
+            color: #fff;
+        }
+
         /* basic theme */
         .light-mode {
         --theme-color-1: #2a2f45;

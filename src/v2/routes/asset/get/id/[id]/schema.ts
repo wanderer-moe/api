@@ -44,5 +44,5 @@ export const getAssetByIdResponseSchema = z.object({
     }),
     game: selectGameSchema,
     assetCategory: selectAssetCategorySchema,
-    similarAssets: selectAssetSchema.array(),
+    // similarAssets: selectAssetSchema.array(),
 })
