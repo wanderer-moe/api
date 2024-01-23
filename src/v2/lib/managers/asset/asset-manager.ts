@@ -1,6 +1,6 @@
 import { DrizzleInstance } from "@/v2/db/turso"
 import { asset, assetTag, assetTagAsset } from "@/v2/db/schema"
-import { eq } from "drizzle-orm"
+import { eq, and } from "drizzle-orm"
 import { R2Bucket } from "@cloudflare/workers-types"
 import { SplitQueryByCommas } from "../../helpers/split-query-by-commas"
 import { z } from "zod"
@@ -17,6 +17,7 @@ export class AssetManager {
                 .select()
                 .from(asset)
                 .where(eq(asset.id, assetId))
+                .limit(1)
         } catch (e) {
             console.error(`Error getting asset by ID ${assetId}`, e)
             throw new Error(`Error getting asset by ID ${assetId}`)
@@ -70,12 +71,13 @@ export class AssetManager {
         }
     }
 
+    // this needs to be refactored and use transactions, so we can rollback if something fails (this is ugly as hell)
     public async updateAssetById(
         assetId: number,
         update: z.infer<typeof uploadAssetSchema>
     ) {
         try {
-            return await this.drizzle
+            const [updatedAsset] = await this.drizzle
                 .update(asset)
                 .set({
                     name: update.name,
@@ -85,6 +87,61 @@ export class AssetManager {
                 })
                 .where(eq(asset.id, assetId))
                 .returning()
+
+            const newTags = SplitQueryByCommas(update.tags) ?? []
+
+            if (newTags.length === 0) return updatedAsset
+
+            const oldTags = await this.drizzle
+                .select({
+                    assetTagId: assetTag.id,
+                })
+                .from(assetTagAsset)
+                .innerJoin(assetTag, eq(assetTag.id, assetTagAsset.assetTagId))
+                .where(eq(assetTagAsset.assetId, assetId))
+
+            const oldTagIds = oldTags.map((t) => t.assetTagId)
+
+            const tagsToRemove = oldTagIds.filter((t) => !newTags.includes(t))
+
+            const tagsToAdd = newTags.filter((t) => !oldTagIds.includes(t))
+
+            if (tagsToRemove.length > 0) {
+                for (const assetTagId of tagsToRemove) {
+                    await this.drizzle
+                        .delete(assetTagAsset)
+                        .where(
+                            and(
+                                eq(assetTagAsset.assetId, assetId),
+                                eq(assetTagAsset.assetTagId, assetTagId)
+                            )
+                        )
+                }
+            }
+
+            if (tagsToAdd.length > 0) {
+                for (const tag of tagsToAdd) {
+                    const foundTag = await this.drizzle
+                        .select({
+                            id: assetTag.id,
+                        })
+                        .from(assetTag)
+                        .innerJoin(
+                            assetTagAsset,
+                            eq(assetTag.id, assetTagAsset.assetTagId)
+                        )
+                        .where(eq(assetTag.name, tag))
+
+                    if (foundTag) {
+                        await this.drizzle.insert(assetTagAsset).values({
+                            assetId: assetId,
+                            assetTagId: tag,
+                        })
+                    }
+                }
+            }
+
+            return updatedAsset
         } catch (e) {
             console.error(`Error updating asset by ID ${assetId}`, e)
             throw new Error(`Error updating asset by ID ${assetId}`)
