@@ -71,80 +71,97 @@ export class AssetManager {
         }
     }
 
-    // this needs to be refactored and use transactions, so we can rollback if something fails (this is ugly as hell)
     public async updateAssetById(
         assetId: number,
         update: z.infer<typeof uploadAssetSchema>
     ) {
         try {
-            const [updatedAsset] = await this.drizzle
-                .update(asset)
-                .set({
-                    name: update.name,
-                    assetCategoryId: update.assetCategoryId,
-                    gameId: update.gameId,
-                    assetIsSuggestive: Boolean(update.assetIsSuggestive),
-                })
-                .where(eq(asset.id, assetId))
-                .returning()
+            const updatedAsset = await this.drizzle.transaction(async (tx) => {
+                const [updatedAsset] = await tx
+                    .update(asset)
+                    .set({
+                        name: update.name,
+                        assetCategoryId: update.assetCategoryId,
+                        gameId: update.gameId,
+                        assetIsSuggestive: Boolean(update.assetIsSuggestive),
+                    })
+                    .where(eq(asset.id, assetId))
+                    .returning()
 
-            const newTags = SplitQueryByCommas(update.tags) ?? []
+                const newTags = SplitQueryByCommas(update.tags) ?? []
 
-            if (newTags.length === 0) return updatedAsset
+                if (newTags.length === 0) return updatedAsset
 
-            const oldTags = await this.drizzle
-                .select({
-                    assetTagId: assetTag.id,
-                })
-                .from(assetTagAsset)
-                .innerJoin(assetTag, eq(assetTag.id, assetTagAsset.assetTagId))
-                .where(eq(assetTagAsset.assetId, assetId))
+                const oldTags = await tx
+                    .select({
+                        assetTagId: assetTag.id,
+                    })
+                    .from(assetTagAsset)
+                    .innerJoin(
+                        assetTag,
+                        eq(assetTag.id, assetTagAsset.assetTagId)
+                    )
+                    .where(eq(assetTagAsset.assetId, assetId))
 
-            const oldTagIds = oldTags.map((t) => t.assetTagId)
+                const oldTagIds = oldTags.map((t) => t.assetTagId)
 
-            const tagsToRemove = oldTagIds.filter((t) => !newTags.includes(t))
+                const tagsToRemove = oldTagIds.filter(
+                    (t) => !newTags.includes(t)
+                )
 
-            const tagsToAdd = newTags.filter((t) => !oldTagIds.includes(t))
+                const tagsToAdd = newTags.filter((t) => !oldTagIds.includes(t))
 
-            if (tagsToRemove.length > 0) {
-                for (const assetTagId of tagsToRemove) {
-                    await this.drizzle
-                        .delete(assetTagAsset)
-                        .where(
-                            and(
-                                eq(assetTagAsset.assetId, assetId),
-                                eq(assetTagAsset.assetTagId, assetTagId)
-                            )
-                        )
-                }
-            }
+                await this.removeTags(tx, assetId, tagsToRemove)
+                await this.addTags(tx, assetId, tagsToAdd)
 
-            if (tagsToAdd.length > 0) {
-                for (const tag of tagsToAdd) {
-                    const foundTag = await this.drizzle
-                        .select({
-                            id: assetTag.id,
-                        })
-                        .from(assetTag)
-                        .innerJoin(
-                            assetTagAsset,
-                            eq(assetTag.id, assetTagAsset.assetTagId)
-                        )
-                        .where(eq(assetTag.name, tag))
-
-                    if (foundTag) {
-                        await this.drizzle.insert(assetTagAsset).values({
-                            assetId: assetId,
-                            assetTagId: tag,
-                        })
-                    }
-                }
-            }
+                return updatedAsset
+            })
 
             return updatedAsset
         } catch (e) {
             console.error(`Error updating asset by ID ${assetId}`, e)
             throw new Error(`Error updating asset by ID ${assetId}`)
+        }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- i don't know how to type this
+    private async removeTags(tx: any, assetId: number, tagsToRemove: string[]) {
+        if (tagsToRemove.length > 0) {
+            for (const assetTagId of tagsToRemove) {
+                await tx
+                    .delete(assetTagAsset)
+                    .where(
+                        and(
+                            eq(assetTagAsset.assetId, assetId),
+                            eq(assetTagAsset.assetTagId, assetTagId)
+                        )
+                    )
+            }
+        }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- i don't know how to type this
+    private async addTags(tx: any, assetId: number, tagsToAdd: string[]) {
+        if (tagsToAdd.length > 0) {
+            for (const tag of tagsToAdd) {
+                const foundTag = await tx
+                    .select({
+                        id: assetTag.id,
+                    })
+                    .from(assetTag)
+                    .innerJoin(
+                        assetTagAsset,
+                        eq(assetTag.id, assetTagAsset.assetTagId)
+                    )
+                    .where(eq(assetTag.name, tag))
+
+                if (foundTag) {
+                    await tx.insert(assetTagAsset).values({
+                        assetId: assetId,
+                        assetTagId: tag,
+                    })
+                }
+            }
         }
     }
 
@@ -253,8 +270,8 @@ export class AssetManager {
             // TODO(dromzeh): correct file size, width, and height
 
             const returnedNewAsset: Asset = await this.drizzle.transaction(
-                async (trx) => {
-                    const [createdAsset] = await trx
+                async (tx) => {
+                    const [createdAsset] = await tx
                         .insert(asset)
                         .values({
                             name: newAsset.name,
@@ -278,21 +295,7 @@ export class AssetManager {
 
                     if (tags.length === 0) return createdAsset
 
-                    for (const tag of tags) {
-                        const foundTag = await trx
-                            .select({
-                                id: assetTag.id,
-                            })
-                            .from(assetTag)
-                            .where(eq(assetTag.name, tag))
-
-                        if (foundTag) {
-                            await trx.insert(assetTagAsset).values({
-                                assetId: createdAsset.id,
-                                assetTagId: tag,
-                            })
-                        }
-                    }
+                    await this.addTags(tx, createdAsset.id, tags)
 
                     return createdAsset
                 }
