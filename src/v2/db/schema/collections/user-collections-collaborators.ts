@@ -24,8 +24,9 @@ export const userCollectionCollaborators = sqliteTable(
         collaboratorId: text("collaborator_id")
             .notNull()
             .references(() => authUser.id),
-        role: text("role").$type<CollaboratorsRoles>()
-            .default('collaborator')
+        role: text("role")
+            .$type<CollaboratorsRoles>()
+            .default("collaborator")
             .notNull(),
         createdAt: text("createdAt")
             .notNull()
