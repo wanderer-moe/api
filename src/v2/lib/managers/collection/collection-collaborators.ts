@@ -2,6 +2,7 @@ import { DrizzleInstance } from "@/v2/db/turso"
 import { and, eq } from "drizzle-orm"
 import { userCollectionCollaborators } from "@/v2/db/schema/collections/user-collections-collaborators"
 import { authUser } from "@/v2/db/schema/user/user"
+import type { CollaboratorsRoles } from "@/v2/db/schema/collections/user-collections-collaborators"
 
 export class UserCollectionCollaboratorsManager {
     constructor(private drizzle: DrizzleInstance) {}
@@ -13,12 +14,14 @@ export class UserCollectionCollaboratorsManager {
      */
     public async addCollaborator(
         collectionId: string,
-        userId: string
+        userId: string,
+        role: CollaboratorsRoles
     ): Promise<void> {
         try {
             await this.drizzle.insert(userCollectionCollaborators).values({
-                collectionId,
+                collectionId: collectionId,
                 collaboratorId: userId,
+                role: role,
             })
         } catch (e) {
             console.error(
@@ -27,6 +30,37 @@ export class UserCollectionCollaboratorsManager {
             )
             throw new Error(
                 `Error adding collaborator ${userId} to collection ${collectionId}`
+            )
+        }
+    }
+
+    public async updateCollaboratorRole(
+        collectionId: string,
+        userId: string,
+        role: CollaboratorsRoles
+    ): Promise<void> {
+        try {
+            await this.drizzle
+                .update(userCollectionCollaborators)
+                .set({
+                    role: role,
+                })
+                .where(
+                    and(
+                        eq(
+                            userCollectionCollaborators.collectionId,
+                            collectionId
+                        ),
+                        eq(userCollectionCollaborators.collaboratorId, userId)
+                    )
+                )
+        } catch (e) {
+            console.error(
+                `Error updating collaborator ${userId} role in collection ${collectionId}`,
+                e
+            )
+            throw new Error(
+                `Error updating collaborator ${userId} role in collection ${collectionId}`
             )
         }
     }
