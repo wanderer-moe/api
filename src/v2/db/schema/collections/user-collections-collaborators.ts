@@ -10,6 +10,11 @@ import { authUser } from "../user/user"
 import { userCollection } from "./user-collections"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 
+// editor: maximum permissions, can edit collection name/description
+// collaborator: can add/remove assets from collection
+// viewer: can view collection depending on privacy settings
+export type CollaboratorsRoles = "viewer" | "collaborator" | "editor"
+
 export const userCollectionCollaborators = sqliteTable(
     tableNames.userCollectionCollaborators,
     {

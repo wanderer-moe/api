@@ -44,7 +44,7 @@ handler.openapi(createGameRoute, async (ctx) => {
     const game = await gameManager.createGame(
         name,
         formattedName,
-        possibleSuggestiveContent
+        Boolean(possibleSuggestiveContent)
     )
 
     return ctx.json(

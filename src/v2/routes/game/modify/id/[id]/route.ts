@@ -46,7 +46,7 @@ handler.openapi(modifyGameRoute, async (ctx) => {
         id,
         name,
         formattedName,
-        possibleSuggestiveContent
+        Boolean(possibleSuggestiveContent)
     )
 
     return ctx.json(

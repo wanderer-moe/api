@@ -100,7 +100,7 @@ export class GameManager {
     public async createGame(
         name: string,
         formattedName: string,
-        possibleSuggestiveContent: number
+        possibleSuggestiveContent: boolean
     ): Promise<Game> {
         try {
             const [newGame] = await this.drizzle
@@ -134,7 +134,7 @@ export class GameManager {
         gameId: string,
         name: string,
         formattedName: string,
-        possibleSuggestiveContent: number
+        possibleSuggestiveContent: boolean
     ): Promise<Game> {
         try {
             const [updatedGame] = await this.drizzle
