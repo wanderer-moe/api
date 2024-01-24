@@ -1,5 +1,5 @@
 import { DrizzleInstance } from "@/v2/db/turso"
-import { and, eq } from "drizzle-orm"
+import { and, eq, sql } from "drizzle-orm"
 import { userFollowing } from "@/v2/db/schema"
 import type { NewUserFollowing, UserFollowing } from "@/v2/db/schema"
 
@@ -104,23 +104,97 @@ export class UserFollowManager {
         }
     }
 
-    /**
-     * Retrieves the followers of a user by their user ID.
-     *
-     * @param userId - The ID of the user for whom to retrieve followers.
-     * @returns An array of user networking objects representing followers.
-     */
-    public async getFollowers(userId: string): Promise<UserFollowing[] | null> {
+    public async getUserFollowers(userId: string, offset: number = 0) {
         try {
-            const followers = await this.drizzle
-                .select()
+            return await this.drizzle.query.userFollowing.findMany({
+                where: (userFollowing, { eq }) =>
+                    eq(userFollowing.followingId, userId),
+                with: {
+                    follower: {
+                        columns: {
+                            id: true,
+                            avatarUrl: true,
+                            username: true,
+                            isSupporter: true,
+                            verified: true,
+                            displayName: true,
+                        },
+                    },
+                },
+                limit: 100,
+                offset: offset,
+            })
+        } catch (e) {
+            console.error(
+                `Error getting followers for user ${userId} with offset ${offset}`,
+                e
+            )
+            throw new Error(
+                `Error getting followers for user ${userId} with offset ${offset}`
+            )
+        }
+    }
+
+    public async getUserFollowersCount(userId: string) {
+        try {
+            return await this.drizzle
+                .select({
+                    value: sql`count(${userFollowing.followerId})`.mapWith(
+                        Number
+                    ),
+                })
                 .from(userFollowing)
                 .where(eq(userFollowing.followingId, userId))
-
-            return followers ?? null
         } catch (e) {
-            console.error(`Error getting followers for user ${userId}`, e)
-            throw new Error(`Error getting followers for user ${userId}`)
+            console.error(`Error getting followers count for user ${userId}`, e)
+            throw new Error(`Error getting followers count for user ${userId}`)
+        }
+    }
+
+    public async getUserFollowingCount(userId: string) {
+        try {
+            return await this.drizzle
+                .select({
+                    value: sql`count(${userFollowing.followingId})`.mapWith(
+                        Number
+                    ),
+                })
+                .from(userFollowing)
+                .where(eq(userFollowing.followerId, userId))
+        } catch (e) {
+            console.error(`Error getting following count for user ${userId}`, e)
+            throw new Error(`Error getting following count for user ${userId}`)
+        }
+    }
+
+    public async getUserFollowing(userId: string, offset: number = 0) {
+        try {
+            return await this.drizzle.query.userFollowing.findMany({
+                where: (userFollowing, { eq }) =>
+                    eq(userFollowing.followerId, userId),
+                with: {
+                    following: {
+                        columns: {
+                            id: true,
+                            avatarUrl: true,
+                            username: true,
+                            isSupporter: true,
+                            verified: true,
+                            displayName: true,
+                        },
+                    },
+                },
+                limit: 100,
+                offset: offset,
+            })
+        } catch (e) {
+            console.error(
+                `Error getting following for user ${userId} with offset ${offset}`,
+                e
+            )
+            throw new Error(
+                `Error getting following for user ${userId} with offset ${offset}`
+            )
         }
     }
 }
