@@ -76,6 +76,34 @@ export class UserFollowManager {
         }
     }
 
+    public async checkFollowStatus(
+        followerId: string,
+        followingId: string
+    ): Promise<boolean> {
+        try {
+            const [follow] = await this.drizzle
+                .select({ id: userFollowing.followerId })
+                .from(userFollowing)
+                .where(
+                    and(
+                        eq(userFollowing.followerId, followerId),
+                        eq(userFollowing.followingId, followingId)
+                    )
+                )
+                .limit(1)
+
+            return follow ? true : false
+        } catch (e) {
+            console.error(
+                `Error checking follow status for user ${followingId} from user ${followerId}`,
+                e
+            )
+            throw new Error(
+                `Error checking follow status for user ${followingId} from user ${followerId}`
+            )
+        }
+    }
+
     /**
      * Retrieves the followers of a user by their user ID.
      *

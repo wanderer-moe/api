@@ -18,19 +18,23 @@ handler.openapi(getAssetByIdRoute, async (ctx) => {
         )
     }
 
+    const parsedAssetId = parseInt(assetId)
+
     const { drizzle } = await getConnection(ctx.env)
     const assetManager = new AssetManager(drizzle)
-    const asset = await assetManager.getAssetById(parseInt(assetId))
+    const asset = await assetManager.getAssetById(parsedAssetId)
 
     if (!asset) {
         return ctx.json(
             {
-                success: true,
+                success: false,
                 message: "Asset not found",
             },
             400
         )
     }
+
+    await assetManager.updateAssetViews(parsedAssetId)
 
     return ctx.json(
         {
