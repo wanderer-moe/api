@@ -1,13 +1,13 @@
 import { DrizzleInstance } from "@/v2/db/turso"
 import { asset, assetTag, assetTagAsset } from "@/v2/db/schema"
-import { eq, and } from "drizzle-orm"
+import { eq, and, sql } from "drizzle-orm"
 import { R2Bucket } from "@cloudflare/workers-types"
 import { SplitQueryByCommas } from "../../helpers/split-query-by-commas"
 import { z } from "zod"
-import type { Asset, NewAsset } from "@/v2/db/schema"
+import type { AssetStatus, NewAsset } from "@/v2/db/schema"
 import type { assetSearchAllFilter } from "@/v2/routes/asset/search/all/schema"
 import { uploadAssetSchema } from "@/v2/routes/asset/upload/schema"
-
+import { modifyAssetSchema } from "@/v2/routes/asset/modify/id/[id]/schema"
 export class AssetManager {
     constructor(private drizzle: DrizzleInstance) {}
 
@@ -21,6 +21,48 @@ export class AssetManager {
         } catch (e) {
             console.error(`Error getting asset by ID ${assetId}`, e)
             throw new Error(`Error getting asset by ID ${assetId}`)
+        }
+    }
+
+    public async updateAssetViews(assetId: number) {
+        try {
+            await this.drizzle
+                .update(asset)
+                .set({
+                    viewCount: sql`${asset.viewCount} + 1`,
+                })
+                .where(eq(asset.id, assetId))
+        } catch (e) {
+            console.error(`Error updating asset views by ID ${assetId}`, e)
+            throw new Error(`Error updating asset views by ID ${assetId}`)
+        }
+    }
+
+    public async updateAssetStatus(assetId: number, status: AssetStatus) {
+        try {
+            await this.drizzle
+                .update(asset)
+                .set({
+                    status: status,
+                })
+                .where(eq(asset.id, assetId))
+        } catch (e) {
+            console.error(`Error updating asset status by ID ${assetId}`, e)
+            throw new Error(`Error updating asset status by ID ${assetId}`)
+        }
+    }
+
+    public async updateAssetDownloads(assetId: number) {
+        try {
+            await this.drizzle
+                .update(asset)
+                .set({
+                    downloadCount: sql`${asset.downloadCount} + 1`,
+                })
+                .where(eq(asset.id, assetId))
+        } catch (e) {
+            console.error(`Error updating asset downloads by ID ${assetId}`, e)
+            throw new Error(`Error updating asset downloads by ID ${assetId}`)
         }
     }
 
@@ -73,95 +115,64 @@ export class AssetManager {
 
     public async updateAssetById(
         assetId: number,
-        update: z.infer<typeof uploadAssetSchema>
+        update: z.infer<typeof modifyAssetSchema>
     ) {
+        const { tags, ...rest } = update
+
         try {
-            const updatedAsset = await this.drizzle.transaction(async (tx) => {
-                const [updatedAsset] = await tx
-                    .update(asset)
-                    .set({
-                        name: update.name,
-                        assetCategoryId: update.assetCategoryId,
-                        gameId: update.gameId,
-                        assetIsSuggestive: Boolean(update.assetIsSuggestive),
+            const [updatedAsset] = await this.drizzle
+                .update(asset)
+                .set({
+                    ...rest,
+                })
+                .where(eq(asset.id, assetId))
+                .returning()
+
+            const newTags = SplitQueryByCommas(tags) ?? []
+            if (newTags.length === 0) return updatedAsset
+
+            const oldTags = await this.drizzle
+                .select({
+                    assetTagId: assetTag.id,
+                })
+                .from(assetTagAsset)
+                .innerJoin(assetTag, eq(assetTag.id, assetTagAsset.assetTagId))
+                .where(eq(assetTagAsset.assetId, assetId))
+
+            const oldTagIds = oldTags.map((t) => t.assetTagId)
+            const tagsToRemove = oldTagIds.filter((t) => !newTags.includes(t))
+            const tagsToAdd = newTags.filter((t) => !oldTagIds.includes(t))
+
+            const tagBatchQueries = [
+                ...tagsToRemove.map((tagId) =>
+                    this.drizzle
+                        .delete(assetTagAsset)
+                        .where(
+                            and(
+                                eq(assetTagAsset.assetId, assetId),
+                                eq(assetTagAsset.assetTagId, tagId)
+                            )
+                        )
+                ),
+                ...tagsToAdd.map((tag) =>
+                    this.drizzle.insert(assetTagAsset).values({
+                        assetId: assetId,
+                        assetTagId: tag,
                     })
-                    .where(eq(asset.id, assetId))
-                    .returning()
+                ),
+            ]
 
-                const newTags = SplitQueryByCommas(update.tags) ?? []
+            // https://github.com/drizzle-team/drizzle-orm/issues/1301
+            type TagBatchQuery = (typeof tagBatchQueries)[number]
 
-                if (newTags.length === 0) return updatedAsset
-
-                const oldTags = await tx
-                    .select({
-                        assetTagId: assetTag.id,
-                    })
-                    .from(assetTagAsset)
-                    .innerJoin(
-                        assetTag,
-                        eq(assetTag.id, assetTagAsset.assetTagId)
-                    )
-                    .where(eq(assetTagAsset.assetId, assetId))
-
-                const oldTagIds = oldTags.map((t) => t.assetTagId)
-
-                const tagsToRemove = oldTagIds.filter(
-                    (t) => !newTags.includes(t)
-                )
-
-                const tagsToAdd = newTags.filter((t) => !oldTagIds.includes(t))
-
-                await this.removeTags(tx, assetId, tagsToRemove)
-                await this.addTags(tx, assetId, tagsToAdd)
-
-                return updatedAsset
-            })
+            await this.drizzle.batch(
+                tagBatchQueries as [TagBatchQuery, ...TagBatchQuery[]]
+            )
 
             return updatedAsset
         } catch (e) {
             console.error(`Error updating asset by ID ${assetId}`, e)
             throw new Error(`Error updating asset by ID ${assetId}`)
-        }
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- i don't know how to type this
-    private async removeTags(tx: any, assetId: number, tagsToRemove: string[]) {
-        if (tagsToRemove.length > 0) {
-            for (const assetTagId of tagsToRemove) {
-                await tx
-                    .delete(assetTagAsset)
-                    .where(
-                        and(
-                            eq(assetTagAsset.assetId, assetId),
-                            eq(assetTagAsset.assetTagId, assetTagId)
-                        )
-                    )
-            }
-        }
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- i don't know how to type this
-    private async addTags(tx: any, assetId: number, tagsToAdd: string[]) {
-        if (tagsToAdd.length > 0) {
-            for (const tag of tagsToAdd) {
-                const foundTag = await tx
-                    .select({
-                        id: assetTag.id,
-                    })
-                    .from(assetTag)
-                    .innerJoin(
-                        assetTagAsset,
-                        eq(assetTag.id, assetTagAsset.assetTagId)
-                    )
-                    .where(eq(assetTag.name, tag))
-
-                if (foundTag) {
-                    await tx.insert(assetTagAsset).values({
-                        assetId: assetId,
-                        assetTagId: tag,
-                    })
-                }
-            }
         }
     }
 
@@ -269,39 +280,41 @@ export class AssetManager {
             )
             // TODO(dromzeh): correct file size, width, and height
 
-            const returnedNewAsset: Asset = await this.drizzle.transaction(
-                async (tx) => {
-                    const [createdAsset] = await tx
-                        .insert(asset)
-                        .values({
-                            name: newAsset.name,
-                            extension: "png",
-                            gameId: newAsset.gameId,
-                            assetCategoryId: newAsset.assetCategoryId,
-                            url: key,
-                            uploadedByName: userNickname,
-                            uploadedById: userId,
-                            status: "pending",
-                            fileSize: 0,
-                            width: 0,
-                            height: 0,
-                            assetIsSuggestive: Boolean(
-                                newAsset.assetIsSuggestive
-                            ),
-                        })
-                        .returning()
+            const [createdAsset] = await this.drizzle
+                .insert(asset)
+                .values({
+                    name: newAsset.name,
+                    extension: "png",
+                    gameId: newAsset.gameId,
+                    assetCategoryId: newAsset.assetCategoryId,
+                    url: key,
+                    uploadedByName: userNickname,
+                    uploadedById: userId,
+                    status: "pending",
+                    fileSize: 0,
+                    width: 0,
+                    height: 0,
+                    assetIsSuggestive: Boolean(newAsset.assetIsSuggestive),
+                })
+                .returning()
 
-                    const tags = SplitQueryByCommas(newAsset.tags) ?? []
+            const tags = SplitQueryByCommas(newAsset.tags) ?? []
 
-                    if (tags.length === 0) return createdAsset
+            if (tags.length === 0) return createdAsset
 
-                    await this.addTags(tx, createdAsset.id, tags)
-
-                    return createdAsset
-                }
+            const tagBatchQueries = tags.map((tag) =>
+                this.drizzle.insert(assetTagAsset).values({
+                    assetId: createdAsset.id,
+                    assetTagId: tag,
+                })
             )
 
-            return returnedNewAsset
+            type TagBatchQuery = (typeof tagBatchQueries)[number]
+            await this.drizzle.batch(
+                tagBatchQueries as [TagBatchQuery, ...TagBatchQuery[]]
+            )
+
+            return createdAsset
         } catch (e) {
             console.error("Error creating asset", e)
             throw new Error("Error creating asset")
