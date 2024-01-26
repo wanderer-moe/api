@@ -67,9 +67,6 @@ export const asset = sqliteTable(
             .$defaultFn(() => {
                 return new Date().toISOString()
             }),
-        assetIsOptimized: integer("asset_is_optimized", { mode: "boolean" })
-            .default(false)
-            .notNull(),
         assetIsSuggestive: integer("asset_is_suggestive", { mode: "boolean" })
             .default(false)
             .notNull(),
