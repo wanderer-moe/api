@@ -41,12 +41,14 @@
         "@scalar/hono-api-reference": "^0.3.29",
         "@typescript-eslint/eslint-plugin": "^6.19.1",
         "better-sqlite3": "^9.3.0",
+        "dayjs": "^1.11.10",
         "drizzle-orm": "^0.29.3",
         "drizzle-zod": "^0.5.1",
         "hono": "^3.12.8",
         "lucia": "3.0.0",
         "oslo": "^1.0.2",
         "prettier": "^3.2.4",
-        "zod": "^3.22.4"
+        "zod": "^3.22.4",
+        "zod-error": "^1.5.0"
     }
 }

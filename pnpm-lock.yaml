@@ -29,6 +29,9 @@ dependencies:
     better-sqlite3:
         specifier: ^9.3.0
         version: 9.3.0
+    dayjs:
+        specifier: ^1.11.10
+        version: 1.11.10
     drizzle-orm:
         specifier: ^0.29.3
         version: 0.29.3(@cloudflare/workers-types@4.20240117.0)(@libsql/client@0.4.0)(better-sqlite3@9.3.0)
@@ -50,6 +53,9 @@ dependencies:
     zod:
         specifier: ^3.22.4
         version: 3.22.4
+    zod-error:
+        specifier: ^1.5.0
+        version: 1.5.0
 
 devDependencies:
     "@asteasolutions/zod-to-openapi":
@@ -3709,6 +3715,13 @@ packages:
                 integrity: sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A==,
             }
         engines: { node: ">= 12" }
+        dev: false
+
+    /dayjs@1.11.10:
+        resolution:
+            {
+                integrity: sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==,
+            }
         dev: false
 
     /debug@4.3.4:
@@ -7520,6 +7533,15 @@ packages:
             {
                 integrity: sha512-8F0OI5dpWIA5IGG5NHUg9staDwz/ZPxZtvGVf01j7vHqSyZ0raHY+78atOVxRqb73AotX22uV1pXt3gYSstGag==,
             }
+        dev: false
+
+    /zod-error@1.5.0:
+        resolution:
+            {
+                integrity: sha512-zzopKZ/skI9iXpqCEPj+iLCKl9b88E43ehcU+sbRoHuwGd9F1IDVGQ70TyO6kmfiRL1g4IXkjsXK+g1gLYl4WQ==,
+            }
+        dependencies:
+            zod: 3.22.4
         dev: false
 
     /zod@3.22.4:

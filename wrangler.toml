@@ -10,4 +10,17 @@ binding = 'FILES_BUCKET'
 bucket_name = 'files'
 preview_bucket_name = 'files'
 
+[durable_objects]
+bindings = [
+  {name = "RATE_LIMITER", class_name = "RateLimiter" },
+]
+
+[[migrations]]
+tag = "v1"
+new_classes = ["RateLimiter"]
+
 [vars]
+ENVIRONMENT = "DEV"
+
+[env.production.vars]
+ENVIRONMENT = "PROD"

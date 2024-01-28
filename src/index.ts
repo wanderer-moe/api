@@ -5,15 +5,16 @@ import BaseRoutes from "@/v2/routes/handler"
 import { CustomCSS, OpenAPIConfig } from "./openapi/config"
 import { cors } from "hono/cors"
 import { csrf } from "hono/csrf"
-import { LogTime } from "./v2/middleware/time-taken"
+import { rateLimit } from "./v2/middleware/ratelimit/limiter"
+
+// this is required for the rate limiter to work
+export { RateLimiter } from "@/v2/middleware/ratelimit/ratelimit.do"
 
 const app = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
 // v2 API routes
-app.route("/v2", BaseRoutes)
+app.route("/v2", BaseRoutes).use("*", rateLimit(60, 100))
 
-// scalar API reference, very nice and lightweight
-// i am putting this at root because i can
 app.get(
     "/",
     apiReference({
@@ -27,12 +28,7 @@ app.get(
 // openapi config
 app.doc("/openapi", OpenAPIConfig)
 
-// interface CSRFOptions {
-//     origin?: string | string[] | IsAllowedOriginHandler;
-// }
 app.use("*", csrf())
-
-app.use("*", LogTime)
 
 app.use(
     "*",
@@ -44,6 +40,16 @@ app.use(
 )
 
 app.use("*", prettyJSON())
+
+app.notFound((ctx) => {
+    return ctx.json(
+        {
+            success: false,
+            message: "Not Found",
+        },
+        404
+    )
+})
 
 app.onError((err, ctx) => {
     console.error(err)
