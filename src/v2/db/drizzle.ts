@@ -27,4 +27,6 @@ export const tableNames = {
     userCollection: "userCollection",
     userCollectionAsset: "userCollectionAsset",
     socialsConnection: "socialsConnection",
+    requestForm: "requestForm",
+    requestFormUpvotes: "requestFormUpvotes",
 }

@@ -23,6 +23,7 @@ import { assetLikes } from "../asset/asset-likes"
 import { gameLikes } from "../game/game-likes"
 import { assetTagLikes } from "../tags/asset-tags-likes"
 import { assetCategoryLikes } from "../categories/asset-categories-likes"
+import { requestForm, requestFormUpvotes } from "../supporter/request-form"
 
 /*
 NOTE: Very basic user information
@@ -174,6 +175,8 @@ export const usersRelations = relations(authUser, ({ one, many }) => ({
     assetTagLikes: many(assetTagLikes),
     assetCategoryLikes: many(assetCategoryLikes),
     userCollectionCollaborators: many(userCollectionCollaborators),
+    requestForm: many(requestForm),
+    requestFormUpvotes: many(requestFormUpvotes),
 }))
 
 export const authCredentialsRelations = relations(

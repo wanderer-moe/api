@@ -58,6 +58,9 @@ dependencies:
         version: 1.5.0
 
 devDependencies:
+    "@asteasolutions/zod-to-openapi":
+        specifier: ^6.3.1
+        version: 6.3.1(zod@3.22.4)
     "@cloudflare/workers-types":
         specifier: ^4.20240117.0
         version: 4.20240117.0
@@ -152,6 +155,18 @@ packages:
             openapi3-ts: 4.2.1
             zod: 3.22.4
         dev: false
+
+    /@asteasolutions/zod-to-openapi@6.3.1(zod@3.22.4):
+        resolution:
+            {
+                integrity: sha512-1CRWBqslgdBpZeJnxxksGirAQ39Iztxk+LzTkYwoP0mNzuaULa604s8Xc5V9yzmYccwJ89O9fPQgxCkbNN398g==,
+            }
+        peerDependencies:
+            zod: ^3.20.2
+        dependencies:
+            openapi3-ts: 4.2.1
+            zod: 3.22.4
+        dev: true
 
     /@axiomhq/js@1.0.0-rc.1:
         resolution:
@@ -6112,7 +6127,6 @@ packages:
             }
         dependencies:
             yaml: 2.3.4
-        dev: false
 
     /optionator@0.9.3:
         resolution:
@@ -7495,7 +7509,6 @@ packages:
                 integrity: sha512-8aAvwVUSHpfEqTQ4w/KMlf3HcRdt50E5ODIQJBw1fQ5RL34xabzxtUlzTXVqc4rkZsPbvrXKWnABCD7kWSmocA==,
             }
         engines: { node: ">= 14" }
-        dev: false
 
     /yocto-queue@0.1.0:
         resolution:

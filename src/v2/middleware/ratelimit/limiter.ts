@@ -1,7 +1,7 @@
 import dayjs from "dayjs"
 import { Context, MiddlewareHandler } from "hono"
 
-const fakeDomain = "http://rate-limiter.com/"
+const fakeDomain = "http://fake.wanderer.moe/"
 
 const getRateLimitKey = (ctx: Context) => {
     const ip = ctx.req.header("cf-connecting-ip")
@@ -92,7 +92,7 @@ export const rateLimit = (
                 {
                     success: false,
                     message:
-                        "Rate limit exceeded, contact marcel@dromzeh.dev if you're using this API in production and need a higher rate limit.",
+                        "Rate limit exceeded, contact marcel@dromzeh.dev or reach out to @dromzeh on discord if you're using this API in production and need a higher rate limit.",
                 },
                 429
             )
