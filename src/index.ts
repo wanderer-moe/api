@@ -25,21 +25,21 @@ app.get(
     })
 )
 
-app.use("*", csrf({ origin: "*" }))
 app.use("*", rateLimit(60, 100))
+app.use("*", csrf({ origin: "*" }))
 app.use("*", prettyJSON({ space: 4 }))
-
-// v2 API routes
-app.route("/v2", BaseRoutes)
-
 app.use(
     "*",
     cors({
-        // todo(dromzeh): THIS IS TEMPORARY BTW PLEASE SET THIS DEPENDENT ON ENV
+        // todo(dromzeh): this should be set dependant on ENV, PROD or DEV w/ next() for context
         origin: "*",
         credentials: true,
     })
 )
+
+
+// v2 API routes
+app.route("/v2", BaseRoutes)
 
 app.notFound((ctx) => {
     return ctx.json(
