@@ -13,6 +13,7 @@ import { generateID } from "@/v2/lib/oslo"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { userCollectionLikes } from "./user-collection-likes"
 import { userCollectionCollaborators } from "./user-collections-collaborators"
+import type { ColourType } from "@/v2/lib/colour"
 
 /*
 NOTE: this file is where users store their collections of assets.
@@ -42,6 +43,7 @@ export const userCollection = sqliteTable(
             .$defaultFn(() => {
                 return new Date().toISOString()
             }),
+        accentColour: text("accent_colour").$type<ColourType>(),
         isPublic: integer("is_public", { mode: "boolean" })
             .default(false)
             .notNull(),
