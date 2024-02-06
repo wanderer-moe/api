@@ -51,9 +51,8 @@ async function main() {
                 emailVerified: 1,
                 usernameColour: "#84E6F8",
                 bio: "test bio",
-                roleFlags: 127,
+                role: "creator",
                 isContributor: true,
-                selfAssignableRoleFlags: 0,
             },
             {
                 username: "testuser2",
@@ -61,18 +60,16 @@ async function main() {
                 emailVerified: 1,
                 bio: "test bio 2",
                 pronouns: "he/him/his",
-                roleFlags: 1,
+                role: "uploader",
                 isContributor: false,
-                selfAssignableRoleFlags: 0,
             },
             {
                 username: "testuser3",
                 email: "testuser3@wanderer.moe",
                 emailVerified: 1,
                 bio: "test bio 3",
-                roleFlags: 1,
+                role: "uploader",
                 isContributor: false,
-                selfAssignableRoleFlags: 0,
             },
         ])
         .returning()

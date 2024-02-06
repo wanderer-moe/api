@@ -30,6 +30,13 @@ NOTE: Very basic user information
 - Keys table is login methods (i.e Credentials, OAuth, etc.)
 */
 
+export type UserRoles =
+    | "creator"
+    | "staff"
+    | "contributor"
+    | "uploader"
+    | "user"
+
 export const authUser = sqliteTable(
     tableNames.authUser,
     {
@@ -57,17 +64,13 @@ export const authUser = sqliteTable(
         isSupporter: integer("is_supporter", { mode: "boolean" })
             .default(false)
             .notNull(),
-        supporterExpiresAt: text("supporter_expires_at"),
         isBanned: integer("is_banned", { mode: "boolean" })
             .default(false)
             .notNull(),
         isContributor: integer("is_contributor", { mode: "boolean" })
             .default(false)
             .notNull(),
-        roleFlags: integer("role_flags").default(1).notNull(),
-        selfAssignableRoleFlags: integer("self_assignable_role_flags")
-            .default(0)
-            .notNull(),
+        role: text("role").notNull().default("user").$type<UserRoles>(),
     },
     (user) => {
         return {

@@ -2,6 +2,7 @@ import { Lucia } from "lucia"
 import { getConnection } from "@/v2/db/turso"
 import { tableNames } from "@/v2/db/drizzle"
 import { LibSQLAdapter } from "@lucia-auth/adapter-sqlite"
+import { UserRoles } from "@/v2/db/schema"
 
 export function luciaAuth(env: Bindings) {
     const { turso } = getConnection(env)
@@ -29,11 +30,9 @@ export function luciaAuth(env: Bindings) {
                     bio: user.bio,
                     dateJoined: user.date_joined,
                     isSupporter: Boolean(user.is_supporter),
-                    supporterExpiresAt: user.supporter_expires_at,
                     isBanned: Boolean(user.is_banned),
                     isContributor: user.is_contributor,
-                    roleFlags: user.role_flags,
-                    selfAssignableRoleFlags: user.self_assignable_role_flags,
+                    role: user.role as UserRoles,
                 }
             },
             getSessionAttributes: (session) => {

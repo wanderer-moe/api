@@ -25,6 +25,6 @@ export const getUserByIdResponseSchema = z.object({
         bio: true,
         dateJoined: true,
         isSupporter: true,
-        roleFlags: true,
+        role: true,
     }),
 })

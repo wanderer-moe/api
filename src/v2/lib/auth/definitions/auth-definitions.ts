@@ -1,3 +1,4 @@
+import { UserRoles } from "@/v2/db/schema"
 import type { LuciaAuth } from "../lucia"
 
 declare module "lucia" {
@@ -21,11 +22,9 @@ declare module "lucia" {
             bio: string | null
             date_joined: string
             is_supporter: boolean
-            supporter_expires_at: string | null
             is_banned: boolean
-            role_flags: number
+            role: UserRoles
             is_contributor: boolean
-            self_assignable_role_flags: number | null
         }
     }
 }

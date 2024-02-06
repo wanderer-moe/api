@@ -88,7 +88,7 @@ export class AssetManager {
                             bio: true,
                             dateJoined: true,
                             isSupporter: true,
-                            roleFlags: true,
+                            role: true,
                         },
                     },
                     game: true,

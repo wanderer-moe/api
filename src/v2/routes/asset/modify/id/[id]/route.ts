@@ -1,7 +1,6 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
 import { getConnection } from "@/v2/db/turso"
 import { modifyAssetRoute } from "./openapi"
-import { roleFlagsToArray } from "@/v2/lib/helpers/role-flags"
 import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
 import { AssetManager } from "@/v2/lib/managers/asset/asset-manager"
 import { asset } from "@/v2/db/schema"
@@ -47,10 +46,7 @@ handler.openapi(modifyAssetRoute, async (ctx) => {
         .from(asset)
         .where(eq(asset.id, parseInt(id)))
 
-    if (
-        assetUser.uploadedById !== user.id ||
-        !roleFlagsToArray(user.roleFlags).includes("DEVELOPER")
-    ) {
+    if (assetUser.uploadedById !== user.id || user.role != "creator") {
         return ctx.json(
             {
                 success: false,

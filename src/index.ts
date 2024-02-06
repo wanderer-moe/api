@@ -37,7 +37,6 @@ app.use(
     })
 )
 
-
 // v2 API routes
 app.route("/v2", BaseRoutes)
 

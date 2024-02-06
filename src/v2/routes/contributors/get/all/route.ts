@@ -15,7 +15,7 @@ handler.openapi(contributorsRoute, async (ctx) => {
             username: authUser.username,
             avatarUrl: authUser.avatarUrl,
             isSupporter: authUser.isSupporter,
-            roleFlags: authUser.roleFlags,
+            role: authUser.role,
         })
         .from(authUser)
         .where(eq(authUser.isContributor, true))

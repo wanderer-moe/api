@@ -28,7 +28,7 @@ export class UserSearchManager {
                     bio: authUser.bio,
                     dateJoined: authUser.dateJoined,
                     isSupporter: authUser.isSupporter,
-                    roleFlags: authUser.roleFlags,
+                    role: authUser.role,
                 })
                 .from(authUser)
                 .where(eq(authUser.id, userId))
@@ -74,7 +74,7 @@ export class UserSearchManager {
                     bio: authUser.bio,
                     dateJoined: authUser.dateJoined,
                     isSupporter: authUser.isSupporter,
-                    roleFlags: authUser.roleFlags,
+                    role: authUser.role,
                 })
                 .from(authUser)
                 .where(eq(authUser.username, username))
@@ -106,7 +106,7 @@ export class UserSearchManager {
                     bio: authUser.bio,
                     dateJoined: authUser.dateJoined,
                     isSupporter: authUser.isSupporter,
-                    roleFlags: authUser.roleFlags,
+                    role: authUser.role,
                 })
                 .from(authUser)
                 .where(or(like(authUser.username, `%${username}%`)))

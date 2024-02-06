@@ -3,8 +3,6 @@ import { uploadAssetRoute } from "./openapi"
 import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
 import { AssetManager } from "@/v2/lib/managers/asset/asset-manager"
 import { getConnection } from "@/v2/db/turso"
-import { roleFlagsToArray } from "@/v2/lib/helpers/role-flags"
-
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
 handler.openapi(uploadAssetRoute, async (ctx) => {
@@ -25,7 +23,11 @@ handler.openapi(uploadAssetRoute, async (ctx) => {
         )
     }
 
-    if (!roleFlagsToArray(user.roleFlags).includes("CONTRIBUTOR")) {
+    if (
+        user.role != "creator" &&
+        user.role != "contributor" &&
+        user.role != "staff"
+    ) {
         return ctx.json(
             {
                 success: false,

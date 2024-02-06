@@ -3,7 +3,6 @@ import { deleteGameRoute } from "./openapi"
 import { GameManager } from "@/v2/lib/managers/game/game-manager"
 import { getConnection } from "@/v2/db/turso"
 import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
-import { roleFlagsToArray } from "@/v2/lib/helpers/role-flags"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
@@ -37,7 +36,7 @@ handler.openapi(deleteGameRoute, async (ctx) => {
         )
     }
 
-    if (!roleFlagsToArray(user.roleFlags).includes("DEVELOPER")) {
+    if (user.role != "creator") {
         return ctx.json(
             {
                 success: false,
