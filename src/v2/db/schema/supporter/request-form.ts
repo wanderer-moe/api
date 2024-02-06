@@ -10,7 +10,7 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { generateID } from "@/v2/lib/oslo"
 import { authUser } from "../user/user"
 
-type requestArea = "asset" | "game" | "site"
+export type requestArea = "asset" | "game" | "site"
 
 export const requestForm = sqliteTable(
     tableNames.requestForm,

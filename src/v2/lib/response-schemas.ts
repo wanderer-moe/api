@@ -76,7 +76,6 @@ export const GenericResponses = {
                 schema: BadRequestSchema,
             },
         },
-        headers: openAPIResponseHeaders,
     },
     401: {
         description: "Unauthorized",
@@ -85,7 +84,6 @@ export const GenericResponses = {
                 schema: UnauthorizedSchema,
             },
         },
-        headers: openAPIResponseHeaders,
     },
     403: {
         description: "Forbidden",
@@ -94,7 +92,6 @@ export const GenericResponses = {
                 schema: ForbiddenSchema,
             },
         },
-        headers: openAPIResponseHeaders,
     },
     429: {
         description: "Rate limited",
@@ -103,7 +100,6 @@ export const GenericResponses = {
                 schema: BadRequestSchema,
             },
         },
-        headers: openAPIResponseHeaders,
     },
     500: {
         description: "Internal server error",
@@ -112,6 +108,5 @@ export const GenericResponses = {
                 schema: InternalServerErrorSchema,
             },
         },
-        headers: openAPIResponseHeaders,
     },
 }

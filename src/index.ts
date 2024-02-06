@@ -12,6 +12,18 @@ export { RateLimiter } from "@/v2/middleware/ratelimit/ratelimit.do"
 
 const app = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
+app.use("*", rateLimit(60, 100))
+app.use("*", csrf({ origin: "*" }))
+app.use("*", prettyJSON({ space: 4 }))
+app.use(
+    "*",
+    cors({
+        // todo(dromzeh): this should be set dependant on ENV, PROD or DEV w/ next() for context
+        origin: "*",
+        credentials: true,
+    })
+)
+
 // openapi config
 app.doc("/openapi", OpenAPIConfig)
 
@@ -22,18 +34,6 @@ app.get(
             url: "/openapi",
         },
         customCss: CustomCSS,
-    })
-)
-
-app.use("*", rateLimit(60, 100))
-app.use("*", csrf({ origin: "*" }))
-app.use("*", prettyJSON({ space: 4 }))
-app.use(
-    "*",
-    cors({
-        // todo(dromzeh): this should be set dependant on ENV, PROD or DEV w/ next() for context
-        origin: "*",
-        credentials: true,
     })
 )
 

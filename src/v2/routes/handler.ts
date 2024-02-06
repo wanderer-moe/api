@@ -5,6 +5,7 @@ import AssetRoute from "@/v2/routes/asset/handler"
 import ContributorRoute from "@/v2/routes/contributors/handler"
 import AuthRoute from "@/v2/routes/auth/handler"
 import CategoryRoute from "@/v2/routes/category/handler"
+import RequestFormRoute from "@/v2/routes/requests/handler"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
@@ -14,5 +15,6 @@ handler.route("/asset", AssetRoute)
 handler.route("/user", UserRoute)
 handler.route("/contributor", ContributorRoute)
 handler.route("/auth", AuthRoute)
+handler.route("/request", RequestFormRoute)
 
 export default handler
