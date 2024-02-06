@@ -6,7 +6,7 @@ const fakeDomain = "http://rate-limiter.com/"
 const getRateLimitKey = (ctx: Context) => {
     const ip = ctx.req.header("cf-connecting-ip")
     // TODO(dromzeh): look into setting current user w/ ctx.get/set, then we can use that OVER user ip? idk
-    const uniqueKey = ip || ""
+    const uniqueKey = ip ?? "unknown"
     return uniqueKey
 }
 
@@ -35,7 +35,7 @@ const setRateLimitHeaders = (
 export const rateLimit = (
     interval: number,
     limit: number
-): MiddlewareHandler<{ Bindings: Bindings; Variables: Variables }> => {
+): MiddlewareHandler<{ Bindings: Bindings }> => {
     return async (ctx, next) => {
         const key = getRateLimitKey(ctx)
 
@@ -46,6 +46,7 @@ export const rateLimit = (
 
         const cache = await caches.open("rate-limiter")
         const cacheKey = getCacheKey(endpoint, key, limit, interval)
+
         const cached = await cache.match(cacheKey)
 
         let res: Response
@@ -66,9 +67,7 @@ export const rateLimit = (
             res = cached
         }
 
-        const clonedRes = res.clone()
-
-        const body = await clonedRes.json<{
+        const body = await res.json<{
             blocked: boolean
             remaining: number
             expires: string
@@ -86,7 +85,7 @@ export const rateLimit = (
 
         if (body.blocked) {
             if (!cached) {
-                ctx.executionCtx.waitUntil(cache.put(cacheKey, res))
+                ctx.executionCtx.waitUntil(cache.put(cacheKey, res.clone()))
             }
 
             return ctx.json(

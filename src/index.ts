@@ -12,11 +12,11 @@ export { RateLimiter } from "@/v2/middleware/ratelimit/ratelimit.do"
 
 const app = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
-// v2 API routes
-app.route("/v2", BaseRoutes).use("*", rateLimit(60, 100))
+// openapi config
+app.doc("/openapi", OpenAPIConfig)
 
 app.get(
-    "/",
+    "/docs",
     apiReference({
         spec: {
             url: "/openapi",
@@ -25,10 +25,12 @@ app.get(
     })
 )
 
-// openapi config
-app.doc("/openapi", OpenAPIConfig)
+app.use("*", csrf({ origin: "*" }))
+app.use("*", rateLimit(60, 100))
+app.use("*", prettyJSON({ space: 4 }))
 
-app.use("*", csrf())
+// v2 API routes
+app.route("/v2", BaseRoutes)
 
 app.use(
     "*",
@@ -38,8 +40,6 @@ app.use(
         credentials: true,
     })
 )
-
-app.use("*", prettyJSON())
 
 app.notFound((ctx) => {
     return ctx.json(
