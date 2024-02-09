@@ -8,9 +8,9 @@
         "lib": ["es2021"],
         "baseUrl": "./",
         "paths": {
-            "@/*": ["src/*"],
+            "@/*": ["src/*"]
         },
-        "types": ["@cloudflare/workers-types", "node"],
+        "types": ["@cloudflare/workers-types", "node"]
     },
-    "include": ["src/**/*.ts", "src/scripts/seed/seed.mts"],
+    "include": ["src/**/*.ts", "src/scripts/seed/seed.mts"]
 }
