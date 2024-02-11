@@ -30,6 +30,13 @@ export const userCollection = sqliteTable(
             .$defaultFn(() => {
                 return generateID()
             }),
+        // parentCollectionId: text("parent_collection_id").references(
+        //     () => userCollection.id,
+        //     {
+        //         onUpdate: "cascade",
+        //         onDelete: "cascade",
+        //     }
+        // ),
         name: text("name").notNull(),
         description: text("description").notNull(),
         userId: text("user_id")
@@ -114,6 +121,11 @@ export const collectionRelations = relations(
         assets: many(userCollectionAsset),
         userCollectionLikes: many(userCollectionLikes),
         userCollectionCollaborators: many(userCollectionCollaborators),
+        // parentCollection: one(userCollection, {
+        //     fields: [userCollection.parentCollectionId],
+        //     references: [userCollection.id],
+        //     relationName: "collection_parent_collection",
+        // }),
     })
 )
 

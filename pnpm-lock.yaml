@@ -6,41 +6,41 @@ settings:
 
 dependencies:
     "@axiomhq/js":
-        specifier: 1.0.0-rc.1
-        version: 1.0.0-rc.1
+        specifier: 1.0.0-rc.2
+        version: 1.0.0-rc.2
     "@hono/swagger-ui":
         specifier: ^0.2.1
-        version: 0.2.1(hono@3.12.12)
+        version: 0.2.1(hono@4.0.1)
     "@hono/zod-openapi":
         specifier: ^0.9.6
-        version: 0.9.6(hono@3.12.12)(zod@3.22.4)
+        version: 0.9.6(hono@4.0.1)(zod@3.22.4)
     "@libsql/client":
         specifier: 0.4.3
         version: 0.4.3
     "@lucia-auth/adapter-sqlite":
         specifier: 3.0.0
-        version: 3.0.0(@libsql/client@0.4.3)(better-sqlite3@9.4.0)(lucia@3.0.1)
+        version: 3.0.0(@libsql/client@0.4.3)(better-sqlite3@9.4.1)(lucia@3.0.1)
     "@scalar/hono-api-reference":
-        specifier: ^0.3.46
-        version: 0.3.46(hono@3.12.12)(nanoid@5.0.5)(postcss@8.4.35)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.18)(yjs@13.6.11)
+        specifier: ^0.3.47
+        version: 0.3.47(hono@4.0.1)(nanoid@5.0.5)(postcss@8.4.35)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.18)(yjs@13.6.12)
     "@typescript-eslint/eslint-plugin":
         specifier: ^6.21.0
         version: 6.21.0(@typescript-eslint/parser@6.21.0)(eslint@8.56.0)(typescript@5.3.3)
     better-sqlite3:
-        specifier: ^9.4.0
-        version: 9.4.0
+        specifier: ^9.4.1
+        version: 9.4.1
     dayjs:
         specifier: ^1.11.10
         version: 1.11.10
     drizzle-orm:
         specifier: ^0.29.3
-        version: 0.29.3(@cloudflare/workers-types@4.20240208.0)(@libsql/client@0.4.3)(better-sqlite3@9.4.0)
+        version: 0.29.3(@cloudflare/workers-types@4.20240208.0)(@libsql/client@0.4.3)(better-sqlite3@9.4.1)
     drizzle-zod:
         specifier: ^0.5.1
         version: 0.5.1(drizzle-orm@0.29.3)(zod@3.22.4)
     hono:
-        specifier: ^3.12.12
-        version: 3.12.12
+        specifier: ^4.0.1
+        version: 4.0.1
     lucia:
         specifier: 3.0.1
         version: 3.0.1
@@ -68,8 +68,8 @@ devDependencies:
         specifier: ^20.11.17
         version: 20.11.17
     dotenv:
-        specifier: ^16.4.1
-        version: 16.4.1
+        specifier: ^16.4.2
+        version: 16.4.2
     drizzle-kit:
         specifier: ^0.20.14
         version: 0.20.14
@@ -83,14 +83,14 @@ devDependencies:
         specifier: link:@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator
         version: link:@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator
     tsx:
-        specifier: ^4.7.0
-        version: 4.7.0
+        specifier: ^4.7.1
+        version: 4.7.1
     typescript:
         specifier: ^5.3.3
         version: 5.3.3
     wrangler:
-        specifier: 3.28.0
-        version: 3.28.0(@cloudflare/workers-types@4.20240208.0)
+        specifier: 3.28.1
+        version: 3.28.1(@cloudflare/workers-types@4.20240208.0)
 
 packages:
     /@aashutoshrathi/word-wrap@1.2.6:
@@ -188,10 +188,10 @@ packages:
             zod: 3.22.4
         dev: true
 
-    /@axiomhq/js@1.0.0-rc.1:
+    /@axiomhq/js@1.0.0-rc.2:
         resolution:
             {
-                integrity: sha512-B/TT5HPc3KmoEIJUwhfzAAp0SLNfcxQnr0SGEbs1lWS0OOLckgj1Q4K1Tp/l669Yje1CK68i3LcajU/9+z+v2g==,
+                integrity: sha512-BQJQNkumdKZgbLGhf3DZb6A8w/31jtX3hWtdv0mMiSE3O5PioeIZNxRTMoWRChxt8TylZrJoVezqrw/ooWPoyQ==,
             }
         engines: { node: ">=16" }
         dependencies:
@@ -323,7 +323,7 @@ packages:
                 integrity: sha512-MVGTTjZpJu4kJONvai5SdJzWIhOJbuweVZ3goI7FNyG+JdoQH41OoB+nMhLsX626vPLZVWGPIWsiSo/WZHzgQw==,
             }
 
-    /@codemirror/autocomplete@6.12.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.23.1)(@lezer/common@1.2.1):
+    /@codemirror/autocomplete@6.12.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.24.0)(@lezer/common@1.2.1):
         resolution:
             {
                 integrity: sha512-r4IjdYFthwbCQyvqnSlx0WBHRHi8nBvU+WjJxFUij81qsBfhNudf/XKKmmC2j3m0LaOYUQTf3qiEK1J8lO1sdg==,
@@ -336,7 +336,7 @@ packages:
         dependencies:
             "@codemirror/language": 6.10.1
             "@codemirror/state": 6.4.0
-            "@codemirror/view": 6.23.1
+            "@codemirror/view": 6.24.0
             "@lezer/common": 1.2.1
         dev: false
 
@@ -348,17 +348,17 @@ packages:
         dependencies:
             "@codemirror/language": 6.10.1
             "@codemirror/state": 6.4.0
-            "@codemirror/view": 6.23.1
+            "@codemirror/view": 6.24.0
             "@lezer/common": 1.2.1
         dev: false
 
-    /@codemirror/lang-css@6.2.1(@codemirror/view@6.23.1):
+    /@codemirror/lang-css@6.2.1(@codemirror/view@6.24.0):
         resolution:
             {
                 integrity: sha512-/UNWDNV5Viwi/1lpr/dIXJNWiwDxpw13I4pTUAsNxZdg6E0mI2kTQb0P2iHczg1Tu+H4EBgJR+hYhKiHKko7qg==,
             }
         dependencies:
-            "@codemirror/autocomplete": 6.12.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.23.1)(@lezer/common@1.2.1)
+            "@codemirror/autocomplete": 6.12.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.24.0)(@lezer/common@1.2.1)
             "@codemirror/language": 6.10.1
             "@codemirror/state": 6.4.0
             "@lezer/common": 1.2.1
@@ -373,12 +373,12 @@ packages:
                 integrity: sha512-tE2YK7wDlb9ZpAH6mpTPiYm6rhfdQKVDa5r9IwIFlwwgvVaKsCfuKKZoJGWsmMZIf3FQAuJ5CHMPLymOtg1hXw==,
             }
         dependencies:
-            "@codemirror/autocomplete": 6.12.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.23.1)(@lezer/common@1.2.1)
-            "@codemirror/lang-css": 6.2.1(@codemirror/view@6.23.1)
+            "@codemirror/autocomplete": 6.12.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.24.0)(@lezer/common@1.2.1)
+            "@codemirror/lang-css": 6.2.1(@codemirror/view@6.24.0)
             "@codemirror/lang-javascript": 6.2.1
             "@codemirror/language": 6.10.1
             "@codemirror/state": 6.4.0
-            "@codemirror/view": 6.23.1
+            "@codemirror/view": 6.24.0
             "@lezer/common": 1.2.1
             "@lezer/css": 1.1.7
             "@lezer/html": 1.3.8
@@ -400,11 +400,11 @@ packages:
                 integrity: sha512-jlFOXTejVyiQCW3EQwvKH0m99bUYIw40oPmFjSX2VS78yzfe0HELZ+NEo9Yfo1MkGRpGlj3Gnu4rdxV1EnAs5A==,
             }
         dependencies:
-            "@codemirror/autocomplete": 6.12.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.23.1)(@lezer/common@1.2.1)
+            "@codemirror/autocomplete": 6.12.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.24.0)(@lezer/common@1.2.1)
             "@codemirror/language": 6.10.1
             "@codemirror/lint": 6.5.0
             "@codemirror/state": 6.4.0
-            "@codemirror/view": 6.23.1
+            "@codemirror/view": 6.24.0
             "@lezer/common": 1.2.1
             "@lezer/javascript": 1.4.13
         dev: false
@@ -432,13 +432,13 @@ packages:
             "@lezer/php": 1.0.2
         dev: false
 
-    /@codemirror/lang-python@6.1.4(@codemirror/view@6.23.1):
+    /@codemirror/lang-python@6.1.4(@codemirror/view@6.24.0):
         resolution:
             {
                 integrity: sha512-b6d1TDqrkCjFNvMO01SWldFiDoZ39yl3tDMC1Y5f8glA2eZpynPxJhwYVTlGFr0stizcJgrp6ojLEGH2myoZAw==,
             }
         dependencies:
-            "@codemirror/autocomplete": 6.12.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.23.1)(@lezer/common@1.2.1)
+            "@codemirror/autocomplete": 6.12.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.24.0)(@lezer/common@1.2.1)
             "@codemirror/language": 6.10.1
             "@codemirror/state": 6.4.0
             "@lezer/common": 1.2.1
@@ -464,7 +464,7 @@ packages:
             }
         dependencies:
             "@codemirror/state": 6.4.0
-            "@codemirror/view": 6.23.1
+            "@codemirror/view": 6.24.0
             "@lezer/common": 1.2.1
             "@lezer/highlight": 1.2.0
             "@lezer/lr": 1.4.0
@@ -487,7 +487,7 @@ packages:
             }
         dependencies:
             "@codemirror/state": 6.4.0
-            "@codemirror/view": 6.23.1
+            "@codemirror/view": 6.24.0
             crelt: 1.0.6
         dev: false
 
@@ -498,7 +498,7 @@ packages:
             }
         dependencies:
             "@codemirror/state": 6.4.0
-            "@codemirror/view": 6.23.1
+            "@codemirror/view": 6.24.0
             crelt: 1.0.6
         dev: false
 
@@ -509,10 +509,10 @@ packages:
             }
         dev: false
 
-    /@codemirror/view@6.23.1:
+    /@codemirror/view@6.24.0:
         resolution:
             {
-                integrity: sha512-J2Xnn5lFYT1ZN/5ewEoMBCmLlL71lZ3mBdb7cUEuHhX2ESoSrNEucpsDXpX22EuTGm9LOgC9v4Z0wx+Ez8QmGA==,
+                integrity: sha512-zK6m5pNkdhdJl8idPP1gA4N8JKTiSsOz8U/Iw+C1ChMwyLG7+MLiNXnH/wFuAk6KeGEe33/adOiAh5jMqee03w==,
             }
         dependencies:
             "@codemirror/state": 6.4.0
@@ -1514,7 +1514,7 @@ packages:
             vue: 3.4.18(typescript@5.3.3)
         dev: false
 
-    /@hono/swagger-ui@0.2.1(hono@3.12.12):
+    /@hono/swagger-ui@0.2.1(hono@4.0.1):
         resolution:
             {
                 integrity: sha512-wBxVMRe3/v8xH4o6icmwztiIq0DG0s7+jHVMHVUAoFFCWEQNL2iskMmQtrhSDtsFmBZUeUFQUaaJ6Ir6DOmHLA==,
@@ -1522,10 +1522,10 @@ packages:
         peerDependencies:
             hono: "*"
         dependencies:
-            hono: 3.12.12
+            hono: 4.0.1
         dev: false
 
-    /@hono/zod-openapi@0.9.6(hono@3.12.12)(zod@3.22.4):
+    /@hono/zod-openapi@0.9.6(hono@4.0.1)(zod@3.22.4):
         resolution:
             {
                 integrity: sha512-MLF8xpd4fEwbEaylFqAt1qci4wOTXu3oq3BKb01trccapYfodP50VCO0YDNBQTyMT/Iapq6GMO4+RAIFBgG5WQ==,
@@ -1536,12 +1536,12 @@ packages:
             zod: 3.*
         dependencies:
             "@asteasolutions/zod-to-openapi": 5.5.0(zod@3.22.4)
-            "@hono/zod-validator": 0.1.11(hono@3.12.12)(zod@3.22.4)
-            hono: 3.12.12
+            "@hono/zod-validator": 0.1.11(hono@4.0.1)(zod@3.22.4)
+            hono: 4.0.1
             zod: 3.22.4
         dev: false
 
-    /@hono/zod-validator@0.1.11(hono@3.12.12)(zod@3.22.4):
+    /@hono/zod-validator@0.1.11(hono@4.0.1)(zod@3.22.4):
         resolution:
             {
                 integrity: sha512-PQXeHUP0+36qpRt8yfeD7N2jbK3ETlGvSN6dMof/HwUC/APRokQRjpXZm4rrlG71Ft0aWE01+Bm4XejqPie5Uw==,
@@ -1550,7 +1550,7 @@ packages:
             hono: ">=3.9.0"
             zod: ^3.19.1
         dependencies:
-            hono: 3.12.12
+            hono: 4.0.1
             zod: 3.22.4
         dev: false
 
@@ -1868,7 +1868,7 @@ packages:
         dev: false
         optional: true
 
-    /@lucia-auth/adapter-sqlite@3.0.0(@libsql/client@0.4.3)(better-sqlite3@9.4.0)(lucia@3.0.1):
+    /@lucia-auth/adapter-sqlite@3.0.0(@libsql/client@0.4.3)(better-sqlite3@9.4.1)(lucia@3.0.1):
         resolution:
             {
                 integrity: sha512-7XMfMMNziFOoqIq2u9W5Z+wo7G7lzNQfUh7wDlkIqKxJMSLtP6GKH+QpK+21X4ZY9dIDmiuiwqZmS3Q3CgpATw==,
@@ -1884,7 +1884,7 @@ packages:
                 optional: true
         dependencies:
             "@libsql/client": 0.4.3
-            better-sqlite3: 9.4.0
+            better-sqlite3: 9.4.1
             lucia: 3.0.1
         dev: false
 
@@ -2711,7 +2711,7 @@ packages:
             "@nodelib/fs.scandir": 2.1.5
             fastq: 1.17.1
 
-    /@replit/codemirror-css-color-picker@6.1.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.23.1):
+    /@replit/codemirror-css-color-picker@6.1.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.24.0):
         resolution:
             {
                 integrity: sha512-lkjtzOy8+C4VhuHegUfaqxsIsLVVW+FCRpKE+IOU4bX3Fp6Yo3sHS1PCHy1QlOtmL+Y+08Yb+giKuMXLyYzjew==,
@@ -2723,13 +2723,13 @@ packages:
         dependencies:
             "@codemirror/language": 6.10.1
             "@codemirror/state": 6.4.0
-            "@codemirror/view": 6.23.1
+            "@codemirror/view": 6.24.0
         dev: false
 
-    /@scalar/api-client@0.11.4(vue@3.4.18)(yjs@13.6.11):
+    /@scalar/api-client@0.11.5(vue@3.4.18)(yjs@13.6.12):
         resolution:
             {
-                integrity: sha512-Yygj7J6CpbX17nP9ZohCwLUSwy6T/etZyh6bm0J/Yje0MJHkJjGkQjco+8sA12EmtFcvtkP/0ZT4+HT+WYVWsA==,
+                integrity: sha512-H80OZkxFvU9UaHsp5gHI8rYoNAUBlESVQIHr90OUTmpSWOIfMFMKd/kA7bkp4l8KCqxk47vvTGvnSQF2YWCCTg==,
             }
         engines: { node: ">=18" }
         peerDependencies:
@@ -2737,7 +2737,7 @@ packages:
         dependencies:
             "@headlessui/vue": 1.7.19(vue@3.4.18)
             "@scalar/themes": 0.5.4(vue@3.4.18)
-            "@scalar/use-codemirror": 0.8.3(vue@3.4.18)(yjs@13.6.11)
+            "@scalar/use-codemirror": 0.8.3(vue@3.4.18)(yjs@13.6.12)
             "@scalar/use-keyboard-event": 0.5.8(vue@3.4.18)
             "@scalar/use-modal": 0.2.3(@headlessui/vue@1.7.19)(vue@3.4.18)
             "@vueuse/core": 10.7.2(vue@3.4.18)
@@ -2754,10 +2754,10 @@ packages:
             - yjs
         dev: false
 
-    /@scalar/api-reference@1.15.4(nanoid@5.0.5)(postcss@8.4.35)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.18)(yjs@13.6.11):
+    /@scalar/api-reference@1.15.5(nanoid@5.0.5)(postcss@8.4.35)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.18)(yjs@13.6.12):
         resolution:
             {
-                integrity: sha512-+CYprpFAogbWBR/EtMrJrvkpmmfCH0eSMVPq8JZafiuZnXc0BbKG1zihepL/QCTAVo8oUmutfll9foYz0P0/lQ==,
+                integrity: sha512-lOEhiW164ANhCQumjo45oCE+MVEDaBpAYxCNwJnRhYDdhKVPkLEd43HhzxUJSu4fZyFuNoCkbKkxLnh/2Mohpg==,
             }
         engines: { node: ">=18" }
         peerDependencies:
@@ -2766,14 +2766,14 @@ packages:
         dependencies:
             "@floating-ui/vue": 1.0.6(vue@3.4.18)
             "@headlessui/vue": 1.7.19(vue@3.4.18)
-            "@scalar/api-client": 0.11.4(vue@3.4.18)(yjs@13.6.11)
+            "@scalar/api-client": 0.11.5(vue@3.4.18)(yjs@13.6.12)
             "@scalar/components": 0.2.2(typescript@5.3.3)
             "@scalar/snippetz": 0.1.5
-            "@scalar/swagger-editor": 0.10.3(typescript@5.3.3)(vue@3.4.18)(yjs@13.6.11)
+            "@scalar/swagger-editor": 0.10.4(typescript@5.3.3)(vue@3.4.18)(yjs@13.6.12)
             "@scalar/swagger-parser": 0.5.15(openapi-types@12.1.3)
             "@scalar/themes": 0.5.4(vue@3.4.18)
             "@scalar/use-clipboard": 0.5.13(@scalar/use-toasts@0.5.13)(nanoid@5.0.5)
-            "@scalar/use-codemirror": 0.8.3(vue@3.4.18)(yjs@13.6.11)
+            "@scalar/use-codemirror": 0.8.3(vue@3.4.18)(yjs@13.6.12)
             "@scalar/use-keyboard-event": 0.5.8(vue@3.4.18)
             "@scalar/use-modal": 0.2.3(@headlessui/vue@1.7.19)(vue@3.4.18)
             "@scalar/use-toasts": 0.5.13(nanoid@5.0.5)(vue@3.4.18)
@@ -2834,17 +2834,17 @@ packages:
             - typescript
         dev: false
 
-    /@scalar/hono-api-reference@0.3.46(hono@3.12.12)(nanoid@5.0.5)(postcss@8.4.35)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.18)(yjs@13.6.11):
+    /@scalar/hono-api-reference@0.3.47(hono@4.0.1)(nanoid@5.0.5)(postcss@8.4.35)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.18)(yjs@13.6.12):
         resolution:
             {
-                integrity: sha512-CblNLk8Ihmt0GK85y13mdZrj/bMTvULthEoGXaHqJdzJq+p2q4qRSSDSLgOusiFSz21w+Qp0R92I6hMLdsgkPQ==,
+                integrity: sha512-8jrjuZrF1MH6JMyw8MUsXpf++4pl0syQ6MnHa8EpnxMi/w6pWLqYpOnrlkdjkS0sru8G9sGXHxMwysBC3Uowjw==,
             }
         engines: { node: ">=18" }
         peerDependencies:
             hono: ^3.0.0
         dependencies:
-            "@scalar/api-reference": 1.15.4(nanoid@5.0.5)(postcss@8.4.35)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.18)(yjs@13.6.11)
-            hono: 3.12.12
+            "@scalar/api-reference": 1.15.5(nanoid@5.0.5)(postcss@8.4.35)(typescript@5.3.3)(unified@11.0.4)(vue@3.4.18)(yjs@13.6.12)
+            hono: 4.0.1
         transitivePeerDependencies:
             - "@vue/composition-api"
             - debug
@@ -2905,10 +2905,10 @@ packages:
             "@scalar/snippetz-plugin-node-undici": 0.1.5
         dev: false
 
-    /@scalar/swagger-editor@0.10.3(typescript@5.3.3)(vue@3.4.18)(yjs@13.6.11):
+    /@scalar/swagger-editor@0.10.4(typescript@5.3.3)(vue@3.4.18)(yjs@13.6.12):
         resolution:
             {
-                integrity: sha512-QVVjgdheflq+n8ZZoTzyCDkVYEculiVri1VSONCFXho/xzsluqsFQiMq98YBZYL9fQnA3cRoC+R/xD83/Cg+Vg==,
+                integrity: sha512-JHzDgmc5zug3cC/PR754Qy3e1ENdc/Q66JTr3gBSoQSorLvIeThgwFlIdUugDArRB2avdEKthsrw/YoYpSoTNw==,
             }
         engines: { node: ">=18" }
         peerDependencies:
@@ -2916,7 +2916,7 @@ packages:
         dependencies:
             "@scalar/components": 0.2.2(typescript@5.3.3)
             "@scalar/themes": 0.5.4(vue@3.4.18)
-            "@scalar/use-codemirror": 0.8.3(vue@3.4.18)(yjs@13.6.11)
+            "@scalar/use-codemirror": 0.8.3(vue@3.4.18)(yjs@13.6.12)
             "@vueuse/core": 10.7.2(vue@3.4.18)
             vue: 3.4.18(typescript@5.3.3)
         transitivePeerDependencies:
@@ -2964,7 +2964,7 @@ packages:
             nanoid: 5.0.5
         dev: false
 
-    /@scalar/use-codemirror@0.8.3(vue@3.4.18)(yjs@13.6.11):
+    /@scalar/use-codemirror@0.8.3(vue@3.4.18)(yjs@13.6.12):
         resolution:
             {
                 integrity: sha512-f0Zuj3A9qgIquD0Wkq5Q4MI/fVwmbasDfUiDkUDfpgIdCrKRlFEmKmYHhRmb415GMUoiJrx/7kuwcpq2Iwn71A==,
@@ -2974,27 +2974,27 @@ packages:
             vue: ^3.3.0
             yjs: ^13.6.0
         dependencies:
-            "@codemirror/lang-css": 6.2.1(@codemirror/view@6.23.1)
+            "@codemirror/lang-css": 6.2.1(@codemirror/view@6.24.0)
             "@codemirror/lang-html": 6.4.8
             "@codemirror/lang-java": 6.0.1
             "@codemirror/lang-javascript": 6.2.1
             "@codemirror/lang-json": 6.0.1
             "@codemirror/lang-php": 6.0.1
-            "@codemirror/lang-python": 6.1.4(@codemirror/view@6.23.1)
+            "@codemirror/lang-python": 6.1.4(@codemirror/view@6.24.0)
             "@codemirror/lang-rust": 6.0.1
             "@codemirror/language": 6.10.1
             "@codemirror/legacy-modes": 6.3.3
             "@codemirror/state": 6.4.0
-            "@codemirror/view": 6.23.1
+            "@codemirror/view": 6.24.0
             "@lezer/common": 1.2.1
             "@lezer/highlight": 1.2.0
             "@lezer/lr": 1.4.0
-            "@replit/codemirror-css-color-picker": 6.1.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.23.1)
-            "@uiw/codemirror-themes": 4.21.21(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.23.1)
+            "@replit/codemirror-css-color-picker": 6.1.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.24.0)
+            "@uiw/codemirror-themes": 4.21.21(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.24.0)
             codemirror: 6.0.1(@lezer/common@1.2.1)
             vue: 3.4.18(typescript@5.3.3)
-            y-codemirror.next: 0.3.2(@codemirror/state@6.4.0)(@codemirror/view@6.23.1)(yjs@13.6.11)
-            yjs: 13.6.11
+            y-codemirror.next: 0.3.2(@codemirror/state@6.4.0)(@codemirror/view@6.24.0)(yjs@13.6.12)
+            yjs: 13.6.12
         dev: false
 
     /@scalar/use-keyboard-event@0.5.8(vue@3.4.18):
@@ -3365,7 +3365,7 @@ packages:
             eslint-visitor-keys: 3.4.3
         dev: false
 
-    /@uiw/codemirror-themes@4.21.21(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.23.1):
+    /@uiw/codemirror-themes@4.21.21(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.24.0):
         resolution:
             {
                 integrity: sha512-ljVcMGdaxo75UaH+EqxJ+jLyMVVgeSfW2AKyT1VeLy+4SDpuqNQ7wq5XVxktsG6LH+OvgSFndWXgPANf4+gQcA==,
@@ -3377,7 +3377,7 @@ packages:
         dependencies:
             "@codemirror/language": 6.10.1
             "@codemirror/state": 6.4.0
-            "@codemirror/view": 6.23.1
+            "@codemirror/view": 6.24.0
         dev: false
 
     /@ungap/structured-clone@1.2.0:
@@ -3704,7 +3704,7 @@ packages:
         hasBin: true
         dependencies:
             "@actions/core": 1.10.1
-            dotenv: 16.4.1
+            dotenv: 16.4.2
             front-matter: 4.0.2
             nanoid: 4.0.2
             oslo: 1.1.0
@@ -3743,10 +3743,10 @@ packages:
             }
         dev: false
 
-    /better-sqlite3@9.4.0:
+    /better-sqlite3@9.4.1:
         resolution:
             {
-                integrity: sha512-5kynxekMxSjCMiFyUBLHggFcJkCmiZi6fUkiGz/B5GZOvdRWQJD0klqCx5/Y+bm2AKP7I/DHbSFx26AxjruWNg==,
+                integrity: sha512-QpqiQeMI4WkE+dQ68zTMX5OzlPGc7lXIDP1iKUt4Omt9PdaVgzKYxHIJRIzt1E+RUBQoFmkip/IbvzyrxehAIg==,
             }
         requiresBuild: true
         dependencies:
@@ -3974,13 +3974,13 @@ packages:
                 integrity: sha512-J8j+nZ+CdWmIeFIGXEFbFPtpiYacFMDR8GlHK3IyHQJMCaVRfGx9NT+Hxivv1ckLWPvNdZqndbr/7lVhrf/Svg==,
             }
         dependencies:
-            "@codemirror/autocomplete": 6.12.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.23.1)(@lezer/common@1.2.1)
+            "@codemirror/autocomplete": 6.12.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.0)(@codemirror/view@6.24.0)(@lezer/common@1.2.1)
             "@codemirror/commands": 6.3.3
             "@codemirror/language": 6.10.1
             "@codemirror/lint": 6.5.0
             "@codemirror/search": 6.5.6
             "@codemirror/state": 6.4.0
-            "@codemirror/view": 6.23.1
+            "@codemirror/view": 6.24.0
         transitivePeerDependencies:
             - "@lezer/common"
         dev: false
@@ -4246,10 +4246,10 @@ packages:
         dependencies:
             esutils: 2.0.3
 
-    /dotenv@16.4.1:
+    /dotenv@16.4.2:
         resolution:
             {
-                integrity: sha512-CjA3y+Dr3FyFDOAMnxZEGtnW9KBR2M0JvvUtXNW+dYJL5ROWxP9DUHCwgFqpMk0OXCc0ljhaNTr2w/kutYIcHQ==,
+                integrity: sha512-rZSSFxke7d9nYQ5NeMIwp5PP+f8wXgKNljpOb7KtH6SKW1cEqcXAz9VSJYVLKe7Jhup/gUYOkaeSVyK8GJ+nBg==,
             }
         engines: { node: ">=12" }
 
@@ -4288,7 +4288,7 @@ packages:
             - supports-color
         dev: true
 
-    /drizzle-orm@0.29.3(@cloudflare/workers-types@4.20240208.0)(@libsql/client@0.4.3)(better-sqlite3@9.4.0):
+    /drizzle-orm@0.29.3(@cloudflare/workers-types@4.20240208.0)(@libsql/client@0.4.3)(better-sqlite3@9.4.1):
         resolution:
             {
                 integrity: sha512-uSE027csliGSGYD0pqtM+SAQATMREb3eSM/U8s6r+Y0RFwTKwftnwwSkqx3oS65UBgqDOM0gMTl5UGNpt6lW0A==,
@@ -4364,7 +4364,7 @@ packages:
         dependencies:
             "@cloudflare/workers-types": 4.20240208.0
             "@libsql/client": 0.4.3
-            better-sqlite3: 9.4.0
+            better-sqlite3: 9.4.1
         dev: false
 
     /drizzle-zod@0.5.1(drizzle-orm@0.29.3)(zod@3.22.4):
@@ -4376,7 +4376,7 @@ packages:
             drizzle-orm: ">=0.23.13"
             zod: "*"
         dependencies:
-            drizzle-orm: 0.29.3(@cloudflare/workers-types@4.20240208.0)(@libsql/client@0.4.3)(better-sqlite3@9.4.0)
+            drizzle-orm: 0.29.3(@cloudflare/workers-types@4.20240208.0)(@libsql/client@0.4.3)(better-sqlite3@9.4.1)
             zod: 3.22.4
         dev: false
 
@@ -5113,10 +5113,10 @@ packages:
             }
         engines: { node: ">=8" }
 
-    /hasown@2.0.0:
+    /hasown@2.0.1:
         resolution:
             {
-                integrity: sha512-vUptKVTpIJhcczKBbgnS+RtcuYMB8+oNzPK2/Hp3hanz8JmpATdmmgLgSaadVREkDm+e2giHwY3ZRkyjSIDDFA==,
+                integrity: sha512-1/th4MHjnwncwXsIW6QMzlvYL9kG5e/CpVvLRZe4XPa8TOUNbCELqmvhDmnkNsAjwaG4+I8gJJL0JBvTTLO9qA==,
             }
         engines: { node: ">= 0.4" }
         dependencies:
@@ -5339,10 +5339,10 @@ packages:
         engines: { node: ">=12.0.0" }
         dev: false
 
-    /hono@3.12.12:
+    /hono@4.0.1:
         resolution:
             {
-                integrity: sha512-5IAMJOXfpA5nT+K0MNjClchzz0IhBHs2Szl7WFAhrFOsbtQsYmNynFyJRg/a3IPsmCfxcrf8txUGiNShXpK5Rg==,
+                integrity: sha512-S9cREGPJIAK437RhroOf1PGlJPIlt5itl69OmQ6onPLo5pdCbSHGL8v4uAKxrdHjcTyuoyvKPqWm5jv0dGkdFA==,
             }
         engines: { node: ">=16.0.0" }
         dev: false
@@ -5474,7 +5474,7 @@ packages:
                 integrity: sha512-hHrIjvZsftOsvKSn2TRYl63zvxsgE0K+0mYMoH6gD4omR5IWB2KynivBQczo3+wF1cCkjzvptnI9Q0sPU66ilw==,
             }
         dependencies:
-            hasown: 2.0.0
+            hasown: 2.0.1
         dev: true
 
     /is-extglob@2.1.1:
@@ -7538,10 +7538,10 @@ packages:
                 integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==,
             }
 
-    /tsx@4.7.0:
+    /tsx@4.7.1:
         resolution:
             {
-                integrity: sha512-I+t79RYPlEYlHn9a+KzwrvEwhJg35h/1zHsLC2JXvhC2mdynMv6Zxzvhv5EMV6VF5qJlLlkSnMVvdZV3PSIGcg==,
+                integrity: sha512-8d6VuibXHtlN5E3zFkgY8u4DX7Y3Z27zvvPKVmLon/D4AjuKzarkUBTLDBgj9iTQ0hg5xM7c/mYiRVM+HETf0g==,
             }
         engines: { node: ">=18.0.0" }
         hasBin: true
@@ -7954,10 +7954,10 @@ packages:
             "@cloudflare/workerd-windows-64": 1.20240129.0
         dev: true
 
-    /wrangler@3.28.0(@cloudflare/workers-types@4.20240208.0):
+    /wrangler@3.28.1(@cloudflare/workers-types@4.20240208.0):
         resolution:
             {
-                integrity: sha512-28lqaO4THoGyvnRtrC5+GvyFthn8E9brRSiz4sMJU8Wf5UT8JRq31Pp4leHuQ3sCzSI2yqzB4+NTo6YZaoXMfw==,
+                integrity: sha512-3O8vCzd7IC71Kciu/+oDVO0VZ83ujlUuKwmCkv6/zzt4WAoYu0vk7PyEo4WvlsSbZL8aHuv3bS917rd6TM1/9Q==,
             }
         engines: { node: ">=16.17.0" }
         hasBin: true
@@ -8018,7 +8018,7 @@ packages:
             }
         dev: true
 
-    /y-codemirror.next@0.3.2(@codemirror/state@6.4.0)(@codemirror/view@6.23.1)(yjs@13.6.11):
+    /y-codemirror.next@0.3.2(@codemirror/state@6.4.0)(@codemirror/view@6.24.0)(yjs@13.6.12):
         resolution:
             {
                 integrity: sha512-3ksMXoietzNkrgluG9ut+5q4PNHCS6sQ+mHd44hNX1s7TBe4iDgOOIswfY3oLsdamZLAUPr+TnRdYgYuNDs7Qg==,
@@ -8029,9 +8029,9 @@ packages:
             yjs: ^13.5.6
         dependencies:
             "@codemirror/state": 6.4.0
-            "@codemirror/view": 6.23.1
+            "@codemirror/view": 6.24.0
             lib0: 0.2.88
-            yjs: 13.6.11
+            yjs: 13.6.12
         dev: false
 
     /yallist@4.0.0:
@@ -8047,10 +8047,10 @@ packages:
             }
         engines: { node: ">= 14" }
 
-    /yjs@13.6.11:
+    /yjs@13.6.12:
         resolution:
             {
-                integrity: sha512-FvRRJKX9u270dOLkllGF/UDCWwmIv2Z+ucM4v1QO1TuxdmoiMnSUXH1HAcOKOrkBEhQtPTkxep7tD2DrQB+l0g==,
+                integrity: sha512-KOT8ILoyVH2f/PxPadeu5kVVS055D1r3x1iFfJVJzFdnN98pVGM8H07NcKsO+fG3F7/0tf30Vnokf5YIqhU/iw==,
             }
         engines: { node: ">=16.0.0", npm: ">=8.0.0" }
         dependencies:
