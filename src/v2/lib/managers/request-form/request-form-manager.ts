@@ -1,5 +1,5 @@
 import { DrizzleInstance } from "@/v2/db/turso"
-import { and, eq, sql } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 import { requestArea, requestForm, requestFormUpvotes } from "@/v2/db/schema"
 
 export class RequestFormManager {
@@ -10,15 +10,19 @@ export class RequestFormManager {
             return await this.drizzle.query.requestForm.findMany({
                 offset: offset,
                 limit: limit,
-                with: {
-                    requestFormUpvotes,
-                },
-                extras: {
-                    upvoteCount:
-                        sql`SELECT COUNT(*) FROM ${requestFormUpvotes} WHERE ${requestForm.id} = ${requestFormUpvotes.requestFormId}`.as(
-                            "upvoteCount"
-                        ),
-                },
+                // with: {
+                //     requestFormUpvotes: {
+                //         columns: {
+                //             userId: true,
+                //         },
+                //     },
+                // },
+                // extras: {
+                //     upvoteCount:
+                //         sql`SELECT COUNT(*) FROM ${requestFormUpvotes} WHERE ${requestFormUpvotes.requestFormId} = ${requestForm.id}`.as(
+                //             "upvoteCount"
+                //         ),
+                // },
             })
         } catch (e) {
             console.error(`Error getting request form entries`, e)

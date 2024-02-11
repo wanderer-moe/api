@@ -14,6 +14,8 @@ import {
     userFavorite,
     userFavoriteAsset,
     userFollowing,
+    requestFormUpvotes,
+    requestForm,
 } from "@/v2/db/schema"
 import { Scrypt } from "lucia"
 import "dotenv/config"
@@ -53,6 +55,7 @@ async function main() {
                 bio: "test bio",
                 role: "creator",
                 isContributor: true,
+                isSupporter: true,
             },
             {
                 username: "testuser2",
@@ -70,6 +73,7 @@ async function main() {
                 bio: "test bio 3",
                 role: "uploader",
                 isContributor: false,
+                isSupporter: true,
             },
         ])
         .returning()
@@ -113,6 +117,48 @@ async function main() {
         .returning()
     console.log(
         `[SEED] [userFollowing] inserted ${newuserFollowing.length} rows\n`
+    )
+
+    console.log("[SEED] [requestForm] Seeding request forms...")
+    const newRequestForms = await db
+        .insert(requestForm)
+        .values([
+            {
+                userId: newUsers[0].id,
+                title: "test request",
+                area: "game",
+                description: "test description",
+            },
+            {
+                userId: newUsers[1].id,
+                title: "test request 2",
+                area: "game",
+                description: "test description 2",
+            },
+        ])
+        .returning()
+
+    console.log(
+        `[SEED] [requestForm] inserted ${newRequestForms.length} rows\n`
+    )
+
+    console.log("[SEED] [requestFormUpvotes] Seeding request form upvotes...")
+    const newRequestFormUpvotes = await db
+        .insert(requestFormUpvotes)
+        .values([
+            {
+                requestFormId: newRequestForms[0].id,
+                userId: newUsers[1].id,
+            },
+            {
+                requestFormId: newRequestForms[1].id,
+                userId: newUsers[0].id,
+            },
+        ])
+        .returning()
+
+    console.log(
+        `[SEED] [requestFormUpvotes] inserted ${newRequestFormUpvotes.length} rows\n`
     )
 
     console.log("[SEED] [assetTag] Seeding asset tags...")
