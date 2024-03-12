@@ -1,7 +1,6 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
 import { viewUserfollowingbyIdRoute } from "./openapi"
 import { getConnection } from "@/v2/db/turso"
-import { UserFollowManager } from "@/v2/lib/managers/user/user-follow-manager"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
@@ -11,12 +10,23 @@ handler.openapi(viewUserfollowingbyIdRoute, async (ctx) => {
 
     const { drizzle } = await getConnection(ctx.env)
 
-    const userFollowManager = new UserFollowManager(drizzle)
-
-    const following = await userFollowManager.getUserFollowing(
-        id,
-        parseInt(offset)
-    )
+    const following = await drizzle.query.userFollowing.findMany({
+        where: (userFollowing, { eq }) => eq(userFollowing.followerId, id),
+        with: {
+            following: {
+                columns: {
+                    id: true,
+                    avatarUrl: true,
+                    username: true,
+                    isSupporter: true,
+                    verified: true,
+                    displayName: true,
+                },
+            },
+        },
+        limit: 100,
+        offset: offset ? parseInt(offset) : 0,
+    })
 
     return ctx.json(
         {

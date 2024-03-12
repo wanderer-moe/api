@@ -1,8 +1,9 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
 import { followUserByIdRoute } from "./openapi"
 import { getConnection } from "@/v2/db/turso"
-import { UserFollowManager } from "@/v2/lib/managers/user/user-follow-manager"
 import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
+import { and, eq } from "drizzle-orm"
+import { userFollowing } from "@/v2/db/schema"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
@@ -33,13 +34,16 @@ handler.openapi(followUserByIdRoute, async (ctx) => {
             400
         )
     }
-
-    const userFollowManager = new UserFollowManager(drizzle)
-
-    const followStatus = await userFollowManager.checkFollowStatus(
-        user.id,
-        userId
-    )
+    const [followStatus] = await drizzle
+        .select({ id: userFollowing.followerId })
+        .from(userFollowing)
+        .where(
+            and(
+                eq(userFollowing.followerId, user.id),
+                eq(userFollowing.followingId, userId)
+            )
+        )
+        .limit(1)
 
     if (followStatus) {
         return ctx.json(
@@ -52,12 +56,16 @@ handler.openapi(followUserByIdRoute, async (ctx) => {
     }
 
     try {
-        await userFollowManager.followUser(user.id, userId)
+        await drizzle.insert(userFollowing).values({
+            followerId: user.id,
+            followingId: userId,
+            createdAt: new Date().toISOString(),
+        })
     } catch (e) {
         return ctx.json(
             {
                 success: false,
-                message: "Failed to follow user, does the user exist?",
+                message: "Failed to follow user.",
             },
             500
         )
