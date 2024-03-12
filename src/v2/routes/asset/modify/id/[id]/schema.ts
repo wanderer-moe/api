@@ -1,5 +1,4 @@
 import { z } from "zod"
-import { selectAssetSchema } from "@/v2/db/schema"
 
 export const modifyAssetPathSchema = z.object({
     id: z.string().openapi({
@@ -47,5 +46,4 @@ export const modifyAssetSchema = z.object({
 
 export const modifyAssetResponseSchema = z.object({
     success: z.literal(true),
-    game: selectAssetSchema,
 })

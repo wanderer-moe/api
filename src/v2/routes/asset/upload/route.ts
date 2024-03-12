@@ -1,8 +1,9 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
 import { uploadAssetRoute } from "./openapi"
 import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
-import { AssetManager } from "@/v2/lib/managers/asset/asset-manager"
 import { getConnection } from "@/v2/db/turso"
+import { SplitQueryByCommas } from "@/v2/lib/helpers/split-query-by-commas"
+import { assetTagAsset } from "@/v2/db/schema"
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
 handler.openapi(uploadAssetRoute, async (ctx) => {
@@ -38,26 +39,50 @@ handler.openapi(uploadAssetRoute, async (ctx) => {
     }
 
     const { drizzle } = getConnection(ctx.env)
-    const assetManager = new AssetManager(drizzle)
 
-    const newAsset = await assetManager.createAsset(
-        user.id,
-        user.username,
-        {
-            name,
-            tags,
-            assetCategoryId,
-            gameId,
-            assetIsSuggestive,
-        },
-        ctx.env.FILES_BUCKET,
-        asset as File
+    const { key } = await ctx.env.FILES_BUCKET.put(
+        `/assets/${gameId}/${assetCategoryId}/${name}.png`,
+        asset
     )
+
+    const createdAsset = await drizzle
+        .insert(asset)
+        .values({
+            name: name,
+            extension: "png",
+            gameId: gameId,
+            assetCategoryId: assetCategoryId,
+            url: key,
+            uploadedByName: user.username,
+            uploadedById: user.id,
+            status: "pending",
+            fileSize: 0,
+            width: 0,
+            height: 0,
+            assetIsSuggestive: Boolean(assetIsSuggestive),
+        })
+        .returning()
+
+    const tagsSplit = SplitQueryByCommas(tags) ?? []
+
+    if (tagsSplit.length > 0) {
+        const tagBatchQueries = tagsSplit.map((tag) =>
+            drizzle.insert(assetTagAsset).values({
+                assetId: createdAsset[0].id,
+                assetTagId: tag,
+            })
+        )
+
+        type TagBatchQuery = (typeof tagBatchQueries)[number]
+        await drizzle.batch(
+            tagBatchQueries as [TagBatchQuery, ...TagBatchQuery[]]
+        )
+    }
 
     return ctx.json(
         {
             success: true,
-            asset: newAsset,
+            asset: createdAsset[0],
         },
         200
     )
