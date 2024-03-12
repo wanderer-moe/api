@@ -1,8 +1,9 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
 import { modifyGameRoute } from "./openapi"
-import { GameManager } from "@/v2/lib/managers/game/game-manager"
+import { eq } from "drizzle-orm"
 import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
 import { getConnection } from "@/v2/db/turso"
+import { game } from "@/v2/db/schema"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
@@ -27,11 +28,12 @@ handler.openapi(modifyGameRoute, async (ctx) => {
 
     const { drizzle } = getConnection(ctx.env)
 
-    const gameManager = new GameManager(drizzle)
+    const [existingGame] = await drizzle
+        .select({ id: game.id })
+        .from(game)
+        .where(eq(game.id, id))
 
-    const gameExists = await gameManager.doesGameExist(id)
-
-    if (!gameExists) {
+    if (!existingGame.id) {
         return ctx.json(
             {
                 success: false,
@@ -41,17 +43,21 @@ handler.openapi(modifyGameRoute, async (ctx) => {
         )
     }
 
-    const game = await gameManager.updateGame(
-        id,
-        name,
-        formattedName,
-        Boolean(possibleSuggestiveContent)
-    )
+    const [updatedGame] = await drizzle
+        .update(game)
+        .set({
+            name,
+            formattedName,
+            possibleSuggestiveContent: Boolean(possibleSuggestiveContent),
+            lastUpdated: new Date().toISOString(),
+        })
+        .where(eq(game.id, id))
+        .returning()
 
     return ctx.json(
         {
             success: true,
-            game,
+            game: updatedGame,
         },
         200
     )

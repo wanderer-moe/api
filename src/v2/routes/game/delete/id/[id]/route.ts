@@ -1,8 +1,9 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
 import { deleteGameRoute } from "./openapi"
-import { GameManager } from "@/v2/lib/managers/game/game-manager"
 import { getConnection } from "@/v2/db/turso"
 import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
+import { game } from "@/v2/db/schema"
+import { eq } from "drizzle-orm"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
@@ -10,10 +11,13 @@ handler.openapi(deleteGameRoute, async (ctx) => {
     const id = ctx.req.valid("param").id
 
     const { drizzle } = await getConnection(ctx.env)
-    const gameManager = new GameManager(drizzle)
-    const gameExists = await gameManager.doesGameExist(id)
 
-    if (!gameExists) {
+    const [foundGame] = await drizzle
+        .select({ id: game.id })
+        .from(game)
+        .where(eq(game.id, id))
+
+    if (!foundGame) {
         return ctx.json(
             {
                 success: false,
@@ -46,8 +50,8 @@ handler.openapi(deleteGameRoute, async (ctx) => {
         )
     }
 
-    await gameManager.deleteGame(id)
-    await ctx.env.FILES_BUCKET.delete("/assets/" + id)
+    await drizzle.delete(game).where(eq(game.id, id))
+    // await ctx.env.FILES_BUCKET.delete("/assets/" + id)
 
     return ctx.json(
         {

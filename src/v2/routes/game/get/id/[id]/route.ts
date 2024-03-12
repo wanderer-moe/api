@@ -1,7 +1,8 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
 import { getGameByIdRoute } from "./openapi"
-import { GameManager } from "@/v2/lib/managers/game/game-manager"
+import { game } from "@/v2/db/schema"
 import { getConnection } from "@/v2/db/turso"
+import { eq } from "drizzle-orm"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
@@ -9,10 +10,10 @@ handler.openapi(getGameByIdRoute, async (ctx) => {
     const id = ctx.req.valid("param").id
 
     const { drizzle } = await getConnection(ctx.env)
-    const gameManager = new GameManager(drizzle)
-    const game = await gameManager.getGameById(id)
 
-    if (!game) {
+    const [foundGame] = await drizzle.select().from(game).where(eq(game.id, id))
+
+    if (!foundGame) {
         return ctx.json(
             {
                 success: false,
@@ -25,7 +26,7 @@ handler.openapi(getGameByIdRoute, async (ctx) => {
     return ctx.json(
         {
             success: true,
-            game,
+            game: foundGame,
         },
         200
     )
