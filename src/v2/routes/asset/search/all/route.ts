@@ -1,7 +1,6 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
 import { assetSearchAllFilterRoute } from "./openapi"
 import { getConnection } from "@/v2/db/turso"
-import { sql, and, or, like, eq } from "drizzle-orm"
 import { SplitQueryByCommas } from "@/v2/lib/helpers/split-query-by-commas"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
