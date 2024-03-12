@@ -1,9 +1,9 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
 import { unlikeAssetByIdRoute } from "./openapi"
 import { getConnection } from "@/v2/db/turso"
-import { AssetManager } from "@/v2/lib/managers/asset/asset-manager"
-import { AssetLikesManager } from "@/v2/lib/managers/asset/asset-likes"
 import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
+import { asset, assetLikes } from "@/v2/db/schema"
+import { and, eq } from "drizzle-orm"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
@@ -21,12 +21,14 @@ handler.openapi(unlikeAssetByIdRoute, async (ctx) => {
     }
 
     const { drizzle } = await getConnection(ctx.env)
-    const assetManager = new AssetManager(drizzle)
-    const asset = await assetManager.getBarebonesAssetById(parseInt(assetId))
 
-    console.log(asset)
+    const [existingAsset] = await drizzle
+        .select()
+        .from(asset)
+        .where(eq(asset.id, parseInt(assetId)))
+        .limit(1)
 
-    if (!asset) {
+    if (!existingAsset) {
         return ctx.json(
             {
                 success: true,
@@ -49,14 +51,18 @@ handler.openapi(unlikeAssetByIdRoute, async (ctx) => {
         )
     }
 
-    const assetLikeManager = new AssetLikesManager(drizzle)
+    const [assetLikeStatus] = await drizzle
+        .select({ assetId: assetLikes.assetId })
+        .from(assetLikes)
+        .where(
+            and(
+                eq(assetLikes.assetId, parseInt(assetId)),
+                eq(assetLikes.likedById, user.id)
+            )
+        )
+        .limit(1)
 
-    const likeStatus = await assetLikeManager.checkAssetLikeStatus(
-        parseInt(assetId),
-        user.id
-    )
-
-    if (!likeStatus) {
+    if (!assetLikeStatus) {
         return ctx.json(
             {
                 success: false,
@@ -66,7 +72,14 @@ handler.openapi(unlikeAssetByIdRoute, async (ctx) => {
         )
     }
 
-    await assetLikeManager.unlikeAsset(parseInt(assetId), user.id)
+    await drizzle
+        .delete(assetLikes)
+        .where(
+            and(
+                eq(assetLikes.assetId, parseInt(assetId)),
+                eq(assetLikes.likedById, user.id)
+            )
+        )
 
     return ctx.json(
         {
