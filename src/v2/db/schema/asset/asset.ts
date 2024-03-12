@@ -11,9 +11,9 @@ import { authUser } from "../user/user"
 import { assetCategory } from "../categories/asset-categories"
 import { game } from "../game/game"
 import { assetTagAsset } from "../tags/asset-tags"
-import { assetExternalFileToAsset } from "./asset-external-files"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { assetLikes } from "./asset-likes"
+import { assetExternalFile } from "./asset-external-files"
 
 /*
 NOTE: Assets have a lot of relations, and can be quite complex in some cases.
@@ -98,7 +98,7 @@ export const selectAssetSchema = createSelectSchema(asset)
 
 export const assetRelations = relations(asset, ({ one, many }) => ({
     assetTagAsset: many(assetTagAsset),
-    assetExternalFileToAsset: many(assetExternalFileToAsset),
+    assetExternalFile: many(assetExternalFile),
     assetLikes: many(assetLikes),
     authUser: one(authUser, {
         fields: [asset.uploadedById, asset.uploadedByName],

@@ -14,7 +14,6 @@ export const tableNames = {
     // atlas: "atlas",
     // atlasToAsset: "atlasToAsset",
     assetExternalFile: "assetExternalFile",
-    assetExternalFileToAsset: "assetExternalFileToAsset",
     assetTag: "assetTag",
     assetTagLikes: "assetTagLikes",
     assetTagAsset: "assetTagAsset",
