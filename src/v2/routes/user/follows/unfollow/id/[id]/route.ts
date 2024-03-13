@@ -2,8 +2,8 @@ import { OpenAPIHono } from "@hono/zod-openapi"
 import { unFollowUserByIdRoute } from "./openapi"
 import { getConnection } from "@/v2/db/turso"
 import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
-import { userFollowing } from "@/v2/db/schema"
-import { and, eq } from "drizzle-orm"
+import { userFollowing, userBlocked } from "@/v2/db/schema"
+import { and, eq, or } from "drizzle-orm"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
@@ -51,6 +51,41 @@ handler.openapi(unFollowUserByIdRoute, async (ctx) => {
             {
                 success: false,
                 message: "You are not following this user",
+            },
+            400
+        )
+    }
+
+    const [blockedStatus] = await drizzle
+        .select({
+            id: userBlocked.blockedId,
+            blockById: userBlocked.blockedById,
+        })
+        .from(userBlocked)
+        .where(
+            or(
+                and(
+                    eq(userBlocked.blockedId, user.id),
+                    eq(userBlocked.blockedById, userId)
+                ),
+                and(
+                    eq(userBlocked.blockedId, userId),
+                    eq(userBlocked.blockedById, user.id)
+                )
+            )
+        )
+        .limit(1)
+
+    if (blockedStatus) {
+        const message =
+            blockedStatus.blockById === user.id
+                ? "You are blocked by this user"
+                : "You have blocked this user"
+
+        return ctx.json(
+            {
+                success: false,
+                message,
             },
             400
         )
