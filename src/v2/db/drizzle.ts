@@ -5,6 +5,7 @@ export const tableNames = {
     authSession: "authSession",
     authUser: "authUser",
     userFollowing: "userFollowing",
+    userBlocked: "userBlocked",
     gameAssetCategory: "gameAssetCategory",
     assetLikes: "assetLikes",
     userCollectionLikes: "userCollectionLikes",

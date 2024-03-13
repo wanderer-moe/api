@@ -24,6 +24,7 @@ import { gameLikes } from "../game/game-likes"
 import { assetTagLikes } from "../tags/asset-tags-likes"
 import { assetCategoryLikes } from "../categories/asset-categories-likes"
 import { requestForm, requestFormUpvotes } from "../supporter/request-form"
+import { userBlocked } from "./user-blocked"
 
 /*
 NOTE: Very basic user information
@@ -159,6 +160,12 @@ export const usersRelations = relations(authUser, ({ one, many }) => ({
     }),
     following: many(userFollowing, {
         relationName: "following",
+    }),
+    blocked: many(userBlocked, {
+        relationName: "blocked",
+    }),
+    blockedBy: many(userBlocked, {
+        relationName: "blockedBy",
     }),
     authCredentials: one(authCredentials),
     userSession: many(userSession),
