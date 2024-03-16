@@ -22,7 +22,7 @@ handler.openapi(searchUsersByUsernameRoute, async (ctx) => {
             verified: authUser.verified,
             bio: authUser.bio,
             dateJoined: authUser.dateJoined,
-            isSupporter: authUser.isSupporter,
+            plan: authUser.plan,
             role: authUser.role,
         })
         .from(authUser)

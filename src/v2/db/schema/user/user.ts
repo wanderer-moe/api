@@ -39,6 +39,8 @@ export type UserRoles =
     | "uploader"
     | "user"
 
+export type UserPlan = "free" | "supporter"
+
 export const authUser = sqliteTable(
     tableNames.authUser,
     {
@@ -63,9 +65,7 @@ export const authUser = sqliteTable(
             .$defaultFn(() => {
                 return new Date().toISOString()
             }),
-        isSupporter: integer("is_supporter", { mode: "boolean" })
-            .default(false)
-            .notNull(),
+        plan: text("plan").default("free").notNull().$type<UserPlan>(),
         isBanned: integer("is_banned", { mode: "boolean" })
             .default(false)
             .notNull(),
@@ -90,6 +90,41 @@ export type User = typeof authUser.$inferSelect
 export type NewUser = typeof authUser.$inferInsert
 export const insertUserSchema = createInsertSchema(authUser)
 export const selectUserSchema = createSelectSchema(authUser)
+
+export const stripeUser = sqliteTable(
+    tableNames.stripeUser,
+    {
+        id: text("id")
+            .primaryKey()
+            .notNull()
+            .$defaultFn(() => {
+                return generateID()
+            }),
+        userId: text("user_id")
+            .notNull()
+            .references(() => authUser.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
+        customerId: text("stripe_customer_id"),
+        subscriptionId: text("stripe_subscription_id"),
+        endsAt: text("ends_at"),
+        paidUntil: text("paid_until"),
+    },
+    (stripeUser) => {
+        return {
+            userIdx: index("stripe_user_user_id_idx").on(stripeUser.userId),
+            stripeCustomerIdIdx: index("stripe_user_stripe_customer_id_idx").on(
+                stripeUser.customerId
+            ),
+        }
+    }
+)
+
+export type StripeUser = typeof stripeUser.$inferSelect
+export type NewStripeUser = typeof stripeUser.$inferInsert
+export const insertStripeUserSchema = createInsertSchema(stripeUser)
+export const selectStripeUserSchema = createSelectSchema(stripeUser)
 
 export const authCredentials = sqliteTable(
     tableNames.authCredentials,
@@ -176,6 +211,7 @@ export const usersRelations = relations(authUser, ({ one, many }) => ({
     assetLikes: many(assetLikes),
     socialsConnection: one(socialsConnection),
     userCollection: many(userCollection),
+    stripeUser: one(stripeUser),
     passwordResetToken: one(passwordResetToken),
     emailVerificationToken: one(emailVerificationToken),
     gameLikes: many(gameLikes),
@@ -184,6 +220,14 @@ export const usersRelations = relations(authUser, ({ one, many }) => ({
     userCollectionCollaborators: many(userCollectionCollaborators),
     requestForm: many(requestForm),
     requestFormUpvotes: many(requestFormUpvotes),
+}))
+
+export const stripeUserRelations = relations(stripeUser, ({ one }) => ({
+    user: one(authUser, {
+        fields: [stripeUser.userId],
+        references: [authUser.id],
+        relationName: "stripe_user",
+    }),
 }))
 
 export const authCredentialsRelations = relations(

@@ -25,7 +25,7 @@ export const searchUsersByUsernameSchema = z.object({
             verified: true,
             bio: true,
             dateJoined: true,
-            isSupporter: true,
+            plan: true,
             role: true,
         })
         .array(),

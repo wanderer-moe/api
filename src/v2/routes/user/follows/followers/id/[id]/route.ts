@@ -18,7 +18,7 @@ handler.openapi(viewUserFollowsByIdRoute, async (ctx) => {
                     id: true,
                     avatarUrl: true,
                     username: true,
-                    isSupporter: true,
+                    plan: true,
                     verified: true,
                     displayName: true,
                 },

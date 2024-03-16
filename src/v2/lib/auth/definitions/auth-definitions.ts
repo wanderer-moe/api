@@ -1,5 +1,6 @@
 import { UserRoles } from "@/v2/db/schema"
 import type { LuciaAuth } from "../lucia"
+import type { UserPlan } from "@/v2/db/schema"
 
 declare module "lucia" {
     interface Register {
@@ -21,7 +22,7 @@ declare module "lucia" {
             verified: boolean
             bio: string | null
             date_joined: string
-            is_supporter: boolean
+            plan: UserPlan
             is_banned: boolean
             role: UserRoles
             is_contributor: boolean

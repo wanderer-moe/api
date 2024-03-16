@@ -29,7 +29,7 @@ export function luciaAuth(env: Bindings) {
                     verified: user.verified,
                     bio: user.bio,
                     dateJoined: user.date_joined,
-                    isSupporter: Boolean(user.is_supporter),
+                    plan: user.plan,
                     isBanned: Boolean(user.is_banned),
                     isContributor: user.is_contributor,
                     role: user.role as UserRoles,

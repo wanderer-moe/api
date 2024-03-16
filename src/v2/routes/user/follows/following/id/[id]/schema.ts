@@ -34,7 +34,7 @@ export const viewUserfollowingbyIdResponseSchema = z.object({
                 id: true,
                 avatarUrl: true,
                 username: true,
-                isSupporter: true,
+                plan: true,
                 verified: true,
                 displayName: true,
             }),

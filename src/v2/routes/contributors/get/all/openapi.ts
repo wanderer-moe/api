@@ -9,7 +9,7 @@ const contributorListSchema = z.object({
             id: true,
             username: true,
             avatarUrl: true,
-            isSupporter: true,
+            plan: true,
             role: true,
         })
         .array(),

@@ -39,7 +39,7 @@ export const getAssetByIdResponseSchema = z.object({
         verified: true,
         bio: true,
         dateJoined: true,
-        isSupporter: true,
+        plan: true,
         role: true,
     }),
     game: selectGameSchema,

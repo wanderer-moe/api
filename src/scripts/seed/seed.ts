@@ -55,7 +55,7 @@ async function main() {
                 bio: "test bio",
                 role: "creator",
                 isContributor: true,
-                isSupporter: true,
+                plan: "supporter",
             },
             {
                 username: "testuser2",
@@ -73,7 +73,7 @@ async function main() {
                 bio: "test bio 3",
                 role: "uploader",
                 isContributor: false,
-                isSupporter: true,
+                plan: "supporter",
             },
         ])
         .returning()

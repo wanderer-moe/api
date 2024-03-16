@@ -12,6 +12,7 @@ export const tableNames = {
     userCollectionCollaborators: "userCollectionCollaborators",
     game: "game",
     gameLikes: "gameLikes",
+    stripeUser: "stripeUser",
     // atlas: "atlas",
     // atlasToAsset: "atlasToAsset",
     assetExternalFile: "assetExternalFile",

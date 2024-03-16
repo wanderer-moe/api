@@ -30,7 +30,7 @@ handler.openapi(getAssetByIdRoute, async (ctx) => {
                     verified: true,
                     bio: true,
                     dateJoined: true,
-                    isSupporter: true,
+                    plan: true,
                     role: true,
                 },
             },

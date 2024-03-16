@@ -16,6 +16,7 @@ declare global {
         DISCORD_REDIRECT_URI: string
         RESEND_API_KEY: string
         RATE_LIMITER: DurableObjectNamespace
+        REKOGNITION_LABEL_API_KEY: string
     }
 
     type Variables = {

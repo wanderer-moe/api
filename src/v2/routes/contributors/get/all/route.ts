@@ -14,7 +14,7 @@ handler.openapi(contributorsRoute, async (ctx) => {
             id: authUser.id,
             username: authUser.username,
             avatarUrl: authUser.avatarUrl,
-            isSupporter: authUser.isSupporter,
+            plan: authUser.plan,
             role: authUser.role,
         })
         .from(authUser)

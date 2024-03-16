@@ -13,7 +13,7 @@ handler.openapi(deleteRequestByIdRoute, async (ctx) => {
 
     const { user } = await authSessionManager.validateSession()
 
-    if (!user || user.role != "creator" || !user.isSupporter) {
+    if (!user || user.role != "creator" || user.plan == "supporter") {
         return ctx.json(
             {
                 success: false,
