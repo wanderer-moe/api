@@ -14,6 +14,7 @@ import { assetTagAsset } from "../tags/asset-tags"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { assetLikes } from "./asset-likes"
 import { assetExternalFile } from "./asset-external-files"
+import { assetComments } from "./asset-comments"
 
 /*
 NOTE: Assets have a lot of relations, and can be quite complex in some cases.
@@ -100,6 +101,7 @@ export const assetRelations = relations(asset, ({ one, many }) => ({
     assetTagAsset: many(assetTagAsset),
     assetExternalFile: many(assetExternalFile),
     assetLikes: many(assetLikes),
+    assetComments: many(assetComments),
     authUser: one(authUser, {
         fields: [asset.uploadedById, asset.uploadedByName],
         references: [authUser.id, authUser.username],

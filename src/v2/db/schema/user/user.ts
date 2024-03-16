@@ -25,6 +25,7 @@ import { assetTagLikes } from "../tags/asset-tags-likes"
 import { assetCategoryLikes } from "../categories/asset-categories-likes"
 import { requestForm, requestFormUpvotes } from "../supporter/request-form"
 import { userBlocked } from "./user-blocked"
+import { assetComments } from "../asset/asset-comments"
 
 /*
 NOTE: Very basic user information
@@ -209,6 +210,7 @@ export const usersRelations = relations(authUser, ({ one, many }) => ({
     userFavorite: one(userFavorite),
     userCollectionLikes: many(userCollectionLikes),
     assetLikes: many(assetLikes),
+    assetComments: many(assetComments),
     socialsConnection: one(socialsConnection),
     userCollection: many(userCollection),
     stripeUser: one(stripeUser),

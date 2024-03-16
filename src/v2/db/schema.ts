@@ -1,4 +1,5 @@
 export * from "./schema/asset/asset"
+export * from "./schema/asset/asset-comments"
 export * from "./schema/asset/asset-external-files"
 export * from "./schema/asset/asset-likes"
 
