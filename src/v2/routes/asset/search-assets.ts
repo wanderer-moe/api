@@ -8,7 +8,7 @@ import {
     selectAssetTagAssetSchema,
     selectAssetTagSchema,
 } from "@/v2/db/schema"
-import { type Handler } from "../handler"
+import { type AppHandler } from "../handler"
 
 export const assetSearchAllFilterResponseSchema = z.object({
     success: z.literal(true),
@@ -100,7 +100,7 @@ const assetSearchAllFilterRoute = createRoute({
     },
 })
 
-export const AssetSearchAllFilterRoute = (handler: Handler) => {
+export const AssetSearchAllFilterRoute = (handler: AppHandler) => {
     handler.openapi(assetSearchAllFilterRoute, async (ctx) => {
         const { drizzle } = await getConnection(ctx.env)
 

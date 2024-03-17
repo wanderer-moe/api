@@ -1,4 +1,4 @@
-import { type Handler } from "../handler"
+import { type AppHandler } from "../handler"
 import { getConnection } from "@/v2/db/turso"
 import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
 import { asset, assetLikes } from "@/v2/db/schema"
@@ -44,7 +44,7 @@ const likeAssetByIdRoute = createRoute({
     },
 })
 
-export const LikeAssetByIdRoute = (handler: Handler) => {
+export const LikeAssetByIdRoute = (handler: AppHandler) => {
     handler.openapi(likeAssetByIdRoute, async (ctx) => {
         const assetId = ctx.req.valid("param").id
 

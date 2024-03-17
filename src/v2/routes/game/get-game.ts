@@ -1,4 +1,5 @@
-import { OpenAPIHono, createRoute } from "@hono/zod-openapi"
+import { AppHandler } from "../handler"
+import { createRoute } from "@hono/zod-openapi"
 import { game } from "@/v2/db/schema"
 import { getConnection } from "@/v2/db/turso"
 import { eq } from "drizzle-orm"
@@ -44,32 +45,33 @@ const getGameByIdRoute = createRoute({
     },
 })
 
-const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
+export const GetGameByIdRoute = (handler: AppHandler) => {
+    handler.openapi(getGameByIdRoute, async (ctx) => {
+        const id = ctx.req.valid("param").id
 
-handler.openapi(getGameByIdRoute, async (ctx) => {
-    const id = ctx.req.valid("param").id
+        const { drizzle } = await getConnection(ctx.env)
 
-    const { drizzle } = await getConnection(ctx.env)
+        const [foundGame] = await drizzle
+            .select()
+            .from(game)
+            .where(eq(game.id, id))
 
-    const [foundGame] = await drizzle.select().from(game).where(eq(game.id, id))
+        if (!foundGame) {
+            return ctx.json(
+                {
+                    success: false,
+                    message: "Game not found",
+                },
+                400
+            )
+        }
 
-    if (!foundGame) {
         return ctx.json(
             {
-                success: false,
-                message: "Game not found",
+                success: true,
+                game: foundGame,
             },
-            400
+            200
         )
-    }
-
-    return ctx.json(
-        {
-            success: true,
-            game: foundGame,
-        },
-        200
-    )
-})
-
-export default handler
+    })
+}

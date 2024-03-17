@@ -1,4 +1,4 @@
-import { OpenAPIHono } from "@hono/zod-openapi"
+import { AppHandler } from "../handler"
 import { getConnection } from "@/v2/db/turso"
 import { game } from "@/v2/db/schema"
 import { GenericResponses } from "@/v2/lib/response-schemas"
@@ -29,20 +29,18 @@ const getAllGamesRoute = createRoute({
     },
 })
 
-const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
+export const AllGamesRoute = (handler: AppHandler) => {
+    handler.openapi(getAllGamesRoute, async (ctx) => {
+        const { drizzle } = await getConnection(ctx.env)
 
-handler.openapi(getAllGamesRoute, async (ctx) => {
-    const { drizzle } = await getConnection(ctx.env)
+        const games = (await drizzle.select().from(game)) ?? []
 
-    const games = (await drizzle.select().from(game)) ?? []
-
-    return ctx.json(
-        {
-            success: true,
-            games,
-        },
-        200
-    )
-})
-
-export default handler
+        return ctx.json(
+            {
+                success: true,
+                games,
+            },
+            200
+        )
+    })
+}

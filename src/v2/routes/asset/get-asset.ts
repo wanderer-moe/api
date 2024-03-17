@@ -1,4 +1,4 @@
-import { Handler } from "../handler"
+import { AppHandler } from "../handler"
 import { getConnection } from "@/v2/db/turso"
 import { asset } from "@/v2/db/schema"
 import { eq, sql } from "drizzle-orm"
@@ -74,7 +74,7 @@ const getAssetByIdRoute = createRoute({
     },
 })
 
-export const GetAssetByIdRoute = (handler: Handler) => {
+export const GetAssetByIdRoute = (handler: AppHandler) => {
     handler.openapi(getAssetByIdRoute, async (ctx) => {
         const assetId = ctx.req.valid("param").id
 

@@ -6,7 +6,7 @@ import { SplitQueryByCommas } from "@/v2/lib/helpers/split-query-by-commas"
 import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
-import { Handler } from "../handler"
+import { AppHandler } from "../handler"
 
 const modifyAssetPathSchema = z.object({
     id: z.string().openapi({
@@ -84,7 +84,7 @@ const modifyAssetRoute = createRoute({
     },
 })
 
-export const ModifyAssetRoute = (handler: Handler) => {
+export const ModifyAssetRoute = (handler: AppHandler) => {
     handler.openapi(modifyAssetRoute, async (ctx) => {
         const { name, tags, assetCategoryId, gameId } = ctx.req.valid("json")
         const { id } = ctx.req.valid("param")

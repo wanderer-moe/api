@@ -1,4 +1,4 @@
-import { type Handler } from "../handler"
+import { type AppHandler } from "../handler"
 import { getConnection } from "@/v2/db/turso"
 import { eq } from "drizzle-orm"
 import { asset } from "@/v2/db/schema"
@@ -44,7 +44,7 @@ const deleteAssetByIdRoute = createRoute({
     },
 })
 
-export const DeleteAssetByIdRoute = (handler: Handler) => {
+export const DeleteAssetByIdRoute = (handler: AppHandler) => {
     handler.openapi(deleteAssetByIdRoute, async (ctx) => {
         const assetId = ctx.req.valid("param").id
 

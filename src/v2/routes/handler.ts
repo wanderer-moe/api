@@ -17,4 +17,4 @@ handler.route("/request", RequestFormRoute)
 
 export default handler
 
-export type Handler = typeof handler
+export type AppHandler = typeof handler

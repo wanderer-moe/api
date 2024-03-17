@@ -1,4 +1,4 @@
-import { OpenAPIHono } from "@hono/zod-openapi"
+import { AppHandler } from "../handler"
 import { eq } from "drizzle-orm"
 import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
 import { getConnection } from "@/v2/db/turso"
@@ -48,7 +48,7 @@ const modifyGameResponseSchema = z.object({
 })
 
 export const modifyGameRoute = createRoute({
-    path: "/{id}",
+    path: "/{id}/modify",
     method: "patch",
     description: "Modify an existing game.",
     tags: ["Game"],
@@ -75,62 +75,60 @@ export const modifyGameRoute = createRoute({
     },
 })
 
-const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
+export const ModifyGameRoute = (handler: AppHandler) => {
+    handler.openapi(modifyGameRoute, async (ctx) => {
+        const authSessionManager = new AuthSessionManager(ctx)
 
-handler.openapi(modifyGameRoute, async (ctx) => {
-    const authSessionManager = new AuthSessionManager(ctx)
+        const { user } = await authSessionManager.validateSession()
 
-    const { user } = await authSessionManager.validateSession()
+        if (!user || user.role != "creator") {
+            return ctx.json(
+                {
+                    success: false,
+                    message: "Unauthorized",
+                },
+                401
+            )
+        }
 
-    if (!user || user.role != "creator") {
+        const { name, formattedName, possibleSuggestiveContent } =
+            ctx.req.valid("json")
+        const { id } = ctx.req.valid("param")
+
+        const { drizzle } = getConnection(ctx.env)
+
+        const [existingGame] = await drizzle
+            .select({ id: game.id })
+            .from(game)
+            .where(eq(game.id, id))
+
+        if (!existingGame.id) {
+            return ctx.json(
+                {
+                    success: false,
+                    message: "Game with ID not found",
+                },
+                400
+            )
+        }
+
+        const [updatedGame] = await drizzle
+            .update(game)
+            .set({
+                name,
+                formattedName,
+                possibleSuggestiveContent: Boolean(possibleSuggestiveContent),
+                lastUpdated: new Date().toISOString(),
+            })
+            .where(eq(game.id, id))
+            .returning()
+
         return ctx.json(
             {
-                success: false,
-                message: "Unauthorized",
+                success: true,
+                game: updatedGame,
             },
-            401
+            200
         )
-    }
-
-    const { name, formattedName, possibleSuggestiveContent } =
-        ctx.req.valid("json")
-    const { id } = ctx.req.valid("param")
-
-    const { drizzle } = getConnection(ctx.env)
-
-    const [existingGame] = await drizzle
-        .select({ id: game.id })
-        .from(game)
-        .where(eq(game.id, id))
-
-    if (!existingGame.id) {
-        return ctx.json(
-            {
-                success: false,
-                message: "Game with ID not found",
-            },
-            400
-        )
-    }
-
-    const [updatedGame] = await drizzle
-        .update(game)
-        .set({
-            name,
-            formattedName,
-            possibleSuggestiveContent: Boolean(possibleSuggestiveContent),
-            lastUpdated: new Date().toISOString(),
-        })
-        .where(eq(game.id, id))
-        .returning()
-
-    return ctx.json(
-        {
-            success: true,
-            game: updatedGame,
-        },
-        200
-    )
-})
-
-export default handler
+    })
+}

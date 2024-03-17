@@ -18,8 +18,8 @@ GetAssetByIdRoute(handler)
 ModifyAssetRoute(handler)
 DeleteAssetByIdRoute(handler)
 
-UnlikeAssetByIdRoute(handler)
 LikeAssetByIdRoute(handler)
+UnlikeAssetByIdRoute(handler)
 
 GetAssetLikesRoute(handler)
 

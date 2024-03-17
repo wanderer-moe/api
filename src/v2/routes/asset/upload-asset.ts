@@ -1,4 +1,4 @@
-import type { Handler } from "../handler"
+import type { AppHandler } from "../handler"
 import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
 import { getConnection } from "@/v2/db/turso"
 import { SplitQueryByCommas } from "@/v2/lib/helpers/split-query-by-commas"
@@ -88,7 +88,7 @@ const uploadAssetRoute = createRoute({
     },
 })
 
-export const UploadAssetRoute = (handler: Handler) =>
+export const UploadAssetRoute = (handler: AppHandler) =>
     handler.openapi(uploadAssetRoute, async (ctx) => {
         const {
             asset,

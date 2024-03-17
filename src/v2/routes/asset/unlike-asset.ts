@@ -5,7 +5,7 @@ import { and, eq } from "drizzle-orm"
 import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
-import type { Handler } from "../handler"
+import type { AppHandler } from "../handler"
 
 const unlikeAssetByIdSchema = z.object({
     id: z.string().openapi({
@@ -44,7 +44,7 @@ const unlikeAssetByIdRoute = createRoute({
     },
 })
 
-export const UnlikeAssetByIdRoute = (handler: Handler) => {
+export const UnlikeAssetByIdRoute = (handler: AppHandler) => {
     handler.openapi(unlikeAssetByIdRoute, async (ctx) => {
         const assetId = ctx.req.valid("param").id
 
