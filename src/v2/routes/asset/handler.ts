@@ -9,6 +9,7 @@ import { ModifyAssetRoute } from "./modify-asset"
 import { UploadAssetRoute } from "./upload-asset"
 import { DeleteAssetByIdRoute } from "./delete-asset"
 import { DownloadAssetRoute } from "./download-asset"
+import { GetCommentsRepliesRoute } from "./get-comment-replies"
 
 import { ViewAssetCommentsRoute } from "./get-asset-comments"
 
@@ -28,5 +29,6 @@ UnlikeAssetByIdRoute(handler)
 GetAssetLikesRoute(handler)
 
 ViewAssetCommentsRoute(handler)
+GetCommentsRepliesRoute(handler)
 
 export default handler
