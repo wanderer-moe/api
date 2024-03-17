@@ -16,3 +16,5 @@ handler.route("/auth", AuthRoute)
 handler.route("/request", RequestFormRoute)
 
 export default handler
+
+export type Handler = typeof handler

@@ -1,4 +1,4 @@
-import { OpenAPIHono } from "@hono/zod-openapi"
+import { type Handler } from "../handler"
 import { getConnection } from "@/v2/db/turso"
 import { eq } from "drizzle-orm"
 import { asset } from "@/v2/db/schema"
@@ -23,7 +23,7 @@ const deleteAssetByIdResponseSchema = z.object({
 })
 
 const deleteAssetByIdRoute = createRoute({
-    path: "/{id}",
+    path: "/{id}/delete",
     method: "delete",
     description:
         "Delete an asset from their ID. Must be the owner of the asset or an admin.",
@@ -44,38 +44,36 @@ const deleteAssetByIdRoute = createRoute({
     },
 })
 
-const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
+export const DeleteAssetByIdRoute = (handler: Handler) => {
+    handler.openapi(deleteAssetByIdRoute, async (ctx) => {
+        const assetId = ctx.req.valid("param").id
 
-handler.openapi(deleteAssetByIdRoute, async (ctx) => {
-    const assetId = ctx.req.valid("param").id
+        const { drizzle } = await getConnection(ctx.env)
 
-    const { drizzle } = await getConnection(ctx.env)
+        const [existingAsset] = await drizzle
+            .select({ id: asset.id })
+            .from(asset)
+            .where(eq(asset.id, parseInt(assetId)))
+            .limit(1)
 
-    const [existingAsset] = await drizzle
-        .select({ id: asset.id })
-        .from(asset)
-        .where(eq(asset.id, parseInt(assetId)))
-        .limit(1)
+        if (!existingAsset) {
+            return ctx.json(
+                {
+                    success: true,
+                    message: "Asset not found",
+                },
+                400
+            )
+        }
 
-    if (!existingAsset) {
+        await drizzle.delete(asset).where(eq(asset.id, parseInt(assetId)))
+        // await ctx.env.FILES_BUCKET.delete(asset.url)
+
         return ctx.json(
             {
                 success: true,
-                message: "Asset not found",
             },
-            400
+            200
         )
-    }
-
-    await drizzle.delete(asset).where(eq(asset.id, parseInt(assetId)))
-    // await ctx.env.FILES_BUCKET.delete(asset.url)
-
-    return ctx.json(
-        {
-            success: true,
-        },
-        200
-    )
-})
-
-export default handler
+    })
+}

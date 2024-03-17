@@ -1,4 +1,3 @@
-import { OpenAPIHono } from "@hono/zod-openapi"
 import { getConnection } from "@/v2/db/turso"
 import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
 import { createRoute } from "@hono/zod-openapi"
@@ -10,6 +9,7 @@ import {
     selectAssetTagSchema,
     selectAssetLikesSchema,
 } from "@/v2/db/schema"
+import { Handler } from "../handler"
 
 const allAssetLikesSchema = z.object({
     success: z.literal(true),
@@ -27,7 +27,7 @@ const allAssetLikesSchema = z.object({
 })
 
 const allAssetLikesRoute = createRoute({
-    path: "/",
+    path: "/likes",
     method: "get",
     description: "All your liked assets.",
     tags: ["Asset"],
@@ -44,47 +44,45 @@ const allAssetLikesRoute = createRoute({
     },
 })
 
-const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
+export const GetAssetLikesRoute = (handler: Handler) => {
+    handler.openapi(allAssetLikesRoute, async (ctx) => {
+        const authSessionManager = new AuthSessionManager(ctx)
+        const { user } = await authSessionManager.validateSession()
 
-handler.openapi(allAssetLikesRoute, async (ctx) => {
-    const authSessionManager = new AuthSessionManager(ctx)
-    const { user } = await authSessionManager.validateSession()
+        if (!user) {
+            return ctx.json(
+                {
+                    success: false,
+                    message: "Unauthorized",
+                },
+                401
+            )
+        }
 
-    if (!user) {
-        return ctx.json(
-            {
-                success: false,
-                message: "Unauthorized",
-            },
-            401
-        )
-    }
+        const { drizzle } = await getConnection(ctx.env)
 
-    const { drizzle } = await getConnection(ctx.env)
-
-    const likes = await drizzle.query.assetLikes.findMany({
-        where: (assetLikes, { eq }) => eq(assetLikes.likedById, user.id),
-        with: {
-            asset: {
-                with: {
-                    assetTagAsset: {
-                        with: {
-                            assetTag: true,
+        const likes = await drizzle.query.assetLikes.findMany({
+            where: (assetLikes, { eq }) => eq(assetLikes.likedById, user.id),
+            with: {
+                asset: {
+                    with: {
+                        assetTagAsset: {
+                            with: {
+                                assetTag: true,
+                            },
                         },
                     },
                 },
             },
-        },
-        offset: 0,
+            offset: 0,
+        })
+
+        return ctx.json(
+            {
+                success: true,
+                likes,
+            },
+            200
+        )
     })
-
-    return ctx.json(
-        {
-            success: true,
-            likes,
-        },
-        200
-    )
-})
-
-export default handler
+}
