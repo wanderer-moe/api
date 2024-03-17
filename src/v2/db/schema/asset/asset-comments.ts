@@ -27,7 +27,7 @@ export const assetComments = sqliteTable(
         }),
         // typescript limitations means that the type will be set as `any` if we self reference, so we create FK manually
         parentCommentId: text("parent_comment_id"),
-        commentedById: text("liked_by_id")
+        commentedById: text("commented_by_id")
             .notNull()
             .references(() => authUser.id, {
                 onUpdate: "cascade",
@@ -109,18 +109,22 @@ export const selectAssetCommentsLikesSchema =
     createSelectSchema(assetCommentsLikes)
 
 // not too sure about this
-export const assetCommentsRelations = relations(assetComments, ({ one }) => ({
-    asset: one(asset, {
-        fields: [assetComments.assetId],
-        references: [asset.id],
-        relationName: "asset_comments_asset",
-    }),
-    commentedBy: one(authUser, {
-        fields: [assetComments.commentedById],
-        references: [authUser.id],
-        relationName: "asset_comments_commented_by",
-    }),
-}))
+export const assetCommentsRelations = relations(
+    assetComments,
+    ({ one, many }) => ({
+        asset: one(asset, {
+            fields: [assetComments.assetId],
+            references: [asset.id],
+            relationName: "asset_comments_asset",
+        }),
+        commentedBy: one(authUser, {
+            fields: [assetComments.commentedById],
+            references: [authUser.id],
+            relationName: "asset_comments_commented_by",
+        }),
+        assetCommentsLikes: many(assetCommentsLikes),
+    })
+)
 
 export const assetCommentsLikesRelations = relations(
     assetCommentsLikes,

@@ -9,6 +9,8 @@ import { ModifyAssetRoute } from "./modify-asset"
 import { UploadAssetRoute } from "./upload-asset"
 import { DeleteAssetByIdRoute } from "./delete-asset"
 
+import { ViewAssetCommentsRoute } from "./get-asset-comments"
+
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
 AssetSearchAllFilterRoute(handler)
@@ -22,5 +24,7 @@ LikeAssetByIdRoute(handler)
 UnlikeAssetByIdRoute(handler)
 
 GetAssetLikesRoute(handler)
+
+ViewAssetCommentsRoute(handler)
 
 export default handler

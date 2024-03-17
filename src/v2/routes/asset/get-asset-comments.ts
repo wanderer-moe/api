@@ -1,9 +1,11 @@
 import { getConnection } from "@/v2/db/turso"
-import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
 import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 import { AppHandler } from "../handler"
+import { assetComments, assetCommentsLikes } from "@/v2/db/schema"
+import { selectAssetCommentsSchema } from "@/v2/db/schema"
+import { sql, eq } from "drizzle-orm"
 
 const getAssetCommentsSchema = z.object({
     id: z.string().openapi({
@@ -18,6 +20,19 @@ const getAssetCommentsSchema = z.object({
 
 const getAssetCommentsResponseSchema = z.object({
     success: z.literal(true),
+    comments: z.array(
+        selectAssetCommentsSchema
+            .pick({
+                id: true,
+                parentCommentId: true,
+                commentedById: true,
+                comment: true,
+                createdAt: true,
+            })
+            .extend({
+                likes: z.number(),
+            })
+    ),
 })
 
 const getAssetCommentsRoute = createRoute({
@@ -45,28 +60,24 @@ export const ViewAssetCommentsRoute = (handler: AppHandler) => {
     handler.openapi(getAssetCommentsRoute, async (ctx) => {
         const assetId = ctx.req.valid("param").id
 
-        const authSessionManager = new AuthSessionManager(ctx)
-        const { user } = await authSessionManager.validateSession()
-
-        if (!user) {
-            return ctx.json(
-                {
-                    success: false,
-                    message: "Unauthorized",
-                },
-                401
-            )
-        }
-
         const { drizzle } = await getConnection(ctx.env)
 
-        const comments = await drizzle.query.assetComments.findMany({
-            where: (assetComments, { eq }) =>
-                eq(assetComments.assetId, assetId),
-            with: {
-                assetCommentsLikes: true,
-            },
-        })
+        const comments = await drizzle
+            .select({
+                id: assetComments.id,
+                parentCommentId: assetComments.parentCommentId,
+                commentedById: assetComments.commentedById,
+                comment: assetComments.comment,
+                createdAt: assetComments.createdAt,
+                likes: sql`COUNT(${assetCommentsLikes.commentId})`,
+            })
+            .from(assetComments)
+            .where(eq(assetComments.assetId, assetId))
+            .leftJoin(
+                assetCommentsLikes,
+                eq(assetComments.id, assetCommentsLikes.commentId)
+            )
+            .groupBy(assetComments.id)
 
         return ctx.json(
             {
