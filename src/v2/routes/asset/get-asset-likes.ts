@@ -9,7 +9,7 @@ import {
     selectAssetTagSchema,
     selectAssetLikesSchema,
 } from "@/v2/db/schema"
-import { Handler } from "../handler"
+import { AppHandler } from "../handler"
 
 const allAssetLikesSchema = z.object({
     success: z.literal(true),
@@ -44,7 +44,7 @@ const allAssetLikesRoute = createRoute({
     },
 })
 
-export const GetAssetLikesRoute = (handler: Handler) => {
+export const GetAssetLikesRoute = (handler: AppHandler) => {
     handler.openapi(allAssetLikesRoute, async (ctx) => {
         const authSessionManager = new AuthSessionManager(ctx)
         const { user } = await authSessionManager.validateSession()
