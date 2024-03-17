@@ -447,13 +447,11 @@ async function main() {
             },
         ])
         .returning()
-        console.log(
-            `[SEED] [assetComments] inserted ${newAssetCommentsReplies.length} rows\n`
-        )
-    
     console.log(
-        "[SEED] [assetCommentsLikes] Seeding asset comments likes..."
+        `[SEED] [assetComments] inserted ${newAssetCommentsReplies.length} rows\n`
     )
+
+    console.log("[SEED] [assetCommentsLikes] Seeding asset comments likes...")
     const newAssetCommentsLikes = await db
         .insert(assetCommentsLikes)
         .values([
@@ -480,14 +478,12 @@ async function main() {
             {
                 commentId: newAssetCommentsReplies[2].id,
                 likedById: newUsers[0].id,
-            }
+            },
         ])
         .returning()
     console.log(
         `[SEED] [assetCommentsLikes] inserted ${newAssetCommentsLikes.length} rows\n`
     )
-
-        
 
     console.log("[SEED] [userCollection] Seeding user collections...")
     const newUserCollections = await db

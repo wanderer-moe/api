@@ -124,17 +124,17 @@ export const assetCommentsRelations = relations(assetComments, ({ one }) => ({
 }))
 
 export const assetCommentsLikesRelations = relations(
-    assetComments,
+    assetCommentsLikes,
     ({ one }) => ({
-        asset: one(asset, {
-            fields: [assetComments.assetId],
-            references: [asset.id],
-            relationName: "asset_comments_asset",
+        comment: one(assetComments, {
+            fields: [assetCommentsLikes.commentId],
+            references: [assetComments.id],
+            relationName: "asset_comments_likes_comment",
         }),
-        commentedBy: one(authUser, {
-            fields: [assetComments.commentedById],
+        likedBy: one(authUser, {
+            fields: [assetCommentsLikes.likedById],
             references: [authUser.id],
-            relationName: "asset_comments_commented_by",
+            relationName: "asset_comments_likes_liked_by",
         }),
     })
 )
