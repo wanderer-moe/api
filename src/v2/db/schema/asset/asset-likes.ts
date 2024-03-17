@@ -41,7 +41,7 @@ export type NewAssetLikes = typeof assetLikes.$inferInsert
 export const insertAssetLikesSchema = createInsertSchema(assetLikes)
 export const selectAssetLikesSchema = createSelectSchema(assetLikes)
 
-export const assetNetworkingRelations = relations(assetLikes, ({ one }) => ({
+export const assetLikesRelations = relations(assetLikes, ({ one }) => ({
     asset: one(asset, {
         fields: [assetLikes.assetId],
         references: [asset.id],

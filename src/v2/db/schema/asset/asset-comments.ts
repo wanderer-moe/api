@@ -10,13 +10,23 @@ import {
 import { authUser } from "../user/user"
 import { asset } from "./asset"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
+import { generateID } from "@/v2/lib/oslo"
 
 export const assetComments = sqliteTable(
     tableNames.assetComments,
     {
-        assetId: integer("asset_id")
+        id: text("comment_id")
+            .primaryKey()
             .notNull()
+            .$defaultFn(() => {
+                return generateID()
+            }),
+        assetId: integer("asset_id")
+            .default(null)
             .references(() => asset.id),
+        parentCommentId: text("parent_comment_id")
+            .default(null)
+            .references(() => assetComments.id),
         commentedById: text("liked_by_id")
             .notNull()
             .references(() => authUser.id),
@@ -33,6 +43,9 @@ export const assetComments = sqliteTable(
             assetIdx: index("assetcomments_asset_idx").on(
                 assetComments.assetId
             ),
+            parentCommentIdx: index("assetcomments_parent_comment_idx").on(
+                assetComments.parentCommentId
+            ),
             commentedByIdx: index("assetcomments_commented_by_idx").on(
                 assetComments.commentedById
             ),
@@ -46,15 +59,67 @@ export type NewAssetComments = typeof assetComments.$inferInsert
 export const insertAssetCommentsSchema = createInsertSchema(assetComments)
 export const selectAssetCommentsSchema = createSelectSchema(assetComments)
 
+export const assetCommentsLikes = sqliteTable(
+    tableNames.assetCommentsLikes,
+    {
+        commentId: text("comment_id")
+            .notNull()
+            .references(() => assetComments.id),
+        likedById: text("liked_by_id")
+            .notNull()
+            .references(() => authUser.id),
+        createdAt: text("created_at")
+            .notNull()
+            .$defaultFn(() => {
+                return new Date().toISOString()
+            }),
+    },
+    (assetCommentsLikes) => {
+        return {
+            commentIdx: index("assetcommentslikes_comment_idx").on(
+                assetCommentsLikes.commentId
+            ),
+            likedByIdx: index("assetcommentslikes_liked_by_idx").on(
+                assetCommentsLikes.likedById
+            ),
+        }
+    }
+)
+
+export type AssetCommentsLikes = typeof assetCommentsLikes.$inferSelect
+export type NewAssetCommentsLikes = typeof assetCommentsLikes.$inferInsert
+
+export const insertAssetCommentsLikesSchema =
+    createInsertSchema(assetCommentsLikes)
+export const selectAssetCommentsLikesSchema =
+    createSelectSchema(assetCommentsLikes)
+
+// not too sure about this
 export const assetCommentsRelations = relations(assetComments, ({ one }) => ({
     asset: one(asset, {
         fields: [assetComments.assetId],
         references: [asset.id],
-        relationName: "assetcomments_asset",
+        relationName: "asset_comments_asset",
     }),
     commentedBy: one(authUser, {
         fields: [assetComments.commentedById],
         references: [authUser.id],
-        relationName: "assetcomments_commented_by",
+        relationName: "asset_comments_commented_by",
     }),
 }))
+
+export const assetCommentsLikesRelations = relations(
+    assetComments,
+    ({ one }) => ({
+        asset: one(asset, {
+            fields: [assetComments.assetId],
+            references: [asset.id],
+            relationName: "asset_comments_asset",
+        }),
+        commentedBy: one(authUser, {
+            fields: [assetComments.commentedById],
+            references: [authUser.id],
+            relationName: "asset_comments_commented_by",
+        }),
+    })
+)

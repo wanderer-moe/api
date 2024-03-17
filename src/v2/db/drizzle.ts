@@ -9,6 +9,7 @@ export const tableNames = {
     gameAssetCategory: "gameAssetCategory",
     assetLikes: "assetLikes",
     assetComments: "assetComments",
+    assetCommentsLikes: "assetCommentsLikes",
     userCollectionLikes: "userCollectionLikes",
     userCollectionCollaborators: "userCollectionCollaborators",
     game: "game",
