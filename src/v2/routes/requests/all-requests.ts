@@ -35,7 +35,7 @@ const getAllRequestsRoute = createRoute({
     path: "/all",
     method: "get",
     description:
-        "Get all requests. This will also return all associated upvotes count.",
+        "Get all requests & associated upvotes count. Supporter required.",
     tags: ["Requests"],
     request: {
         query: viewAllRequestsSchema,

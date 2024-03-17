@@ -12,7 +12,7 @@ export const deleteRequestByIdSchema = z.object({
         param: {
             name: "id",
             in: "path",
-            description: "The ID of the request to delete.",
+            description: "The ID of the request to delete. Supporter required.",
             example: "1",
             required: true,
         },

@@ -34,7 +34,7 @@ const viewRequestByIdRoute = createRoute({
     },
     responses: {
         200: {
-            description: "True if the request was upvoted successfully.",
+            description: "The request was found and returned successfully.",
             content: {
                 "application/json": {
                     schema: viewRequestByIdResponseSchema,
