@@ -5,7 +5,7 @@ import { z } from "@hono/zod-openapi"
 import { AppHandler } from "../handler"
 import { assetComments, assetCommentsLikes } from "@/v2/db/schema"
 import { selectAssetCommentsSchema } from "@/v2/db/schema"
-import { sql, eq } from "drizzle-orm"
+import { sql, eq, desc } from "drizzle-orm"
 
 const getAssetCommentsSchema = z.object({
     id: z.string().openapi({
@@ -16,6 +16,20 @@ const getAssetCommentsSchema = z.object({
             required: true,
         },
     }),
+})
+
+const getAssetCommentsOffsetSchema = z.object({
+    offset: z
+        .string()
+        .optional()
+        .openapi({
+            param: {
+                name: "offset",
+                in: "query",
+                description: "The offset to start from.",
+                required: false,
+            },
+        }),
 })
 
 const getAssetCommentsResponseSchema = z.object({
@@ -42,6 +56,7 @@ const getAssetCommentsRoute = createRoute({
     tags: ["Asset"],
     request: {
         params: getAssetCommentsSchema,
+        query: getAssetCommentsOffsetSchema,
     },
     responses: {
         200: {
@@ -59,6 +74,7 @@ const getAssetCommentsRoute = createRoute({
 export const ViewAssetCommentsRoute = (handler: AppHandler) => {
     handler.openapi(getAssetCommentsRoute, async (ctx) => {
         const assetId = ctx.req.valid("param").id
+        const offset = parseInt(ctx.req.valid("query").offset) || 0
 
         const { drizzle } = await getConnection(ctx.env)
 
@@ -78,6 +94,9 @@ export const ViewAssetCommentsRoute = (handler: AppHandler) => {
                 eq(assetComments.id, assetCommentsLikes.commentId)
             )
             .groupBy(assetComments.id)
+            .offset(offset)
+            .limit(10)
+            .orderBy(desc(assetComments.createdAt))
 
         return ctx.json(
             {
