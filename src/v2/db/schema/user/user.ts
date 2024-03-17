@@ -11,7 +11,6 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { generateID } from "@/v2/lib/oslo"
 import { userFollowing } from "./user-following"
 import { asset } from "../asset/asset"
-import { userFavourite } from "./user-favourites"
 import { socialsConnection } from "./user-connections"
 import { userCollection } from "../collections/user-collections"
 import { passwordResetToken } from "./user-attributes"
@@ -207,7 +206,6 @@ export const usersRelations = relations(authUser, ({ one, many }) => ({
     userSession: many(userSession),
     asset: many(asset),
     assetExternalFile: many(assetExternalFile),
-    userFavourite: one(userFavourite),
     userCollectionLikes: many(userCollectionLikes),
     assetLikes: many(assetLikes),
     assetComments: many(assetComments),

@@ -11,8 +11,6 @@ import {
     gameAssetCategory,
     userCollection,
     userCollectionAsset,
-    userFavourite,
-    userFavouriteAsset,
     userFollowing,
     requestFormUpvotes,
     requestForm,
@@ -511,48 +509,6 @@ async function main() {
         .returning()
     console.log(
         `[SEED] [userCollectionAsset] inserted ${newUserCollectionAssets.length} rows\n`
-    )
-
-    // only one user favourite per user
-    console.log("[SEED] [userFavourite] Seeding user favourites...")
-    const newUserFavourites = await db
-        .insert(userFavourite)
-        .values([
-            {
-                userId: newUsers[0].id,
-            },
-            {
-                userId: newUsers[1].id,
-                isPublic: false,
-            },
-        ])
-        .returning()
-    console.log(
-        `[SEED] [userFavourite] inserted ${newUserFavourites.length} rows\n`
-    )
-
-    console.log(
-        "[SEED] [userFavouriteAsset] Linking user favourites to assets..."
-    )
-    const newUserFavouriteAssets = await db
-        .insert(userFavouriteAsset)
-        .values([
-            {
-                userFavouriteId: newUserFavourites[0].id,
-                assetId: newAssets[0].id,
-            },
-            {
-                userFavouriteId: newUserFavourites[0].id,
-                assetId: newAssets[1].id,
-            },
-            {
-                userFavouriteId: newUserFavourites[1].id,
-                assetId: newAssets[2].id,
-            },
-        ])
-        .returning()
-    console.log(
-        `[SEED] [userFavouriteAsset] inserted ${newUserFavouriteAssets.length} rows\n`
     )
 
     console.log("[SEED] Seeded database successfully")
