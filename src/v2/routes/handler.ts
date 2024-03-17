@@ -4,17 +4,15 @@ import GameRoute from "@/v2/routes/game/handler"
 import AssetRoute from "@/v2/routes/asset/handler"
 import ContributorRoute from "@/v2/routes/contributors/handler"
 import AuthRoute from "@/v2/routes/auth/handler"
-// import CategoryRoute from "@/v2/routes/category/handler"
-// import RequestFormRoute from "@/v2/routes/requests/handler" dromzeh: need to figure out financial/supporter side of things before I can implement this
+import RequestFormRoute from "@/v2/routes/requests/handler"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
 handler.route("/game", GameRoute)
-// handler.route("/category", CategoryRoute)
 handler.route("/asset", AssetRoute)
 handler.route("/user", UserRoute)
-handler.route("/contributor", ContributorRoute)
+handler.route("/contributors", ContributorRoute)
 handler.route("/auth", AuthRoute)
-// handler.route("/request", RequestFormRoute)
+handler.route("/request", RequestFormRoute)
 
 export default handler

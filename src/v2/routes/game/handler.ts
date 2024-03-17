@@ -1,14 +1,18 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
-import GameGetRoute from "./get/handler"
-import GameCreateRoute from "./create/route"
-import DeleteGameRoute from "./delete/id/[id]/route"
-import ModifyGameRoute from "./modify/id/[id]/route"
+import GameCreateRoute from "./create-game"
+import DeleteGameRoute from "./delete-game"
+import ModifyGameRoute from "./modify-game"
+import GameGetRoute from "./get-game"
+import AllGamesRoute from "./all-games"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
 handler.route("/get", GameGetRoute)
+handler.route("/modify", ModifyGameRoute)
+handler.route("/delete", DeleteGameRoute)
+
 handler.route("/create", GameCreateRoute)
-handler.route("/modify/id", ModifyGameRoute)
-handler.route("/delete/id", DeleteGameRoute)
+
+handler.route("/list", AllGamesRoute)
 
 export default handler

@@ -1,8 +1,8 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
-import AllContributorsRoute from "@/v2/routes/contributors/get/all/route"
+import AllContributorsRoute from "./all-contributors"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
-handler.route("/get/list", AllContributorsRoute)
+handler.route("/all", AllContributorsRoute)
 
 export default handler

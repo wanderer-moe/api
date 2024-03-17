@@ -1,12 +1,12 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
-import RequestFormCreateRoute from "@/v2/routes/requests/form/create/route"
-import RequestFormDeleteRoute from "@/v2/routes/requests/form/delete/[id]/route"
-import ViewAllRequestsRoute from "@/v2/routes/requests/form/view/all/route"
+import ViewAllRequestsRoute from "./all-requests"
+import CreateRequestRoute from "./create-request"
+import DeleteRequestRoute from "./delete-request"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
-handler.route("/create/form", RequestFormCreateRoute)
-handler.route("/delete/form", RequestFormDeleteRoute)
 handler.route("/view/all", ViewAllRequestsRoute)
+handler.route("/create", CreateRequestRoute)
+handler.route("/delete", DeleteRequestRoute)
 
 export default handler
