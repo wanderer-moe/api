@@ -6,6 +6,7 @@ import {
     // uniqueIndex,
     index,
     integer,
+    foreignKey,
 } from "drizzle-orm/sqlite-core"
 import { authUser } from "../user/user"
 import { asset } from "./asset"
@@ -21,15 +22,18 @@ export const assetComments = sqliteTable(
             .$defaultFn(() => {
                 return generateID()
             }),
-        assetId: integer("asset_id")
-            .default(null)
-            .references(() => asset.id),
-        parentCommentId: text("parent_comment_id")
-            .default(null)
-            .references(() => assetComments.id),
+        assetId: integer("asset_id").references(() => asset.id, {
+            onUpdate: "cascade",
+            onDelete: "cascade",
+        }),
+        // typescript limitations means that the type will be set as `any` if we self reference, so we create FK manually
+        parentCommentId: text("parent_comment_id"),
         commentedById: text("liked_by_id")
             .notNull()
-            .references(() => authUser.id),
+            .references(() => authUser.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
         comment: text("comment").notNull(),
         createdAt: text("created_at")
             .notNull()
@@ -40,6 +44,11 @@ export const assetComments = sqliteTable(
     },
     (assetComments) => {
         return {
+            parentCommentFk: foreignKey({
+                name: "self_reference_parent_comment_id",
+                columns: [assetComments.parentCommentId],
+                foreignColumns: [assetComments.id],
+            }),
             assetIdx: index("assetcomments_asset_idx").on(
                 assetComments.assetId
             ),
@@ -64,10 +73,16 @@ export const assetCommentsLikes = sqliteTable(
     {
         commentId: text("comment_id")
             .notNull()
-            .references(() => assetComments.id),
+            .references(() => assetComments.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
         likedById: text("liked_by_id")
             .notNull()
-            .references(() => authUser.id),
+            .references(() => authUser.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
         createdAt: text("created_at")
             .notNull()
             .$defaultFn(() => {

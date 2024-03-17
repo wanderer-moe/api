@@ -15,10 +15,16 @@ export const userCollectionLikes = sqliteTable(
     {
         collectionId: text("collection_id")
             .notNull()
-            .references(() => userCollection.id),
+            .references(() => userCollection.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
         likedById: text("liked_by_id")
             .notNull()
-            .references(() => authUser.id),
+            .references(() => authUser.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
         createdAt: text("createdAt")
             .notNull()
             .$defaultFn(() => {

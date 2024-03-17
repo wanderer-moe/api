@@ -16,6 +16,8 @@ import {
     userFollowing,
     requestFormUpvotes,
     requestForm,
+    assetComments,
+    assetCommentsLikes,
 } from "@/v2/db/schema"
 import { Scrypt } from "lucia"
 import "dotenv/config"
@@ -396,6 +398,96 @@ async function main() {
     console.log(
         `[SEED] [assetTagAsset] inserted ${newAssetTagAsset.length} rows\n`
     )
+
+    console.log("[SEED] [assetComments] Seeding asset comments...")
+    const newAssetComments = await db
+        .insert(assetComments)
+        .values([
+            {
+                assetId: newAssets[0].id,
+                commentedById: newUsers[0].id,
+                comment: "test comment",
+            },
+            {
+                assetId: newAssets[0].id,
+                commentedById: newUsers[1].id,
+                comment: "test comment 2",
+            },
+            {
+                assetId: newAssets[1].id,
+                commentedById: newUsers[0].id,
+                comment: "test comment 3",
+            },
+        ])
+        .returning()
+    console.log(
+        `[SEED] [assetComments] inserted ${newAssetComments.length} rows\n`
+    )
+
+    console.log(
+        "[SEED] [assetComments] Seeding replies to comments [self ref]..."
+    )
+    const newAssetCommentsReplies = await db
+        .insert(assetComments)
+        .values([
+            {
+                commentedById: newUsers[1].id,
+                comment: "test comment reply",
+                parentCommentId: newAssetComments[0].id,
+            },
+            {
+                commentedById: newUsers[0].id,
+                comment: "test comment reply 2",
+                parentCommentId: newAssetComments[1].id,
+            },
+            {
+                commentedById: newUsers[1].id,
+                comment: "test comment reply 3",
+                parentCommentId: newAssetComments[2].id,
+            },
+        ])
+        .returning()
+        console.log(
+            `[SEED] [assetComments] inserted ${newAssetCommentsReplies.length} rows\n`
+        )
+    
+    console.log(
+        "[SEED] [assetCommentsLikes] Seeding asset comments likes..."
+    )
+    const newAssetCommentsLikes = await db
+        .insert(assetCommentsLikes)
+        .values([
+            {
+                commentId: newAssetComments[0].id,
+                likedById: newUsers[1].id,
+            },
+            {
+                commentId: newAssetComments[1].id,
+                likedById: newUsers[0].id,
+            },
+            {
+                commentId: newAssetComments[2].id,
+                likedById: newUsers[1].id,
+            },
+            {
+                commentId: newAssetCommentsReplies[0].id,
+                likedById: newUsers[0].id,
+            },
+            {
+                commentId: newAssetCommentsReplies[1].id,
+                likedById: newUsers[1].id,
+            },
+            {
+                commentId: newAssetCommentsReplies[2].id,
+                likedById: newUsers[0].id,
+            }
+        ])
+        .returning()
+    console.log(
+        `[SEED] [assetCommentsLikes] inserted ${newAssetCommentsLikes.length} rows\n`
+    )
+
+        
 
     console.log("[SEED] [userCollection] Seeding user collections...")
     const newUserCollections = await db

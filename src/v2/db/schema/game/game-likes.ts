@@ -10,10 +10,16 @@ export const gameLikes = sqliteTable(
     {
         gameId: text("asset_id")
             .notNull()
-            .references(() => game.id),
+            .references(() => game.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
         likedById: text("liked_by_id")
             .notNull()
-            .references(() => authUser.id),
+            .references(() => authUser.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
         createdAt: text("created_at")
             .notNull()
             .$defaultFn(() => {

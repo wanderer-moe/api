@@ -19,10 +19,16 @@ export const userFollowing = sqliteTable(
     {
         followerId: text("followerId")
             .notNull()
-            .references(() => authUser.id),
+            .references(() => authUser.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
         followingId: text("followingId")
             .notNull()
-            .references(() => authUser.id),
+            .references(() => authUser.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
         createdAt: text("createdAt")
             .notNull()
             .$defaultFn(() => {

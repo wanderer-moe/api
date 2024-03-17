@@ -15,8 +15,6 @@ export const tableNames = {
     game: "game",
     gameLikes: "gameLikes",
     stripeUser: "stripeUser",
-    // atlas: "atlas",
-    // atlasToAsset: "atlasToAsset",
     assetExternalFile: "assetExternalFile",
     assetTag: "assetTag",
     assetTagLikes: "assetTagLikes",

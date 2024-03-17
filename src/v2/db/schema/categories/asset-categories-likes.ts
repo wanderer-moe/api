@@ -10,10 +10,16 @@ export const assetCategoryLikes = sqliteTable(
     {
         assetCategoryId: text("asset_id")
             .notNull()
-            .references(() => assetCategory.id),
+            .references(() => assetCategory.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
         likedById: text("liked_by_id")
             .notNull()
-            .references(() => authUser.id),
+            .references(() => authUser.id, {
+                onUpdate: "cascade",
+                onDelete: "cascade",
+            }),
         createdAt: text("created_at")
             .notNull()
             .$defaultFn(() => {
