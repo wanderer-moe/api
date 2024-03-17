@@ -60,7 +60,7 @@ export const DeleteTagRoute = (handler: AppHandler) => {
             return ctx.json(
                 {
                     success: false,
-                    message: "Game not found",
+                    message: "Tag not found",
                 },
                 400
             )

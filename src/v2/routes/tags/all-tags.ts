@@ -19,7 +19,7 @@ const getAllTagsRoute = createRoute({
     tags: ["Tags"],
     responses: {
         200: {
-            description: "All games.",
+            description: "All tags.",
             content: {
                 "application/json": {
                     schema: getAllTagsResponse,

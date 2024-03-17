@@ -94,7 +94,7 @@ export const ModifyTagRoute = (handler: AppHandler) => {
             return ctx.json(
                 {
                     success: false,
-                    message: "Game with ID not found",
+                    message: "Tag with ID not found",
                 },
                 400
             )

@@ -1,5 +1,5 @@
 import { AppHandler } from "../handler"
-import { assetTag, game } from "@/v2/db/schema"
+import { assetTag } from "@/v2/db/schema"
 import { eq } from "drizzle-orm"
 import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
 import { getConnection } from "@/v2/db/turso"
@@ -88,7 +88,7 @@ export const CreateTagRoute = (handler: AppHandler) => {
         }
 
         const [newTag] = await drizzle
-            .insert(game)
+            .insert(assetTag)
             .values({
                 id: name,
                 name,

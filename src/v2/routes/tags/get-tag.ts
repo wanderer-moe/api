@@ -28,7 +28,7 @@ const getTagByIdRoute = createRoute({
     path: "/{id}",
     method: "get",
     summary: "Get a tag",
-    description: "Get tag game by their ID.",
+    description: "Get tag by their ID.",
     tags: ["Tags"],
     request: {
         params: getTagByIdSchema,
