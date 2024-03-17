@@ -1,11 +1,10 @@
-import { OpenAPIHono } from "@hono/zod-openapi"
+import { AppHandler } from "../handler"
 import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
-import { RequestFormManager } from "@/v2/lib/managers/request-form/request-form-manager"
 import { getConnection } from "@/v2/db/turso"
 import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
-import { selectRequestFormSchema } from "@/v2/db/schema"
+import { requestForm, selectRequestFormSchema } from "@/v2/db/schema"
 import type { requestArea } from "@/v2/db/schema"
 
 const createRequestFormEntrySchema = z.object({
@@ -35,7 +34,7 @@ const createRequestFormEntryResponse = z.object({
 })
 
 const createRequestFormEntryRoute = createRoute({
-    path: "/",
+    path: "/create",
     method: "post",
     description: "Create a new entry into the request form.",
     tags: ["Requests"],
@@ -61,44 +60,43 @@ const createRequestFormEntryRoute = createRoute({
     },
 })
 
-const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
+export const CreateRequestFormEntryRoute = (handler: AppHandler) => {
+    handler.openapi(createRequestFormEntryRoute, async (ctx) => {
+        const { area, title, description } = ctx.req.valid("json")
 
-handler.openapi(createRequestFormEntryRoute, async (ctx) => {
-    const { area, title, description } = ctx.req.valid("json")
+        const authSessionManager = new AuthSessionManager(ctx)
 
-    const authSessionManager = new AuthSessionManager(ctx)
+        const { user } = await authSessionManager.validateSession()
 
-    const { user } = await authSessionManager.validateSession()
+        if (!user || user.role != "creator" || user.plan == "supporter") {
+            return ctx.json(
+                {
+                    success: false,
+                    message:
+                        "Unauthorized. Only supporters can create request entries.",
+                },
+                401
+            )
+        }
 
-    if (!user || user.role != "creator" || user.plan == "supporter") {
+        const { drizzle } = await getConnection(ctx.env)
+
+        const [newRequestEntry] = await drizzle
+            .insert(requestForm)
+            .values({
+                userId: user.id,
+                title: title,
+                area: area,
+                description: description,
+            })
+            .returning()
+
         return ctx.json(
             {
-                success: false,
-                message:
-                    "Unauthorized. Only supporters can create request entries.",
+                success: true,
+                response: newRequestEntry,
             },
-            401
+            200
         )
-    }
-
-    const { drizzle } = await getConnection(ctx.env)
-
-    const requestFormManager = new RequestFormManager(drizzle)
-
-    const [newRequestEntry] = await requestFormManager.createRequestFormEntry(
-        user.id,
-        title,
-        area,
-        description
-    )
-
-    return ctx.json(
-        {
-            success: true,
-            response: newRequestEntry,
-        },
-        200
-    )
-})
-
-export default handler
+    })
+}

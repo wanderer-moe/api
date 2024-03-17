@@ -7,36 +7,37 @@ import { z } from "@hono/zod-openapi"
 import { requestForm, requestFormUpvotes } from "@/v2/db/schema"
 import { eq } from "drizzle-orm"
 
-export const upvoteRequestByIdSchema = z.object({
+export const removeRequestUpvoteByIdSchema = z.object({
     id: z.string().openapi({
         param: {
             name: "id",
             in: "path",
-            description: "The ID of the request to upvote.",
+            description: "The ID of the request to remove the upvote for.",
             example: "1",
             required: true,
         },
     }),
 })
 
-export const upvoteRequestByIdResponseSchema = z.object({
+export const removeRequestUpvoteByIdResponseSchema = z.object({
     success: z.literal(true),
 })
 
-const upvoteRequestByIdRoute = createRoute({
-    path: "/{id}/upvote",
+const removeRequestUpvoteByIdRoute = createRoute({
+    path: "/{id}/downvote",
     method: "post",
-    description: "Upvote a request by its ID. Supporter required.",
+    description: "Remove a upvote on a request by its ID. Supporter required.",
     tags: ["Requests"],
     request: {
-        params: upvoteRequestByIdSchema,
+        params: removeRequestUpvoteByIdSchema,
     },
     responses: {
         200: {
-            description: "True if the request was upvoted successfully.",
+            description:
+                "True if the request's upvote was removed successfully.",
             content: {
                 "application/json": {
-                    schema: upvoteRequestByIdResponseSchema,
+                    schema: removeRequestUpvoteByIdResponseSchema,
                 },
             },
         },
@@ -44,8 +45,8 @@ const upvoteRequestByIdRoute = createRoute({
     },
 })
 
-export const UpvoteRequestRoute = (handler: AppHandler) => {
-    handler.openapi(upvoteRequestByIdRoute, async (ctx) => {
+export const RemoveRequestUpvoteRoute = (handler: AppHandler) => {
+    handler.openapi(removeRequestUpvoteByIdRoute, async (ctx) => {
         const requestId = ctx.req.valid("param").id
 
         const authSessionManager = new AuthSessionManager(ctx)
@@ -86,7 +87,7 @@ export const UpvoteRequestRoute = (handler: AppHandler) => {
                 {
                     success: false,
                     message:
-                        "Unauthorized. You can't upvote your own requests.",
+                        "Unauthorized. You can't remove upvotes on your own requests.",
                 },
                 401
             )
@@ -100,20 +101,20 @@ export const UpvoteRequestRoute = (handler: AppHandler) => {
             .where(eq(requestFormUpvotes.requestFormId, requestId))
             .limit(1)
 
-        if (isUpvoted) {
+        if (!isUpvoted) {
             return ctx.json(
                 {
                     success: false,
-                    message: "Request already upvoted",
+                    message:
+                        "Unauthorized. You can't remove upvotes on requests you haven't upvoted.",
                 },
-                400
+                401
             )
         }
 
-        await drizzle.insert(requestFormUpvotes).values({
-            requestFormId: requestId,
-            userId: user.id,
-        })
+        await drizzle
+            .delete(requestFormUpvotes)
+            .where(eq(requestFormUpvotes.requestFormId, requestId))
 
         return ctx.json(
             {

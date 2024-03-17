@@ -1,10 +1,11 @@
-import { OpenAPIHono } from "@hono/zod-openapi"
+import { AppHandler } from "../handler"
 import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
-import { RequestFormManager } from "@/v2/lib/managers/request-form/request-form-manager"
 import { getConnection } from "@/v2/db/turso"
 import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
+import { requestForm } from "@/v2/db/schema"
+import { eq } from "drizzle-orm"
 
 export const deleteRequestByIdSchema = z.object({
     id: z.string().openapi({
@@ -23,7 +24,7 @@ export const deleteRequestByIdResponseSchema = z.object({
 })
 
 const deleteRequestByIdRoute = createRoute({
-    path: "/{id}",
+    path: "/{id}/delete",
     method: "delete",
     description:
         "Delete a request by its ID. This will also delete all associated upvotes.",
@@ -44,60 +45,61 @@ const deleteRequestByIdRoute = createRoute({
     },
 })
 
-const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
+export const DeleteRequestByIdRoute = (handler: AppHandler) => {
+    handler.openapi(deleteRequestByIdRoute, async (ctx) => {
+        const requestId = ctx.req.valid("param").id
 
-handler.openapi(deleteRequestByIdRoute, async (ctx) => {
-    const requestId = ctx.req.valid("param").id
+        const authSessionManager = new AuthSessionManager(ctx)
 
-    const authSessionManager = new AuthSessionManager(ctx)
+        const { user } = await authSessionManager.validateSession()
 
-    const { user } = await authSessionManager.validateSession()
+        if (!user || user.role != "creator" || user.plan == "supporter") {
+            return ctx.json(
+                {
+                    success: false,
+                    message:
+                        "Unauthorized. Only supporters can delete requests.",
+                },
+                401
+            )
+        }
 
-    if (!user || user.role != "creator" || user.plan == "supporter") {
+        const { drizzle } = await getConnection(ctx.env)
+
+        const [request] = await drizzle
+            .select({ id: requestForm.id, userId: requestForm.userId })
+            .from(requestForm)
+            .where(eq(requestForm.id, requestId))
+            .limit(1)
+
+        if (!request) {
+            return ctx.json(
+                {
+                    success: false,
+                    message: "Request by ID not found",
+                },
+                404
+            )
+        }
+
+        if (request.userId != user.id) {
+            return ctx.json(
+                {
+                    success: false,
+                    message:
+                        "Unauthorized. You can only delete your own requests.",
+                },
+                401
+            )
+        }
+
+        await drizzle.delete(requestForm).where(eq(requestForm.id, requestId))
+
         return ctx.json(
             {
-                success: false,
-                message: "Unauthorized. Only supporters can delete requests.",
+                success: true,
             },
-            401
+            200
         )
-    }
-
-    const { drizzle } = await getConnection(ctx.env)
-
-    const requestFormManager = new RequestFormManager(drizzle)
-
-    const request =
-        await requestFormManager.doesRequestFormEntryExist(requestId)
-
-    if (!request) {
-        return ctx.json(
-            {
-                success: false,
-                message: "Request by ID not found",
-            },
-            404
-        )
-    }
-
-    if (request.userId != user.id) {
-        return ctx.json(
-            {
-                success: false,
-                message: "Unauthorized. You can only delete your own requests.",
-            },
-            401
-        )
-    }
-
-    await requestFormManager.deleteRequestFormEntry(requestId)
-
-    return ctx.json(
-        {
-            success: true,
-        },
-        200
-    )
-})
-
-export default handler
+    })
+}
