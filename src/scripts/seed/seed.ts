@@ -260,7 +260,6 @@ async function main() {
         .insert(asset)
         .values([
             {
-                id: 1,
                 name: "test-asset",
                 extension: "image/png",
                 gameId: "genshin-impact",
@@ -276,7 +275,6 @@ async function main() {
                 height: 512,
             },
             {
-                id: 2,
                 name: "test-asset-2",
                 extension: "image/png",
                 gameId: "honkai-impact-3rd",
@@ -292,7 +290,6 @@ async function main() {
                 height: 1080,
             },
             {
-                id: 3,
                 name: "test-asset-3",
                 extension: "image/png",
                 gameId: "genshin-impact",
@@ -308,7 +305,6 @@ async function main() {
                 height: 1920,
             },
             {
-                id: 4,
                 name: "test-asset-4",
                 extension: "image/png",
                 gameId: "genshin-impact",
@@ -324,7 +320,6 @@ async function main() {
                 height: 1080,
             },
             {
-                id: 5,
                 name: "test-asset-5",
                 extension: "image/png",
                 gameId: "genshin-impact",
@@ -337,7 +332,6 @@ async function main() {
                 downloadCount: 1337,
             },
             {
-                id: 6,
                 name: "test-asset-6",
                 extension: "image/png",
                 gameId: "honkai-impact-3rd",

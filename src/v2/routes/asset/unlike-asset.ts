@@ -48,22 +48,12 @@ export const UnlikeAssetByIdRoute = (handler: AppHandler) => {
     handler.openapi(unlikeAssetByIdRoute, async (ctx) => {
         const assetId = ctx.req.valid("param").id
 
-        if (isNaN(parseInt(assetId))) {
-            return ctx.json(
-                {
-                    success: false,
-                    message: "Invalid asset ID",
-                },
-                400
-            )
-        }
-
         const { drizzle } = await getConnection(ctx.env)
 
         const [existingAsset] = await drizzle
             .select()
             .from(asset)
-            .where(eq(asset.id, parseInt(assetId)))
+            .where(eq(asset.id, assetId))
             .limit(1)
 
         if (!existingAsset) {
@@ -94,7 +84,7 @@ export const UnlikeAssetByIdRoute = (handler: AppHandler) => {
             .from(assetLikes)
             .where(
                 and(
-                    eq(assetLikes.assetId, parseInt(assetId)),
+                    eq(assetLikes.assetId, assetId),
                     eq(assetLikes.likedById, user.id)
                 )
             )
@@ -114,7 +104,7 @@ export const UnlikeAssetByIdRoute = (handler: AppHandler) => {
             .delete(assetLikes)
             .where(
                 and(
-                    eq(assetLikes.assetId, parseInt(assetId)),
+                    eq(assetLikes.assetId, assetId),
                     eq(assetLikes.likedById, user.id)
                 )
             )

@@ -22,7 +22,7 @@ export const assetComments = sqliteTable(
             .$defaultFn(() => {
                 return generateID()
             }),
-        assetId: integer("asset_id").references(() => asset.id, {
+        assetId: text("asset_id").references(() => asset.id, {
             onUpdate: "cascade",
             onDelete: "cascade",
         }),

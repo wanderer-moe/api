@@ -81,7 +81,7 @@ export const GetAssetByIdRoute = (handler: AppHandler) => {
         const { drizzle } = await getConnection(ctx.env)
 
         const foundAsset = await drizzle.query.asset.findFirst({
-            where: (asset, { eq }) => eq(asset.id, parseInt(assetId)),
+            where: (asset, { eq }) => eq(asset.id, assetId),
             with: {
                 assetTagAsset: {
                     with: {
@@ -123,7 +123,7 @@ export const GetAssetByIdRoute = (handler: AppHandler) => {
             .set({
                 viewCount: sql`${asset.viewCount} + 1`,
             })
-            .where(eq(asset.id, parseInt(assetId)))
+            .where(eq(asset.id, assetId))
 
         return ctx.json(
             {

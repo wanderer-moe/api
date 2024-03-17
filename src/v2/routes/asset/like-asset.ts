@@ -48,22 +48,12 @@ export const LikeAssetByIdRoute = (handler: AppHandler) => {
     handler.openapi(likeAssetByIdRoute, async (ctx) => {
         const assetId = ctx.req.valid("param").id
 
-        if (isNaN(parseInt(assetId))) {
-            return ctx.json(
-                {
-                    success: false,
-                    message: "Invalid asset ID",
-                },
-                400
-            )
-        }
-
         const { drizzle } = await getConnection(ctx.env)
 
         const [existingAsset] = await drizzle
             .select()
             .from(asset)
-            .where(eq(asset.id, parseInt(assetId)))
+            .where(eq(asset.id, assetId))
             .limit(1)
 
         if (!existingAsset) {
@@ -94,7 +84,7 @@ export const LikeAssetByIdRoute = (handler: AppHandler) => {
             .from(assetLikes)
             .where(
                 and(
-                    eq(assetLikes.assetId, parseInt(assetId)),
+                    eq(assetLikes.assetId, assetId),
                     eq(assetLikes.likedById, user.id)
                 )
             )
@@ -111,7 +101,7 @@ export const LikeAssetByIdRoute = (handler: AppHandler) => {
         }
 
         await drizzle.insert(assetLikes).values({
-            assetId: parseInt(assetId),
+            assetId: assetId,
             likedById: user.id,
         })
 

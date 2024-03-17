@@ -15,6 +15,7 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { assetLikes } from "./asset-likes"
 import { assetExternalFile } from "./asset-external-files"
 import { assetComments } from "./asset-comments"
+import { generateID } from "@/v2/lib/oslo"
 
 /*
 NOTE: Assets have a lot of relations, and can be quite complex in some cases.
@@ -31,7 +32,12 @@ export type AssetStatus = "pending" | "approved" | "rejected"
 export const asset = sqliteTable(
     tableNames.asset,
     {
-        id: integer("id").primaryKey(), // primary key auto increments on sqlite
+        id: text("id")
+            .primaryKey()
+            .notNull()
+            .$defaultFn(() => {
+                return generateID()
+            }),
         name: text("name").notNull(),
         extension: text("extension").notNull(),
         gameId: text("game")

@@ -87,17 +87,7 @@ const modifyAssetRoute = createRoute({
 export const ModifyAssetRoute = (handler: AppHandler) => {
     handler.openapi(modifyAssetRoute, async (ctx) => {
         const { name, tags, assetCategoryId, gameId } = ctx.req.valid("json")
-        const { id } = ctx.req.valid("param")
-
-        if (isNaN(parseInt(id))) {
-            return ctx.json(
-                {
-                    success: false,
-                    message: "Invalid asset ID",
-                },
-                400
-            )
-        }
+        const assetId = ctx.req.valid("param").id
 
         const authSessionManager = new AuthSessionManager(ctx)
 
@@ -120,7 +110,7 @@ export const ModifyAssetRoute = (handler: AppHandler) => {
                 uploadedById: asset.uploadedById,
             })
             .from(asset)
-            .where(eq(asset.id, parseInt(id)))
+            .where(eq(asset.id, assetId))
 
         if (assetUser.uploadedById !== user.id || user.role != "creator") {
             return ctx.json(
@@ -139,7 +129,7 @@ export const ModifyAssetRoute = (handler: AppHandler) => {
                 assetCategoryId,
                 gameId,
             })
-            .where(eq(asset.id, parseInt(id)))
+            .where(eq(asset.id, assetId))
             .returning()
 
         const newTags = SplitQueryByCommas(tags) ?? []
@@ -150,7 +140,7 @@ export const ModifyAssetRoute = (handler: AppHandler) => {
             })
             .from(assetTagAsset)
             .innerJoin(assetTag, eq(assetTag.id, assetTagAsset.assetTagId))
-            .where(eq(assetTagAsset.assetId, parseInt(id)))
+            .where(eq(assetTagAsset.assetId, assetId))
 
         const oldTagIds = oldTags.map((t) => t.assetTagId)
         const tagsToRemove = oldTagIds.filter((t) => !newTags.includes(t))
@@ -162,14 +152,14 @@ export const ModifyAssetRoute = (handler: AppHandler) => {
                     .delete(assetTagAsset)
                     .where(
                         and(
-                            eq(assetTagAsset.assetId, parseInt(id)),
+                            eq(assetTagAsset.assetId, assetId),
                             eq(assetTagAsset.assetTagId, tagId)
                         )
                     )
             ),
             ...tagsToAdd.map((tag) =>
                 drizzle.insert(assetTagAsset).values({
-                    assetId: parseInt(id),
+                    assetId: assetId,
                     assetTagId: tag,
                 })
             ),

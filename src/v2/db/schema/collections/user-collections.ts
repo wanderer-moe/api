@@ -79,7 +79,7 @@ export const userCollectionAsset = sqliteTable(
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
-        assetId: integer("asset_id")
+        assetId: text("asset_id")
             .notNull()
             .references(() => asset.id, {
                 onUpdate: "cascade",

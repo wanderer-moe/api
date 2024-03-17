@@ -14,7 +14,7 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 export const assetLikes = sqliteTable(
     tableNames.assetLikes,
     {
-        assetId: integer("asset_id")
+        assetId: text("asset_id")
             .notNull()
             .references(() => asset.id, {
                 onUpdate: "cascade",

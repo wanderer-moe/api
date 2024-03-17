@@ -53,7 +53,7 @@ export const DeleteAssetByIdRoute = (handler: AppHandler) => {
         const [existingAsset] = await drizzle
             .select({ id: asset.id })
             .from(asset)
-            .where(eq(asset.id, parseInt(assetId)))
+            .where(eq(asset.id, assetId))
             .limit(1)
 
         if (!existingAsset) {
@@ -66,7 +66,7 @@ export const DeleteAssetByIdRoute = (handler: AppHandler) => {
             )
         }
 
-        await drizzle.delete(asset).where(eq(asset.id, parseInt(assetId)))
+        await drizzle.delete(asset).where(eq(asset.id, assetId))
         // await ctx.env.FILES_BUCKET.delete(asset.url)
 
         return ctx.json(
