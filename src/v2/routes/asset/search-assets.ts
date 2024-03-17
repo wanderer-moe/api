@@ -13,13 +13,28 @@ import { type AppHandler } from "../handler"
 export const assetSearchAllFilterResponseSchema = z.object({
     success: z.literal(true),
     assets: z.array(
-        selectAssetSchema.extend({
-            assetTagAsset: z.array(
-                selectAssetTagAssetSchema.extend({
-                    assetTag: selectAssetTagSchema,
-                })
-            ),
-        })
+        selectAssetSchema
+            .pick({
+                id: true,
+                name: true,
+                extension: true,
+                url: true,
+                viewCount: true,
+                downloadCount: true,
+                fileSize: true,
+                width: true,
+                height: true,
+            })
+            .extend({
+                assetTagAsset: z.array(
+                    selectAssetTagAssetSchema.pick({}).extend({
+                        assetTag: selectAssetTagSchema.pick({
+                            id: true,
+                            formattedName: true,
+                        }),
+                    })
+                ),
+            })
     ),
 })
 
@@ -142,10 +157,30 @@ export const AssetSearchAllFilterRoute = (handler: AppHandler) => {
                 ),
             limit: 100,
             offset: offset ? parseInt(offset) : 0,
+            columns: {
+                id: true,
+                name: true,
+                extension: true,
+                url: true,
+                viewCount: true,
+                downloadCount: true,
+                fileSize: true,
+                width: true,
+                height: true,
+            },
             with: {
                 assetTagAsset: {
+                    columns: {
+                        assetTagId: false,
+                        assetId: false,
+                    },
                     with: {
-                        assetTag: true,
+                        assetTag: {
+                            columns: {
+                                id: true,
+                                formattedName: true,
+                            },
+                        },
                     },
                 },
             },
