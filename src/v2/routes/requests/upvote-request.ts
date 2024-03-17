@@ -13,7 +13,7 @@ export const upvoteRequestByIdSchema = z.object({
             name: "id",
             in: "path",
             description: "The ID of the request to upvote.",
-            example: "1",
+            example: "request_id",
             required: true,
         },
     }),

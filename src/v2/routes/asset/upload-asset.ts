@@ -50,7 +50,8 @@ const uploadAssetSchema = z.object({
         .min(1)
         .max(1)
         .openapi({
-            description: "If the asset contains suggestive content 0 or 1.",
+            description:
+                "If the asset contains suggestive content. 1 = Yes, 0 = No.",
             example: "1",
         })
         .transform((value) => parseInt(value))

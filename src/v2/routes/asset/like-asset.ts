@@ -11,7 +11,7 @@ const likeAssetByIdSchema = z.object({
     id: z.string().openapi({
         param: {
             description: "The id of the asset to like.",
-            example: "1",
+            example: "asset_id",
             in: "path",
             name: "id",
             required: true,

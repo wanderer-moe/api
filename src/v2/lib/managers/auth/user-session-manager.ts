@@ -67,4 +67,16 @@ export class AuthSessionManager {
 
         return true
     }
+
+    public async invalidateSessionById(id: string) {
+        const { user } = await this.validateAndGetSession()
+
+        if (!user) {
+            return null
+        }
+
+        await this.lucia.invalidateSession(id)
+
+        return true
+    }
 }

@@ -12,7 +12,7 @@ const modifyAssetPathSchema = z.object({
     id: z.string().openapi({
         param: {
             description: "The id of the asset to modify.",
-            example: "1",
+            example: "asset_id",
             in: "path",
             required: true,
         },
