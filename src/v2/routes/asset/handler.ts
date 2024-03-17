@@ -8,6 +8,7 @@ import { GetAssetLikesRoute } from "./get-users-asset-likes"
 import { ModifyAssetRoute } from "./modify-asset"
 import { UploadAssetRoute } from "./upload-asset"
 import { DeleteAssetByIdRoute } from "./delete-asset"
+import { DownloadAssetRoute } from "./download-asset"
 
 import { ViewAssetCommentsRoute } from "./get-asset-comments"
 
@@ -17,6 +18,7 @@ AssetSearchAllFilterRoute(handler)
 UploadAssetRoute(handler)
 
 GetAssetByIdRoute(handler)
+DownloadAssetRoute(handler)
 ModifyAssetRoute(handler)
 DeleteAssetByIdRoute(handler)
 

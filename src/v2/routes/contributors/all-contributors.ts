@@ -13,6 +13,8 @@ const contributorListSchema = z.object({
             id: true,
             username: true,
             avatarUrl: true,
+            displayName: true,
+            usernameColour: true,
             plan: true,
             role: true,
         })
@@ -48,6 +50,8 @@ export const AllContributorsRoute = (handler: AppHandler) => {
                 id: authUser.id,
                 username: authUser.username,
                 avatarUrl: authUser.avatarUrl,
+                displayName: authUser.displayName,
+                usernameColour: authUser.usernameColour,
                 plan: authUser.plan,
                 role: authUser.role,
             })
