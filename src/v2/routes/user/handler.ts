@@ -9,6 +9,9 @@ import { ViewUsersFollowingRoute } from "./user-following"
 import { FollowUserRoute } from "./follow-user"
 import { UnfollowUserRoute } from "./unfollow-user"
 
+import { BlockUserRoute } from "./block-user"
+import { UnblockUserRoute } from "./unblock-user"
+
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
 GetUserByIdRoute(handler)
@@ -19,5 +22,8 @@ ViewUsersFollowingRoute(handler)
 
 FollowUserRoute(handler)
 UnfollowUserRoute(handler)
+
+BlockUserRoute(handler)
+UnblockUserRoute(handler)
 
 export default handler

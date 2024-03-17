@@ -7,12 +7,18 @@ import {
     index,
 } from "drizzle-orm/sqlite-core"
 import { authUser } from "./user"
+import { generateID } from "@/v2/lib/oslo"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 
 export const userBlocked = sqliteTable(
     tableNames.userBlocked,
     {
-        id: text("id").primaryKey().notNull(),
+        id: text("id")
+            .primaryKey()
+            .notNull()
+            .$defaultFn(() => {
+                return generateID()
+            }),
         blockedById: text("blocked_by_id")
             .references(() => authUser.id, {
                 onUpdate: "cascade",
