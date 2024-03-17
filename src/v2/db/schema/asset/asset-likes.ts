@@ -5,7 +5,6 @@ import {
     text,
     // uniqueIndex,
     index,
-    integer,
 } from "drizzle-orm/sqlite-core"
 import { authUser } from "../user/user"
 import { asset } from "./asset"

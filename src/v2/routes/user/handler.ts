@@ -1,21 +1,23 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
 
-import GetUserRoute from "./get-user"
-import SearchUserRoute from "./search-users"
+import { GetUserByIdRoute } from "./get-user"
+import { SearchUsersByUsernameRoute } from "./search-users"
 
-import FollowUserRoute from "./follow-user"
-import UnfollowUserRoute from "./unfollow-user"
+import { ViewUsersFollowersRoute } from "./user-followers"
+import { ViewUsersFollowingRoute } from "./user-following"
 
-import UserFollowingRoute from "./user-following"
-import UserFollowersRoute from "./user-followers"
+import { FollowUserRoute } from "./follow-user"
+import { UnfollowUserRoute } from "./unfollow-user"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
-handler.route("/get", GetUserRoute)
-handler.route("/search", SearchUserRoute)
-handler.route("/follow", FollowUserRoute)
-handler.route("/unfollow", UnfollowUserRoute)
-handler.route("/following", UserFollowingRoute)
-handler.route("/followers", UserFollowersRoute)
+GetUserByIdRoute(handler)
+SearchUsersByUsernameRoute(handler)
+
+ViewUsersFollowersRoute(handler)
+ViewUsersFollowingRoute(handler)
+
+FollowUserRoute(handler)
+UnfollowUserRoute(handler)
 
 export default handler

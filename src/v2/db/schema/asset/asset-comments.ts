@@ -5,7 +5,6 @@ import {
     text,
     // uniqueIndex,
     index,
-    integer,
     foreignKey,
 } from "drizzle-orm/sqlite-core"
 import { authUser } from "../user/user"

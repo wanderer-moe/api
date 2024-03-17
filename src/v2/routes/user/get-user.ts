@@ -1,4 +1,4 @@
-import { OpenAPIHono } from "@hono/zod-openapi"
+import { AppHandler } from "../handler"
 import { getConnection } from "@/v2/db/turso"
 import { eq } from "drizzle-orm"
 import { authUser } from "@/v2/db/schema"
@@ -56,37 +56,35 @@ const getUserByIdRoute = createRoute({
     },
 })
 
-const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
+export const GetUserByIdRoute = (handler: AppHandler) => {
+    handler.openapi(getUserByIdRoute, async (ctx) => {
+        const userId = ctx.req.valid("param").id
 
-handler.openapi(getUserByIdRoute, async (ctx) => {
-    const userId = ctx.req.valid("param").id
+        const { drizzle } = await getConnection(ctx.env)
 
-    const { drizzle } = await getConnection(ctx.env)
+        const [user] = await drizzle
+            .select({
+                id: authUser.id,
+                avatarUrl: authUser.avatarUrl,
+                displayName: authUser.displayName,
+                username: authUser.username,
+                usernameColour: authUser.usernameColour,
+                pronouns: authUser.pronouns,
+                verified: authUser.verified,
+                bio: authUser.bio,
+                dateJoined: authUser.dateJoined,
+                plan: authUser.plan,
+                role: authUser.role,
+            })
+            .from(authUser)
+            .where(eq(authUser.id, userId))
 
-    const [user] = await drizzle
-        .select({
-            id: authUser.id,
-            avatarUrl: authUser.avatarUrl,
-            displayName: authUser.displayName,
-            username: authUser.username,
-            usernameColour: authUser.usernameColour,
-            pronouns: authUser.pronouns,
-            verified: authUser.verified,
-            bio: authUser.bio,
-            dateJoined: authUser.dateJoined,
-            plan: authUser.plan,
-            role: authUser.role,
-        })
-        .from(authUser)
-        .where(eq(authUser.id, userId))
-
-    return ctx.json(
-        {
-            success: true,
-            user,
-        },
-        200
-    )
-})
-
-export default handler
+        return ctx.json(
+            {
+                success: true,
+                user,
+            },
+            200
+        )
+    })
+}

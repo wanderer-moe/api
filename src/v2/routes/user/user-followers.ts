@@ -1,4 +1,4 @@
-import { OpenAPIHono } from "@hono/zod-openapi"
+import { AppHandler } from "../handler"
 import { getConnection } from "@/v2/db/turso"
 import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
@@ -47,7 +47,7 @@ export const viewUserFollowsbyIdResponseSchema = z.object({
 })
 
 const viewUserFollowsByIdRoute = createRoute({
-    path: "/{id}",
+    path: "/{id}/followers",
     method: "get",
     description: "View a user's followers from their ID.",
     tags: ["User"],
@@ -69,39 +69,37 @@ const viewUserFollowsByIdRoute = createRoute({
     },
 })
 
-const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
+export const ViewUsersFollowersRoute = (handler: AppHandler) => {
+    handler.openapi(viewUserFollowsByIdRoute, async (ctx) => {
+        const { id } = ctx.req.valid("param")
+        const { offset } = ctx.req.valid("query")
 
-handler.openapi(viewUserFollowsByIdRoute, async (ctx) => {
-    const { id } = ctx.req.valid("param")
-    const { offset } = ctx.req.valid("query")
+        const { drizzle } = await getConnection(ctx.env)
 
-    const { drizzle } = await getConnection(ctx.env)
-
-    const followers = await drizzle.query.userFollowing.findMany({
-        where: (userFollowing, { eq }) => eq(userFollowing.followingId, id),
-        with: {
-            follower: {
-                columns: {
-                    id: true,
-                    avatarUrl: true,
-                    username: true,
-                    plan: true,
-                    verified: true,
-                    displayName: true,
+        const followers = await drizzle.query.userFollowing.findMany({
+            where: (userFollowing, { eq }) => eq(userFollowing.followingId, id),
+            with: {
+                follower: {
+                    columns: {
+                        id: true,
+                        avatarUrl: true,
+                        username: true,
+                        plan: true,
+                        verified: true,
+                        displayName: true,
+                    },
                 },
             },
-        },
-        limit: 100,
-        offset: offset ? parseInt(offset) : 0,
+            limit: 100,
+            offset: offset ? parseInt(offset) : 0,
+        })
+
+        return ctx.json(
+            {
+                success: true,
+                followers,
+            },
+            200
+        )
     })
-
-    return ctx.json(
-        {
-            success: true,
-            followers,
-        },
-        200
-    )
-})
-
-export default handler
+}
