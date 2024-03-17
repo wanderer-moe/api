@@ -25,6 +25,7 @@ const followUserByIdResponseSchema = z.object({
 export const followUserByIdRoute = createRoute({
     path: "/{id}/follow",
     method: "post",
+    summary: "Follow a user",
     description: "Follow a user from their ID.",
     tags: ["User"],
     request: {

@@ -31,6 +31,7 @@ const createAccountResponseSchema = z.object({
 const userCreateAccountRoute = createRoute({
     path: "/create",
     method: "post",
+    summary: "Create a new account",
     description: "Create a new user account with an email and password.",
     tags: ["Auth"],
     request: {

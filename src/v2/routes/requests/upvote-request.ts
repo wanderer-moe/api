@@ -26,6 +26,7 @@ export const upvoteRequestByIdResponseSchema = z.object({
 const upvoteRequestByIdRoute = createRoute({
     path: "/{id}/upvote",
     method: "post",
+    summary: "Upvote a request",
     description: "Upvote a request by its ID. Supporter required.",
     tags: ["Requests"],
     request: {

@@ -18,6 +18,7 @@ const sessionListSchema = z.object({
 const authAllCurrentSessions = createRoute({
     path: "/sessions",
     method: "get",
+    summary: "Get all current sessions",
     description: "Get all current sessions.",
     tags: ["Auth"],
     responses: {

@@ -40,6 +40,7 @@ const searchUsersByUsernameSchema = z.object({
 const searchUsersByUsernameRoute = createRoute({
     path: "/search/{username}",
     method: "get",
+    summary: "Search for users",
     description: "Search for users by their username.",
     tags: ["User"],
     request: {

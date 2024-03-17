@@ -36,6 +36,7 @@ const createRequestFormEntryResponse = z.object({
 const createRequestFormEntryRoute = createRoute({
     path: "/create",
     method: "post",
+    summary: "Create request entry",
     description:
         "Create a new entry into the request form. Supporter required.",
     tags: ["Requests"],

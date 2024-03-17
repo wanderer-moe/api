@@ -25,6 +25,7 @@ const deleteAssetByIdResponseSchema = z.object({
 const deleteAssetByIdRoute = createRoute({
     path: "/{id}/delete",
     method: "delete",
+    summary: "Delete an asset",
     description:
         "Delete an asset from their ID. Must be the owner of the asset or an admin.",
     tags: ["Asset"],

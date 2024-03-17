@@ -38,6 +38,7 @@ export const createGameResponse = z.object({
 const createGameRoute = createRoute({
     path: "/create",
     method: "post",
+    summary: "Create a game",
     description: "Create a new game.",
     tags: ["Game"],
     request: {

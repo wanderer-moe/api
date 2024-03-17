@@ -97,6 +97,7 @@ export type assetSearchAllFilter = z.infer<typeof assetSearchAllFilterSchema>
 const assetSearchAllFilterRoute = createRoute({
     path: "/search",
     method: "get",
+    summary: "Search for assets",
     description: "Filter all assets",
     tags: ["Asset"],
     request: {

@@ -26,6 +26,7 @@ const likeAssetByIdResponseSchema = z.object({
 const likeAssetByIdRoute = createRoute({
     path: "/{id}/like",
     method: "post",
+    summary: "Like an asset",
     description: "Like an asset from their ID.",
     tags: ["Asset"],
     request: {

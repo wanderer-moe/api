@@ -27,6 +27,7 @@ const getGameByIDResponse = z.object({
 const getGameByIdRoute = createRoute({
     path: "/{id}",
     method: "get",
+    summary: "Get a game",
     description: "Get a game by their ID.",
     tags: ["Game"],
     request: {

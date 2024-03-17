@@ -26,6 +26,7 @@ export const removeRequestUpvoteByIdResponseSchema = z.object({
 const removeRequestUpvoteByIdRoute = createRoute({
     path: "/{id}/downvote",
     method: "post",
+    summary: "Remove upvote on a request",
     description: "Remove a upvote on a request by its ID. Supporter required.",
     tags: ["Requests"],
     request: {

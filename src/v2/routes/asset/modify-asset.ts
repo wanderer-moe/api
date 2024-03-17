@@ -59,6 +59,7 @@ const modifyAssetResponseSchema = z.object({
 const modifyAssetRoute = createRoute({
     path: "/{id}/modify",
     method: "patch",
+    summary: "Modify an asset",
     description: "Modify an existing asset.",
     tags: ["Asset"],
     request: {

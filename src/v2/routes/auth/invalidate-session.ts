@@ -24,6 +24,7 @@ const invalidateSessionResponseSchema = z.object({
 const invalidateSessionRoute = createRoute({
     path: "/invalidate/{id}",
     method: "get",
+    summary: "Invalidate a session",
     description: "Invalidate a session by its ID.",
     tags: ["Auth"],
     request: {

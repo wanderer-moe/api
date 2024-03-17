@@ -52,6 +52,7 @@ const getAssetCommentsResponseSchema = z.object({
 const getAssetCommentsRoute = createRoute({
     path: "/{id}/comments",
     method: "get",
+    summary: "Get an asset's comments",
     description: "Get an asset's comments.",
     tags: ["Asset"],
     request: {

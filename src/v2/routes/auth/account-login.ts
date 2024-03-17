@@ -27,6 +27,7 @@ const loginResponseSchema = z.object({
 export const userLoginRoute = createRoute({
     path: "/login",
     method: "post",
+    summary: "Login",
     description: "Login to a user with an email and password.",
     tags: ["Auth"],
     request: {

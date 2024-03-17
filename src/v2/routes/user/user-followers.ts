@@ -49,6 +49,7 @@ export const viewUserFollowsbyIdResponseSchema = z.object({
 const viewUserFollowsByIdRoute = createRoute({
     path: "/{id}/followers",
     method: "get",
+    summary: "View a user's followers",
     description: "View a user's followers from their ID.",
     tags: ["User"],
     request: {

@@ -73,6 +73,7 @@ const getAssetByIdResponseSchema = z.object({
 const getAssetByIdRoute = createRoute({
     path: "/{id}",
     method: "get",
+    summary: "Get an asset",
     description: "Get an asset by their ID.",
     tags: ["Asset"],
     request: {

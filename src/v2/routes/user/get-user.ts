@@ -38,6 +38,7 @@ const getUserByIdResponseSchema = z.object({
 const getUserByIdRoute = createRoute({
     path: "/{id}",
     method: "get",
+    summary: "Get a user",
     description: "Get a user by their ID.",
     tags: ["User"],
     request: {

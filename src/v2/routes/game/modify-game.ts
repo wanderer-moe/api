@@ -50,6 +50,7 @@ const modifyGameResponseSchema = z.object({
 export const modifyGameRoute = createRoute({
     path: "/{id}/modify",
     method: "patch",
+    summary: "Modify a game",
     description: "Modify an existing game.",
     tags: ["Game"],
     request: {

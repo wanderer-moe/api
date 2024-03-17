@@ -34,6 +34,7 @@ const viewAllRequestsResponseSchema = z.object({
 const getAllRequestsRoute = createRoute({
     path: "/all",
     method: "get",
+    summary: "Get all requests",
     description:
         "Get all requests & associated upvotes count. Supporter required.",
     tags: ["Requests"],

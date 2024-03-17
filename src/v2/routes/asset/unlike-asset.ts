@@ -26,6 +26,7 @@ const unlikeAssetByIdResponseSchema = z.object({
 const unlikeAssetByIdRoute = createRoute({
     path: "/{id}/unlike",
     method: "post",
+    summary: "Unlike an asset",
     description: "Unlike an asset from their ID.",
     tags: ["Asset"],
     request: {

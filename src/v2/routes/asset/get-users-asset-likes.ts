@@ -29,7 +29,8 @@ const allAssetLikesSchema = z.object({
 const allAssetLikesRoute = createRoute({
     path: "/likes",
     method: "get",
-    description: "All your liked assets.",
+    summary: "Your liked assets",
+    description: "List of all your liked assets.",
     tags: ["Asset"],
     responses: {
         200: {

@@ -26,6 +26,7 @@ export const deleteGameResponse = z.object({
 const deleteGameRoute = createRoute({
     path: "/{id}/delete",
     method: "delete",
+    summary: "Delete a game",
     description: "Delete a game & all its related assets.",
     tags: ["Game"],
     request: {

@@ -65,6 +65,7 @@ const uploadAssetResponseSchema = z.object({
 const uploadAssetRoute = createRoute({
     path: "/upload",
     method: "post",
+    summary: "Upload an asset",
     description: "Upload a new asset.",
     tags: ["Asset"],
     request: {

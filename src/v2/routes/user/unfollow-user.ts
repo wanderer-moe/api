@@ -25,6 +25,7 @@ const unfollowUserByIdResponseSchema = z.object({
 const unFollowUserByIdRoute = createRoute({
     path: "/{id}/unfollow",
     method: "post",
+    summary: "Unfollow a user",
     description: "Follow a user from their ID.",
     tags: ["User"],
     request: {

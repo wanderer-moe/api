@@ -26,6 +26,7 @@ export const deleteRequestByIdResponseSchema = z.object({
 const deleteRequestByIdRoute = createRoute({
     path: "/{id}/delete",
     method: "delete",
+    summary: "Delete a request",
     description:
         "Delete a request by its ID. This will also delete all associated upvotes.",
     tags: ["Requests"],

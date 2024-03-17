@@ -24,6 +24,7 @@ const contributorListSchema = z.object({
 const contributorsRoute = createRoute({
     path: "/all",
     method: "get",
+    summary: "Get all contributors",
     description: "Get a list of all contributors.",
     tags: ["Contributors"],
     responses: {

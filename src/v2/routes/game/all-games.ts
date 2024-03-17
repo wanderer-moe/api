@@ -14,6 +14,7 @@ export const getAllGamesResponse = z.object({
 const getAllGamesRoute = createRoute({
     path: "/all",
     method: "get",
+    summary: "Get all games",
     description: "Get all games.",
     tags: ["Game"],
     responses: {

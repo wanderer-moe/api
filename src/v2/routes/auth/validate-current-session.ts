@@ -13,6 +13,7 @@ const authValidationSchema = z.object({
 const authValidationRoute = createRoute({
     path: "/validate",
     method: "get",
+    summary: "Validate current session",
     description: "Validate current session.",
     tags: ["Auth"],
     responses: {

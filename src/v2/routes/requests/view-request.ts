@@ -27,6 +27,7 @@ export const viewRequestByIdResponseSchema = z.object({
 const viewRequestByIdRoute = createRoute({
     path: "/{id}",
     method: "get",
+    summary: "View a request",
     description: "View a request by its ID. Supporter required.",
     tags: ["Requests"],
     request: {

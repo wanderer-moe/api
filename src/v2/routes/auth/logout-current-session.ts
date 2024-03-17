@@ -12,6 +12,7 @@ const logoutResponseSchema = z.object({
 const authLogoutRoute = createRoute({
     path: "/logout",
     method: "get",
+    summary: "Logout",
     description: "Logout current session.",
     tags: ["Auth"],
     responses: {

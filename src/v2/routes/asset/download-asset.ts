@@ -25,6 +25,7 @@ const downloadAssetByIdResponseSchema = z.object({
 const downloadAssetByIdRoute = createRoute({
     path: "/{id}/download",
     method: "get",
+    summary: "Download an asset",
     description: "Download an asset by their ID.",
     tags: ["Asset"],
     request: {
