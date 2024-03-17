@@ -23,7 +23,7 @@ NOTE: Assets have a lot of relations, and can be quite complex in some cases.
 - AssetCategory: Linked to the category the asset is in, e.g "charcter sheets"
 - Game: Linked to the game the asset is for, e.g "genshin-impact"
 
-Then, they are also used as relations when adding to collections or favorites.
+Then, they are also used as relations when adding to collections or favourites.
 */
 
 export type AssetStatus = "pending" | "approved" | "rejected"

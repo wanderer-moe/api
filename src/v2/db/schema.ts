@@ -16,7 +16,7 @@ export * from "./schema/user/user"
 export * from "./schema/user/user-attributes"
 export * from "./schema/collections/user-collections"
 export * from "./schema/user/user-connections"
-export * from "./schema/user/user-favorites"
+export * from "./schema/user/user-favourites"
 export * from "./schema/user/user-following"
 export * from "./schema/user/user-blocked"
 

@@ -11,8 +11,8 @@ import {
     gameAssetCategory,
     userCollection,
     userCollectionAsset,
-    userFavorite,
-    userFavoriteAsset,
+    userFavourite,
+    userFavouriteAsset,
     userFollowing,
     requestFormUpvotes,
     requestForm,
@@ -519,10 +519,10 @@ async function main() {
         `[SEED] [userCollectionAsset] inserted ${newUserCollectionAssets.length} rows\n`
     )
 
-    // only one user favorite per user
-    console.log("[SEED] [userFavorite] Seeding user favorites...")
-    const newUserFavorites = await db
-        .insert(userFavorite)
+    // only one user favourite per user
+    console.log("[SEED] [userFavourite] Seeding user favourites...")
+    const newUserFavourites = await db
+        .insert(userFavourite)
         .values([
             {
                 userId: newUsers[0].id,
@@ -534,31 +534,31 @@ async function main() {
         ])
         .returning()
     console.log(
-        `[SEED] [userFavorite] inserted ${newUserFavorites.length} rows\n`
+        `[SEED] [userFavourite] inserted ${newUserFavourites.length} rows\n`
     )
 
     console.log(
-        "[SEED] [userFavoriteAsset] Linking user favorites to assets..."
+        "[SEED] [userFavouriteAsset] Linking user favourites to assets..."
     )
-    const newUserFavoriteAssets = await db
-        .insert(userFavoriteAsset)
+    const newUserFavouriteAssets = await db
+        .insert(userFavouriteAsset)
         .values([
             {
-                userFavoriteId: newUserFavorites[0].id,
+                userFavouriteId: newUserFavourites[0].id,
                 assetId: newAssets[0].id,
             },
             {
-                userFavoriteId: newUserFavorites[0].id,
+                userFavouriteId: newUserFavourites[0].id,
                 assetId: newAssets[1].id,
             },
             {
-                userFavoriteId: newUserFavorites[1].id,
+                userFavouriteId: newUserFavourites[1].id,
                 assetId: newAssets[2].id,
             },
         ])
         .returning()
     console.log(
-        `[SEED] [userFavoriteAsset] inserted ${newUserFavoriteAssets.length} rows\n`
+        `[SEED] [userFavouriteAsset] inserted ${newUserFavouriteAssets.length} rows\n`
     )
 
     console.log("[SEED] Seeded database successfully")

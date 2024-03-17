@@ -1,98 +1,98 @@
-import { userFavorite, userFavoriteAsset } from "@/v2/db/schema"
+import { userFavourite, userFavouriteAsset } from "@/v2/db/schema"
 import { and, eq } from "drizzle-orm"
 import { DrizzleInstance } from "@/v2/db/turso"
 import type {
-    NewUserFavorite,
-    NewUserFavoriteAsset,
-    UserFavorite,
-    UserFavoriteAsset,
+    NewUserFavourite,
+    NewUserFavouriteAsset,
+    UserFavourite,
+    UserFavouriteAsset,
 } from "@/v2/db/schema"
 
 /**
- * Manages operations related to user favorites.
+ * Manages operations related to user favourites.
  */
 export class FavoriteManager {
     constructor(private drizzle: DrizzleInstance) {}
 
     /**
-     * Get a user's favorite assets.
-     * @param userId - The ID of the user to retrieve favorites for.
+     * Get a user's favourite assets.
+     * @param userId - The ID of the user to retrieve favourites for.
      * @param currentUserId - The optional current user's ID.
-     * @returns A user's favorite assets.
+     * @returns A user's favourite assets.
      */
-    public async getUserFavorite(
+    public async getUserFavourite(
         userId: string,
         currentUserId?: string
-    ): Promise<UserFavorite | null> {
+    ): Promise<UserFavourite | null> {
         try {
-            const favouriteExists = this.checkIfUserFavoriteExists(userId)
+            const favouriteExists = this.checkIfUserFavouriteExists(userId)
 
             if (!favouriteExists) {
                 await this.createInitialFavorite(userId)
             }
 
-            const [favorite] = await this.drizzle
+            const [favourite] = await this.drizzle
                 .select()
-                .from(userFavorite)
+                .from(userFavourite)
                 .where(
                     and(
                         currentUserId
-                            ? eq(userFavorite.userId, currentUserId)
-                            : eq(userFavorite.isPublic, true),
-                        eq(userFavorite.userId, userId)
+                            ? eq(userFavourite.userId, currentUserId)
+                            : eq(userFavourite.isPublic, true),
+                        eq(userFavourite.userId, userId)
                     )
                 )
 
-            return favorite ?? null
+            return favourite ?? null
         } catch (e) {
             console.error(
-                `Error in getUserFavorite for userId ${userId} and currentUserId ${currentUserId}`,
+                `Error in getUserFavourite for userId ${userId} and currentUserId ${currentUserId}`,
                 e
             )
             throw new Error(
-                `Error in getUserFavorite for userId ${userId} and currentUserId ${currentUserId}`
+                `Error in getUserFavourite for userId ${userId} and currentUserId ${currentUserId}`
             )
         }
     }
 
-    public async checkIfUserFavoriteExists(userId: string): Promise<boolean> {
+    public async checkIfUserFavouriteExists(userId: string): Promise<boolean> {
         try {
-            const [favorite] = await this.drizzle
+            const [favourite] = await this.drizzle
                 .select({
-                    id: userFavorite.id,
+                    id: userFavourite.id,
                 })
-                .from(userFavorite)
-                .where(and(eq(userFavorite.userId, userId)))
+                .from(userFavourite)
+                .where(and(eq(userFavourite.userId, userId)))
 
-            return favorite ? true : false
+            return favourite ? true : false
         } catch (e) {
             console.error(
-                `Error in checkIfUserFavoriteExists for userId ${userId}`,
+                `Error in checkIfUserFavouriteExists for userId ${userId}`,
                 e
             )
             throw new Error(
-                `Error in checkIfUserFavoriteExists for userId ${userId}`
+                `Error in checkIfUserFavouriteExists for userId ${userId}`
             )
         }
     }
 
     /**
-     * Create initial user favorite (1 per user!)
-     * @param userId - The ID of the user to create favorites for.
-     * @returns A user's favorite item.
+     * Create initial user favourite (1 per user!)
+     * @param userId - The ID of the user to create favourites for.
+     * @returns A user's favourite item.
      */
     public async createInitialFavorite(
         userId: string
-    ): Promise<NewUserFavorite> {
+    ): Promise<NewUserFavourite> {
         try {
-            const [favorite] = await this.drizzle
-                .insert(userFavorite)
+            const [favourite] = await this.drizzle
+                .insert(userFavourite)
                 .values({
                     userId: userId,
                 })
                 .returning()
 
-            return favorite
+            return favourite
         } catch (e) {
             console.error(
                 `Error in createInitialFavorite for userId ${userId}`,
@@ -104,77 +104,77 @@ export class FavoriteManager {
         }
     }
     /**
-     * Adds an asset to a user's favorites.
-     * @param assetId - The ID of the asset to add to favorites.
-     * @param userFavoriteId - User's unique favorite ID.
+     * Adds an asset to a user's favourites.
+     * @param assetId - The ID of the asset to add to favourites.
+     * @param userFavouriteId - User's unique favourite ID.
      */
     public async addAssetToFavorites(
         assetId: number,
         userId: string,
-        userFavoriteId: string
-    ): Promise<NewUserFavoriteAsset> {
+        userFavouriteId: string
+    ): Promise<NewUserFavouriteAsset> {
         try {
-            const favouriteExists = this.checkIfUserFavoriteExists(userId)
+            const favouriteExists = this.checkIfUserFavouriteExists(userId)
 
             if (!favouriteExists) {
                 await this.createInitialFavorite(userId)
             }
 
-            const [favorite] = await this.drizzle
-                .insert(userFavoriteAsset)
+            const [favourite] = await this.drizzle
+                .insert(userFavouriteAsset)
                 .values({
-                    userFavoriteId: userFavoriteId,
+                    userFavouriteId: userFavouriteId,
                     assetId: assetId,
                 })
                 .returning()
 
-            return favorite
+            return favourite
         } catch (e) {
             console.error(
-                `Error in addAssetToFavorites for userFavoriteId ${userFavoriteId} and assetId ${assetId}`,
+                `Error in addAssetToFavorites for userFavouriteId ${userFavouriteId} and assetId ${assetId}`,
                 e
             )
             throw new Error(
-                `Error in addAssetToFavorites for userFavoriteId ${userFavoriteId} and assetId ${assetId}`
+                `Error in addAssetToFavorites for userFavouriteId ${userFavouriteId} and assetId ${assetId}`
             )
         }
     }
 
     /**
-     * Removes an asset from a user's favorites.
-     * @param assetId - The ID of the asset to remove from favorites.
-     * @param userFavoriteId - User's unique favorite ID.
+     * Removes an asset from a user's favourites.
+     * @param assetId - The ID of the asset to remove from favourites.
+     * @param userFavouriteId - User's unique favourite ID.
      */
     public async removeAssetFromFavorites(
         assetId: number,
         userId: string,
-        userFavoriteId: string
-    ): Promise<UserFavoriteAsset | null> {
+        userFavouriteId: string
+    ): Promise<UserFavouriteAsset | null> {
         try {
-            const favouriteExists = this.checkIfUserFavoriteExists(userId)
+            const favouriteExists = this.checkIfUserFavouriteExists(userId)
 
             if (!favouriteExists) {
                 await this.createInitialFavorite(userId)
             }
 
-            const [favorite] = await this.drizzle
-                .delete(userFavoriteAsset)
+            const [favourite] = await this.drizzle
+                .delete(userFavouriteAsset)
                 .where(
                     and(
-                        eq(userFavoriteAsset.userFavoriteId, userFavoriteId),
-                        eq(userFavoriteAsset.assetId, assetId)
+                        eq(userFavouriteAsset.userFavouriteId, userFavouriteId),
+                        eq(userFavouriteAsset.assetId, assetId)
                     )
                 )
                 .returning()
 
-            return favorite ?? null
+            return favourite ?? null
         } catch (e) {
             console.error(
-                `Error in removeAssetFromFavorites for userFavoriteId ${userFavoriteId} and assetId ${assetId}`,
+                `Error in removeAssetFromFavorites for userFavouriteId ${userFavouriteId} and assetId ${assetId}`,
                 e
             )
             throw new Error(
-                `Error in removeAssetFromFavorites for userFavoriteId ${userFavoriteId} and assetId ${assetId}`
+                `Error in removeAssetFromFavorites for userFavouriteId ${userFavouriteId} and assetId ${assetId}`
             )
         }
     }
