@@ -1,6 +1,6 @@
 import { AppHandler } from "../handler"
 import { getConnection } from "@/v2/db/turso"
-import { asset } from "@/v2/db/schema"
+import { asset, assetLikes } from "@/v2/db/schema"
 import { eq, sql } from "drizzle-orm"
 import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
@@ -28,29 +28,46 @@ const getAssetByIdSchema = z.object({
 const getAssetByIdResponseSchema = z.object({
     success: z.literal(true),
     // mmm nested schemas
-    asset: selectAssetSchema.extend({
-        assetTagAsset: z.array(
-            selectAssetTagAssetSchema.extend({
-                assetTag: selectAssetTagSchema,
-            })
-        ),
-    }),
-    authUser: selectUserSchema.pick({
-        id: true,
-        avatarUrl: true,
-        displayName: true,
-        username: true,
-        usernameColour: true,
-        pronouns: true,
-        verified: true,
-        bio: true,
-        dateJoined: true,
-        plan: true,
-        role: true,
-    }),
-    game: selectGameSchema,
-    assetCategory: selectAssetCategorySchema,
-    // similarAssets: selectAssetSchema.array(),
+    asset: selectAssetSchema
+        .pick({
+            id: true,
+            name: true,
+            extension: true,
+            url: true,
+            viewCount: true,
+            downloadCount: true,
+            fileSize: true,
+            width: true,
+            height: true,
+        })
+        .extend({
+            assetTagAsset: z.array(
+                selectAssetTagAssetSchema.pick({}).extend({
+                    assetTag: selectAssetTagSchema.pick({
+                        id: true,
+                        formattedName: true,
+                    }),
+                })
+            ),
+            authUser: selectUserSchema.pick({
+                id: true,
+                avatarUrl: true,
+                displayName: true,
+                username: true,
+                usernameColour: true,
+                plan: true,
+                role: true,
+            }),
+            game: selectGameSchema.pick({
+                id: true,
+                formattedName: true,
+            }),
+            assetCategory: selectAssetCategorySchema.pick({
+                id: true,
+                formattedName: true,
+            }),
+        }),
+    assetLikes: z.number(),
 })
 
 const getAssetByIdRoute = createRoute({
@@ -81,11 +98,31 @@ export const GetAssetByIdRoute = (handler: AppHandler) => {
         const { drizzle } = await getConnection(ctx.env)
 
         const foundAsset = await drizzle.query.asset.findFirst({
+            columns: {
+                id: true,
+                name: true,
+                extension: true,
+                url: true,
+                viewCount: true,
+                downloadCount: true,
+                fileSize: true,
+                width: true,
+                height: true,
+            },
             where: (asset, { eq }) => eq(asset.id, assetId),
             with: {
                 assetTagAsset: {
+                    columns: {
+                        assetTagId: false,
+                        assetId: false,
+                    },
                     with: {
-                        assetTag: true,
+                        assetTag: {
+                            columns: {
+                                id: true,
+                                formattedName: true,
+                            },
+                        },
                     },
                 },
                 authUser: {
@@ -95,18 +132,32 @@ export const GetAssetByIdRoute = (handler: AppHandler) => {
                         displayName: true,
                         username: true,
                         usernameColour: true,
-                        pronouns: true,
-                        verified: true,
-                        bio: true,
-                        dateJoined: true,
                         plan: true,
                         role: true,
                     },
                 },
-                game: true,
-                assetCategory: true,
+                game: {
+                    columns: {
+                        id: true,
+                        formattedName: true,
+                    },
+                },
+                assetCategory: {
+                    columns: {
+                        id: true,
+                        formattedName: true,
+                    },
+                },
             },
         })
+
+        const [totalAssetLikes] = await drizzle
+            .select({
+                likeCount: sql<number>`COUNT(${assetLikes.assetId})`,
+            })
+            .from(asset)
+            .where(eq(asset.id, assetId))
+            .limit(1)
 
         if (!foundAsset) {
             return ctx.json(
@@ -129,6 +180,7 @@ export const GetAssetByIdRoute = (handler: AppHandler) => {
             {
                 success: true,
                 asset: foundAsset,
+                assetLikes: totalAssetLikes.likeCount,
             },
             200
         )
