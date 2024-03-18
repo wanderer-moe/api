@@ -44,6 +44,7 @@ const getAssetCommentsResponseSchema = z.object({
                 createdAt: true,
             })
             .extend({
+                hasReplies: z.boolean(),
                 likes: z.number(),
             })
     ),
@@ -86,6 +87,7 @@ export const ViewAssetCommentsRoute = (handler: AppHandler) => {
                 commentedById: assetComments.commentedById,
                 comment: assetComments.comment,
                 createdAt: assetComments.createdAt,
+                hasReplies: sql`EXISTS (SELECT 1 FROM assetComments AS ac WHERE ac.parent_comment_id = ${assetComments.id})`,
                 likes: sql`COUNT(${assetCommentsLikes.commentId})`,
             })
             .from(assetComments)
@@ -102,7 +104,10 @@ export const ViewAssetCommentsRoute = (handler: AppHandler) => {
         return ctx.json(
             {
                 success: true,
-                comments,
+                comments: comments.map((c) => ({
+                    ...c,
+                    hasReplies: !!c.hasReplies,
+                })),
             },
             200
         )

@@ -53,7 +53,7 @@ const getCommentRepliesResponseSchema = z.object({
 const getCommentsRepliesRoute = createRoute({
     path: "/comment/{id}/replies",
     method: "get",
-    summary: "Get a comment's replies.",
+    summary: "Get a comment's replies",
     description: "Get a comment's replies.",
     tags: ["Asset"],
     request: {
@@ -87,7 +87,7 @@ export const GetCommentsRepliesRoute = (handler: AppHandler) => {
                 commentedById: assetComments.commentedById,
                 comment: assetComments.comment,
                 createdAt: assetComments.createdAt,
-                hasReplies: sql<number>`EXISTS (SELECT 1 FROM ${assetComments} WHERE ${assetComments.parentCommentId} = ${assetComments.id})`,
+                hasReplies: sql`EXISTS (SELECT 1 FROM assetComments AS ac WHERE ac.parent_comment_id = ${assetComments.id})`,
                 likes: sql`COUNT(${assetCommentsLikes.commentId})`,
             })
             .from(assetComments)

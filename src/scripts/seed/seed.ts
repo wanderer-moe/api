@@ -443,6 +443,30 @@ async function main() {
         `[SEED] [assetComments] inserted ${newAssetCommentsReplies.length} rows\n`
     )
 
+    const newAssetCommentsRepliesReplies = await db
+        .insert(assetComments)
+        .values([
+            {
+                commentedById: newUsers[0].id,
+                comment: "test comment reply reply",
+                parentCommentId: newAssetCommentsReplies[0].id,
+            },
+            {
+                commentedById: newUsers[1].id,
+                comment: "test comment reply reply 2",
+                parentCommentId: newAssetCommentsReplies[1].id,
+            },
+            {
+                commentedById: newUsers[0].id,
+                comment: "test comment reply reply 3",
+                parentCommentId: newAssetCommentsReplies[2].id,
+            },
+        ])
+        .returning()
+    console.log(
+        `[SEED] [assetComments] inserted ${newAssetCommentsRepliesReplies.length} rows\n`
+    )
+
     console.log("[SEED] [assetCommentsLikes] Seeding asset comments likes...")
     const newAssetCommentsLikes = await db
         .insert(assetCommentsLikes)
@@ -470,6 +494,18 @@ async function main() {
             {
                 commentId: newAssetCommentsReplies[2].id,
                 likedById: newUsers[0].id,
+            },
+            {
+                commentId: newAssetCommentsRepliesReplies[0].id,
+                likedById: newUsers[1].id,
+            },
+            {
+                commentId: newAssetCommentsRepliesReplies[1].id,
+                likedById: newUsers[0].id,
+            },
+            {
+                commentId: newAssetCommentsRepliesReplies[2].id,
+                likedById: newUsers[1].id,
             },
         ])
         .returning()
