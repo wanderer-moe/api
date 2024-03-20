@@ -5,11 +5,11 @@ import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 
-const logoutResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
 })
 
-const authLogoutRoute = createRoute({
+const openRoute = createRoute({
     path: "/logout",
     method: "get",
     summary: "Logout",
@@ -20,7 +20,7 @@ const authLogoutRoute = createRoute({
             description: "Logout successful.",
             content: {
                 "application/json": {
-                    schema: logoutResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -29,7 +29,7 @@ const authLogoutRoute = createRoute({
 })
 
 export const LogoutCurrentSessionRoute = (handler: AppHandler) => {
-    handler.openapi(authLogoutRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const authSessionManager = new AuthSessionManager(ctx)
 
         const { user } = await authSessionManager.validateSession()

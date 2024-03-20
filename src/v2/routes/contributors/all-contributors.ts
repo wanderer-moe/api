@@ -6,7 +6,7 @@ import { createRoute } from "@hono/zod-openapi"
 import { selectUserSchema } from "@/v2/db/schema"
 import { z } from "zod"
 
-const contributorListSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     contributors: selectUserSchema
         .pick({
@@ -21,7 +21,7 @@ const contributorListSchema = z.object({
         .array(),
 })
 
-const contributorsRoute = createRoute({
+const openRoute = createRoute({
     path: "/all",
     method: "get",
     summary: "Get all contributors",
@@ -32,7 +32,7 @@ const contributorsRoute = createRoute({
             description: "All Contributors.",
             content: {
                 "application/json": {
-                    schema: contributorListSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -43,7 +43,7 @@ const contributorsRoute = createRoute({
 })
 
 export const AllContributorsRoute = (handler: AppHandler) => {
-    handler.openapi(contributorsRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const { drizzle } = await getConnection(ctx.env)
 
         const contributors = await drizzle

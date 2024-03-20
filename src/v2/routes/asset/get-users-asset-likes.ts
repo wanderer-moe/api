@@ -11,7 +11,7 @@ import {
 } from "@/v2/db/schema"
 import { AppHandler } from "../handler"
 
-const allAssetLikesSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     likes: z.array(
         selectAssetLikesSchema.extend({
@@ -26,7 +26,7 @@ const allAssetLikesSchema = z.object({
     ),
 })
 
-const allAssetLikesRoute = createRoute({
+const openRoute = createRoute({
     path: "/likes",
     method: "get",
     summary: "Your liked assets",
@@ -37,7 +37,7 @@ const allAssetLikesRoute = createRoute({
             description: "Array of your liked assets.",
             content: {
                 "application/json": {
-                    schema: allAssetLikesSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -46,7 +46,7 @@ const allAssetLikesRoute = createRoute({
 })
 
 export const GetAssetLikesRoute = (handler: AppHandler) => {
-    handler.openapi(allAssetLikesRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const authSessionManager = new AuthSessionManager(ctx)
         const { user } = await authSessionManager.validateSession()
 

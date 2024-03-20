@@ -6,7 +6,7 @@ import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 
-const downloadAssetByIdSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             name: "id",
@@ -17,19 +17,19 @@ const downloadAssetByIdSchema = z.object({
     }),
 })
 
-const downloadAssetByIdResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     downloadUrl: z.string(),
 })
 
-const downloadAssetByIdRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/download",
     method: "get",
     summary: "Download an asset",
     description: "Download an asset by their ID.",
     tags: ["Asset"],
     request: {
-        params: downloadAssetByIdSchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
@@ -37,7 +37,7 @@ const downloadAssetByIdRoute = createRoute({
             response: {
                 content: {
                     "application/json": {
-                        schema: downloadAssetByIdResponseSchema,
+                        schema: responseSchema,
                     },
                 },
             },
@@ -47,7 +47,7 @@ const downloadAssetByIdRoute = createRoute({
 })
 
 export const DownloadAssetRoute = (handler: AppHandler) => {
-    handler.openapi(downloadAssetByIdRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const assetId = ctx.req.valid("param").id
 
         const { drizzle } = await getConnection(ctx.env)

@@ -8,7 +8,7 @@ import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 import { selectGameSchema } from "@/v2/db/schema"
 
-export const modifyGamePathSchema = z.object({
+export const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             name: "id",
@@ -20,7 +20,7 @@ export const modifyGamePathSchema = z.object({
     }),
 })
 
-const modifyGameSchema = z.object({
+const requestBodySchema = z.object({
     name: z.string().min(3).max(32).openapi({
         description: "The new name of the game.",
         example: "honkai-star-rail",
@@ -42,23 +42,23 @@ const modifyGameSchema = z.object({
         .refine((value) => value === 1 || value === 0),
 })
 
-const modifyGameResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     game: selectGameSchema,
 })
 
-export const modifyGameRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/modify",
     method: "patch",
     summary: "Modify a game",
     description: "Modify an existing game.",
     tags: ["Game"],
     request: {
-        params: modifyGamePathSchema,
+        params: paramsSchema,
         body: {
             content: {
                 "application/json": {
-                    schema: modifyGameSchema,
+                    schema: requestBodySchema,
                 },
             },
         },
@@ -68,7 +68,7 @@ export const modifyGameRoute = createRoute({
             description: "Returns the game's attributes",
             content: {
                 "application/json": {
-                    schema: modifyGameResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -77,7 +77,7 @@ export const modifyGameRoute = createRoute({
 })
 
 export const ModifyGameRoute = (handler: AppHandler) => {
-    handler.openapi(modifyGameRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const authSessionManager = new AuthSessionManager(ctx)
 
         const { user } = await authSessionManager.validateSession()

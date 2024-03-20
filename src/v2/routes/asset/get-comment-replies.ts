@@ -7,7 +7,7 @@ import { assetComments, assetCommentsLikes } from "@/v2/db/schema"
 import { selectAssetCommentsSchema } from "@/v2/db/schema"
 import { sql, eq, desc } from "drizzle-orm"
 
-const getCommentRepliesSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             name: "id",
@@ -18,7 +18,7 @@ const getCommentRepliesSchema = z.object({
     }),
 })
 
-const getCommentRepliesOffsetSchema = z.object({
+const querySchema = z.object({
     offset: z
         .string()
         .optional()
@@ -32,7 +32,7 @@ const getCommentRepliesOffsetSchema = z.object({
         }),
 })
 
-const getCommentRepliesResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     replies: z.array(
         selectAssetCommentsSchema
@@ -50,22 +50,22 @@ const getCommentRepliesResponseSchema = z.object({
     ),
 })
 
-const getCommentsRepliesRoute = createRoute({
+const openRoute = createRoute({
     path: "/comment/{id}/replies",
     method: "get",
     summary: "Get a comment's replies",
     description: "Get a comment's replies.",
     tags: ["Asset"],
     request: {
-        params: getCommentRepliesSchema,
-        query: getCommentRepliesOffsetSchema,
+        params: paramsSchema,
+        query: querySchema,
     },
     responses: {
         200: {
             description: "Array of replies to a comment.",
             content: {
                 "application/json": {
-                    schema: getCommentRepliesResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -74,7 +74,7 @@ const getCommentsRepliesRoute = createRoute({
 })
 
 export const GetCommentsRepliesRoute = (handler: AppHandler) => {
-    handler.openapi(getCommentsRepliesRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const commentId = ctx.req.valid("param").id
         const offset = parseInt(ctx.req.valid("query").offset) || 0
 

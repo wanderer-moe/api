@@ -10,7 +10,7 @@ import { z } from "@hono/zod-openapi"
 const AcceptedImageType = "image/png"
 const MaxFileSize = 5 * 1024 * 1024
 
-const uploadAssetSchema = z.object({
+const requestBodySchema = z.object({
     asset: z
         .any()
         .openapi({
@@ -56,13 +56,17 @@ const uploadAssetSchema = z.object({
         })
         .transform((value) => parseInt(value))
         .refine((value) => value === 1 || value === 0),
+    allowComments: z.string().min(0).max(1).optional().openapi({
+        description: "If comments are allowed on the asset. 1 = Yes, 0 = No.",
+        example: "1",
+    }),
 })
 
-const uploadAssetResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
 })
 
-const uploadAssetRoute = createRoute({
+const openRoute = createRoute({
     path: "/upload",
     method: "post",
     summary: "Upload an asset",
@@ -72,7 +76,7 @@ const uploadAssetRoute = createRoute({
         body: {
             content: {
                 "multipart/form-data": {
-                    schema: uploadAssetSchema,
+                    schema: requestBodySchema,
                 },
             },
         },
@@ -82,7 +86,7 @@ const uploadAssetRoute = createRoute({
             description: "The uploaded asset.",
             content: {
                 "application/json": {
-                    schema: uploadAssetResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -91,7 +95,7 @@ const uploadAssetRoute = createRoute({
 })
 
 export const UploadAssetRoute = (handler: AppHandler) =>
-    handler.openapi(uploadAssetRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const {
             asset,
             name,
@@ -150,6 +154,7 @@ export const UploadAssetRoute = (handler: AppHandler) =>
                 fileSize: 0,
                 width: 0,
                 height: 0,
+                allowComments: true,
                 assetIsSuggestive: Boolean(assetIsSuggestive),
             })
             .returning()

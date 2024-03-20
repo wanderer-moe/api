@@ -14,7 +14,7 @@ import {
     selectUserSchema,
 } from "@/v2/db/schema"
 
-const getAssetByIdSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             name: "id",
@@ -25,7 +25,7 @@ const getAssetByIdSchema = z.object({
     }),
 })
 
-const getAssetByIdResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     // mmm nested schemas
     asset: selectAssetSchema
@@ -70,21 +70,21 @@ const getAssetByIdResponseSchema = z.object({
     assetLikes: z.number(),
 })
 
-const getAssetByIdRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}",
     method: "get",
     summary: "Get an asset",
     description: "Get an asset by their ID.",
     tags: ["Asset"],
     request: {
-        params: getAssetByIdSchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
             description: "The found asset & similar assets are returned.",
             content: {
                 "application/json": {
-                    schema: getAssetByIdResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -93,7 +93,7 @@ const getAssetByIdRoute = createRoute({
 })
 
 export const GetAssetByIdRoute = (handler: AppHandler) => {
-    handler.openapi(getAssetByIdRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const assetId = ctx.req.valid("param").id
 
         const { drizzle } = await getConnection(ctx.env)

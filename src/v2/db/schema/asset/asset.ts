@@ -77,6 +77,9 @@ export const asset = sqliteTable(
         assetIsSuggestive: integer("asset_is_suggestive", { mode: "boolean" })
             .default(false)
             .notNull(),
+        allowComments: integer("comments_is_locked", { mode: "boolean" })
+            .default(true)
+            .notNull(),
         viewCount: integer("view_count").default(0).notNull(),
         downloadCount: integer("download_count").default(0).notNull(),
         fileSize: integer("file_size").default(0).notNull(),

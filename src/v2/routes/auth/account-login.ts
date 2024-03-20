@@ -5,7 +5,7 @@ import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 
-const loginSchema = z.object({
+const requestBodySchema = z.object({
     email: z.string().min(3).max(32).openapi({
         description: "The email of the user.",
         example: "user@domain.com",
@@ -20,11 +20,11 @@ const loginSchema = z.object({
     }),
 })
 
-const loginResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
 })
 
-export const userLoginRoute = createRoute({
+const openRoute = createRoute({
     path: "/login",
     method: "post",
     summary: "Login",
@@ -34,7 +34,7 @@ export const userLoginRoute = createRoute({
         body: {
             content: {
                 "application/json": {
-                    schema: loginSchema,
+                    schema: requestBodySchema,
                 },
             },
         },
@@ -44,7 +44,7 @@ export const userLoginRoute = createRoute({
             description: "Returns true.",
             content: {
                 "application/json": {
-                    schema: loginResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -53,7 +53,7 @@ export const userLoginRoute = createRoute({
 })
 
 export const UserLoginRoute = (handler: AppHandler) => {
-    handler.openapi(userLoginRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const authSessionManager = new AuthSessionManager(ctx)
 
         const { user } = await authSessionManager.validateSession()

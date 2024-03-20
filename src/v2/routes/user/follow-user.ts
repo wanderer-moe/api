@@ -7,7 +7,7 @@ import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 
-const followUserByIdSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             description: "The id of the user to follow.",
@@ -18,25 +18,25 @@ const followUserByIdSchema = z.object({
     }),
 })
 
-const followUserByIdResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
 })
 
-export const followUserByIdRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/follow",
     method: "post",
     summary: "Follow a user",
     description: "Follow a user from their ID.",
     tags: ["User"],
     request: {
-        params: followUserByIdSchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
             description: "True if the user was followed.",
             content: {
                 "application/json": {
-                    schema: followUserByIdResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -45,7 +45,7 @@ export const followUserByIdRoute = createRoute({
 })
 
 export const FollowUserRoute = (handler: AppHandler) => {
-    handler.openapi(followUserByIdRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const userId = ctx.req.valid("param").id
 
         const { drizzle } = await getConnection(ctx.env)

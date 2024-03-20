@@ -7,7 +7,7 @@ import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 
-const unfollowUserByIdSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             description: "The id of the user to unfollow.",
@@ -18,25 +18,25 @@ const unfollowUserByIdSchema = z.object({
     }),
 })
 
-const unfollowUserByIdResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
 })
 
-const unFollowUserByIdRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/unfollow",
     method: "post",
     summary: "Unfollow a user",
     description: "Follow a user from their ID.",
     tags: ["User"],
     request: {
-        params: unfollowUserByIdSchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
             description: "True if the user was unfollowed.",
             content: {
                 "application/json": {
-                    schema: unfollowUserByIdResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -45,7 +45,7 @@ const unFollowUserByIdRoute = createRoute({
 })
 
 export const UnfollowUserRoute = (handler: AppHandler) => {
-    handler.openapi(unFollowUserByIdRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const userId = ctx.req.valid("param").id
 
         const { drizzle } = await getConnection(ctx.env)

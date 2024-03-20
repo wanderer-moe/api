@@ -7,7 +7,7 @@ import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 
-const likeAssetByIdSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             description: "The id of the asset to like.",
@@ -19,25 +19,25 @@ const likeAssetByIdSchema = z.object({
     }),
 })
 
-const likeAssetByIdResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
 })
 
-const likeAssetByIdRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/like",
     method: "post",
     summary: "Like an asset",
     description: "Like an asset from their ID.",
     tags: ["Asset"],
     request: {
-        params: likeAssetByIdSchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
             description: "True if the asset was liked.",
             content: {
                 "application/json": {
-                    schema: likeAssetByIdResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -46,7 +46,7 @@ const likeAssetByIdRoute = createRoute({
 })
 
 export const LikeAssetByIdRoute = (handler: AppHandler) => {
-    handler.openapi(likeAssetByIdRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const assetId = ctx.req.valid("param").id
 
         const { drizzle } = await getConnection(ctx.env)

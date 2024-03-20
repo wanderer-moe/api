@@ -7,7 +7,7 @@ import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 
-export const deleteAssetCategorySchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             name: "id",
@@ -19,25 +19,25 @@ export const deleteAssetCategorySchema = z.object({
     }),
 })
 
-export const deleteAssetCategoryResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
 })
 
-const deleteCategoryRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/delete",
     method: "delete",
     summary: "Delete a category",
     description: "Delete a category.",
     tags: ["Category"],
     request: {
-        params: deleteAssetCategorySchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
             description: "Returns boolean indicating success.",
             content: {
                 "application/json": {
-                    schema: deleteAssetCategoryResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -46,7 +46,7 @@ const deleteCategoryRoute = createRoute({
 })
 
 export const DeleteAssetCategoryRoute = (handler: AppHandler) => {
-    handler.openapi(deleteCategoryRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const id = ctx.req.valid("param").id
 
         const { drizzle } = await getConnection(ctx.env)

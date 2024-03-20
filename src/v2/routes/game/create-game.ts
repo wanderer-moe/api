@@ -8,7 +8,7 @@ import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 import { selectGameSchema } from "@/v2/db/schema"
 
-export const createGameSchema = z.object({
+const requestBodySchema = z.object({
     name: z.string().min(3).max(32).openapi({
         description: "The name of the game.",
         example: "honkai-star-rail",
@@ -30,12 +30,12 @@ export const createGameSchema = z.object({
         .refine((value) => value === 1 || value === 0),
 })
 
-export const createGameResponse = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     game: selectGameSchema,
 })
 
-const createGameRoute = createRoute({
+const openRoute = createRoute({
     path: "/create",
     method: "post",
     summary: "Create a game",
@@ -45,7 +45,7 @@ const createGameRoute = createRoute({
         body: {
             content: {
                 "application/json": {
-                    schema: createGameSchema,
+                    schema: requestBodySchema,
                 },
             },
         },
@@ -55,7 +55,7 @@ const createGameRoute = createRoute({
             description: "Returns the new game.",
             content: {
                 "application/json": {
-                    schema: createGameResponse,
+                    schema: responseSchema,
                 },
             },
         },
@@ -64,7 +64,7 @@ const createGameRoute = createRoute({
 })
 
 export const CreateGameRoute = (handler: AppHandler) => {
-    handler.openapi(createGameRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const authSessionManager = new AuthSessionManager(ctx)
 
         const { user } = await authSessionManager.validateSession()

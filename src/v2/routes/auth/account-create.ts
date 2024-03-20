@@ -5,7 +5,7 @@ import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 
-const createAccountSchema = z.object({
+const requestBodySchema = z.object({
     username: z.string().min(3).max(32).openapi({
         description: "The username of the user.",
         example: "user",
@@ -24,11 +24,11 @@ const createAccountSchema = z.object({
     }),
 })
 
-const createAccountResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
 })
 
-const userCreateAccountRoute = createRoute({
+const openRoute = createRoute({
     path: "/create",
     method: "post",
     summary: "Create a new account",
@@ -38,7 +38,7 @@ const userCreateAccountRoute = createRoute({
         body: {
             content: {
                 "application/json": {
-                    schema: createAccountSchema,
+                    schema: requestBodySchema,
                 },
             },
         },
@@ -48,7 +48,7 @@ const userCreateAccountRoute = createRoute({
             description: "Returns true.",
             content: {
                 "application/json": {
-                    schema: createAccountResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -57,7 +57,7 @@ const userCreateAccountRoute = createRoute({
 })
 
 export const UserCreateAccountRoute = (handler: AppHandler) => {
-    handler.openapi(userCreateAccountRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const authSessionManager = new AuthSessionManager(ctx)
 
         const { user } = await authSessionManager.validateSession()

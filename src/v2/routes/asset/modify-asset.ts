@@ -8,7 +8,7 @@ import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 import { AppHandler } from "../handler"
 
-const modifyAssetPathSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             description: "The id of the asset to modify.",
@@ -19,7 +19,7 @@ const modifyAssetPathSchema = z.object({
     }),
 })
 
-const modifyAssetSchema = z.object({
+const requestBodySchema = z.object({
     name: z
         .string()
         .min(3)
@@ -50,24 +50,28 @@ const modifyAssetSchema = z.object({
             example: "genshin-impact",
         })
         .optional(),
+    allowComments: z.string().min(0).max(1).optional().openapi({
+        description: "If comments are allowed on the asset. 1 = Yes, 0 = No.",
+        example: "1",
+    }),
 })
 
 const modifyAssetResponseSchema = z.object({
     success: z.literal(true),
 })
 
-const modifyAssetRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/modify",
     method: "patch",
     summary: "Modify an asset",
     description: "Modify an existing asset.",
     tags: ["Asset"],
     request: {
-        params: modifyAssetPathSchema,
+        params: paramsSchema,
         body: {
             content: {
                 "application/json": {
-                    schema: modifyAssetSchema,
+                    schema: requestBodySchema,
                 },
             },
         },
@@ -86,8 +90,9 @@ const modifyAssetRoute = createRoute({
 })
 
 export const ModifyAssetRoute = (handler: AppHandler) => {
-    handler.openapi(modifyAssetRoute, async (ctx) => {
-        const { name, tags, assetCategoryId, gameId } = ctx.req.valid("json")
+    handler.openapi(openRoute, async (ctx) => {
+        const { name, tags, assetCategoryId, gameId, allowComments } =
+            ctx.req.valid("json")
         const assetId = ctx.req.valid("param").id
 
         const authSessionManager = new AuthSessionManager(ctx)
@@ -129,6 +134,7 @@ export const ModifyAssetRoute = (handler: AppHandler) => {
                 name,
                 assetCategoryId,
                 gameId,
+                allowComments: Boolean(allowComments),
             })
             .where(eq(asset.id, assetId))
             .returning()

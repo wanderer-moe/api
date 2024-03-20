@@ -7,7 +7,7 @@ import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 
-export const deleteGameSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             name: "id",
@@ -19,25 +19,25 @@ export const deleteGameSchema = z.object({
     }),
 })
 
-export const deleteGameResponse = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
 })
 
-const deleteGameRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/delete",
     method: "delete",
     summary: "Delete a game",
     description: "Delete a game & all its related assets.",
     tags: ["Game"],
     request: {
-        params: deleteGameSchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
             description: "Returns boolean indicating success.",
             content: {
                 "application/json": {
-                    schema: deleteGameResponse,
+                    schema: responseSchema,
                 },
             },
         },
@@ -46,7 +46,7 @@ const deleteGameRoute = createRoute({
 })
 
 export const DeleteGameRoute = (handler: AppHandler) => {
-    handler.openapi(deleteGameRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const id = ctx.req.valid("param").id
 
         const { drizzle } = await getConnection(ctx.env)

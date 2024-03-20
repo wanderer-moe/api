@@ -7,7 +7,7 @@ import { z } from "@hono/zod-openapi"
 import { selectGameSchema } from "@/v2/db/schema"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 
-const getGameByIdSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             name: "id",
@@ -19,26 +19,26 @@ const getGameByIdSchema = z.object({
     }),
 })
 
-const getGameByIDResponse = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     game: selectGameSchema,
 })
 
-const getGameByIdRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}",
     method: "get",
     summary: "Get a game",
     description: "Get a game by their ID.",
     tags: ["Game"],
     request: {
-        params: getGameByIdSchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
             description: "Game was found.",
             content: {
                 "application/json": {
-                    schema: getGameByIDResponse,
+                    schema: responseSchema,
                 },
             },
         },
@@ -47,7 +47,7 @@ const getGameByIdRoute = createRoute({
 })
 
 export const GetGameByIdRoute = (handler: AppHandler) => {
-    handler.openapi(getGameByIdRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const id = ctx.req.valid("param").id
 
         const { drizzle } = await getConnection(ctx.env)

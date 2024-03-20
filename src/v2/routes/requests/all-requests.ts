@@ -6,7 +6,7 @@ import { z } from "@hono/zod-openapi"
 import { selectRequestFormSchema } from "@/v2/db/schema"
 import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
 
-const viewAllRequestsSchema = z
+const querySchema = z
     .object({
         offset: z.string().openapi({
             param: {
@@ -26,12 +26,12 @@ const requestFormSchema = z.object({
     upvotesCount: z.number().optional(),
 })
 
-const viewAllRequestsResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     requests: z.array(requestFormSchema),
 })
 
-const getAllRequestsRoute = createRoute({
+const openRoute = createRoute({
     path: "/all",
     method: "get",
     summary: "Get all requests",
@@ -39,14 +39,14 @@ const getAllRequestsRoute = createRoute({
         "Get all requests & associated upvotes count. Supporter required.",
     tags: ["Requests"],
     request: {
-        query: viewAllRequestsSchema,
+        query: querySchema,
     },
     responses: {
         200: {
             description: "List of all submitted requests.",
             content: {
                 "application/json": {
-                    schema: viewAllRequestsResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -55,7 +55,7 @@ const getAllRequestsRoute = createRoute({
 })
 
 export const AllRequestsRoute = (handler: AppHandler) => {
-    handler.openapi(getAllRequestsRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const { offset } = ctx.req.valid("query") ?? { offset: "0" }
 
         const authSessionManager = new AuthSessionManager(ctx)

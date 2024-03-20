@@ -7,7 +7,7 @@ import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 
-const blockUserByIdSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             description: "The id of the user to block.",
@@ -18,25 +18,25 @@ const blockUserByIdSchema = z.object({
     }),
 })
 
-const blockUserByIdResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
 })
 
-export const blockUserByIdRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/block",
     method: "post",
     summary: "Block a user",
     description: "Block a user from their ID.",
     tags: ["User"],
     request: {
-        params: blockUserByIdSchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
             description: "True if the user was blocked.",
             content: {
                 "application/json": {
-                    schema: blockUserByIdResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -45,7 +45,7 @@ export const blockUserByIdRoute = createRoute({
 })
 
 export const BlockUserRoute = (handler: AppHandler) => {
-    handler.openapi(blockUserByIdRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const userId = ctx.req.valid("param").id
 
         const { drizzle } = await getConnection(ctx.env)

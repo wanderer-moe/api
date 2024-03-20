@@ -7,7 +7,7 @@ import { z } from "@hono/zod-openapi"
 import { requestForm } from "@/v2/db/schema"
 import { eq } from "drizzle-orm"
 
-export const deleteRequestByIdSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             name: "id",
@@ -19,11 +19,11 @@ export const deleteRequestByIdSchema = z.object({
     }),
 })
 
-export const deleteRequestByIdResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
 })
 
-const deleteRequestByIdRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/delete",
     method: "delete",
     summary: "Delete a request",
@@ -31,14 +31,14 @@ const deleteRequestByIdRoute = createRoute({
         "Delete a request by its ID. This will also delete all associated upvotes.",
     tags: ["Requests"],
     request: {
-        params: deleteRequestByIdSchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
             description: "True if the request was deleted successfully.",
             content: {
                 "application/json": {
-                    schema: deleteRequestByIdResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -47,7 +47,7 @@ const deleteRequestByIdRoute = createRoute({
 })
 
 export const DeleteRequestByIdRoute = (handler: AppHandler) => {
-    handler.openapi(deleteRequestByIdRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const requestId = ctx.req.valid("param").id
 
         const authSessionManager = new AuthSessionManager(ctx)

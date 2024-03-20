@@ -5,7 +5,7 @@ import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 import { selectUserFollowingSchema, selectUserSchema } from "@/v2/db/schema"
 
-const viewUserFollowsbyIdSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             description: "User ID to view who follows them",
@@ -16,7 +16,7 @@ const viewUserFollowsbyIdSchema = z.object({
     }),
 })
 
-const viewUserFollowsbyIdOffsetSchema = z.object({
+const querySchema = z.object({
     offset: z
         .string()
         .optional()
@@ -30,7 +30,7 @@ const viewUserFollowsbyIdOffsetSchema = z.object({
         }),
 })
 
-export const viewUserFollowsbyIdResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     followers: z.array(
         selectUserFollowingSchema.extend({
@@ -46,15 +46,15 @@ export const viewUserFollowsbyIdResponseSchema = z.object({
     ),
 })
 
-const viewUserFollowsByIdRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/followers",
     method: "get",
     summary: "View a user's followers",
     description: "View a user's followers from their ID.",
     tags: ["User"],
     request: {
-        params: viewUserFollowsbyIdSchema,
-        query: viewUserFollowsbyIdOffsetSchema,
+        params: paramsSchema,
+        query: querySchema,
     },
     responses: {
         200: {
@@ -62,7 +62,7 @@ const viewUserFollowsByIdRoute = createRoute({
                 "List of a user's followers. Only 100 showed at a time, use pagination.",
             content: {
                 "application/json": {
-                    schema: viewUserFollowsbyIdResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -71,7 +71,7 @@ const viewUserFollowsByIdRoute = createRoute({
 })
 
 export const ViewUsersFollowersRoute = (handler: AppHandler) => {
-    handler.openapi(viewUserFollowsByIdRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const { id } = ctx.req.valid("param")
         const { offset } = ctx.req.valid("query")
 

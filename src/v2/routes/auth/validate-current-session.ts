@@ -5,12 +5,12 @@ import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 import { selectUserSchema } from "@/v2/db/schema"
 
-const authValidationSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     user: selectUserSchema,
 })
 
-const authValidationRoute = createRoute({
+const openRoute = createRoute({
     path: "/validate",
     method: "get",
     summary: "Validate current session",
@@ -21,7 +21,7 @@ const authValidationRoute = createRoute({
             description: "All user information is returned.",
             content: {
                 "application/json": {
-                    schema: authValidationSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -30,7 +30,7 @@ const authValidationRoute = createRoute({
 })
 
 export const ValidateSessionRoute = (handler: AppHandler) => {
-    handler.openapi(authValidationRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const authSessionManager = new AuthSessionManager(ctx)
 
         const { user } = await authSessionManager.validateSession()

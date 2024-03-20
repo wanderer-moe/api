@@ -7,7 +7,7 @@ import { z } from "@hono/zod-openapi"
 import { requestForm, selectRequestFormSchema } from "@/v2/db/schema"
 import { eq } from "drizzle-orm"
 
-export const viewRequestByIdSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             name: "id",
@@ -19,26 +19,26 @@ export const viewRequestByIdSchema = z.object({
     }),
 })
 
-export const viewRequestByIdResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     request: selectRequestFormSchema,
 })
 
-const viewRequestByIdRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}",
     method: "get",
     summary: "View a request",
     description: "View a request by its ID. Supporter required.",
     tags: ["Requests"],
     request: {
-        params: viewRequestByIdSchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
             description: "The request was found and returned successfully.",
             content: {
                 "application/json": {
-                    schema: viewRequestByIdResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -47,7 +47,7 @@ const viewRequestByIdRoute = createRoute({
 })
 
 export const ViewRequestRoute = (handler: AppHandler) => {
-    handler.openapi(viewRequestByIdRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const requestId = ctx.req.valid("param").id
 
         const authSessionManager = new AuthSessionManager(ctx)

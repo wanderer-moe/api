@@ -10,7 +10,7 @@ import {
 } from "@/v2/db/schema"
 import { type AppHandler } from "../handler"
 
-export const assetSearchAllFilterResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     assets: z.array(
         selectAssetSchema
@@ -38,7 +38,7 @@ export const assetSearchAllFilterResponseSchema = z.object({
     ),
 })
 
-export const assetSearchAllFilterSchema = z
+const querySchema = z
     .object({
         name: z.string().openapi({
             param: {
@@ -92,23 +92,23 @@ export const assetSearchAllFilterSchema = z
     })
     .partial()
 
-export type assetSearchAllFilter = z.infer<typeof assetSearchAllFilterSchema>
+export type assetSearchAllFilter = z.infer<typeof querySchema>
 
-const assetSearchAllFilterRoute = createRoute({
+const openRoute = createRoute({
     path: "/search",
     method: "get",
     summary: "Search for assets",
     description: "Filter all assets",
     tags: ["Asset"],
     request: {
-        query: assetSearchAllFilterSchema,
+        query: querySchema,
     },
     responses: {
         200: {
             description: "Found assets",
             content: {
                 "application/json": {
-                    schema: assetSearchAllFilterResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -117,7 +117,7 @@ const assetSearchAllFilterRoute = createRoute({
 })
 
 export const AssetSearchAllFilterRoute = (handler: AppHandler) => {
-    handler.openapi(assetSearchAllFilterRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const { drizzle } = await getConnection(ctx.env)
 
         const { name, game, category, tags, offset } = ctx.req.valid("query")

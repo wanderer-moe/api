@@ -6,12 +6,12 @@ import { createRoute } from "@hono/zod-openapi"
 import { z } from "@hono/zod-openapi"
 import { selectGameSchema } from "@/v2/db/schema"
 
-export const getAllGamesResponse = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     games: selectGameSchema.array(),
 })
 
-const getAllGamesRoute = createRoute({
+const openRoute = createRoute({
     path: "/all",
     method: "get",
     summary: "Get all games",
@@ -22,7 +22,7 @@ const getAllGamesRoute = createRoute({
             description: "All games.",
             content: {
                 "application/json": {
-                    schema: getAllGamesResponse,
+                    schema: responseSchema,
                 },
             },
         },
@@ -31,7 +31,7 @@ const getAllGamesRoute = createRoute({
 })
 
 export const AllGamesRoute = (handler: AppHandler) => {
-    handler.openapi(getAllGamesRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const { drizzle } = await getConnection(ctx.env)
 
         const games = (await drizzle.select().from(game)) ?? []

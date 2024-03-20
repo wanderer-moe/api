@@ -8,7 +8,7 @@ import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 import { selectAssetCategorySchema } from "@/v2/db/schema"
 
-export const createAssetCategorySchema = z.object({
+export const requestBodySchema = z.object({
     name: z.string().min(3).max(32).openapi({
         description: "The name of the asset category.",
         example: "splash-art",
@@ -19,12 +19,12 @@ export const createAssetCategorySchema = z.object({
     }),
 })
 
-export const createAssetCategoryResponseSchema = z.object({
+export const responseSchema = z.object({
     success: z.literal(true),
     assetCategory: selectAssetCategorySchema,
 })
 
-const createAssetCategoryRoute = createRoute({
+const openRoute = createRoute({
     path: "/create",
     method: "post",
     summary: "Create a category",
@@ -34,7 +34,7 @@ const createAssetCategoryRoute = createRoute({
         body: {
             content: {
                 "application/json": {
-                    schema: createAssetCategorySchema,
+                    schema: requestBodySchema,
                 },
             },
         },
@@ -44,7 +44,7 @@ const createAssetCategoryRoute = createRoute({
             description: "Returns the new category.",
             content: {
                 "application/json": {
-                    schema: createAssetCategoryResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -53,7 +53,7 @@ const createAssetCategoryRoute = createRoute({
 })
 
 export const CreateCategoryRoute = (handler: AppHandler) => {
-    handler.openapi(createAssetCategoryRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const authSessionManager = new AuthSessionManager(ctx)
 
         const { user } = await authSessionManager.validateSession()

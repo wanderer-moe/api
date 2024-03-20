@@ -7,7 +7,7 @@ import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 
-export const deleteTagSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             name: "id",
@@ -19,25 +19,25 @@ export const deleteTagSchema = z.object({
     }),
 })
 
-export const deleteTagResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
 })
 
-const deleteTagRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/delete",
     method: "delete",
     summary: "Delete a tag",
     description: "Delete a tag.",
     tags: ["Tags"],
     request: {
-        params: deleteTagSchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
             description: "Returns boolean indicating success.",
             content: {
                 "application/json": {
-                    schema: deleteTagResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -46,7 +46,7 @@ const deleteTagRoute = createRoute({
 })
 
 export const DeleteTagRoute = (handler: AppHandler) => {
-    handler.openapi(deleteTagRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const id = ctx.req.valid("param").id
 
         const { drizzle } = await getConnection(ctx.env)

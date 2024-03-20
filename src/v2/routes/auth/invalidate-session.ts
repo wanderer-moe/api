@@ -5,7 +5,7 @@ import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 
-const invalidateSessionSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             description: "The id of the session to invalidate.",
@@ -17,25 +17,25 @@ const invalidateSessionSchema = z.object({
     }),
 })
 
-const invalidateSessionResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
 })
 
-const invalidateSessionRoute = createRoute({
+const openRoute = createRoute({
     path: "/invalidate/{id}",
     method: "get",
     summary: "Invalidate a session",
     description: "Invalidate a session by its ID.",
     tags: ["Auth"],
     request: {
-        params: invalidateSessionSchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
             description: "Logout successful.",
             content: {
                 "application/json": {
-                    schema: invalidateSessionResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -44,7 +44,7 @@ const invalidateSessionRoute = createRoute({
 })
 
 export const InvalidateSessionRoute = (handler: AppHandler) => {
-    handler.openapi(invalidateSessionRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const sessionId = ctx.req.valid("param").id
 
         const authSessionManager = new AuthSessionManager(ctx)

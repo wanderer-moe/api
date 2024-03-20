@@ -7,7 +7,7 @@ import { z } from "@hono/zod-openapi"
 import { selectAssetCategorySchema } from "@/v2/db/schema"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 
-const getAssetCategoryByIdSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             name: "id",
@@ -19,26 +19,26 @@ const getAssetCategoryByIdSchema = z.object({
     }),
 })
 
-const getAssetCategoryByIdResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     category: selectAssetCategorySchema,
 })
 
-const getAssetCategoryByIdRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}",
     method: "get",
     summary: "Get a category",
     description: "Get a category by their ID.",
     tags: ["Category"],
     request: {
-        params: getAssetCategoryByIdSchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
             description: "Category was found.",
             content: {
                 "application/json": {
-                    schema: getAssetCategoryByIdResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -47,7 +47,7 @@ const getAssetCategoryByIdRoute = createRoute({
 })
 
 export const GetCategoryByIdRoute = (handler: AppHandler) => {
-    handler.openapi(getAssetCategoryByIdRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const id = ctx.req.valid("param").id
 
         const { drizzle } = await getConnection(ctx.env)

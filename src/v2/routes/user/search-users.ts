@@ -7,7 +7,7 @@ import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 import { selectUserSchema } from "@/v2/db/schema"
 
-const getUsersByNameSchema = z.object({
+const paramsSchema = z.object({
     username: z.string().openapi({
         param: {
             name: "username",
@@ -18,7 +18,7 @@ const getUsersByNameSchema = z.object({
     }),
 })
 
-const searchUsersByUsernameSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     users: selectUserSchema
         .pick({
@@ -37,21 +37,21 @@ const searchUsersByUsernameSchema = z.object({
         .array(),
 })
 
-const searchUsersByUsernameRoute = createRoute({
+const openRoute = createRoute({
     path: "/search/{username}",
     method: "get",
     summary: "Search for users",
     description: "Search for users by their username.",
     tags: ["User"],
     request: {
-        params: getUsersByNameSchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
             description: "User(s) were found.",
             content: {
                 "application/json": {
-                    schema: searchUsersByUsernameSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -60,7 +60,7 @@ const searchUsersByUsernameRoute = createRoute({
 })
 
 export const SearchUsersByUsernameRoute = (handler: AppHandler) => {
-    handler.openapi(searchUsersByUsernameRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const userQuery = ctx.req.valid("param").username
 
         const { drizzle } = await getConnection(ctx.env)

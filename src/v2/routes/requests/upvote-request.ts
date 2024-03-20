@@ -7,7 +7,7 @@ import { z } from "@hono/zod-openapi"
 import { requestForm, requestFormUpvotes } from "@/v2/db/schema"
 import { eq } from "drizzle-orm"
 
-export const upvoteRequestByIdSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             name: "id",
@@ -19,25 +19,25 @@ export const upvoteRequestByIdSchema = z.object({
     }),
 })
 
-export const upvoteRequestByIdResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
 })
 
-const upvoteRequestByIdRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/upvote",
     method: "post",
     summary: "Upvote a request",
     description: "Upvote a request by its ID. Supporter required.",
     tags: ["Requests"],
     request: {
-        params: upvoteRequestByIdSchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
             description: "True if the request was upvoted successfully.",
             content: {
                 "application/json": {
-                    schema: upvoteRequestByIdResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -46,7 +46,7 @@ const upvoteRequestByIdRoute = createRoute({
 })
 
 export const UpvoteRequestRoute = (handler: AppHandler) => {
-    handler.openapi(upvoteRequestByIdRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const requestId = ctx.req.valid("param").id
 
         const authSessionManager = new AuthSessionManager(ctx)

@@ -7,7 +7,7 @@ import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 
-export const modifyAssetCategoryPathSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             name: "id",
@@ -19,7 +19,7 @@ export const modifyAssetCategoryPathSchema = z.object({
     }),
 })
 
-const modifyAssetCategorySchema = z.object({
+const requestBodySchema = z.object({
     name: z.string().min(3).max(32).openapi({
         description: "The new name of the category.",
         example: "splash-art",
@@ -30,23 +30,23 @@ const modifyAssetCategorySchema = z.object({
     }),
 })
 
-const modifyAssetCategoryResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     assetCategory: selectAssetCategorySchema,
 })
 
-export const modifyAssetCategoryRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/modify",
     method: "patch",
     summary: "Modify a category",
     description: "Modify an existing category.",
     tags: ["Category"],
     request: {
-        params: modifyAssetCategoryPathSchema,
+        params: paramsSchema,
         body: {
             content: {
                 "application/json": {
-                    schema: modifyAssetCategorySchema,
+                    schema: requestBodySchema,
                 },
             },
         },
@@ -56,7 +56,7 @@ export const modifyAssetCategoryRoute = createRoute({
             description: "Returns the new category attributes",
             content: {
                 "application/json": {
-                    schema: modifyAssetCategoryResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -65,7 +65,7 @@ export const modifyAssetCategoryRoute = createRoute({
 })
 
 export const ModifyAssetCategoryRoute = (handler: AppHandler) => {
-    handler.openapi(modifyAssetCategoryRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const authSessionManager = new AuthSessionManager(ctx)
         const { user } = await authSessionManager.validateSession()
 

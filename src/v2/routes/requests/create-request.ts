@@ -7,7 +7,7 @@ import { z } from "@hono/zod-openapi"
 import { requestForm, selectRequestFormSchema } from "@/v2/db/schema"
 import type { requestArea } from "@/v2/db/schema"
 
-const createRequestFormEntrySchema = z.object({
+const requestBodySchema = z.object({
     title: z.string().min(3).max(32).openapi({
         description: "The title of the request.",
         example: "Add HSR UI assets",
@@ -28,12 +28,12 @@ const createRequestFormEntrySchema = z.object({
     }),
 })
 
-const createRequestFormEntryResponse = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     response: selectRequestFormSchema,
 })
 
-const createRequestFormEntryRoute = createRoute({
+const openRoute = createRoute({
     path: "/create",
     method: "post",
     summary: "Create request entry",
@@ -44,7 +44,7 @@ const createRequestFormEntryRoute = createRoute({
         body: {
             content: {
                 "application/json": {
-                    schema: createRequestFormEntrySchema,
+                    schema: requestBodySchema,
                 },
             },
         },
@@ -54,7 +54,7 @@ const createRequestFormEntryRoute = createRoute({
             description: "Returns the new request form entry.",
             content: {
                 "application/json": {
-                    schema: createRequestFormEntryResponse,
+                    schema: responseSchema,
                 },
             },
         },
@@ -63,7 +63,7 @@ const createRequestFormEntryRoute = createRoute({
 })
 
 export const CreateRequestFormEntryRoute = (handler: AppHandler) => {
-    handler.openapi(createRequestFormEntryRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const { area, title, description } = ctx.req.valid("json")
 
         const authSessionManager = new AuthSessionManager(ctx)

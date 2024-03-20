@@ -6,12 +6,12 @@ import { createRoute } from "@hono/zod-openapi"
 import { z } from "@hono/zod-openapi"
 import { selectAssetCategorySchema } from "@/v2/db/schema"
 
-export const getAllCategoriesResponseSchema = z.object({
+export const responseSchema = z.object({
     success: z.literal(true),
     categories: selectAssetCategorySchema.array(),
 })
 
-const getAllCategoriesRoute = createRoute({
+const openRoute = createRoute({
     path: "/all",
     method: "get",
     summary: "Get all categories",
@@ -22,7 +22,7 @@ const getAllCategoriesRoute = createRoute({
             description: "All categories.",
             content: {
                 "application/json": {
-                    schema: getAllCategoriesResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -31,7 +31,7 @@ const getAllCategoriesRoute = createRoute({
 })
 
 export const AllCategoriesRoute = (handler: AppHandler) => {
-    handler.openapi(getAllCategoriesRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const { drizzle } = await getConnection(ctx.env)
 
         const assetCategories =

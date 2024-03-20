@@ -6,7 +6,7 @@ import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 
-const deleteAssetByIdSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             name: "id",
@@ -18,11 +18,11 @@ const deleteAssetByIdSchema = z.object({
     }),
 })
 
-const deleteAssetByIdResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
 })
 
-const deleteAssetByIdRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/delete",
     method: "delete",
     summary: "Delete an asset",
@@ -30,14 +30,14 @@ const deleteAssetByIdRoute = createRoute({
         "Delete an asset from their ID. Must be the owner of the asset or an admin.",
     tags: ["Asset"],
     request: {
-        params: deleteAssetByIdSchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
             description: "True if the asset was deleted.",
             content: {
                 "application/json": {
-                    schema: deleteAssetByIdResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -46,7 +46,7 @@ const deleteAssetByIdRoute = createRoute({
 })
 
 export const DeleteAssetByIdRoute = (handler: AppHandler) => {
-    handler.openapi(deleteAssetByIdRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const assetId = ctx.req.valid("param").id
 
         const { drizzle } = await getConnection(ctx.env)

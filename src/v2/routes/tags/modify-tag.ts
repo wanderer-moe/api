@@ -7,7 +7,7 @@ import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 
-export const modifyAssetTagPathSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             name: "id",
@@ -19,7 +19,7 @@ export const modifyAssetTagPathSchema = z.object({
     }),
 })
 
-const modifyTagSchema = z.object({
+const requestBodySchema = z.object({
     name: z.string().min(3).max(32).openapi({
         description: "The new name of the tag.",
         example: "official",
@@ -30,23 +30,23 @@ const modifyTagSchema = z.object({
     }),
 })
 
-const modifyTagResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     tag: selectAssetTagSchema,
 })
 
-export const modifyTagRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/modify",
     method: "patch",
     summary: "Modify a tag",
     description: "Modify an existing tag.",
     tags: ["Tags"],
     request: {
-        params: modifyAssetTagPathSchema,
+        params: paramsSchema,
         body: {
             content: {
                 "application/json": {
-                    schema: modifyTagSchema,
+                    schema: requestBodySchema,
                 },
             },
         },
@@ -56,7 +56,7 @@ export const modifyTagRoute = createRoute({
             description: "Returns the tag's attributes",
             content: {
                 "application/json": {
-                    schema: modifyTagResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -65,7 +65,7 @@ export const modifyTagRoute = createRoute({
 })
 
 export const ModifyTagRoute = (handler: AppHandler) => {
-    handler.openapi(modifyTagRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const authSessionManager = new AuthSessionManager(ctx)
 
         const { user } = await authSessionManager.validateSession()

@@ -5,7 +5,7 @@ import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 import { selectUserFollowingSchema, selectUserSchema } from "@/v2/db/schema"
 
-const viewUserfollowingbyIdSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             description: "User ID to view who they're following",
@@ -16,7 +16,7 @@ const viewUserfollowingbyIdSchema = z.object({
     }),
 })
 
-const viewUserFollowingOffsetSchema = z.object({
+const querySchema = z.object({
     offset: z
         .string()
         .optional()
@@ -30,7 +30,7 @@ const viewUserFollowingOffsetSchema = z.object({
         }),
 })
 
-const viewUserfollowingbyIdResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     following: z.array(
         selectUserFollowingSchema.extend({
@@ -46,15 +46,15 @@ const viewUserfollowingbyIdResponseSchema = z.object({
     ),
 })
 
-const viewUserfollowingbyIdRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/following",
     method: "get",
     summary: "View who a user's following",
     description: "View who a user's following from their ID.",
     tags: ["User"],
     request: {
-        params: viewUserfollowingbyIdSchema,
-        query: viewUserFollowingOffsetSchema,
+        params: paramsSchema,
+        query: querySchema,
     },
     responses: {
         200: {
@@ -62,7 +62,7 @@ const viewUserfollowingbyIdRoute = createRoute({
                 "List of who a user's following. Only 100 showed at a time, use pagination.",
             content: {
                 "application/json": {
-                    schema: viewUserfollowingbyIdResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -71,7 +71,7 @@ const viewUserfollowingbyIdRoute = createRoute({
 })
 
 export const ViewUsersFollowingRoute = (handler: AppHandler) =>
-    handler.openapi(viewUserfollowingbyIdRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const { id } = ctx.req.valid("param")
         const { offset } = ctx.req.valid("query")
 

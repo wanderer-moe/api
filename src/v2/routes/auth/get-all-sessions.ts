@@ -5,7 +5,7 @@ import { GenericResponses } from "@/v2/lib/response-schemas"
 import { selectSessionSchema } from "@/v2/db/schema"
 import { z } from "@hono/zod-openapi"
 
-const sessionListSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     currentSessions: selectSessionSchema
         .pick({
@@ -15,7 +15,7 @@ const sessionListSchema = z.object({
         .array(),
 })
 
-const authAllCurrentSessions = createRoute({
+const openRoute = createRoute({
     path: "/sessions",
     method: "get",
     summary: "Get all current sessions",
@@ -26,7 +26,7 @@ const authAllCurrentSessions = createRoute({
             description: "All current sessions are returned",
             content: {
                 "application/json": {
-                    schema: sessionListSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -35,7 +35,7 @@ const authAllCurrentSessions = createRoute({
 })
 
 export const UserAllCurrentSessionsRoute = (handler: AppHandler) => {
-    handler.openapi(authAllCurrentSessions, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const authSessionManager = new AuthSessionManager(ctx)
 
         const { user } = await authSessionManager.validateSession()

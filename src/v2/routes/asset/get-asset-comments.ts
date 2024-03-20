@@ -3,11 +3,11 @@ import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 import { AppHandler } from "../handler"
-import { assetComments, assetCommentsLikes } from "@/v2/db/schema"
+import { asset, assetComments, assetCommentsLikes } from "@/v2/db/schema"
 import { selectAssetCommentsSchema } from "@/v2/db/schema"
 import { sql, eq, desc } from "drizzle-orm"
 
-const getAssetCommentsSchema = z.object({
+const pathSchema = z.object({
     id: z.string().openapi({
         param: {
             name: "id",
@@ -18,7 +18,7 @@ const getAssetCommentsSchema = z.object({
     }),
 })
 
-const getAssetCommentsOffsetSchema = z.object({
+const querySchema = z.object({
     offset: z
         .string()
         .optional()
@@ -32,7 +32,7 @@ const getAssetCommentsOffsetSchema = z.object({
         }),
 })
 
-const getAssetCommentsResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     comments: z.array(
         selectAssetCommentsSchema
@@ -50,22 +50,22 @@ const getAssetCommentsResponseSchema = z.object({
     ),
 })
 
-const getAssetCommentsRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/comments",
     method: "get",
     summary: "Get an asset's comments",
     description: "Get an asset's comments.",
     tags: ["Asset"],
     request: {
-        params: getAssetCommentsSchema,
-        query: getAssetCommentsOffsetSchema,
+        params: pathSchema,
+        query: querySchema,
     },
     responses: {
         200: {
             description: "Array of your asset comments.",
             content: {
                 "application/json": {
-                    schema: getAssetCommentsResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -74,11 +74,29 @@ const getAssetCommentsRoute = createRoute({
 })
 
 export const ViewAssetCommentsRoute = (handler: AppHandler) => {
-    handler.openapi(getAssetCommentsRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const assetId = ctx.req.valid("param").id
         const offset = parseInt(ctx.req.valid("query").offset) || 0
 
         const { drizzle } = await getConnection(ctx.env)
+
+        const [assetAllowsComments] = await drizzle
+            .select({
+                allowComments: asset.allowComments,
+            })
+            .from(asset)
+            .where(eq(asset.id, assetId))
+            .limit(1)
+
+        if (assetAllowsComments.allowComments) {
+            return ctx.json(
+                {
+                    success: false,
+                    message: "Comments are locked for this asset.",
+                },
+                403
+            )
+        }
 
         const comments = await drizzle
             .select({

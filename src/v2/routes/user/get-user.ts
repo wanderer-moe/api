@@ -7,7 +7,7 @@ import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 import { selectUserSchema } from "@/v2/db/schema"
 
-const getUserByIdSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             name: "id",
@@ -18,7 +18,7 @@ const getUserByIdSchema = z.object({
     }),
 })
 
-const getUserByIdResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     user: selectUserSchema.pick({
         id: true,
@@ -35,21 +35,21 @@ const getUserByIdResponseSchema = z.object({
     }),
 })
 
-const getUserByIdRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}",
     method: "get",
     summary: "Get a user",
     description: "Get a user by their ID.",
     tags: ["User"],
     request: {
-        params: getUserByIdSchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
             description: "The user was found.",
             content: {
                 "application/json": {
-                    schema: getUserByIdResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -58,7 +58,7 @@ const getUserByIdRoute = createRoute({
 })
 
 export const GetUserByIdRoute = (handler: AppHandler) => {
-    handler.openapi(getUserByIdRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const userId = ctx.req.valid("param").id
 
         const { drizzle } = await getConnection(ctx.env)

@@ -6,12 +6,12 @@ import { createRoute } from "@hono/zod-openapi"
 import { z } from "@hono/zod-openapi"
 import { selectAssetTagSchema } from "@/v2/db/schema"
 
-export const getAllTagsResponse = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     tags: selectAssetTagSchema.array(),
 })
 
-const getAllTagsRoute = createRoute({
+const openRoute = createRoute({
     path: "/all",
     method: "get",
     summary: "Get all tags",
@@ -22,7 +22,7 @@ const getAllTagsRoute = createRoute({
             description: "All tags.",
             content: {
                 "application/json": {
-                    schema: getAllTagsResponse,
+                    schema: responseSchema,
                 },
             },
         },
@@ -31,7 +31,7 @@ const getAllTagsRoute = createRoute({
 })
 
 export const AllTagsRoute = (handler: AppHandler) => {
-    handler.openapi(getAllTagsRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const { drizzle } = await getConnection(ctx.env)
 
         const tags = (await drizzle.select().from(assetTag)) ?? []

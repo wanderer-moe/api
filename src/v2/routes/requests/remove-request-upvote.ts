@@ -7,7 +7,7 @@ import { z } from "@hono/zod-openapi"
 import { requestForm, requestFormUpvotes } from "@/v2/db/schema"
 import { eq } from "drizzle-orm"
 
-export const removeRequestUpvoteByIdSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             name: "id",
@@ -19,18 +19,18 @@ export const removeRequestUpvoteByIdSchema = z.object({
     }),
 })
 
-export const removeRequestUpvoteByIdResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
 })
 
-const removeRequestUpvoteByIdRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/downvote",
     method: "post",
     summary: "Remove upvote on a request",
     description: "Remove a upvote on a request by its ID. Supporter required.",
     tags: ["Requests"],
     request: {
-        params: removeRequestUpvoteByIdSchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
@@ -38,7 +38,7 @@ const removeRequestUpvoteByIdRoute = createRoute({
                 "True if the request's upvote was removed successfully.",
             content: {
                 "application/json": {
-                    schema: removeRequestUpvoteByIdResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -47,7 +47,7 @@ const removeRequestUpvoteByIdRoute = createRoute({
 })
 
 export const RemoveRequestUpvoteRoute = (handler: AppHandler) => {
-    handler.openapi(removeRequestUpvoteByIdRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const requestId = ctx.req.valid("param").id
 
         const authSessionManager = new AuthSessionManager(ctx)

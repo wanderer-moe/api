@@ -7,7 +7,7 @@ import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 import type { AppHandler } from "../handler"
 
-const unlikeAssetByIdSchema = z.object({
+const paramsSchema = z.object({
     id: z.string().openapi({
         param: {
             description: "The id of the asset to unlike.",
@@ -19,25 +19,25 @@ const unlikeAssetByIdSchema = z.object({
     }),
 })
 
-const unlikeAssetByIdResponseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
 })
 
-const unlikeAssetByIdRoute = createRoute({
+const openRoute = createRoute({
     path: "/{id}/unlike",
     method: "post",
     summary: "Unlike an asset",
     description: "Unlike an asset from their ID.",
     tags: ["Asset"],
     request: {
-        params: unlikeAssetByIdSchema,
+        params: paramsSchema,
     },
     responses: {
         200: {
             description: "True if the asset was unliked.",
             content: {
                 "application/json": {
-                    schema: unlikeAssetByIdResponseSchema,
+                    schema: responseSchema,
                 },
             },
         },
@@ -46,7 +46,7 @@ const unlikeAssetByIdRoute = createRoute({
 })
 
 export const UnlikeAssetByIdRoute = (handler: AppHandler) => {
-    handler.openapi(unlikeAssetByIdRoute, async (ctx) => {
+    handler.openapi(openRoute, async (ctx) => {
         const assetId = ctx.req.valid("param").id
 
         const { drizzle } = await getConnection(ctx.env)
