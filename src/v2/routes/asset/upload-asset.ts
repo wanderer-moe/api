@@ -6,6 +6,7 @@ import { assetTagAsset } from "@/v2/db/schema"
 import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
+import { generateID } from "@/v2/lib/oslo"
 
 const AcceptedImageType = "image/png"
 const MaxFileSize = 5 * 1024 * 1024
@@ -135,14 +136,17 @@ export const UploadAssetRoute = (handler: AppHandler) =>
 
         const { drizzle } = getConnection(ctx.env)
 
+        const randomId = generateID()
+
         const { key } = await ctx.env.FILES_BUCKET.put(
-            `/assets/${gameId}/${assetCategoryId}/${name}.png`,
+            `/assets/${randomId}.png`,
             asset
         )
 
         const createdAsset = await drizzle
             .insert(asset)
             .values({
+                id: randomId,
                 name: name,
                 extension: "png",
                 gameId: gameId,
