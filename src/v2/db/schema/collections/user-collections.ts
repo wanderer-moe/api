@@ -85,6 +85,7 @@ export const userCollectionAsset = sqliteTable(
                 onUpdate: "cascade",
                 onDelete: "cascade",
             }),
+        order: integer("order").notNull(),
         dateAdded: text("date_added")
             .notNull()
             .$defaultFn(() => {

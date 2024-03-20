@@ -535,10 +535,12 @@ async function main() {
         .values([
             {
                 collectionId: newUserCollections[0].id,
+                order: 0,
                 assetId: newAssets[0].id,
             },
             {
                 collectionId: newUserCollections[0].id,
+                order: 1,
                 assetId: newAssets[1].id,
             },
         ])
