@@ -7,7 +7,7 @@ import {
     index,
 } from "drizzle-orm/sqlite-core"
 import { asset } from "../asset/asset"
-import { assetTagLikes } from "./asset-tags-likes"
+// import { assetTagLikes } from "./asset-tags-likes"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 
 /*
@@ -72,7 +72,7 @@ export const selectAssetTagAssetSchema = createSelectSchema(assetTagAsset)
 
 export const assetTagRelations = relations(assetTag, ({ many }) => ({
     assetTagAsset: many(assetTagAsset),
-    assetTagLikes: many(assetTagLikes),
+    // assetTagLikes: many(assetTagLikes),
 }))
 
 export const assetTagAssetRelations = relations(assetTagAsset, ({ one }) => ({

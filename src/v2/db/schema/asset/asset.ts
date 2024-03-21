@@ -36,7 +36,7 @@ export const asset = sqliteTable(
             .primaryKey()
             .notNull()
             .$defaultFn(() => {
-                return generateID()
+                return generateID(15)
             }),
         name: text("name").notNull(),
         extension: text("extension").notNull(),
@@ -78,7 +78,7 @@ export const asset = sqliteTable(
             .default(false)
             .notNull(),
         allowComments: integer("comments_is_locked", { mode: "boolean" })
-            .default(true)
+            .default(false)
             .notNull(),
         viewCount: integer("view_count").default(0).notNull(),
         downloadCount: integer("download_count").default(0).notNull(),

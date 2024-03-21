@@ -19,9 +19,9 @@ import { assetExternalFile } from "../asset/asset-external-files"
 import { userCollectionLikes } from "../collections/user-collection-likes"
 import { userCollectionCollaborators } from "../collections/user-collections-collaborators"
 import { assetLikes } from "../asset/asset-likes"
-import { gameLikes } from "../game/game-likes"
-import { assetTagLikes } from "../tags/asset-tags-likes"
-import { assetCategoryLikes } from "../categories/asset-categories-likes"
+// import { gameLikes } from "../game/game-likes"
+// import { assetTagLikes } from "../tags/asset-tags-likes"
+// import { assetCategoryLikes } from "../categories/asset-categories-likes"
 import { requestForm, requestFormUpvotes } from "../supporter/request-form"
 import { userBlocked } from "./user-blocked"
 import { assetComments } from "../asset/asset-comments"
@@ -214,9 +214,9 @@ export const usersRelations = relations(authUser, ({ one, many }) => ({
     stripeUser: one(stripeUser),
     passwordResetToken: one(passwordResetToken),
     emailVerificationToken: one(emailVerificationToken),
-    gameLikes: many(gameLikes),
-    assetTagLikes: many(assetTagLikes),
-    assetCategoryLikes: many(assetCategoryLikes),
+    // gameLikes: many(gameLikes),
+    // assetTagLikes: many(assetTagLikes),
+    // assetCategoryLikes: many(assetCategoryLikes),
     userCollectionCollaborators: many(userCollectionCollaborators),
     requestForm: many(requestForm),
     requestFormUpvotes: many(requestFormUpvotes),

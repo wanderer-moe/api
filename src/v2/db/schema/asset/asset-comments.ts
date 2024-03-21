@@ -19,7 +19,7 @@ export const assetComments = sqliteTable(
             .primaryKey()
             .notNull()
             .$defaultFn(() => {
-                return generateID()
+                return generateID(20)
             }),
         assetId: text("asset_id").references(() => asset.id, {
             onUpdate: "cascade",

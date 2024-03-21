@@ -9,7 +9,7 @@ import {
 } from "drizzle-orm/sqlite-core"
 import { asset } from "../asset/asset"
 import { gameAssetCategory } from "../categories/asset-categories"
-import { gameLikes } from "./game-likes"
+// import { gameLikes } from "./game-likes"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 
 /*
@@ -50,5 +50,5 @@ export const selectGameSchema = createSelectSchema(game)
 export const gameRelations = relations(game, ({ many }) => ({
     asset: many(asset),
     gameAssetCategory: many(gameAssetCategory),
-    gameLikes: many(gameLikes),
+    // gameLikes: many(gameLikes),
 }))

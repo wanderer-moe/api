@@ -20,6 +20,7 @@ import {
 import { Scrypt } from "lucia"
 import "dotenv/config"
 import * as dotenv from "dotenv"
+import { generateID } from "@/v2/lib/oslo"
 
 dotenv.config({ path: ".dev.vars" })
 
@@ -254,15 +255,21 @@ async function main() {
     )
 
     console.log("[SEED] [asset] Seeding assets...")
+
+    const assetIDArray = new Array(6).fill(null).map(() => {
+        return generateID()
+    })
+
     const newAssets = await db
         .insert(asset)
         .values([
             {
+                id: assetIDArray[0],
                 name: "test-asset",
                 extension: "image/png",
                 gameId: "genshin-impact",
                 assetCategoryId: "character-sheets",
-                url: "/genshin-impact/character-sheets/test-asset.png",
+                url: `/assets/${assetIDArray[0]}.png`,
                 status: "approved",
                 uploadedById: newUsers[0].id,
                 uploadedByName: newUsers[0].username,
@@ -273,11 +280,12 @@ async function main() {
                 height: 512,
             },
             {
+                id: assetIDArray[1],
                 name: "test-asset-2",
                 extension: "image/png",
                 gameId: "honkai-impact-3rd",
                 assetCategoryId: "character-sheets",
-                url: "/honkai-impact-3rd/character-sheets/test-asset2.png",
+                url: `/assets/${assetIDArray[1]}.png`,
                 status: "approved",
                 uploadedById: newUsers[1].id,
                 uploadedByName: newUsers[1].username,
@@ -288,11 +296,12 @@ async function main() {
                 height: 1080,
             },
             {
+                id: assetIDArray[2],
                 name: "test-asset-3",
                 extension: "image/png",
                 gameId: "genshin-impact",
                 assetCategoryId: "splash-art",
-                url: "/genshin-impact/splash-art/test-asset3.png",
+                url: `/assets/${assetIDArray[2]}.png`,
                 status: "approved",
                 uploadedById: newUsers[1].id,
                 uploadedByName: newUsers[1].username,
@@ -303,11 +312,12 @@ async function main() {
                 height: 1920,
             },
             {
+                id: assetIDArray[3],
                 name: "test-asset-4",
                 extension: "image/png",
                 gameId: "genshin-impact",
                 assetCategoryId: "splash-art",
-                url: "/genshin-impact/splash-art/test-asset4.png",
+                url: `/assets/${assetIDArray[3]}.png`,
                 status: "approved",
                 uploadedById: newUsers[1].id,
                 uploadedByName: newUsers[1].username,
@@ -318,11 +328,12 @@ async function main() {
                 height: 1080,
             },
             {
+                id: assetIDArray[4],
                 name: "test-asset-5",
                 extension: "image/png",
                 gameId: "genshin-impact",
                 assetCategoryId: "splash-art",
-                url: "/genshin-impact/splash-art/test-asset5.png",
+                url: `/assets/${assetIDArray[4]}.png`,
                 status: "approved",
                 uploadedById: newUsers[2].id,
                 uploadedByName: newUsers[2].username,
@@ -330,11 +341,12 @@ async function main() {
                 downloadCount: 1337,
             },
             {
+                id: assetIDArray[5],
                 name: "test-asset-6",
                 extension: "image/png",
                 gameId: "honkai-impact-3rd",
                 assetCategoryId: "character-sheets",
-                url: "/honkai-impact-3rd/character-sheets/test-asset6.png",
+                url: `/assets/${assetIDArray[5]}.png`,
                 status: "approved",
                 uploadedById: newUsers[2].id,
                 uploadedByName: newUsers[2].username,

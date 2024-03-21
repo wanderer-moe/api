@@ -4,13 +4,13 @@ export * from "./schema/asset/asset-external-files"
 export * from "./schema/asset/asset-likes"
 
 export * from "./schema/categories/asset-categories"
-export * from "./schema/categories/asset-categories-likes"
+// export * from "./schema/categories/asset-categories-likes"
 
 export * from "./schema/game/game"
-export * from "./schema/game/game-likes"
+// export * from "./schema/game/game-likes"
 
 export * from "./schema/tags/asset-tags"
-export * from "./schema/tags/asset-tags-likes"
+// export * from "./schema/tags/asset-tags-likes"
 
 export * from "./schema/user/user"
 export * from "./schema/user/user-attributes"

@@ -9,7 +9,7 @@ import {
 import { game } from "../game/game"
 import { asset } from "../asset/asset"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
-import { assetCategoryLikes } from "./asset-categories-likes"
+// import { assetCategoryLikes } from "./asset-categories-likes"
 
 export const assetCategory = sqliteTable(
     tableNames.assetCategory,
@@ -78,7 +78,7 @@ export const selectGameAssetCategorySchema =
 export const assetCategoryRelations = relations(assetCategory, ({ many }) => ({
     asset: many(asset),
     gameAssetCategory: many(gameAssetCategory),
-    assetCategoryLikes: many(assetCategoryLikes),
+    // assetCategoryLikes: many(assetCategoryLikes),
 }))
 
 export const gameAssetCategoryRelations = relations(
