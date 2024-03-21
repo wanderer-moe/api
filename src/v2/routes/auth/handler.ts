@@ -5,6 +5,8 @@ import { UserAllCurrentSessionsRoute } from "./get-all-sessions"
 import { LogoutCurrentSessionRoute } from "./logout-current-session"
 import { ValidateSessionRoute } from "./validate-current-session"
 import { InvalidateSessionRoute } from "./invalidate-session"
+import { UploadAvatarRoute } from "./upload-avatar"
+import { UploadBannerRoute } from "./upload-banner"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
@@ -15,5 +17,8 @@ ValidateSessionRoute(handler)
 InvalidateSessionRoute(handler)
 UserAllCurrentSessionsRoute(handler)
 LogoutCurrentSessionRoute(handler)
+
+UploadAvatarRoute(handler)
+UploadBannerRoute(handler)
 
 export default handler

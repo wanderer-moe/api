@@ -88,7 +88,7 @@ export const GetCommentsRepliesRoute = (handler: AppHandler) => {
                 comment: assetComments.comment,
                 createdAt: assetComments.createdAt,
                 hasReplies: sql`EXISTS (SELECT 1 FROM assetComments AS ac WHERE ac.parent_comment_id = ${assetComments.id})`,
-                likes: sql`COUNT(${assetCommentsLikes.commentId})`,
+                likes: sql<number>`COUNT(${assetCommentsLikes.commentId})`,
             })
             .from(assetComments)
             .where(eq(assetComments.parentCommentId, commentId))

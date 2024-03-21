@@ -6,7 +6,7 @@ import { createRoute } from "@hono/zod-openapi"
 import { z } from "@hono/zod-openapi"
 import { selectAssetCategorySchema } from "@/v2/db/schema"
 
-export const responseSchema = z.object({
+const responseSchema = z.object({
     success: z.literal(true),
     categories: selectAssetCategorySchema.array(),
 })

@@ -7,6 +7,7 @@ import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
 import { generateID } from "@/v2/lib/oslo"
+import { CheckLabels } from "@/v2/lib/helpers/check-image-tags"
 
 const AcceptedImageType = "image/png"
 const MaxFileSize = 5 * 1024 * 1024
@@ -131,6 +132,18 @@ export const UploadAssetRoute = (handler: AppHandler) =>
                     message: "Unauthorized",
                 },
                 401
+            )
+        }
+
+        const labels = await CheckLabels(ctx, asset)
+
+        if (labels) {
+            return ctx.json(
+                {
+                    success: false,
+                    message: "Image contains potentially suggestive content.",
+                },
+                400
             )
         }
 
