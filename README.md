@@ -6,6 +6,8 @@
 
 Source code for the API powering [**wanderer.moe**](https://wanderer.moe).
 
+</div>
+
 Tech Stack:
 
 -   Turso - Database (Libsql, fork of SQLite)
@@ -17,8 +19,6 @@ Tech Stack:
 -   Cloudflare R2 - Storage
 -   Cloudflare DO - Ratelimiting
 -   Lucia Auth - Authentication
-
-</div>
 
 ---
 
