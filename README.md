@@ -4,13 +4,29 @@
 
 ![Quality]
 
-Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — using **Cloudflare Workers** and **Hono** with **R2 Storage** for the CDN, **Turso** and **Drizzle**. Durable Objects are used for rate limiting requests.
+Source code for the API powering [**wanderer.moe**](https://wanderer.moe).
+
+Tech Stack:
+
+-   Turso - Database (Libsql, fork of SQLite)
+-   Drizzle - ORM
+-   Hono - Framework
+-   Scalar - OpenAPI Documentation
+-   Bun - Bun
+-   Resend - Emails
+-   Cloudflare R2 - Storage
+-   Cloudflare DO - Ratelimiting
+-   Lucia Auth - Authentication
 
 </div>
 
 ---
 
 ## Usage
+
+### Bun
+
+Bun is relatively lightweight and easy to use. You can install it with `npm i bun -g` globally using `npm`.
 
 ### Turso
 
