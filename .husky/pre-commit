@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-pnpm run typecheck && pnpm run lint && pnpm run prettier:check
+bun run typecheck && bun run lint && bun run prettier:check

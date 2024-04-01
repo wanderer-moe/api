@@ -22,7 +22,7 @@ To install `sqld` for dev db `wget https://github.com/libsql/sqld/releases/downl
 
 The API will connect to the local database if the environment is set to `DEV` in `.dev.vars`, else - it will connect to your production database.
 
-To generate seed data, generate and migrate, you can run `pnpm drizzle:init:dev`.
+To generate seed data, generate and migrate, you can run `bun run drizzle:init:dev`.
 
 ### Wrangler
 

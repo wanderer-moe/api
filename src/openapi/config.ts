@@ -1,6 +1,4 @@
-import { OpenAPIObjectConfig } from "@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator"
-
-export const OpenAPIConfig: OpenAPIObjectConfig = {
+export const OpenAPIConfig = {
     openapi: "3.1.0",
     info: {
         version: "2.0.0",

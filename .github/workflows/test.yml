@@ -25,18 +25,17 @@ jobs:
               uses: actions/checkout@v3
 
             - name: Setup Node.js
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               with:
                   node-version: 20.9.0
 
-            - name: Install pnpm
-              uses: pnpm/action-setup@v2
+            - name: Install bun
+              uses: oven-sh/setup-bun@v1
               with:
-                  version: latest
-                  run_install: false
+                  bun-version: latest
 
             - name: Install dependencies
-              run: pnpm install
+              run: bun i
 
             - name: Create .dev.vars file
               run: |
@@ -44,4 +43,4 @@ jobs:
                   echo TURSO_DEV_DATABASE_URL=$TURSO_DEV_DATABASE_URL >> .dev.vars
 
             - name: Initialize Drizzle
-              run: pnpm drizzle:dev:init
+              run: bun run drizzle:dev:init
