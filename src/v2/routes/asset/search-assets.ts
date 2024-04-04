@@ -23,6 +23,7 @@ const responseSchema = z.object({
                 gameId: true,
                 viewCount: true,
                 downloadCount: true,
+                uploadedDate: true,
                 fileSize: true,
                 width: true,
                 height: true,
@@ -83,10 +84,18 @@ const querySchema = z
         }),
         offset: z.string().openapi({
             param: {
-                description:
-                    "The offset of the asset(s) to retrieve. For pagination / infinite scrolling.",
+                description: "The offset for the asset(s) to retrieve.",
                 name: "offset",
                 example: "0",
+                in: "query",
+                required: false,
+            },
+        }),
+        limit: z.string().openapi({
+            param: {
+                description: "The limit for the asset(s) to retrieve.",
+                name: "limit",
+                example: "25",
                 in: "query",
                 required: false,
             },
@@ -122,7 +131,8 @@ export const AssetSearchAllFilterRoute = (handler: AppHandler) => {
     handler.openapi(openRoute, async (ctx) => {
         const { drizzle } = await getConnection(ctx.env)
 
-        const { name, game, category, tags, offset } = ctx.req.valid("query")
+        const { name, game, category, tags, offset, limit } =
+            ctx.req.valid("query")
 
         const gameList = game ? SplitQueryByCommas(game.toLowerCase()) : null
         const categoryList = category
@@ -158,7 +168,7 @@ export const AssetSearchAllFilterRoute = (handler: AppHandler) => {
                         : undefined,
                     eq(asset.status, "approved")
                 ),
-            limit: 100,
+            limit: limit ? parseInt(limit) : 50,
             offset: offset ? parseInt(offset) : 0,
             columns: {
                 id: true,
@@ -169,6 +179,7 @@ export const AssetSearchAllFilterRoute = (handler: AppHandler) => {
                 gameId: true,
                 viewCount: true,
                 downloadCount: true,
+                uploadedDate: true,
                 fileSize: true,
                 width: true,
                 height: true,
