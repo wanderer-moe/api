@@ -7,8 +7,9 @@ workers_dev = true
 
 [[r2_buckets]]
 binding = 'FILES_BUCKET'
-bucket_name = 'files'
-preview_bucket_name = 'files'
+bucket_name = 'files-wanderer-moe'
+preview_bucket_name = 'files-wanderer-moe'
+jurisdiction = 'eu'
 
 [durable_objects]
 bindings = [

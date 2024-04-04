@@ -51,8 +51,8 @@ export function luciaAuth(env: Bindings) {
                 // plus i feel this is better user experience in general lol
                 expires: false,
                 attributes: {
-                    secure: env.ENVIRONMENT === "PROD",
-                    sameSite: env.ENVIRONMENT === "PROD" ? "strict" : "lax",
+                    secure: true,
+                    sameSite: "strict",
                     path: "/",
                 },
             },
