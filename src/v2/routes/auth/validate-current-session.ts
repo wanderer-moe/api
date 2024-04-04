@@ -3,11 +3,12 @@ import { AuthSessionManager } from "@/v2/lib/managers/auth/user-session-manager"
 import { createRoute } from "@hono/zod-openapi"
 import { GenericResponses } from "@/v2/lib/response-schemas"
 import { z } from "@hono/zod-openapi"
-import { selectUserSchema } from "@/v2/db/schema"
+import { selectSessionSchema, selectUserSchema } from "@/v2/db/schema"
 
 const responseSchema = z.object({
     success: z.literal(true),
     user: selectUserSchema,
+    session: selectSessionSchema,
 })
 
 const openRoute = createRoute({
@@ -33,7 +34,7 @@ export const ValidateSessionRoute = (handler: AppHandler) => {
     handler.openapi(openRoute, async (ctx) => {
         const authSessionManager = new AuthSessionManager(ctx)
 
-        const { user } = await authSessionManager.validateSession()
+        const { user, session } = await authSessionManager.validateSession()
 
         if (!user) {
             return ctx.json(
@@ -48,7 +49,8 @@ export const ValidateSessionRoute = (handler: AppHandler) => {
         return ctx.json(
             {
                 success: true,
-                user,
+                user: user,
+                session: session,
             },
             200
         )
