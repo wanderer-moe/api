@@ -1,9 +1,6 @@
 # webstorm
 .idea
 
-# migrations (temporary)
-src/v2/db/migrations
-
 # Wrangler & env
 
 .env

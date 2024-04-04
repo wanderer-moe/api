@@ -1,0 +1,1855 @@
+{
+    "version": "5",
+    "dialect": "sqlite",
+    "id": "e832f8e6-9b8a-46d2-9434-1c0ff8f8f453",
+    "prevId": "00000000-0000-0000-0000-000000000000",
+    "tables": {
+        "asset": {
+            "name": "asset",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "text",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "name": {
+                    "name": "name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "extension": {
+                    "name": "extension",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "game": {
+                    "name": "game",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "asset_category": {
+                    "name": "asset_category",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "uploaded_by_id": {
+                    "name": "uploaded_by_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "uploaded_by_name": {
+                    "name": "uploaded_by_name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "url": {
+                    "name": "url",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "status": {
+                    "name": "status",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": "'pending'"
+                },
+                "uploaded_date": {
+                    "name": "uploaded_date",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "asset_is_suggestive": {
+                    "name": "asset_is_suggestive",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": false
+                },
+                "comments_is_locked": {
+                    "name": "comments_is_locked",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": false
+                },
+                "view_count": {
+                    "name": "view_count",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": 0
+                },
+                "download_count": {
+                    "name": "download_count",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": 0
+                },
+                "file_size": {
+                    "name": "file_size",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": 0
+                },
+                "width": {
+                    "name": "width",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": 0
+                },
+                "height": {
+                    "name": "height",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": 0
+                }
+            },
+            "indexes": {
+                "assets_id_idx": {
+                    "name": "assets_id_idx",
+                    "columns": ["id"],
+                    "isUnique": false
+                },
+                "assets_name_idx": {
+                    "name": "assets_name_idx",
+                    "columns": ["name"],
+                    "isUnique": false
+                },
+                "assets_game_name_idx": {
+                    "name": "assets_game_name_idx",
+                    "columns": ["game"],
+                    "isUnique": false
+                },
+                "assets_asset_category_name_idx": {
+                    "name": "assets_asset_category_name_idx",
+                    "columns": ["asset_category"],
+                    "isUnique": false
+                },
+                "assets_uploaded_by_id_idx": {
+                    "name": "assets_uploaded_by_id_idx",
+                    "columns": ["uploaded_by_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "asset_game_game_id_fk": {
+                    "name": "asset_game_game_id_fk",
+                    "tableFrom": "asset",
+                    "tableTo": "game",
+                    "columnsFrom": ["game"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                },
+                "asset_asset_category_assetCategory_id_fk": {
+                    "name": "asset_asset_category_assetCategory_id_fk",
+                    "tableFrom": "asset",
+                    "tableTo": "assetCategory",
+                    "columnsFrom": ["asset_category"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                },
+                "asset_uploaded_by_id_authUser_id_fk": {
+                    "name": "asset_uploaded_by_id_authUser_id_fk",
+                    "tableFrom": "asset",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["uploaded_by_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                },
+                "asset_uploaded_by_name_authUser_username_fk": {
+                    "name": "asset_uploaded_by_name_authUser_username_fk",
+                    "tableFrom": "asset",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["uploaded_by_name"],
+                    "columnsTo": ["username"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "assetComments": {
+            "name": "assetComments",
+            "columns": {
+                "comment_id": {
+                    "name": "comment_id",
+                    "type": "text",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "asset_id": {
+                    "name": "asset_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "parent_comment_id": {
+                    "name": "parent_comment_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "commented_by_id": {
+                    "name": "commented_by_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "comment": {
+                    "name": "comment",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "edited_at": {
+                    "name": "edited_at",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false,
+                    "default": null
+                }
+            },
+            "indexes": {
+                "assetcomments_asset_idx": {
+                    "name": "assetcomments_asset_idx",
+                    "columns": ["asset_id"],
+                    "isUnique": false
+                },
+                "assetcomments_parent_comment_idx": {
+                    "name": "assetcomments_parent_comment_idx",
+                    "columns": ["parent_comment_id"],
+                    "isUnique": false
+                },
+                "assetcomments_commented_by_idx": {
+                    "name": "assetcomments_commented_by_idx",
+                    "columns": ["commented_by_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "assetComments_asset_id_asset_id_fk": {
+                    "name": "assetComments_asset_id_asset_id_fk",
+                    "tableFrom": "assetComments",
+                    "tableTo": "asset",
+                    "columnsFrom": ["asset_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                },
+                "assetComments_commented_by_id_authUser_id_fk": {
+                    "name": "assetComments_commented_by_id_authUser_id_fk",
+                    "tableFrom": "assetComments",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["commented_by_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                },
+                "self_reference_parent_comment_id": {
+                    "name": "self_reference_parent_comment_id",
+                    "tableFrom": "assetComments",
+                    "tableTo": "assetComments",
+                    "columnsFrom": ["parent_comment_id"],
+                    "columnsTo": ["comment_id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "assetCommentsLikes": {
+            "name": "assetCommentsLikes",
+            "columns": {
+                "comment_id": {
+                    "name": "comment_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "liked_by_id": {
+                    "name": "liked_by_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "assetcommentslikes_comment_idx": {
+                    "name": "assetcommentslikes_comment_idx",
+                    "columns": ["comment_id"],
+                    "isUnique": false
+                },
+                "assetcommentslikes_liked_by_idx": {
+                    "name": "assetcommentslikes_liked_by_idx",
+                    "columns": ["liked_by_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "assetCommentsLikes_comment_id_assetComments_comment_id_fk": {
+                    "name": "assetCommentsLikes_comment_id_assetComments_comment_id_fk",
+                    "tableFrom": "assetCommentsLikes",
+                    "tableTo": "assetComments",
+                    "columnsFrom": ["comment_id"],
+                    "columnsTo": ["comment_id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                },
+                "assetCommentsLikes_liked_by_id_authUser_id_fk": {
+                    "name": "assetCommentsLikes_liked_by_id_authUser_id_fk",
+                    "tableFrom": "assetCommentsLikes",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["liked_by_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "assetExternalFile": {
+            "name": "assetExternalFile",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "text",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "url": {
+                    "name": "url",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "uploaded_by": {
+                    "name": "uploaded_by",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "uploaded_by_name": {
+                    "name": "uploaded_by_name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "asset_id": {
+                    "name": "asset_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "uploaded_date": {
+                    "name": "uploaded_date",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "file_size": {
+                    "name": "file_size",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": 0
+                },
+                "file_type": {
+                    "name": "file_type",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "asset_external_file_id_idx": {
+                    "name": "asset_external_file_id_idx",
+                    "columns": ["id"],
+                    "isUnique": false
+                },
+                "asset_external_file_uploaded_by_id_idx": {
+                    "name": "asset_external_file_uploaded_by_id_idx",
+                    "columns": ["uploaded_by"],
+                    "isUnique": false
+                },
+                "asset_external_file_uploaded_by_name_idx": {
+                    "name": "asset_external_file_uploaded_by_name_idx",
+                    "columns": ["uploaded_by_name"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "assetExternalFile_uploaded_by_authUser_id_fk": {
+                    "name": "assetExternalFile_uploaded_by_authUser_id_fk",
+                    "tableFrom": "assetExternalFile",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["uploaded_by"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                },
+                "assetExternalFile_uploaded_by_name_authUser_username_fk": {
+                    "name": "assetExternalFile_uploaded_by_name_authUser_username_fk",
+                    "tableFrom": "assetExternalFile",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["uploaded_by_name"],
+                    "columnsTo": ["username"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                },
+                "assetExternalFile_asset_id_asset_id_fk": {
+                    "name": "assetExternalFile_asset_id_asset_id_fk",
+                    "tableFrom": "assetExternalFile",
+                    "tableTo": "asset",
+                    "columnsFrom": ["asset_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "assetLikes": {
+            "name": "assetLikes",
+            "columns": {
+                "asset_id": {
+                    "name": "asset_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "liked_by_id": {
+                    "name": "liked_by_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "assetlikes_asset_idx": {
+                    "name": "assetlikes_asset_idx",
+                    "columns": ["asset_id"],
+                    "isUnique": false
+                },
+                "assetlikes_likedBy_idx": {
+                    "name": "assetlikes_likedBy_idx",
+                    "columns": ["liked_by_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "assetLikes_asset_id_asset_id_fk": {
+                    "name": "assetLikes_asset_id_asset_id_fk",
+                    "tableFrom": "assetLikes",
+                    "tableTo": "asset",
+                    "columnsFrom": ["asset_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                },
+                "assetLikes_liked_by_id_authUser_id_fk": {
+                    "name": "assetLikes_liked_by_id_authUser_id_fk",
+                    "tableFrom": "assetLikes",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["liked_by_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "assetCategory": {
+            "name": "assetCategory",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "text",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "name": {
+                    "name": "name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "formatted_name": {
+                    "name": "formatted_name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "last_updated": {
+                    "name": "last_updated",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "assetCategory_name_unique": {
+                    "name": "assetCategory_name_unique",
+                    "columns": ["name"],
+                    "isUnique": true
+                },
+                "asset_category_id_idx": {
+                    "name": "asset_category_id_idx",
+                    "columns": ["id"],
+                    "isUnique": false
+                },
+                "asset_category_name_idx": {
+                    "name": "asset_category_name_idx",
+                    "columns": ["name"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {},
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "gameAssetCategory": {
+            "name": "gameAssetCategory",
+            "columns": {
+                "game_id": {
+                    "name": "game_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "asset_category_id": {
+                    "name": "asset_category_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "game_asset_category_game_id_idx": {
+                    "name": "game_asset_category_game_id_idx",
+                    "columns": ["game_id"],
+                    "isUnique": false
+                },
+                "game_asset_category_asset_category_id_idx": {
+                    "name": "game_asset_category_asset_category_id_idx",
+                    "columns": ["asset_category_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "gameAssetCategory_game_id_game_id_fk": {
+                    "name": "gameAssetCategory_game_id_game_id_fk",
+                    "tableFrom": "gameAssetCategory",
+                    "tableTo": "game",
+                    "columnsFrom": ["game_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                },
+                "gameAssetCategory_asset_category_id_assetCategory_id_fk": {
+                    "name": "gameAssetCategory_asset_category_id_assetCategory_id_fk",
+                    "tableFrom": "gameAssetCategory",
+                    "tableTo": "assetCategory",
+                    "columnsFrom": ["asset_category_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "game": {
+            "name": "game",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "text",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "name": {
+                    "name": "name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "formatted_name": {
+                    "name": "formatted_name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "possible_suggestive_content": {
+                    "name": "possible_suggestive_content",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": false
+                },
+                "last_updated": {
+                    "name": "last_updated",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "game_name_unique": {
+                    "name": "game_name_unique",
+                    "columns": ["name"],
+                    "isUnique": true
+                },
+                "game_id_idx": {
+                    "name": "game_id_idx",
+                    "columns": ["id"],
+                    "isUnique": false
+                },
+                "game_name_idx": {
+                    "name": "game_name_idx",
+                    "columns": ["name"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {},
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "assetTag": {
+            "name": "assetTag",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "text",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "name": {
+                    "name": "name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "formatted_name": {
+                    "name": "formatted_name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "last_updated": {
+                    "name": "last_updated",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "assetTag_name_unique": {
+                    "name": "assetTag_name_unique",
+                    "columns": ["name"],
+                    "isUnique": true
+                },
+                "asset_tag_id_idx": {
+                    "name": "asset_tag_id_idx",
+                    "columns": ["id"],
+                    "isUnique": false
+                },
+                "asset_tag_name_idx": {
+                    "name": "asset_tag_name_idx",
+                    "columns": ["name"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {},
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "assetTagAsset": {
+            "name": "assetTagAsset",
+            "columns": {
+                "asset_tag_id": {
+                    "name": "asset_tag_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "asset_id": {
+                    "name": "asset_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "asset_tags_assets_asset_tag_id_idx": {
+                    "name": "asset_tags_assets_asset_tag_id_idx",
+                    "columns": ["asset_tag_id"],
+                    "isUnique": false
+                },
+                "asset_tags_assets_asset_id_idx": {
+                    "name": "asset_tags_assets_asset_id_idx",
+                    "columns": ["asset_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "assetTagAsset_asset_tag_id_assetTag_id_fk": {
+                    "name": "assetTagAsset_asset_tag_id_assetTag_id_fk",
+                    "tableFrom": "assetTagAsset",
+                    "tableTo": "assetTag",
+                    "columnsFrom": ["asset_tag_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                },
+                "assetTagAsset_asset_id_asset_id_fk": {
+                    "name": "assetTagAsset_asset_id_asset_id_fk",
+                    "tableFrom": "assetTagAsset",
+                    "tableTo": "asset",
+                    "columnsFrom": ["asset_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "authCredentials": {
+            "name": "authCredentials",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "text",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "hashed_password": {
+                    "name": "hashed_password",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "key_user_id_idx": {
+                    "name": "key_user_id_idx",
+                    "columns": ["user_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "authCredentials_user_id_authUser_id_fk": {
+                    "name": "authCredentials_user_id_authUser_id_fk",
+                    "tableFrom": "authCredentials",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["user_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "authUser": {
+            "name": "authUser",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "text",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "avatar_url": {
+                    "name": "avatar_url",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "banner_url": {
+                    "name": "banner_url",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "display_name": {
+                    "name": "display_name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "username": {
+                    "name": "username",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "username_colour": {
+                    "name": "username_colour",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "email": {
+                    "name": "email",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "email_verified": {
+                    "name": "email_verified",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": 0
+                },
+                "pronouns": {
+                    "name": "pronouns",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "verified": {
+                    "name": "verified",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": 0
+                },
+                "bio": {
+                    "name": "bio",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": "'No bio set'"
+                },
+                "date_joined": {
+                    "name": "date_joined",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "plan": {
+                    "name": "plan",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": "'free'"
+                },
+                "is_banned": {
+                    "name": "is_banned",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": false
+                },
+                "is_contributor": {
+                    "name": "is_contributor",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": false
+                },
+                "role": {
+                    "name": "role",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": "'user'"
+                }
+            },
+            "indexes": {
+                "authUser_username_unique": {
+                    "name": "authUser_username_unique",
+                    "columns": ["username"],
+                    "isUnique": true
+                },
+                "user_id_idx": {
+                    "name": "user_id_idx",
+                    "columns": ["id"],
+                    "isUnique": false
+                },
+                "user_username_idx": {
+                    "name": "user_username_idx",
+                    "columns": ["username"],
+                    "isUnique": false
+                },
+                "user_email_idx": {
+                    "name": "user_email_idx",
+                    "columns": ["email"],
+                    "isUnique": false
+                },
+                "user_contributor_idx": {
+                    "name": "user_contributor_idx",
+                    "columns": ["is_contributor"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {},
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "stripeUser": {
+            "name": "stripeUser",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "text",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "stripe_customer_id": {
+                    "name": "stripe_customer_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "stripe_subscription_id": {
+                    "name": "stripe_subscription_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "ends_at": {
+                    "name": "ends_at",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "paid_until": {
+                    "name": "paid_until",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "stripe_user_user_id_idx": {
+                    "name": "stripe_user_user_id_idx",
+                    "columns": ["user_id"],
+                    "isUnique": false
+                },
+                "stripe_user_stripe_customer_id_idx": {
+                    "name": "stripe_user_stripe_customer_id_idx",
+                    "columns": ["stripe_customer_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "stripeUser_user_id_authUser_id_fk": {
+                    "name": "stripeUser_user_id_authUser_id_fk",
+                    "tableFrom": "stripeUser",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["user_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "authSession": {
+            "name": "authSession",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "text",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "expires_at": {
+                    "name": "expires_at",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "user_agent": {
+                    "name": "user_agent",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "country_code": {
+                    "name": "country_code",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "ip_address": {
+                    "name": "ip_address",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "session_user_id_idx": {
+                    "name": "session_user_id_idx",
+                    "columns": ["user_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "authSession_user_id_authUser_id_fk": {
+                    "name": "authSession_user_id_authUser_id_fk",
+                    "tableFrom": "authSession",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["user_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "emailVerificationToken": {
+            "name": "emailVerificationToken",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "text",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "token": {
+                    "name": "token",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "expires_at": {
+                    "name": "expires_at",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "email_verification_token_user_id_idx": {
+                    "name": "email_verification_token_user_id_idx",
+                    "columns": ["user_id"],
+                    "isUnique": false
+                },
+                "email_verification_token_token_idx": {
+                    "name": "email_verification_token_token_idx",
+                    "columns": ["token"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "emailVerificationToken_user_id_authUser_id_fk": {
+                    "name": "emailVerificationToken_user_id_authUser_id_fk",
+                    "tableFrom": "emailVerificationToken",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["user_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "passwordResetToken": {
+            "name": "passwordResetToken",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "text",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "token": {
+                    "name": "token",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "expires_at": {
+                    "name": "expires_at",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "password_reset_token_user_id_idx": {
+                    "name": "password_reset_token_user_id_idx",
+                    "columns": ["user_id"],
+                    "isUnique": false
+                },
+                "password_reset_token_token_idx": {
+                    "name": "password_reset_token_token_idx",
+                    "columns": ["token"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "passwordResetToken_user_id_authUser_id_fk": {
+                    "name": "passwordResetToken_user_id_authUser_id_fk",
+                    "tableFrom": "passwordResetToken",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["user_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "userCollection": {
+            "name": "userCollection",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "text",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "name": {
+                    "name": "name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "description": {
+                    "name": "description",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "date_created": {
+                    "name": "date_created",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "accent_colour": {
+                    "name": "accent_colour",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "is_public": {
+                    "name": "is_public",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": false
+                }
+            },
+            "indexes": {
+                "collection_id_idx": {
+                    "name": "collection_id_idx",
+                    "columns": ["id"],
+                    "isUnique": false
+                },
+                "user_collection_id_idx": {
+                    "name": "user_collection_id_idx",
+                    "columns": ["user_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "userCollection_user_id_authUser_id_fk": {
+                    "name": "userCollection_user_id_authUser_id_fk",
+                    "tableFrom": "userCollection",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["user_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "userCollectionAsset": {
+            "name": "userCollectionAsset",
+            "columns": {
+                "collection_id": {
+                    "name": "collection_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "asset_id": {
+                    "name": "asset_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "order": {
+                    "name": "order",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "date_added": {
+                    "name": "date_added",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "collection_assets_collection_id_idx": {
+                    "name": "collection_assets_collection_id_idx",
+                    "columns": ["collection_id"],
+                    "isUnique": false
+                },
+                "collection_assets_asset_id_idx": {
+                    "name": "collection_assets_asset_id_idx",
+                    "columns": ["asset_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "userCollectionAsset_collection_id_userCollection_id_fk": {
+                    "name": "userCollectionAsset_collection_id_userCollection_id_fk",
+                    "tableFrom": "userCollectionAsset",
+                    "tableTo": "userCollection",
+                    "columnsFrom": ["collection_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                },
+                "userCollectionAsset_asset_id_asset_id_fk": {
+                    "name": "userCollectionAsset_asset_id_asset_id_fk",
+                    "tableFrom": "userCollectionAsset",
+                    "tableTo": "asset",
+                    "columnsFrom": ["asset_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "socialsConnection": {
+            "name": "socialsConnection",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "text",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "discord_id": {
+                    "name": "discord_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "socialsConnection_user_id_unique": {
+                    "name": "socialsConnection_user_id_unique",
+                    "columns": ["user_id"],
+                    "isUnique": true
+                },
+                "socials_connection_user_id_idx": {
+                    "name": "socials_connection_user_id_idx",
+                    "columns": ["user_id"],
+                    "isUnique": false
+                },
+                "socials_connection_discord_id_idx": {
+                    "name": "socials_connection_discord_id_idx",
+                    "columns": ["discord_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "socialsConnection_user_id_authUser_id_fk": {
+                    "name": "socialsConnection_user_id_authUser_id_fk",
+                    "tableFrom": "socialsConnection",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["user_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "userFollowing": {
+            "name": "userFollowing",
+            "columns": {
+                "followerId": {
+                    "name": "followerId",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "followingId": {
+                    "name": "followingId",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "userfollowing_follower_idx": {
+                    "name": "userfollowing_follower_idx",
+                    "columns": ["followerId"],
+                    "isUnique": false
+                },
+                "userfollowing_following_idx": {
+                    "name": "userfollowing_following_idx",
+                    "columns": ["followingId"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "userFollowing_followerId_authUser_id_fk": {
+                    "name": "userFollowing_followerId_authUser_id_fk",
+                    "tableFrom": "userFollowing",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["followerId"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                },
+                "userFollowing_followingId_authUser_id_fk": {
+                    "name": "userFollowing_followingId_authUser_id_fk",
+                    "tableFrom": "userFollowing",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["followingId"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "userBlocked": {
+            "name": "userBlocked",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "text",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "blocked_by_id": {
+                    "name": "blocked_by_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "blocked_id": {
+                    "name": "blocked_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "user_blocked_id_idx": {
+                    "name": "user_blocked_id_idx",
+                    "columns": ["id"],
+                    "isUnique": false
+                },
+                "user_blocked_blocked_by_id_idx": {
+                    "name": "user_blocked_blocked_by_id_idx",
+                    "columns": ["blocked_by_id"],
+                    "isUnique": false
+                },
+                "user_blocked_blocked_id_idx": {
+                    "name": "user_blocked_blocked_id_idx",
+                    "columns": ["blocked_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "userBlocked_blocked_by_id_authUser_id_fk": {
+                    "name": "userBlocked_blocked_by_id_authUser_id_fk",
+                    "tableFrom": "userBlocked",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["blocked_by_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                },
+                "userBlocked_blocked_id_authUser_id_fk": {
+                    "name": "userBlocked_blocked_id_authUser_id_fk",
+                    "tableFrom": "userBlocked",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["blocked_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "userCollectionLikes": {
+            "name": "userCollectionLikes",
+            "columns": {
+                "collection_id": {
+                    "name": "collection_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "liked_by_id": {
+                    "name": "liked_by_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "userCollectionNetworking_collection_idx": {
+                    "name": "userCollectionNetworking_collection_idx",
+                    "columns": ["collection_id"],
+                    "isUnique": false
+                },
+                "userCollectionNetworking_likedBy_idx": {
+                    "name": "userCollectionNetworking_likedBy_idx",
+                    "columns": ["liked_by_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "userCollectionLikes_collection_id_userCollection_id_fk": {
+                    "name": "userCollectionLikes_collection_id_userCollection_id_fk",
+                    "tableFrom": "userCollectionLikes",
+                    "tableTo": "userCollection",
+                    "columnsFrom": ["collection_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                },
+                "userCollectionLikes_liked_by_id_authUser_id_fk": {
+                    "name": "userCollectionLikes_liked_by_id_authUser_id_fk",
+                    "tableFrom": "userCollectionLikes",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["liked_by_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "userCollectionCollaborators": {
+            "name": "userCollectionCollaborators",
+            "columns": {
+                "collection_id": {
+                    "name": "collection_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "collaborator_id": {
+                    "name": "collaborator_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "role": {
+                    "name": "role",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": "'collaborator'"
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "userCollectionCollaborators_collectionId_idx": {
+                    "name": "userCollectionCollaborators_collectionId_idx",
+                    "columns": ["collection_id"],
+                    "isUnique": false
+                },
+                "userCollectionCollaborators_collaboratorId_idx": {
+                    "name": "userCollectionCollaborators_collaboratorId_idx",
+                    "columns": ["collaborator_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "userCollectionCollaborators_collection_id_userCollection_id_fk": {
+                    "name": "userCollectionCollaborators_collection_id_userCollection_id_fk",
+                    "tableFrom": "userCollectionCollaborators",
+                    "tableTo": "userCollection",
+                    "columnsFrom": ["collection_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "userCollectionCollaborators_collaborator_id_authUser_id_fk": {
+                    "name": "userCollectionCollaborators_collaborator_id_authUser_id_fk",
+                    "tableFrom": "userCollectionCollaborators",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["collaborator_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "requestForm": {
+            "name": "requestForm",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "type": {
+                    "name": "type",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "title": {
+                    "name": "title",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "description": {
+                    "name": "description",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "requestForm_id_unique": {
+                    "name": "requestForm_id_unique",
+                    "columns": ["id"],
+                    "isUnique": true
+                },
+                "request_form_user_id_idx": {
+                    "name": "request_form_user_id_idx",
+                    "columns": ["user_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "requestForm_user_id_authUser_id_fk": {
+                    "name": "requestForm_user_id_authUser_id_fk",
+                    "tableFrom": "requestForm",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["user_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "requestFormUpvotes": {
+            "name": "requestFormUpvotes",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "request_form_id": {
+                    "name": "request_form_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "requestFormUpvotes_id_unique": {
+                    "name": "requestFormUpvotes_id_unique",
+                    "columns": ["id"],
+                    "isUnique": true
+                },
+                "request_form_upvotes_idx": {
+                    "name": "request_form_upvotes_idx",
+                    "columns": ["request_form_id", "user_id"],
+                    "isUnique": false
+                }
+            },
+            "foreignKeys": {
+                "requestFormUpvotes_request_form_id_requestForm_id_fk": {
+                    "name": "requestFormUpvotes_request_form_id_requestForm_id_fk",
+                    "tableFrom": "requestFormUpvotes",
+                    "tableTo": "requestForm",
+                    "columnsFrom": ["request_form_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                },
+                "requestFormUpvotes_user_id_authUser_id_fk": {
+                    "name": "requestFormUpvotes_user_id_authUser_id_fk",
+                    "tableFrom": "requestFormUpvotes",
+                    "tableTo": "authUser",
+                    "columnsFrom": ["user_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "cascade"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        }
+    },
+    "enums": {},
+    "_meta": {
+        "schemas": {},
+        "tables": {},
+        "columns": {}
+    }
+}
