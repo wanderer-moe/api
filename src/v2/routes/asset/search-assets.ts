@@ -82,6 +82,16 @@ const querySchema = z
                 required: false,
             },
         }),
+        uploader: z.string().openapi({
+            param: {
+                description:
+                    "The uploader usernames(s) of the asset(s) to retrieve. Comma seperated.",
+                name: "uploaders",
+                in: "query",
+                example: "user1,user2",
+                required: false,
+            },
+        }),
         offset: z.string().openapi({
             param: {
                 description: "The offset for the asset(s) to retrieve.",
@@ -131,7 +141,7 @@ export const AssetSearchAllFilterRoute = (handler: AppHandler) => {
     handler.openapi(openRoute, async (ctx) => {
         const { drizzle } = await getConnection(ctx.env)
 
-        const { name, game, category, tags, offset, limit } =
+        const { name, game, category, tags, offset, limit, uploader } =
             ctx.req.valid("query")
 
         const gameList = game ? SplitQueryByCommas(game.toLowerCase()) : null
@@ -163,6 +173,13 @@ export const AssetSearchAllFilterRoute = (handler: AppHandler) => {
                         ? or(
                               ...categoryList.map((category) =>
                                   eq(asset.assetCategoryId, category)
+                              )
+                          )
+                        : undefined,
+                    uploader
+                        ? or(
+                              ...SplitQueryByCommas(uploader).map((uploader) =>
+                                  eq(asset.uploadedByName, uploader)
                               )
                           )
                         : undefined,
