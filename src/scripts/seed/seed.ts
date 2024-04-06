@@ -21,11 +21,9 @@ import { Scrypt } from "lucia"
 import "dotenv/config"
 import { generateID } from "@/v2/lib/oslo"
 
-
 async function main() {
-
     console.log("[SEED] Connecting to database client...")
-    
+
     // this script will only be ran in local dev so we can hardcode the url here
     const client = createClient({
         url: "http://127.0.0.1:8080",
