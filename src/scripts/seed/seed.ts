@@ -19,23 +19,16 @@ import {
 } from "@/v2/db/schema"
 import { Scrypt } from "lucia"
 import "dotenv/config"
-import * as dotenv from "dotenv"
 import { generateID } from "@/v2/lib/oslo"
 
-dotenv.config({ path: ".dev.vars" })
-
-const { ENVIRONMENT, TURSO_DEV_DATABASE_URL = "http://127.0.0.1:8080" } =
-    process.env
 
 async function main() {
-    if (ENVIRONMENT !== "DEV") {
-        console.log("This script can only be run in development mode.")
-        process.exit(1)
-    }
 
     console.log("[SEED] Connecting to database client...")
+    
+    // this script will only be ran in local dev so we can hardcode the url here
     const client = createClient({
-        url: TURSO_DEV_DATABASE_URL,
+        url: "http://127.0.0.1:8080",
     })
     const db = drizzleORM(client)
     console.log(
@@ -60,7 +53,7 @@ async function main() {
             },
             {
                 username: "testuser2",
-                email: "testuser2@dromzeh.dev",
+                email: "testuser2@wanderer.moe",
                 emailVerified: 1,
                 bio: "test bio 2",
                 pronouns: "he/him/his",
@@ -167,21 +160,21 @@ async function main() {
         .insert(assetTag)
         .values([
             {
-                id: "official",
-                name: "official",
-                formattedName: "Official",
+                id: "test-tag-1",
+                name: "test-tag-1",
+                formattedName: "Test Tag 1",
                 lastUpdated: new Date().toISOString(),
             },
             {
-                id: "1.0",
-                name: "1.0",
-                formattedName: "1.0",
+                id: "test-tag-2",
+                name: "test-tag-2",
+                formattedName: "Test Tag 2",
                 lastUpdated: new Date().toISOString(),
             },
             {
-                id: "fanmade",
-                name: "fanmade",
-                formattedName: "Fanmade",
+                id: "test-tag-3",
+                name: "test-tag-3",
+                formattedName: "Test Tag 3",
                 lastUpdated: new Date().toISOString(),
             },
         ])
@@ -193,15 +186,21 @@ async function main() {
         .insert(game)
         .values([
             {
-                id: "genshin-impact",
-                name: "genshin-impact",
-                formattedName: "Genshin Impact",
+                id: "test-game-1",
+                name: "test-game-1",
+                formattedName: "Test Game 1",
                 lastUpdated: new Date().toISOString(),
             },
             {
-                id: "honkai-impact-3rd",
-                name: "honkai-impact-3rd",
-                formattedName: "Honkai Impact: 3rd",
+                id: "test-game-2",
+                name: "test-game-2",
+                formattedName: "Test Game 2",
+                lastUpdated: new Date().toISOString(),
+            },
+            {
+                id: "test-game-3",
+                name: "test-game-3",
+                formattedName: "Test Game 3",
                 lastUpdated: new Date().toISOString(),
             },
         ])
@@ -213,15 +212,15 @@ async function main() {
         .insert(assetCategory)
         .values([
             {
-                id: "character-sheets",
-                name: "character-sheets",
-                formattedName: "Character Sheets",
+                id: "test-category-1",
+                name: "test-category-1",
+                formattedName: "Test Category 1",
                 lastUpdated: new Date().toISOString(),
             },
             {
-                id: "splash-art",
-                name: "splash-art",
-                formattedName: "Splash Art",
+                id: "test-category-2",
+                name: "test-category-2",
+                formattedName: "Test Category 2",
                 lastUpdated: new Date().toISOString(),
             },
         ])
@@ -237,16 +236,16 @@ async function main() {
         .insert(gameAssetCategory)
         .values([
             {
-                gameId: "genshin-impact",
-                assetCategoryId: "character-sheets",
+                gameId: newGames[0].id,
+                assetCategoryId: newAssetCategories[0].id,
             },
             {
-                gameId: "genshin-impact",
-                assetCategoryId: "splash-art",
+                gameId: newGames[1].id,
+                assetCategoryId: newAssetCategories[1].id,
             },
             {
-                gameId: "honkai-impact-3rd",
-                assetCategoryId: "character-sheets",
+                gameId: newGames[0].id,
+                assetCategoryId: newAssetCategories[1].id,
             },
         ])
         .returning()
@@ -267,9 +266,9 @@ async function main() {
                 id: assetIDArray[0],
                 name: "test-asset",
                 extension: "image/png",
-                gameId: "genshin-impact",
-                assetCategoryId: "character-sheets",
-                url: `/assets/${assetIDArray[0]}.png`,
+                gameId: "test-game-1",
+                assetCategoryId: "test-category-2",
+                url: `/asset/${assetIDArray[0]}.png`,
                 status: "approved",
                 uploadedById: newUsers[0].id,
                 uploadedByName: newUsers[0].username,
@@ -283,9 +282,9 @@ async function main() {
                 id: assetIDArray[1],
                 name: "test-asset-2",
                 extension: "image/png",
-                gameId: "honkai-impact-3rd",
-                assetCategoryId: "character-sheets",
-                url: `/assets/${assetIDArray[1]}.png`,
+                gameId: "test-game-2",
+                assetCategoryId: "test-category-2",
+                url: `/asset/${assetIDArray[1]}.png`,
                 status: "approved",
                 uploadedById: newUsers[1].id,
                 uploadedByName: newUsers[1].username,
@@ -299,9 +298,9 @@ async function main() {
                 id: assetIDArray[2],
                 name: "test-asset-3",
                 extension: "image/png",
-                gameId: "genshin-impact",
-                assetCategoryId: "splash-art",
-                url: `/assets/${assetIDArray[2]}.png`,
+                gameId: "test-game-1",
+                assetCategoryId: "test-category-1",
+                url: `/asset/${assetIDArray[2]}.png`,
                 status: "approved",
                 uploadedById: newUsers[1].id,
                 uploadedByName: newUsers[1].username,
@@ -315,9 +314,9 @@ async function main() {
                 id: assetIDArray[3],
                 name: "test-asset-4",
                 extension: "image/png",
-                gameId: "genshin-impact",
-                assetCategoryId: "splash-art",
-                url: `/assets/${assetIDArray[3]}.png`,
+                gameId: "test-game-1",
+                assetCategoryId: "test-category-2",
+                url: `/asset/${assetIDArray[3]}.png`,
                 status: "approved",
                 uploadedById: newUsers[1].id,
                 uploadedByName: newUsers[1].username,
@@ -331,9 +330,9 @@ async function main() {
                 id: assetIDArray[4],
                 name: "test-asset-5",
                 extension: "image/png",
-                gameId: "genshin-impact",
-                assetCategoryId: "splash-art",
-                url: `/assets/${assetIDArray[4]}.png`,
+                gameId: "test-game-1",
+                assetCategoryId: "test-category-2",
+                url: `/asset/${assetIDArray[4]}.png`,
                 status: "approved",
                 uploadedById: newUsers[2].id,
                 uploadedByName: newUsers[2].username,
@@ -342,11 +341,11 @@ async function main() {
             },
             {
                 id: assetIDArray[5],
-                name: "test-asset-6",
+                name: "test-asset-5",
                 extension: "image/png",
-                gameId: "honkai-impact-3rd",
-                assetCategoryId: "character-sheets",
-                url: `/assets/${assetIDArray[5]}.png`,
+                gameId: "test-game-3",
+                assetCategoryId: "test-category-2",
+                url: `/asset/${assetIDArray[5]}.png`,
                 status: "approved",
                 uploadedById: newUsers[2].id,
                 uploadedByName: newUsers[2].username,
@@ -363,39 +362,39 @@ async function main() {
         .values([
             {
                 assetId: newAssets[0].id,
-                assetTagId: "official",
+                assetTagId: "test-tag-1",
             },
             {
                 assetId: newAssets[0].id,
-                assetTagId: "1.0",
+                assetTagId: "test-tag-2",
             },
             {
                 assetId: newAssets[1].id,
-                assetTagId: "official",
+                assetTagId: "test-tag-1",
             },
             {
                 assetId: newAssets[2].id,
-                assetTagId: "official",
+                assetTagId: "test-tag-1",
             },
             {
                 assetId: newAssets[2].id,
-                assetTagId: "1.0",
+                assetTagId: "test-tag-2",
             },
             {
                 assetId: newAssets[3].id,
-                assetTagId: "fanmade",
+                assetTagId: "test-tag-3",
             },
             {
                 assetId: newAssets[4].id,
-                assetTagId: "fanmade",
+                assetTagId: "test-tag-3",
             },
             {
                 assetId: newAssets[5].id,
-                assetTagId: "fanmade",
+                assetTagId: "test-tag-3",
             },
             {
                 assetId: newAssets[5].id,
-                assetTagId: "1.0",
+                assetTagId: "test-tag-2",
             },
         ])
         .returning()
