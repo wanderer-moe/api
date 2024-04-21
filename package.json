@@ -9,17 +9,17 @@
         "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
-        "@cloudflare/workers-types": "^4.20240222.0",
-        "eslint": "^8.57.0",
+        "@cloudflare/workers-types": "^4.20240419.0",
+        "eslint": "^9.1.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-json": "^3.1.0",
-        "typescript": "^5.3.3",
-        "wrangler": "3.29.0"
+        "typescript": "^5.4.5",
+        "wrangler": "3.51.2"
     },
     "private": true,
     "dependencies": {
-        "@typescript-eslint/eslint-plugin": "^7.0.2",
-        "itty-router": "^4.0.27",
+        "@typescript-eslint/eslint-plugin": "^7.7.0",
+        "itty-router": "^5.0.16",
         "prettier": "^3.2.5",
         "render2": "^1.4.1"
     }
