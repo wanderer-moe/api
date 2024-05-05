@@ -86,7 +86,7 @@ const querySchema = z
             param: {
                 description:
                     "The uploader usernames(s) of the asset(s) to retrieve. Comma seperated.",
-                name: "uploaders",
+                name: "uploader",
                 in: "query",
                 example: "user1,user2",
                 required: false,

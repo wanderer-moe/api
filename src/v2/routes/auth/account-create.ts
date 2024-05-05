@@ -58,6 +58,17 @@ const openRoute = createRoute({
 
 export const UserCreateAccountRoute = (handler: AppHandler) => {
     handler.openapi(openRoute, async (ctx) => {
+        const returnUnauth = true
+
+        if (returnUnauth) {
+            return ctx.json(
+                {
+                    success: true,
+                },
+                401
+            )
+        }
+
         const authSessionManager = new AuthSessionManager(ctx)
 
         const { user } = await authSessionManager.validateSession()
