@@ -24,8 +24,8 @@ const responseSchema = z.object({
 
 const openRoute = createRoute({
     path: "/collection/{id}/delete",
-    method: "post",
-    summary: "Delete a collection.",
+    method: "delete",
+    summary: "Delete a collection",
     description:
         "Delete a collection. Only the owner of the collection can delete it.",
     tags: ["Collection"],

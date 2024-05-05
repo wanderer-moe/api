@@ -52,7 +52,7 @@ const openRoute = createRoute({
     summary: "Get a collection",
     description:
         "Get a collection by its ID. If you do not have access to the collection (it is private/you do not have edit permission), it will not be returned.",
-    tags: ["Asset"],
+    tags: ["Collection"],
     request: {
         params: paramsSchema,
     },

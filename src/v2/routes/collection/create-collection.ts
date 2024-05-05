@@ -22,7 +22,7 @@ const responseSchema = z.object({
 const openRoute = createRoute({
     path: "/collection/create",
     method: "post",
-    summary: "Create a new collection.",
+    summary: "Create a new collection",
     description:
         "Create a new collection, accent colours available for supporters",
     tags: ["Collection"],
