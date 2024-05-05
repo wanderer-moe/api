@@ -61,14 +61,13 @@ export const DeleteCollectionRoute = (handler: AppHandler) => {
                 401
             )
         }
-        
+
         const { id } = ctx.req.valid("param")
 
         const { drizzle } = await getConnection(ctx.env)
 
-        const [existingCollection] = await drizzle
-            .select().from(userCollection)
-        
+        const [existingCollection] = await drizzle.select().from(userCollection)
+
         if (!existingCollection) {
             return ctx.json(
                 {
@@ -90,7 +89,7 @@ export const DeleteCollectionRoute = (handler: AppHandler) => {
         }
 
         await drizzle.delete(userCollection).where(eq(userCollection.id, id))
-        
+
         return ctx.json(
             {
                 success: true,

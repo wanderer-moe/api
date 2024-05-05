@@ -114,7 +114,7 @@ export const selectUserCollectionAssetSchema =
 export const collectionRelations = relations(
     userCollection,
     ({ one, many }) => ({
-        user: one(authUser, {
+        authUser: one(authUser, {
             fields: [userCollection.userId],
             references: [authUser.id],
             relationName: "collection_auth_user",

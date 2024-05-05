@@ -23,7 +23,8 @@ const openRoute = createRoute({
     path: "/collection/create",
     method: "post",
     summary: "Create a new collection.",
-    description: "Create a new collection, accent colours available for supporters",
+    description:
+        "Create a new collection, accent colours available for supporters",
     tags: ["Collection"],
     request: {
         body: {
@@ -36,7 +37,8 @@ const openRoute = createRoute({
     },
     responses: {
         200: {
-            description: "Returns the collection + true if the collection was made.",
+            description:
+                "Returns the collection + true if the collection was made.",
             content: {
                 "application/json": {
                     schema: responseSchema,
@@ -68,14 +70,16 @@ export const CreateCollectionRoute = (handler: AppHandler) => {
 
         const { drizzle } = await getConnection(ctx.env)
 
-        const [newCollection] = await drizzle.insert(userCollection)
+        const [newCollection] = await drizzle
+            .insert(userCollection)
             .values({
                 name: name,
                 userId: user.id,
                 description: description,
                 isPublic: Boolean(isPublic),
                 accentColour: accentColour as ColourType,
-            }).returning()
+            })
+            .returning()
 
         return ctx.json(
             {
