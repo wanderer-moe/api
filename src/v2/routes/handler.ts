@@ -7,6 +7,7 @@ import ContributorRoute from "@/v2/routes/contributors/handler"
 import AuthRoute from "@/v2/routes/auth/handler"
 import RequestFormRoute from "@/v2/routes/requests/handler"
 import CategoriesRoute from "@/v2/routes/category/handler"
+import CollectionsRoute from "@/v2/routes/collection/handler"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
@@ -18,6 +19,7 @@ handler.route("/user", UserRoute)
 handler.route("/contributors", ContributorRoute)
 handler.route("/auth", AuthRoute)
 handler.route("/request", RequestFormRoute)
+handler.route("/collection", CollectionsRoute)
 
 export default handler
 
