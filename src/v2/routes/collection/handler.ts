@@ -8,6 +8,9 @@ import { UnlikeCollectionByIDRoute } from "./unlike-collection"
 import { LikeCollectionByIdRoute } from "./like-collection"
 import { AddAssetToCollectionRoute } from "./add-asset"
 import { RemoveAssetFromCollectionRoute } from "./remove-asset"
+import { AddContributorToCollectionRoute } from "./add-contributor"
+import { RemoveContributorFromCollectionRoute } from "./remove-contributor"
+import { UpdateContributorStatusRoute } from "./update-contributor-status"
 
 const handler = new OpenAPIHono<{ Bindings: Bindings; Variables: Variables }>()
 
@@ -20,6 +23,10 @@ DeleteCollectionRoute(handler)
 
 AddAssetToCollectionRoute(handler)
 RemoveAssetFromCollectionRoute(handler)
+UpdateContributorStatusRoute(handler)
+
+AddContributorToCollectionRoute(handler)
+RemoveContributorFromCollectionRoute(handler)
 
 LikeCollectionByIdRoute(handler)
 UnlikeCollectionByIDRoute(handler)
