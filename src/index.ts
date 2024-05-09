@@ -19,7 +19,7 @@ app.use(
     "*",
     cors({
         // todo(dromzeh): this should be set dependant on ENV, PROD or DEV w/ next() for context
-        origin: "http://localhost:3000",
+        origin: "https://staging.wanderer.moe/",
         credentials: true,
     })
 )
