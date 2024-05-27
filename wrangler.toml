@@ -4,6 +4,10 @@ compatibility_date = "2023-04-24"
 
 account_id = "ba4e8f7f9ffbc23dba6acd0d9bd3ef46"
 workers_dev = true
+compatibility_flags = [ "nodejs_compat" ]
+
+[vars]
+SERVICE_NAME = "api-wanderer-moe"
 
 [[r2_buckets]]
 binding = 'bucket'
@@ -14,5 +18,3 @@ preview_bucket_name = 'wanderer-moe'
 binding = 'database'
 database_name = 'wanderer-moe-requests'
 database_id = '9c180d14-7f79-45c6-b2f5-809b4e75941b'
-
-[vars]
