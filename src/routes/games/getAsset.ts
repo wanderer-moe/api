@@ -1,7 +1,5 @@
 import { responseHeaders } from "@/lib/responseHeaders";
 import { listBucket } from "@/lib/listBucket";
-import { checkTable } from "@/lib/d1/checkTable";
-import { checkRow } from "@/lib/d1/checkRow";
 import type { Image } from "@/lib/types/asset";
 
 export const getAsset = async (
@@ -62,14 +60,10 @@ export const getAsset = async (
             size: file.size,
         }));
 
-        const lastUploaded = images.sort((a, b) => b.uploaded - a.uploaded)[0];
-
-        try {
-            await checkTable(env.database, gameId);
-            await checkRow(env.database, gameId, asset);
-        } catch (e) {
-            console.error(e);
-        }
+        const sortedImages = [...images].sort(
+            (a, b) => b.uploaded - a.uploaded
+        );
+        const lastUploaded = sortedImages[0];
 
         response = new Response(
             JSON.stringify({

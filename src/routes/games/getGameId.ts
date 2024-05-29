@@ -1,7 +1,5 @@
 import { responseHeaders } from "@/lib/responseHeaders";
 import { listBucket } from "@/lib/listBucket";
-import { checkTable } from "@/lib/d1/checkTable";
-import { getAssetRequests } from "@/lib/d1/getAssetRequests";
 import type { Location } from "@/lib/types/game";
 
 export const getGameId = async (
@@ -48,6 +46,7 @@ export const getGameId = async (
         });
 
         const fileCount = subfolderFiles.objects.length;
+
         const lastUploaded = subfolderFiles.objects.reduce(
             (prev, current) => {
                 const prevDate = new Date(prev.uploaded);
@@ -59,38 +58,20 @@ export const getGameId = async (
 
         const name = file.replace(`${gameId}/`, "").replace("/", "");
 
-        try {
-            await checkTable(env.database, gameId);
-        } catch (e) {
-            console.error(e);
-        }
-
-        let popularity = 0;
-        try {
-            const requestsCount = await getAssetRequests(
-                env.database,
-                gameId,
-                name
-            );
-            popularity = requestsCount;
-        } catch (e) {
-            console.error(e);
-        }
-
         return {
             name,
             path: `https://api.wanderer.moe/game/${gameId}/${file
                 .replace(`${gameId}/`, "")
                 .replace("/", "")}`,
             fileCount,
-            popularity,
+            popularity: 0,
             lastUploaded: lastUploaded.uploaded,
         } as Location;
     });
 
     const locationsWithFileCount = await Promise.all(locations);
-    locationsWithFileCount.sort((a, b) => b.popularity - a.popularity);
 
+    locationsWithFileCount.sort((a, b) => b.lastUploaded - a.lastUploaded);
     locationsWithFileCount.forEach((location, index) => {
         location.popularity = index + 1;
     });
