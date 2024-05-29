@@ -82,6 +82,11 @@ export const getGames = async (
         });
 
     const games = await Promise.all(rootLocations);
+    games.sort((a, b) => {
+        const dateA = new Date(a.lastUploaded);
+        const dateB = new Date(b.lastUploaded);
+        return dateB.getTime() - dateA.getTime();
+    });
 
     response = new Response(
         JSON.stringify({
