@@ -4,7 +4,7 @@
 
 ![Quality] ![API Response] ![CDN Response]
 
-Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — using **Cloudflare Workers** with **R2 Storage** for the CDN, and **D1** for the Database.
+Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — using **Cloudflare Workers** with **R2 Storage** for the CDN.
 
 </div>
 
@@ -14,7 +14,7 @@ Source code for the API powering [**wanderer.moe**](https://wanderer.moe) — us
 
 #### Wrangler
 
-Configuration is in `wrangler.toml` - this includes the R2 Bucket and D1 Database.
+Configuration is in `wrangler.toml` - this includes the R2 Bucket.
 
 -   Run `wrangler dev` to preview locally.
 -   Run `wrangler deploy` to publish to Cloudflare Workers.

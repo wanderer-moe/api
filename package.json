@@ -9,19 +9,18 @@
         "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
-        "@cloudflare/workers-types": "^4.20240222.0",
-        "eslint": "^8.57.0",
+        "@cloudflare/workers-types": "^4.20240722.0",
+        "eslint": "^9.7.0",
         "eslint-config-google": "^0.14.0",
-        "eslint-plugin-json": "^3.1.0",
-        "typescript": "^5.3.3",
-        "wrangler": "3.29.0"
+        "eslint-plugin-json": "^4.0.0",
+        "typescript": "^5.5.4",
+        "wrangler": "3.66.0"
     },
     "private": true,
     "dependencies": {
-        "@microlabs/otel-cf-workers": "1.0.0-rc.38",
-        "@typescript-eslint/eslint-plugin": "^7.0.2",
-        "itty-router": "^4.0.27",
-        "prettier": "^3.2.5",
+        "@typescript-eslint/eslint-plugin": "^7.17.0",
+        "itty-router": "^5.0.17",
+        "prettier": "^3.3.3",
         "render2": "^1.4.1"
     }
 }

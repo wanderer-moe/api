@@ -6,8 +6,6 @@ import { index } from "@/routes/index";
 import { getGameId } from "@/routes/games/getGameId";
 import { getAsset } from "@/routes/games/getAsset";
 import { getGames } from "@/routes/games/getGames";
-import { getGeneratorGameId } from "@/routes/oc-generators/getGameId";
-import { getGenerators } from "@/routes/oc-generators/getGenerators";
 
 const router = Router();
 
@@ -16,8 +14,6 @@ router
     .get("/games", errorHandler(getGames))
     .get("/game/:gameId", errorHandler(getGameId))
     .get("/game/:gameId/:asset", errorHandler(getAsset))
-    .get("/oc-generators", errorHandler(getGenerators))
-    .get("/oc-generator/:gameId", errorHandler(getGeneratorGameId))
     .get("/discord/contributors", errorHandler(getContributors))
     .all("*", (): Response => {
         return new Response(

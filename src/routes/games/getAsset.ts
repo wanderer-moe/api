@@ -61,8 +61,9 @@ export const getAsset = async (
         }));
 
         const sortedImages = [...images].sort(
-            (a, b) => b.uploaded - a.uploaded
+            (a, b) => b.uploaded.getTime() - a.uploaded.getTime()
         );
+
         const lastUploaded = sortedImages[0];
 
         response = new Response(
