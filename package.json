@@ -18,7 +18,7 @@
     },
     "private": true,
     "dependencies": {
-        "@typescript-eslint/eslint-plugin": "^7.17.0",
+        "@typescript-eslint/eslint-plugin": "^8.0.0",
         "itty-router": "^5.0.17",
         "prettier": "^3.3.3",
         "render2": "^1.4.1"
