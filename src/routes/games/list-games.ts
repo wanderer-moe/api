@@ -23,6 +23,7 @@ export const getGames = async (
         "zenless-zone-zero",
         "honkai-star-rail",
         "honkai-impact-3rd",
+        "needy-streamer-overload",
         "dislyte",
         "cookie-run",
         "blue-archive",
