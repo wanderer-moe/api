@@ -20,7 +20,7 @@ export const getGames = async (
 
     const files = [
         "genshin-impact",
-        // "zenless-zone-zero",
+        "zenless-zone-zero",
         "honkai-star-rail",
         "honkai-impact-3rd",
         "dislyte",
