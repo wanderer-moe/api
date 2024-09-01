@@ -3,7 +3,8 @@ import { guildId } from "@/lib/discord";
 
 export const getMembers = async (
     request: Request,
-    env: Env
+    env: Env,
+    ctx: ExecutionContext
 ): Promise<Response> => {
     let guildStats = {
         memberCount: 2600,

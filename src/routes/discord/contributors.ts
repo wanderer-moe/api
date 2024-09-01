@@ -4,7 +4,8 @@ import type { Contributor, GuildMember } from "@/lib/types/discord";
 
 export const getContributors = async (
     request: Request,
-    env: Env
+    env: Env,
+    ctx: ExecutionContext
 ): Promise<Response> => {
     const members: Contributor[] = [];
 

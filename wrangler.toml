@@ -1,13 +1,10 @@
 name = "api-wanderer-moe"
 main = "./src/index.ts"
-compatibility_date = "2023-04-24"
+compatibility_date = "2024-06-03"
 
 account_id = "ba4e8f7f9ffbc23dba6acd0d9bd3ef46"
 workers_dev = true
 compatibility_flags = [ "nodejs_compat" ]
-
-[vars]
-SERVICE_NAME = "api-wanderer-moe"
 
 [[r2_buckets]]
 binding = 'bucket'

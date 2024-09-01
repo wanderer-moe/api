@@ -4,8 +4,20 @@ import type { Image } from "@/lib/types/asset";
 
 export const getAsset = async (
     request: Request,
-    env: Env
+    env: Env,
+    ctx: ExecutionContext
 ): Promise<Response> => {
+    const cacheUrl = new URL(request.url);
+
+    const cacheKey = cacheUrl.toString();
+    const cache = caches.default;
+
+    let response = await cache.match(cacheKey);
+
+    if (response) {
+        return response;
+    }
+
     const url = new URL(request.url);
     const pathSegments = url.pathname
         .split("/")
@@ -26,14 +38,6 @@ export const getAsset = async (
     }
 
     const [, gameId, asset] = pathSegments;
-
-    const cacheKey = new Request(url.toString(), request);
-    const cache = caches.default;
-    let response = await cache.match(cacheKey);
-
-    if (response) {
-        return response;
-    }
 
     const files = await listBucket(env.bucket, {
         prefix: `${gameId}/${asset}/`,
@@ -80,9 +84,10 @@ export const getAsset = async (
                 headers: responseHeaders,
             }
         );
-
-        await cache.put(cacheKey, response.clone());
     }
+
+    response.headers.append("Cache-Control", `max-age=${60 * 60 * 1}`);
+    ctx.waitUntil(cache.put(cacheKey, response.clone()));
 
     return response;
 };

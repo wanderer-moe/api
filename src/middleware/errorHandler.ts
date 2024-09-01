@@ -1,10 +1,20 @@
 import { responseHeaders } from "@/lib/responseHeaders";
 
 export const errorHandler =
-    (handler: (request: Request, env: Env) => Promise<Response>) =>
-    async (request: Request, env: Env): Promise<Response> => {
+    (
+        handler: (
+            request: Request,
+            env: Env,
+            ctx: ExecutionContext
+        ) => Promise<Response>
+    ) =>
+    async (
+        request: Request,
+        env: Env,
+        ctx: ExecutionContext
+    ): Promise<Response> => {
         try {
-            return await handler(request, env);
+            return await handler(request, env, ctx);
         } catch (error) {
             console.error(error);
             return new Response(
