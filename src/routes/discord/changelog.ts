@@ -24,6 +24,8 @@ export const getChangelog = async (
             path: `/discord/changelog`,
             messages,
         }),
-        responseHeaders
+        {
+            headers: responseHeaders,
+        }
     );
 };
