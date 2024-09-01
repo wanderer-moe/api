@@ -9,7 +9,6 @@ export const getGames = async (
 ): Promise<Response> => {
     const cacheUrl = new URL(request.url);
 
-    // Change this line
     const cacheKey = cacheUrl.toString();
     const cache = caches.default;
 
@@ -21,7 +20,7 @@ export const getGames = async (
 
     const files = [
         "genshin-impact",
-        "zenless-zone-zero",
+        // "zenless-zone-zero",
         "honkai-star-rail",
         "honkai-impact-3rd",
         "dislyte",
@@ -71,7 +70,6 @@ export const getGames = async (
     );
 
     response.headers.append("Cache-Control", `max-age=${60 * 60 * 1}`);
-    // Change this line
     ctx.waitUntil(cache.put(cacheKey, response.clone()));
 
     return response;
