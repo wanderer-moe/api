@@ -7,6 +7,7 @@ import { index } from "@/routes/index";
 import { getGameId } from "@/routes/games/get-game-id";
 import { getAsset } from "@/routes/games/get-game-category";
 import { getGames } from "@/routes/games/list-games";
+import { getChangelog } from "@/routes/discord/changelog";
 
 const router = AutoRouter();
 
@@ -17,6 +18,7 @@ router
     .get("/game/:gameId/:asset", errorHandler(getAsset))
     .get("/discord/contributors", errorHandler(getContributors))
     .get("/discord/members", errorHandler(getMembers))
+    .get("/discord/changelog", errorHandler(getChangelog))
     .all("*", (): Response => {
         return new Response(
             JSON.stringify({
