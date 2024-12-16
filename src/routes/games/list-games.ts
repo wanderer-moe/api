@@ -26,6 +26,7 @@ export const getGames = async (
         "honkai-impact-3rd",
         "needy-streamer-overload",
         "dislyte",
+        "strinova",
         "cookie-run",
         "blue-archive",
         "project-sekai",
