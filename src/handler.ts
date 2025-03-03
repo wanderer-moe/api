@@ -8,6 +8,7 @@ import { getGameId } from "@/routes/games/get-game-id";
 import { getAsset } from "@/routes/games/get-game-category";
 import { getGames } from "@/routes/games/list-games";
 import { getChangelog } from "@/routes/discord/changelog";
+import { searchAssets } from "@/routes/search/global-asset-search";
 
 const router = AutoRouter();
 
@@ -16,6 +17,7 @@ router
     .get("/games", errorHandler(getGames))
     .get("/game/:gameId", errorHandler(getGameId))
     .get("/game/:gameId/:asset", errorHandler(getAsset))
+    .get("/search/assets", errorHandler(searchAssets))
     .get("/discord/contributors", errorHandler(getContributors))
     .get("/discord/members", errorHandler(getMembers))
     .get("/discord/changelog", errorHandler(getChangelog))
